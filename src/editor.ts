@@ -1,26 +1,37 @@
 import {
-	App,
-	Editor,
-	EditorPosition,
-	EmbedCache,
-	LinkCache,
-	MetadataCache,
-	Notice,
-	ReferenceCache,
-	SectionCache,
-	TagCache,
-	Vault,
+	type App,
 	debounce,
+	type Editor,
+	type EditorPosition,
+	type EmbedCache,
+	type LinkCache,
+	type MetadataCache,
+	Notice,
 	normalizePath,
 	parseLinktext,
-	resolveSubpath
+	type ReferenceCache,
+	resolveSubpath,
+	type SectionCache,
+	type TagCache,
+	type Vault
 } from 'obsidian'
 import { t } from 'src/lang/helper'
-import { CreatePlainText, Message, ProviderSettings, ResolveEmbedAsBinary, SaveAttachment, Vendor } from './providers'
+import { createLogger } from './logger'
+import type {
+	CreatePlainText,
+	Message,
+	ProviderSettings,
+	ResolveEmbedAsBinary,
+	SaveAttachment,
+	Vendor
+} from './providers'
 import { withStreamLogging } from './providers/decorator'
-import { APP_FOLDER, EditorStatus, PluginSettings, availableVendors } from './settings'
-import { GenerationStats, StatusBarManager } from './statusBarManager'
-import { TagRole } from './suggest'
+import { APP_FOLDER, availableVendors, type EditorStatus, type PluginSettings } from './settings'
+import type { GenerationStats, StatusBarManager } from './statusBarManager'
+import type { TagRole } from './suggest'
+
+const logger = createLogger('editor')
+const streamLogger = createLogger('editor:stream')
 
 export interface RunEnv {
 	readonly appMeta: MetadataCache
@@ -103,10 +114,10 @@ export const buildRunEnv = async (app: App, settings: PluginSettings): Promise<R
 	}
 	const resolveEmbed = async (embed: EmbedCache) => {
 		const { path, subpath } = parseLinktext(embed.link)
-		console.debug('resolveEmbed path', path, 'subpath', subpath)
+		logger.debug('resolving embed reference', { path, subpath })
 		const targetFile = appMeta.getFirstLinkpathDest(path, filePath)
 		if (targetFile === null) {
-			throw new Error('LinkText broken: ' + embed.link.substring(0, 20))
+			throw new Error(`LinkText broken: ${embed.link.substring(0, 20)}`)
 		}
 		return await vault.readBinary(targetFile)
 	}
@@ -133,12 +144,12 @@ export const buildRunEnv = async (app: App, settings: PluginSettings): Promise<R
 const resolveLinkedContent = async (env: RunEnv, linkText: string) => {
 	const { appMeta, vault, filePath } = env
 	const { path, subpath } = parseLinktext(linkText)
-	console.debug('path', path, 'subpath', subpath)
+	logger.debug('resolving linked content', { path, subpath })
 
 	const targetFile = appMeta.getFirstLinkpathDest(path, filePath)
 
 	if (targetFile === null) {
-		throw new Error('LinkText broken: ' + linkText.substring(0, 20))
+		throw new Error(`LinkText broken: ${linkText.substring(0, 20)}`)
 	}
 
 	const fileMeta = appMeta.getFileCache(targetFile)
@@ -183,7 +194,10 @@ const extractTaggedBlocks = (env: RunEnv, startOffset: number, endOffset: number
 				: null
 		})
 		.filter((t) => t !== null) as Tag[]
-	console.debug('roleMappedTags', roleMappedTags)
+	logger.debug('role mapped tags identified', {
+		count: roleMappedTags.length,
+		roles: [...new Set(roleMappedTags.map((tag) => tag.tag))]
+	})
 
 	const ranges: [number, number][] = roleMappedTags.map((tag, i) => [
 		tag.tagRange[0],
@@ -203,7 +217,7 @@ const extractTaggedBlocks = (env: RunEnv, startOffset: number, endOffset: number
 		),
 		line: [roleMappedTags[i].tagLine, roleMappedTags[i + 1] ? roleMappedTags[i + 1].tagLine - 1 : Infinity]
 	}))
-	console.debug('taggedBlocks', taggedBlocks)
+	logger.debug('tagged blocks extracted', { count: taggedBlocks.length })
 	return taggedBlocks
 }
 
@@ -215,8 +229,8 @@ const resolveTextRangeWithLinks = async (
 ) => {
 	const {
 		fileText,
-		links: links = [],
-		embeds: embeds = [],
+		links = [],
+		embeds = [],
 		options: { enableInternalLink, enableInternalLinkForAssistantMsg }
 	} = env
 
@@ -266,7 +280,7 @@ const resolveTextRangeWithLinks = async (
 		}),
 		{ endOffset: startOffset, text: '' }
 	)
-	console.debug('accumulatedText', accumulatedText)
+	logger.debug('accumulated link text built', { length: accumulatedText.text.length })
 	return {
 		text: accumulatedText.text + fileText.slice(accumulatedText.endOffset, endOffset),
 		range: [startOffset, endOffset] as [number, number]
@@ -279,7 +293,7 @@ const extractTaggedBlockContent = async (env: RunEnv, taggedBlock: TaggedBlock) 
 			resolveTextRangeWithLinks(env, section, taggedBlock.contentRange, taggedBlock.role)
 		)
 	)
-	console.debug('textRanges', textRanges)
+	logger.debug('text ranges resolved', { count: textRanges.length })
 	const accumulated = textRanges
 		.map((range) => range.text)
 		.join('\n\n')
@@ -344,7 +358,6 @@ const insertText = (editor: Editor, text: string, editorStatus: EditorStatus, la
 	const lineAtCursor = editor.getLine(cursor.line)
 	if (lineAtCursor.length > cursor.ch) {
 		cursor = { line: cursor.line, ch: lineAtCursor.length }
-		// console.debug('Update cursor to end of line', cursor)
 	}
 
 	const lines = text.split('\n')
@@ -378,7 +391,7 @@ export const extractConversationsTextOnly = async (env: RunEnv) => {
 		.filter((_, index) => index % 2 === 0)
 		.map((startOffset, index) => ({ startOffset, endOffset: positions[index * 2 + 1] }))
 
-	console.debug('ranges', ranges)
+	logger.debug('conversation ranges computed', { count: ranges.length })
 
 	const conversations = await Promise.all(
 		ranges.map(async (r) => {
@@ -406,23 +419,25 @@ export const getMsgPositionByLine = (env: RunEnv, line: number) => {
 	const msgTagsInMeta = tagsInMeta.filter((t) =>
 		msgTags.some((n) => t.tag.slice(1).split('/')[0].toLowerCase() === n.toLowerCase())
 	)
-	console.debug('msgTagsInMeta', msgTagsInMeta)
 	const msgIndex = msgTagsInMeta.findLastIndex((t) => t.position.start.line <= line)
 	if (msgIndex < 0) return [-1, -1]
 
-	console.debug('msgTag', msgTagsInMeta[msgIndex])
 	const startOffset = msgTagsInMeta[msgIndex].position.end.offset + 2
 	const nextMsgIndex = msgIndex + 1
 	const nextMsgStartOffset =
 		nextMsgIndex < msgTagsInMeta.length ? msgTagsInMeta[nextMsgIndex].position.start.offset : Infinity
-	console.debug('nextTag', msgTagsInMeta[nextMsgIndex])
 	const lastSection = sections.findLast(
 		(section) => section.position.end.offset <= nextMsgStartOffset && section.position.start.line >= line
 	)
 	if (!lastSection) return [-1, -1]
 
 	const endOffset = lastSection.position.end.offset
-	console.debug('startOff', startOffset, 'endOffset', endOffset)
+	logger.debug('message positions resolved', {
+		line,
+		tag: msgTagsInMeta[msgIndex].tag,
+		startOffset,
+		endOffset
+	})
 	return [startOffset, endOffset]
 }
 
@@ -438,7 +453,7 @@ const createDecoratedSendRequest = async (env: RunEnv, vendor: Vendor, provider:
 		if (!(await env.vault.adapter.exists(normalizePath(APP_FOLDER)))) {
 			await env.vault.createFolder(APP_FOLDER)
 		}
-		console.debug('Using stream logging')
+		logger.info('stream logging enabled for provider request')
 		return withStreamLogging(vendor.sendRequestFunc(provider.options), env.createPlainText)
 	} else {
 		return vendor.sendRequestFunc(provider.options)
@@ -452,19 +467,31 @@ export const generate = async (
 	endOffset: number,
 	statusBarManager: StatusBarManager,
 	editorStatus: EditorStatus,
-	requestController: RequestController
+	requestController: RequestController,
+	mcpManager?: unknown,
+	mcpExecutor?: unknown
 ) => {
 	try {
 		const vendor = availableVendors.find((v) => v.name === provider.vendor)
 		if (!vendor) {
-			throw new Error('No vendor found ' + provider.vendor)
+			throw new Error(`No vendor found ${provider.vendor}`)
 		}
+
+		// Inject MCP manager, executor, statusBarManager, and document path into provider options if available
+		if (mcpManager && mcpExecutor) {
+			provider.options.mcpManager = mcpManager
+			provider.options.mcpExecutor = mcpExecutor
+			provider.options.documentPath = env.filePath
+			provider.options.statusBarManager = statusBarManager
+		}
+
+		provider.options.editor = editor
 
 		const conversation = await extractConversation(env, 0, endOffset)
 		const messages = conversation.map((c) =>
 			c.embeds ? { role: c.role, content: c.content, embeds: c.embeds } : { role: c.role, content: c.content }
 		)
-		console.debug('messages', messages)
+		logger.debug('messages prepared for provider', { count: messages.length })
 
 		const lastMsg = messages.last()
 		if (!lastMsg || lastMsg.role !== 'user' || lastMsg.content.trim().length === 0) {
@@ -477,7 +504,7 @@ export const generate = async (
 				role: 'system',
 				content: env.options.defaultSystemMsg
 			})
-			console.debug('Default system message added:', env.options.defaultSystemMsg)
+			logger.debug('default system message injected')
 		}
 
 		const round = messages.filter((m) => m.role === 'assistant').length + 1
@@ -492,12 +519,43 @@ export const generate = async (
 
 		let lastEditPos: EditorPosition | null = null
 		let startPos: EditorPosition | null = null
-		for await (const text of sendRequest(messages, controller, env.resolveEmbed, env.saveAttachment)) {
-			if (startPos == null) startPos = editor.getCursor('to')
-			lastEditPos = insertText(editor, text, editorStatus, lastEditPos)
-			llmResponse += text
-			statusBarManager.updateGeneratingProgress(llmResponse.length)
+		let chunkCount = 0
+		let totalTextLength = 0
+
+		streamLogger.debug('starting generation', { messageCount: messages.length })
+		streamLogger.debug('last message summary', {
+			role: lastMsg.role,
+			length: lastMsg.content.length
+		})
+
+		try {
+			for await (const text of sendRequest(messages, controller, env.resolveEmbed, env.saveAttachment)) {
+				chunkCount++
+				totalTextLength += text?.length || 0
+
+				streamLogger.debug('received chunk', {
+					chunk: chunkCount,
+					textLength: text?.length || 0,
+					preview: text?.substring(0, 100) || 'EMPTY',
+					totalResponseLength: totalTextLength
+				})
+
+				if (startPos == null) startPos = editor.getCursor('to')
+				lastEditPos = insertText(editor, text, editorStatus, lastEditPos)
+				llmResponse += text
+				statusBarManager.updateGeneratingProgress(llmResponse.length)
+			}
+		} catch (error) {
+			streamLogger.error('streaming error', error)
+			throw error
 		}
+
+		streamLogger.info('streaming complete', {
+			chunkCount,
+			totalTextLength,
+			llmResponseLength: llmResponse.length,
+			llmResponsePreview: llmResponse.substring(0, 200)
+		})
 
 		const endTime = new Date()
 		const duration = formatDuration(endTime.getTime() - startTime.getTime())
@@ -515,17 +573,22 @@ export const generate = async (
 
 		statusBarManager.setSuccessStatus(stats)
 
-		if (llmResponse.length === 0) {
+		// Check if anything was generated (text or tool calls via cursor movement)
+		const endPos = editor.getCursor('to')
+		const cursorMoved = startPos && (startPos.line !== endPos.line || startPos.ch !== endPos.ch)
+
+		// Only throw error if no LLM text AND no content inserted (no tool calls)
+		if (llmResponse.length === 0 && !cursorMoved) {
 			throw new Error(t('No text generated'))
 		}
 
-		console.debug('✨ ' + t('AI generate') + ' ✨ ', llmResponse)
+		logger.info('assistant response generated', { characters: llmResponse.length })
 		if (startPos) {
 			const endPos = editor.getCursor('to')
 			const insertedText = editor.getRange(startPos, endPos)
 			const formattedText = formatTextWithLeadingBreaks(llmResponse)
 			if (insertedText !== formattedText) {
-				console.debug('format text with leading breaks')
+				logger.debug('normalizing leading breaks in response')
 				editor.replaceRange(formattedText, startPos, endPos)
 			}
 		}
@@ -543,11 +606,11 @@ const formatTextWithLeadingBreaks = (text: string) => {
 	const firstLine = text.split('\n')[0]
 	if (firstLine.startsWith('#') || firstLine.startsWith('```')) {
 		// Markdown header or code block
-		return ' \n' + text
+		return ` \n${text}`
 	}
 	if (firstLine.startsWith('| ')) {
 		// Markdown table
-		return ' \n\n' + text
+		return ` \n\n${text}`
 	}
 	return text
 }
