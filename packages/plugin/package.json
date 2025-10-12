@@ -5,16 +5,17 @@
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
-		"build": "npm run typecheck:build && npm run typecheck:tests && ./scripts/build.sh",
+		"build": "./scripts/build.sh",
 		"version": "node version-bump.mjs && git add manifest.json versions.json",
 		"lint": "biome lint .",
 		"format": "biome format --write .",
 		"check": "biome check --write .",
 		"typecheck:build": "tsc --project tsconfig.build.json --noEmit --skipLibCheck",
 		"typecheck:tests": "tsc --project tsconfig.tests.json --noEmit",
-		"test": "vitest",
+		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
-		"test:watch": "vitest --ui --coverage --watch"
+		"test:watch": "vitest --ui --coverage --watch",
+		"clean": "rm -rf dist node_modules coverage .turbo"
 	},
 	"keywords": [],
 	"author": "C Jack<https://github.com/ae86jack>",
