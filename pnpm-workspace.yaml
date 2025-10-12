@@ -1,0 +1,6 @@
+# pnpm Workspace Configuration
+# This file defines the packages that are part of the monorepo workspace
+# All packages under packages/* will be managed by pnpm workspaces
+
+packages:
+  - 'packages/*'

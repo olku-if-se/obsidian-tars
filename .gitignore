@@ -33,3 +33,6 @@ mcp.json
 
 # code coverage
 coverage/
+
+# Turborepo
+.turbo/
