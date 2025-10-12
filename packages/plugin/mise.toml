@@ -1,0 +1,10 @@
+# mise configuration for Obsidian Tars monorepo
+# https://mise.jdx.dev/
+
+[tools]
+node = "22.20.0"
+pnpm = "9.15.0"
+
+[env]
+# Ensure pnpm uses the correct Node version
+_.path = ["./node_modules/.bin", "$PATH"]

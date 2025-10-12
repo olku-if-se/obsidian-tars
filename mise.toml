@@ -12,15 +12,15 @@ OLLAMA_MODEL = "llama3.2:latest"
 
 [tasks.test]
 description = "🧪 Complete test workflow: build → vault → launch Obsidian"
-run = "./scripts/test-workflow.sh"
+run = "packages/plugin/scripts/test-workflow.sh"
 
 [tasks.dev]
 description = "👨‍💻 Start development mode (watch for changes)"
-run = "npm run dev"
+run = "pnpm --filter obsidian-tars dev"
 
 [tasks.build]
 description = "📦 Build plugin for production"
-run = "npm run build"
+run = "pnpm --filter obsidian-tars build"
 
 # ============================================================================
 # Individual Step Commands
@@ -28,15 +28,15 @@ run = "npm run build"
 
 [tasks.build-only]
 description = "Build without setting up vault"
-run = "npm run build"
+run = "pnpm --filter obsidian-tars build"
 
 [tasks.setup-vault]
 description = "Setup test vault (requires build first)"
-run = "./scripts/setup-test-vault.sh"
+run = "packages/plugin/scripts/setup-test-vault.sh"
 
 [tasks.launch]
 description = "Launch Obsidian with test vault"
-run = "./scripts/launch-obsidian.sh"
+run = "packages/plugin/scripts/launch-obsidian.sh"
 
 # ============================================================================
 # Development Workflow
@@ -57,7 +57,7 @@ else
 fi
 
 PLUGIN_DIR="$VAULT_DIR/.obsidian/plugins"
-PROJECT_DIR="$(pwd)"
+PROJECT_DIR="$(pwd)/packages/plugin"
 
 mkdir -p "$PLUGIN_DIR"
 rm -rf "$PLUGIN_DIR/obsidian-tars"
@@ -88,24 +88,24 @@ echo "✅ Cleaned vault and dist/"
 # ============================================================================
 
 [tasks.lint]
-description = "Run ESLint"
-run = "npm run lint"
+description = "Run Biome lint"
+run = "pnpm lint"
 
 [tasks.format]
-description = "Format code with Prettier"
-run = "npm run format"
+description = "Format code with Biome"
+run = "pnpm format"
 
 [tasks.check]
-description = "Run all checks (lint + tests)"
+description = "Run all checks (lint + format + tests)"
 run = """
 #!/bin/bash
 set -e
-echo "🔍 Running lint..."
-npm run lint
-echo "✅ Lint passed"
+echo "🔍 Running Biome check..."
+pnpm check
+echo "✅ Check passed"
 echo ""
 echo "🧪 Running tests..."
-npm test
+pnpm test
 echo "✅ Tests passed"
 """
 
@@ -148,4 +148,5 @@ echo "✅ Stopped all tars-mcp* containers"
 """
 
 [tools]
-node = "22"
+node = "22.20.0"  # Node 22 LTS (Iron)
+pnpm = "9.15.0"
