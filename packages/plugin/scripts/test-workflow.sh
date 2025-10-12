@@ -1,20 +1,22 @@
 #!/bin/bash
 # Test workflow orchestrator
 # Guarantees: build → setup vault → launch Obsidian
+# Monorepo version: uses pnpm from root
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+PLUGIN_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+MONOREPO_ROOT="$(cd "$PLUGIN_DIR/../.." && pwd)"
 
-echo "🚀 Starting MCP Test Workflow"
+echo "🚀 Starting MCP Test Workflow (Monorepo)"
 echo "=============================="
 echo ""
 
 # Step 1: Build
 echo "📦 Step 1/3: Building plugin..."
-cd "$PROJECT_DIR"
-npm run build
+cd "$MONOREPO_ROOT"
+pnpm --filter obsidian-tars build
 echo "✅ Build complete"
 echo ""
 

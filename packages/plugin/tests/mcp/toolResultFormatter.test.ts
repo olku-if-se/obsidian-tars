@@ -4,11 +4,7 @@
  */
 
 import { describe, expect, it } from 'vitest'
-import {
-	formatResultContent,
-	formatToolResultAsMarkdown,
-	type FormatOptions
-} from '../../src/mcp/toolResultFormatter'
+import { type FormatOptions, formatResultContent, formatToolResultAsMarkdown } from '../../src/mcp/toolResultFormatter'
 import type { ToolExecutionResult } from '../../src/mcp/types.js'
 
 describe('Tool Result Formatter', () => {

@@ -48,7 +48,7 @@ export {
 	type Message,
 	type ProviderAdapter,
 	ToolCallingCoordinator,
-	type ToolExecutionRequest,
+	type ToolExecutionRequest
 } from './toolCallingCoordinator'
 // Tool calling infrastructure
 export {

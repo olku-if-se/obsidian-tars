@@ -105,15 +105,17 @@ export class MCPServerSettings {
 			.setName('Enable parallel tool execution')
 			.setDesc('Execute multiple independent tools concurrently for faster responses (default: disabled)')
 			.addToggle((toggle) =>
-			toggle.setValue(this.plugin.settings.mcpParallelExecution ?? false).onChange(async (value) => {
-				this.plugin.settings.mcpParallelExecution = value
-				await this.plugin.saveSettings()
-			})
+				toggle.setValue(this.plugin.settings.mcpParallelExecution ?? false).onChange(async (value) => {
+					this.plugin.settings.mcpParallelExecution = value
+					await this.plugin.saveSettings()
+				})
 			)
 
 		new Setting(containerEl)
 			.setName('Insert LLM utility section')
-			.setDesc('Add an [!llm] callout with provider/model and available tools for each assistant response (default: enabled).')
+			.setDesc(
+				'Add an [!llm] callout with provider/model and available tools for each assistant response (default: enabled).'
+			)
 			.addToggle((toggle) =>
 				toggle.setValue(this.plugin.settings.enableUtilitySection ?? true).onChange(async (value) => {
 					this.plugin.settings.enableUtilitySection = value
@@ -385,7 +387,9 @@ export class MCPServerSettings {
 
 	private renderConfigurationSection(containerEl: HTMLElement, server: MCPServerConfig): void {
 		// Configuration Input (3 formats)
-		const configHeaderSetting = new Setting(containerEl).setName('Configuration').setDesc('Supports 3 formats: Command, Claude JSON, or URL')
+		const configHeaderSetting = new Setting(containerEl)
+			.setName('Configuration')
+			.setDesc('Supports 3 formats: Command, Claude JSON, or URL')
 
 		const configContainer = containerEl.createDiv({ cls: 'mcp-config-container' })
 

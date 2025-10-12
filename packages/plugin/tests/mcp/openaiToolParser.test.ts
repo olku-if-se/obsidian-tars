@@ -3,9 +3,9 @@
  * Tests with realistic streaming data from OpenAI API
  */
 
+import type { ChatCompletionChunk } from 'openai/resources/chat/completions'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { OpenAIToolResponseParser } from '../../src/mcp/toolResponseParser'
-import type { ChatCompletionChunk } from 'openai/resources/chat/completions'
 
 function createChunk(
 	choicePartials: Array<Partial<ChatCompletionChunk['choices'][number]>>,
@@ -26,7 +26,7 @@ function createChunk(
 				...rest
 			}
 		}),
-		...overrides,
+		...overrides
 	}
 }
 

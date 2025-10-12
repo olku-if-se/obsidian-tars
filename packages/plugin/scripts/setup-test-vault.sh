@@ -8,7 +8,9 @@ set -e  # Exit on error
 echo "🚀 Setting up Obsidian test vault for MCP integration testing..."
 
 # Configuration
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SOURCE_PLUGIN_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+MONOREPO_ROOT="$(cd "$SOURCE_PLUGIN_DIR/../.." && pwd)"
 
 # Determine vault path based on OS
 if [[ -f /proc/version ]] && grep -qi microsoft /proc/version; then
@@ -20,29 +22,29 @@ else
   VAULT_DIR="${HOME}/obsidian-test-vault"
 fi
 
-PLUGIN_DIR="${VAULT_DIR}/.obsidian/plugins/obsidian-tars"
+VAULT_PLUGIN_DIR="${VAULT_DIR}/.obsidian/plugins/obsidian-tars"
 
 # Step 1: Build the plugin
 echo "📦 Building plugin..."
-cd "$PROJECT_DIR"
-npm run build
+cd "$MONOREPO_ROOT"
+pnpm --filter obsidian-tars build
 
-if [ ! -f "dist/main.js" ]; then
-    echo "❌ Error: Build failed. dist/main.js not found."
+if [ ! -f "$SOURCE_PLUGIN_DIR/dist/main.js" ]; then
+    echo "❌ Error: Build failed. $SOURCE_PLUGIN_DIR/dist/main.js not found."
     exit 1
 fi
 
 # Step 2: Create vault structure
 echo "📁 Creating vault structure..."
-mkdir -p "$PLUGIN_DIR"
+mkdir -p "$VAULT_PLUGIN_DIR"
 mkdir -p "$VAULT_DIR"
 
 # Step 3: Copy plugin files
 echo "📋 Copying plugin files..."
-cp dist/main.js "$PLUGIN_DIR/"
-cp dist/manifest.json "$PLUGIN_DIR/"
-if [ -f "dist/styles.css" ]; then
-    cp dist/styles.css "$PLUGIN_DIR/"
+cp "$SOURCE_PLUGIN_DIR/dist/main.js" "$VAULT_PLUGIN_DIR/"
+cp "$SOURCE_PLUGIN_DIR/dist/manifest.json" "$VAULT_PLUGIN_DIR/"
+if [ -f "$SOURCE_PLUGIN_DIR/dist/styles.css" ]; then
+    cp "$SOURCE_PLUGIN_DIR/dist/styles.css" "$VAULT_PLUGIN_DIR/"
 fi
 
 # Step 4: Create sample test note
@@ -262,8 +264,8 @@ To update the plugin after making changes:
 
 ```bash
 cd /mnt/wsl/workspace/obsidian-tars
-npm run build
-./scripts/setup-test-vault.sh
+pnpm --filter obsidian-tars build
+packages/plugin/scripts/setup-test-vault.sh
 ```
 
 Then in Obsidian:
@@ -279,11 +281,11 @@ Use symlink for live development:
 rm -rf ~/obsidian-test-vault/.obsidian/plugins/obsidian-tars
 
 # Create symlink
-ln -s /mnt/wsl/workspace/obsidian-tars ~/obsidian-test-vault/.obsidian/plugins/obsidian-tars
+ln -s /mnt/wsl/workspace/obsidian-tars/packages/plugin ~/obsidian-test-vault/.obsidian/plugins/obsidian-tars
 
 # Run dev mode
 cd /mnt/wsl/workspace/obsidian-tars
-npm run dev
+pnpm --filter obsidian-tars dev
 ```
 EOF
 

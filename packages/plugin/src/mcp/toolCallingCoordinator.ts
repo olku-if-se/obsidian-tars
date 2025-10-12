@@ -9,8 +9,8 @@
  * 5. Continue until LLM generates final text response
  */
 
-import pLimit from 'p-limit'
 import type { Editor, EditorPosition } from 'obsidian'
+import pLimit from 'p-limit'
 import { stringify as stringifyYAML } from 'yaml'
 
 import { createLogger } from '../logger'
@@ -285,12 +285,7 @@ export class ToolCallingCoordinator {
 		// Check cache
 		let cachedResult: CachedToolResult | null = null
 		if (documentCache && editor) {
-			cachedResult = documentCache.findExistingResult(
-				editor,
-				serverInfo.id,
-				toolCall.name,
-				toolCall.arguments || {}
-			)
+			cachedResult = documentCache.findExistingResult(editor, serverInfo.id, toolCall.name, toolCall.arguments || {})
 		}
 
 		// Handle cache decision
@@ -357,7 +352,8 @@ export class ToolCallingCoordinator {
 				tool: toolCall.name,
 				executionDuration: result.executionDuration,
 				contentType: result.contentType,
-				contentLength: typeof result.content === 'string' ? result.content.length : JSON.stringify(result.content).length
+				contentLength:
+					typeof result.content === 'string' ? result.content.length : JSON.stringify(result.content).length
 			})
 
 			// Notify about tool result

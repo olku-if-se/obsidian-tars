@@ -1,7 +1,8 @@
 <h2 align="center">
     <p>
         <b>English</b> |
-        <a href="https://github.com/TarsLab/obsidian-tars/blob/main/README_zh.md">中文</a>
+        <a href="https://github.com/TarsLab/obsidian-tars/blob/main/README_zh.md">中文</a> |
+        <a href="https://github.com/TarsLab/obsidian-tars/blob/main/CONTRIBUTING.md">Contributing</a>
     </p>
 </h2>
 

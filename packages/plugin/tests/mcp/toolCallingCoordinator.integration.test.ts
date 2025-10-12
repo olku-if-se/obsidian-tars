@@ -1,13 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import {
-	type Message,
-	type ProviderAdapter,
-	ToolCallingCoordinator
-} from '../../src/mcp/toolCallingCoordinator.js'
-import type { ToolExecutionResult } from '../../src/mcp/types.js'
-import type { CachedToolResult } from '../../src/mcp/toolResultCache.js'
+import { type Message, type ProviderAdapter, ToolCallingCoordinator } from '../../src/mcp/toolCallingCoordinator.js'
 import type { ToolCall, ToolResponseParser } from '../../src/mcp/toolResponseParser'
+import type { CachedToolResult } from '../../src/mcp/toolResultCache.js'
+import type { ToolExecutionResult } from '../../src/mcp/types.js'
 import { DocumentWriteLock } from '../../src/utils/documentWriteLock'
 
 interface StubToolExecutor {
@@ -65,7 +61,7 @@ class MockEditor {
 			remaining -= length + 1
 		}
 		const lastLine = Math.max(0, lines.length - 1)
-		return { line: lastLine, ch: (lines[lastLine]?.length ?? 0) }
+		return { line: lastLine, ch: lines[lastLine]?.length ?? 0 }
 	}
 }
 
@@ -213,11 +209,9 @@ describe('ToolCallingCoordinator integration: markdown persistence', () => {
 > \`\`\`
 `
 
-			const prompt = vi
-				.fn<
-					(toolName: string, cached: CachedToolResult) => Promise<'re-execute' | 'use-cached' | 'cancel'>
-				>()
-				.mockResolvedValue('use-cached')
+		const prompt = vi
+			.fn<(toolName: string, cached: CachedToolResult) => Promise<'re-execute' | 'use-cached' | 'cancel'>>()
+			.mockResolvedValue('use-cached')
 
 		for await (const _chunk of coordinator.generateWithTools(
 			[{ role: 'user', content: 'Weather?' }],

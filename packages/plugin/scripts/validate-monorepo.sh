@@ -1,7 +1,15 @@
 #!/bin/bash
+# Validate monorepo structure - Run from anywhere in the monorepo
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MONOREPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
+
 echo "🔍 Validating monorepo structure..."
+echo "Monorepo root: $MONOREPO_ROOT"
+echo ""
+
+cd "$MONOREPO_ROOT"
 
 # Check pnpm version
 echo "Checking pnpm..."
@@ -23,4 +31,13 @@ echo "Checking turbo configuration..."
 echo "Checking packages directory..."
 [ -d "packages/plugin" ] || (echo "❌ packages/plugin missing" && exit 1)
 
+# Validate package.json
+echo "Checking package.json..."
+[ -f "packages/plugin/package.json" ] || (echo "❌ packages/plugin/package.json missing" && exit 1)
+
+# Run a quick test build
+echo "Running test build..."
+pnpm --filter obsidian-tars build > /dev/null 2>&1 || (echo "❌ Build failed" && exit 1)
+
+echo ""
 echo "✅ Monorepo structure validated successfully!"

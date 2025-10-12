@@ -32,9 +32,7 @@ export const formatUtilitySectionCallout = (info: UtilitySectionInfo): string =>
 	const serverSummaries = (info.servers || [])
 		.map((server) => {
 			const name = normalizeText(server.serverName, 'Server')
-			const tools = (server.toolNames || [])
-				.map((tool) => tool.trim())
-				.filter((tool) => tool.length > 0)
+			const tools = (server.toolNames || []).map((tool) => tool.trim()).filter((tool) => tool.length > 0)
 			const toolList = tools.length > 0 ? tools.join(', ') : 'none'
 			return `${name}:(${toolList})`
 		})

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-
+import type { CommandDisplayModeValue } from '../../src/mcp/displayMode'
 import {
 	CommandDisplayMode,
 	commandToRemoteUrl,
@@ -7,7 +7,6 @@ import {
 	normalizeDisplayMode,
 	remoteUrlToCommand
 } from '../../src/mcp/displayMode'
-import type { CommandDisplayModeValue } from '../../src/mcp/displayMode'
 import type { MCPServerConfig } from '../../src/mcp/types'
 
 describe('remoteUrlToCommand', () => {

@@ -1,9 +1,15 @@
 #!/bin/bash
 # Build script - compiles and copies all deliverables to dist/
+# Monorepo version: runs from packages/plugin directory
 
 set -e
 
 echo "🏗️  Building Obsidian Tars plugin..."
+
+# Ensure we're in the plugin directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PLUGIN_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$PLUGIN_DIR"
 
 # Create dist directory
 mkdir -p dist

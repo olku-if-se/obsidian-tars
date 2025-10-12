@@ -6,59 +6,82 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Obsidian Tars** is an Obsidian plugin that provides AI text generation through tag-based conversations. Users interact with multiple LLM providers (Claude, OpenAI, DeepSeek, Gemini, etc.) by typing tags like `#User :` and `#Claude :` in their notes. The plugin also features Model Context Protocol (MCP) integration for AI tool calling.
 
+## Monorepo Structure
+
+This project uses a **monorepo** setup with **pnpm** and **Turborepo**:
+
+```
+obsidian-tars/                  # Monorepo root
+├── packages/
+│   └── plugin/                 # Main Obsidian plugin
+│       ├── src/                # Source code
+│       ├── tests/              # Test files
+│       ├── scripts/            # Build scripts
+│       └── package.json        # Plugin dependencies
+├── pnpm-workspace.yaml         # Workspace configuration
+├── turbo.json                  # Turborepo pipeline
+├── biome.json                  # Code quality config
+└── package.json                # Root package.json
+```
+
 ## Development Commands
+
+**Note**: All commands can be run from the monorepo root.
 
 ### Build and Run
 ```bash
 # Development with watch mode (auto-rebuild on changes)
-npm run dev
+pnpm dev
+# Or target plugin specifically:
+pnpm --filter obsidian-tars dev
 
 # Production build (TypeScript check + esbuild + copy files to dist/)
-npm run build
+pnpm build
+# Or target plugin:
+pnpm --filter obsidian-tars build
 
 # Type check only
-tsc -noEmit -skipLibCheck
+pnpm typecheck:build
+pnpm typecheck:tests
 ```
 
 ### Code Quality
 ```bash
-# Lint with Biome (replaced ESLint)
-npm run lint
+# Lint with Biome (from root)
+pnpm lint
 
 # Format code with Biome
-npm run format
+pnpm format
 
 # Check and auto-fix issues (lint + format)
-npm run check
+pnpm check
 ```
 
 ### Testing
 ```bash
 # Run all tests
-npm test
+pnpm test
 
 # Run with coverage report
-npm run test:coverage
+pnpm test:coverage
 
 # Watch mode with UI
-npm run test:watch
+pnpm test:watch
 
 # Run specific test file
-npx vitest run tests/mcp/managerMCPUse.test.ts
+pnpm --filter obsidian-tars test -- tests/mcp/managerMCPUse.test.ts
 ```
 
 ### Quick Testing Workflow
 The project includes shell scripts for rapid testing:
 ```bash
-# Build plugin and copy to test vault
-./scripts/build.sh
-./scripts/setup-test-vault.sh
-
-# Launch Obsidian with test vault
-./scripts/launch-obsidian.sh
-
 # Complete workflow (build + setup + launch)
-./scripts/test-workflow.sh
+packages/plugin/scripts/test-workflow.sh
+
+# Or step by step:
+pnpm --filter obsidian-tars build
+packages/plugin/scripts/setup-test-vault.sh
+packages/plugin/scripts/launch-obsidian.sh
 ```
 
 After launching Obsidian, enable the plugin in Settings → Community plugins → Tars.
@@ -140,9 +163,9 @@ After launching Obsidian, enable the plugin in Settings → Community plugins �
 ## Important Patterns and Conventions
 
 ### Provider Integration
-- When adding a new provider, create `src/providers/providerName.ts` with a `Vendor` export
-- Register in `settings.ts` under `availableVendors`
-- If provider supports native tool calling, add adapter in `src/mcp/adapters/` and update `providerToolIntegration.ts`
+- When adding a new provider, create `packages/plugin/src/providers/providerName.ts` with a `Vendor` export
+- Register in `packages/plugin/src/settings.ts` under `availableVendors`
+- If provider supports native tool calling, add adapter in `packages/plugin/src/mcp/adapters/` and update `providerToolIntegration.ts`
 
 ### MCP Tool Execution Context
 - All tool executions tracked per document (`documentPath`) for session limits
@@ -213,31 +236,33 @@ async function* sendRequest(messages, controller): AsyncGenerator<string> {
 - Look for `[MCP]` prefixed logs in console for detailed traces
 
 ### Running Tests
-- All tests under `tests/` directory
-- Use `npm test` for quick validation
-- Use `npm run test:coverage` to verify test coverage before PRs
-- Integration tests in `tests/integration/` cover cross-module flows
+- All tests under `packages/plugin/tests/` directory
+- Use `pnpm test` for quick validation
+- Use `pnpm test:coverage` to verify test coverage before PRs
+- Integration tests in `packages/plugin/tests/integration/` cover cross-module flows
 
 ### Build Output
-- esbuild bundles `src/main.ts` → `dist/main.js`
-- Build script copies `manifest.json` and `styles.css` to `dist/`
-- Plugin loaded from `dist/` directory in Obsidian vault
+- esbuild bundles `packages/plugin/src/main.ts` → `packages/plugin/dist/main.js`
+- Build script copies `manifest.json` and `styles.css` to `packages/plugin/dist/`
+- Plugin loaded from `packages/plugin/dist/` directory in Obsidian vault
 
 ## Key Files Reference
 
+**Note**: All source files are under `packages/plugin/`
+
 | File | Purpose |
 |------|---------|
-| `src/main.ts` | Plugin entry point, orchestrates initialization |
-| `src/editor.ts` | Core text generation logic, message parsing |
-| `src/suggest.ts` | Tag auto-completion (EditorSuggest) |
-| `src/settings.ts` | Settings schema and defaults |
-| `src/settingTab.ts` | Settings UI rendering |
-| `src/mcp/managerMCPUse.ts` | MCP server lifecycle manager |
-| `src/mcp/executor.ts` | Tool execution with limits and cancellation |
-| `src/mcp/toolCallingCoordinator.ts` | Multi-turn AI tool calling orchestration |
-| `src/mcp/providerToolIntegration.ts` | Inject MCP tools into provider requests |
-| `src/statusBarManager.ts` | Status bar display (character count, MCP status) |
-| `src/commands/asstTag.ts` | Assistant tag command (triggers AI generation) |
+| `packages/plugin/src/main.ts` | Plugin entry point, orchestrates initialization |
+| `packages/plugin/src/editor.ts` | Core text generation logic, message parsing |
+| `packages/plugin/src/suggest.ts` | Tag auto-completion (EditorSuggest) |
+| `packages/plugin/src/settings.ts` | Settings schema and defaults |
+| `packages/plugin/src/settingTab.ts` | Settings UI rendering |
+| `packages/plugin/src/mcp/managerMCPUse.ts` | MCP server lifecycle manager |
+| `packages/plugin/src/mcp/executor.ts` | Tool execution with limits and cancellation |
+| `packages/plugin/src/mcp/toolCallingCoordinator.ts` | Multi-turn AI tool calling orchestration |
+| `packages/plugin/src/mcp/providerToolIntegration.ts` | Inject MCP tools into provider requests |
+| `packages/plugin/src/statusBarManager.ts` | Status bar display (character count, MCP status) |
+| `packages/plugin/src/commands/asstTag.ts` | Assistant tag command (triggers AI generation) |
 
 ## MCP Code Block Syntax
 

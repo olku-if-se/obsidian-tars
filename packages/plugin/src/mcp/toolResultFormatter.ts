@@ -119,7 +119,9 @@ export function formatToolResultAsMarkdown(result: ToolExecutionResult, options:
 	// Build callout
 	const calloutSymbol = collapsible ? '-' : '+'
 	const cacheIndicator = result.cached ? ' 📦' : ''
-	const calloutLines: string[] = [`> [!tool]${calloutSymbol} Tool Result (${result.executionDuration}ms)${cacheIndicator}`]
+	const calloutLines: string[] = [
+		`> [!tool]${calloutSymbol} Tool Result (${result.executionDuration}ms)${cacheIndicator}`
+	]
 
 	if (showMetadata) {
 		calloutLines.push(`> ${metadataLine}`)

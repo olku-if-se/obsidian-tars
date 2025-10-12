@@ -234,9 +234,7 @@ export default class TarsPlugin extends Plugin {
 					try {
 						const stats = this.mcpExecutor.getCacheStats()
 						this.mcpExecutor.clearCache()
-						new Notice(
-							`Tool result cache cleared (${stats.size} entries removed, ${stats.hits} previous hits)`
-						)
+						new Notice(`Tool result cache cleared (${stats.size} entries removed, ${stats.hits} previous hits)`)
 						logger.info('mcp tool result cache cleared', {
 							clearedEntries: stats.size,
 							previousHits: stats.hits,
@@ -504,7 +502,6 @@ export default class TarsPlugin extends Plugin {
 			...DEFAULT_SETTINGS.uiState,
 			...this.settings.uiState
 		}
-
 	}
 
 	async saveSettings() {
@@ -568,7 +565,7 @@ export default class TarsPlugin extends Plugin {
 					size: this.mcpExecutor.getCacheStats().size,
 					hitRate: this.mcpExecutor.getCacheHitRate(),
 					oldestEntryAge: this.mcpExecutor.getCacheStats().oldestEntryAge
-			  }
+				}
 			: undefined
 
 		this.statusBarManager.setMCPStatus({

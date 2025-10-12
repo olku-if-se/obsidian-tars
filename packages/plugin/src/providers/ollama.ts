@@ -17,8 +17,7 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 			documentWriteLock,
 			beforeToolExecution,
 			...optionsExcludingParams
-		} =
-			settings
+		} = settings
 		const options = { ...optionsExcludingParams, ...parameters }
 		const { baseURL, model, ...remains } = options
 

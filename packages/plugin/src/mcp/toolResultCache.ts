@@ -229,7 +229,6 @@ export class DocumentToolCache {
 			if (trimmed.toLowerCase() === 'results:') {
 				resultsSection = true
 				resultStartLine = absoluteLine
-				continue
 			}
 		}
 

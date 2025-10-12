@@ -51,10 +51,13 @@ export class ResultCache {
 		// Sort parameters by key to ensure consistent hashing regardless of order
 		const sortedParams = Object.keys(parameters)
 			.sort()
-			.reduce((acc, key) => {
-				acc[key] = parameters[key]
-				return acc
-			}, {} as Record<string, unknown>)
+			.reduce(
+				(acc, key) => {
+					acc[key] = parameters[key]
+					return acc
+				},
+				{} as Record<string, unknown>
+			)
 
 		const data = JSON.stringify({
 			serverId,

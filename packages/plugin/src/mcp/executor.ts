@@ -110,46 +110,46 @@ export class ToolExecutor {
 			cachedResult = await this.resultCache.get(request.serverId, request.toolName, request.parameters)
 		}
 
-			const sessionLimit = this.tracker.sessionLimit
-			const sessionLimitReached = sessionLimit !== -1 && this.isSessionLimitReached(documentPath)
+		const sessionLimit = this.tracker.sessionLimit
+		const sessionLimitReached = sessionLimit !== -1 && this.isSessionLimitReached(documentPath)
 
-			if (sessionLimitReached) {
-				const decision = await this.sessionNotifications.onLimitReached(
-					documentPath,
-					sessionLimit,
-					documentState.totalSessionCount
-				)
+		if (sessionLimitReached) {
+			const decision = await this.sessionNotifications.onLimitReached(
+				documentPath,
+				sessionLimit,
+				documentState.totalSessionCount
+			)
 
-				if (decision === 'continue') {
-					this.resetDocumentSession(documentPath, { emitNotice: true })
-					documentState = this.setCurrentDocument(documentPath)
-				} else {
-					throw new ExecutionLimitError('session', documentState.totalSessionCount, sessionLimit, {
-						documentPath
-					})
-				}
-			}
-
-			if (sessionLimit !== -1 && !this.hasSessionCapacityFor(documentPath)) {
-				throw new ExecutionLimitError('session', this.getDocumentSessionCount(documentPath), sessionLimit, {
+			if (decision === 'continue') {
+				this.resetDocumentSession(documentPath, { emitNotice: true })
+				documentState = this.setCurrentDocument(documentPath)
+			} else {
+				throw new ExecutionLimitError('session', documentState.totalSessionCount, sessionLimit, {
 					documentPath
 				})
 			}
+		}
 
-			if (this.tracker.stopped) {
-				throw new ExecutionLimitError('session', this.getDocumentSessionCount(documentPath), sessionLimit, {
-					documentPath,
-					reason: 'stopped'
-				})
-			}
+		if (sessionLimit !== -1 && !this.hasSessionCapacityFor(documentPath)) {
+			throw new ExecutionLimitError('session', this.getDocumentSessionCount(documentPath), sessionLimit, {
+				documentPath
+			})
+		}
 
-			if (this.tracker.activeExecutions.size >= this.tracker.concurrentLimit) {
-				throw new ExecutionLimitError('concurrent', this.tracker.activeExecutions.size, this.tracker.concurrentLimit, {
-					documentPath
-				})
-			}
+		if (this.tracker.stopped) {
+			throw new ExecutionLimitError('session', this.getDocumentSessionCount(documentPath), sessionLimit, {
+				documentPath,
+				reason: 'stopped'
+			})
+		}
 
-			// If we have a cached result, return it without executing
+		if (this.tracker.activeExecutions.size >= this.tracker.concurrentLimit) {
+			throw new ExecutionLimitError('concurrent', this.tracker.activeExecutions.size, this.tracker.concurrentLimit, {
+				documentPath
+			})
+		}
+
+		// If we have a cached result, return it without executing
 		if (cachedResult) {
 			// Still increment session count for cache hits
 			this.incrementSessionCount(documentPath)

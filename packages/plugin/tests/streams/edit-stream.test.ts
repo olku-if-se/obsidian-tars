@@ -254,10 +254,10 @@ describe('Concurrency gaps', () => {
 			await stream.applyChange('actor-a', 'anchorA', 'aaa')
 
 			// AND: the deferred insert resumes using its stale offset
-				if (!deferredInsert) {
-					throw new Error('Deferred insert callback should have been captured')
-				}
-				deferredInsert()
+			if (!deferredInsert) {
+				throw new Error('Deferred insert callback should have been captured')
+			}
+			deferredInsert()
 
 			// THEN: the final text reflects the stale offset instead of the anchor-aware position
 			const actual = stream.getText()
