@@ -1,0 +1,88 @@
+import { forwardRef, useState } from 'react'
+import styles from './Slider.module.css'
+
+interface SliderProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
+	label?: string
+	description?: string
+	min?: number
+	max?: number
+	step?: number
+	value?: number
+	showValue?: boolean
+	valueFormatter?: (value: number) => string
+}
+
+export const Slider = forwardRef<HTMLInputElement, SliderProps>(
+	(
+		{
+			label,
+			description,
+			min = 0,
+			max = 100,
+			step = 1,
+			value: controlledValue,
+			showValue = false,
+			valueFormatter = (value) => value.toString(),
+			onChange,
+			className,
+			...props
+		},
+		ref
+	) => {
+		const [internalValue, setInternalValue] = useState(controlledValue || min)
+		const isControlled = controlledValue !== undefined
+		const value = isControlled ? controlledValue : internalValue
+
+		const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+			const newValue = Number(event.target.value)
+
+			if (!isControlled) {
+				setInternalValue(newValue)
+			}
+
+			if (onChange) {
+				onChange(event)
+			}
+		}
+
+		const sliderId = `slider-${Math.random().toString(36).substr(2, 9)}`
+
+		return (
+			<div className={`${styles.slider} ${className || ''}`}>
+				{label && (
+					<div className={styles.header}>
+						<label className={styles.label} htmlFor={sliderId}>
+							{label}
+						</label>
+						{showValue && <span className={styles.value}>{valueFormatter(value)}</span>}
+					</div>
+				)}
+				<div className={styles.track}>
+					<input
+						ref={ref}
+						id={sliderId}
+						type='range'
+						className={styles.input}
+						min={min}
+						max={max}
+						step={step}
+						value={value}
+						onChange={handleChange}
+						{...props}
+					/>
+					<div className={styles.trackBackground}>
+						<div
+							className={styles.trackFill}
+							style={{
+								width: `${((value - min) / (max - min)) * 100}%`
+							}}
+						/>
+					</div>
+				</div>
+				{description && <div className={styles.description}>{description}</div>}
+			</div>
+		)
+	}
+)
+
+Slider.displayName = 'Slider'

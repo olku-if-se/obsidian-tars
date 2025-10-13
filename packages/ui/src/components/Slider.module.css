@@ -1,0 +1,134 @@
+.slider {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-2-1);
+}
+
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.label {
+	font-size: var(--font-ui-medium);
+	font-weight: var(--font-medium);
+	color: var(--text-normal);
+	line-height: 1.4;
+}
+
+.value {
+	font-size: var(--font-ui-medium);
+	font-weight: var(--font-semibold);
+	color: var(--interactive-accent);
+	min-width: 3ch;
+	text-align: right;
+}
+
+.track {
+	position: relative;
+	height: 20px;
+	display: flex;
+	align-items: center;
+}
+
+.input {
+	position: absolute;
+	width: 100%;
+	height: 4px;
+	background: transparent;
+	cursor: pointer;
+	z-index: 2;
+	margin: 0;
+	padding: 0;
+	-webkit-appearance: none;
+	appearance: none;
+	outline: none;
+	border: none;
+}
+
+.input::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 16px;
+	height: 16px;
+	background: var(--interactive-accent);
+	border-radius: 50%;
+	cursor: pointer;
+	border: 2px solid var(--background-primary);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+	transition: all 0.2s ease;
+}
+
+.input::-webkit-slider-thumb:hover {
+	transform: scale(1.1);
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.input::-moz-range-thumb {
+	appearance: none;
+	width: 16px;
+	height: 16px;
+	background: var(--interactive-accent);
+	border-radius: 50%;
+	cursor: pointer;
+	border: 2px solid var(--background-primary);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+	transition: all 0.2s ease;
+}
+
+.input::-moz-range-thumb:hover {
+	transform: scale(1.1);
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.input:focus::-webkit-slider-thumb {
+	outline: 2px solid var(--interactive-accent);
+	outline-offset: 1px;
+}
+
+.input:focus::-moz-range-thumb {
+	outline: 2px solid var(--interactive-accent);
+	outline-offset: 1px;
+}
+
+.input:disabled {
+	cursor: not-allowed;
+	pointer-events: none;
+}
+
+.input:disabled::-webkit-slider-thumb {
+	background: var(--text-muted);
+	cursor: not-allowed;
+}
+
+.input:disabled::-moz-range-thumb {
+	background: var(--text-muted);
+	cursor: not-allowed;
+}
+
+.trackBackground {
+	position: absolute;
+	width: 100%;
+	height: 4px;
+	background-color: var(--background-modifier-border);
+	border-radius: 2px;
+	z-index: 1;
+}
+
+.trackFill {
+	height: 100%;
+	background-color: var(--interactive-accent);
+	border-radius: 2px;
+	transition: width 0.2s ease;
+}
+
+.input:disabled ~ .trackBackground .trackFill {
+	background-color: var(--text-muted);
+}
+
+.description {
+	font-size: var(--font-ui-smaller);
+	color: var(--text-muted);
+	line-height: 1.4;
+}

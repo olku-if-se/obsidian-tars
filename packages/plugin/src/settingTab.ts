@@ -328,6 +328,134 @@ export class TarsSettingTab extends PluginSettingTab {
 				})
 			)
 
+		// React UI Feature Flags
+		containerEl.createEl('br')
+		const reactSectionContent = this.createCollapsibleSection(
+			containerEl,
+			'React UI Features (Experimental)',
+			false,
+			async (open) => {
+				await this.plugin.saveSettings()
+			}
+		)
+
+		new Setting(reactSectionContent)
+			.setName('React Settings Tab')
+			.setDesc('Use React-based settings interface (experimental)')
+			.addToggle((toggle) =>
+				toggle.setValue(this.plugin.settings.features?.reactSettingsTab ?? false).onChange(async (value) => {
+					if (!this.plugin.settings.features) {
+						this.plugin.settings.features = {
+							reactSettingsTab: false,
+							reactStatusBar: false,
+							reactModals: false,
+							reactMcpUI: false
+						}
+					}
+					this.plugin.settings.features.reactSettingsTab = value
+					await this.plugin.saveSettings()
+
+					// Show notice about requiring restart
+					new Notice('Changes to React features will take effect after restarting Obsidian.', 5000)
+				})
+			)
+
+		new Setting(reactSectionContent)
+			.setName('React Status Bar')
+			.setDesc('Use React-based status bar (experimental)')
+			.addToggle((toggle) =>
+				toggle.setValue(this.plugin.settings.features?.reactStatusBar ?? false).onChange(async (value) => {
+					if (!this.plugin.settings.features) {
+						this.plugin.settings.features = {
+							reactSettingsTab: false,
+							reactStatusBar: false,
+							reactModals: false,
+							reactMcpUI: false
+						}
+					}
+					this.plugin.settings.features.reactStatusBar = value
+					await this.plugin.saveSettings()
+
+					// Show notice about requiring restart
+					new Notice('Changes to React features will take effect after restarting Obsidian.', 5000)
+				})
+			)
+
+		new Setting(reactSectionContent)
+			.setName('React Modals')
+			.setDesc('Use React-based modal dialogs (experimental)')
+			.addToggle((toggle) =>
+				toggle.setValue(this.plugin.settings.features?.reactModals ?? false).onChange(async (value) => {
+					if (!this.plugin.settings.features) {
+						this.plugin.settings.features = {
+							reactSettingsTab: false,
+							reactStatusBar: false,
+							reactModals: false,
+							reactMcpUI: false
+						}
+					}
+					this.plugin.settings.features.reactModals = value
+					await this.plugin.saveSettings()
+
+					// Show notice about requiring restart
+					new Notice('Changes to React features will take effect after restarting Obsidian.', 5000)
+				})
+			)
+
+		new Setting(reactSectionContent)
+			.setName('React MCP UI')
+			.setDesc('Use React-based MCP interface components (experimental)')
+			.addToggle((toggle) =>
+				toggle.setValue(this.plugin.settings.features?.reactMcpUI ?? false).onChange(async (value) => {
+					if (!this.plugin.settings.features) {
+						this.plugin.settings.features = {
+							reactSettingsTab: false,
+							reactStatusBar: false,
+							reactModals: false,
+							reactMcpUI: false
+						}
+					}
+					this.plugin.settings.features.reactMcpUI = value
+					await this.plugin.saveSettings()
+
+					// Show notice about requiring restart
+					new Notice('Changes to React features will take effect after restarting Obsidian.', 5000)
+				})
+			)
+
+		new Setting(reactSectionContent)
+			.setName('Enable All React Features')
+			.setDesc('Enable all React UI features (for testing)')
+			.addButton((button) =>
+				button
+					.setButtonText('Enable All')
+					.setCta()
+					.onClick(async () => {
+						this.plugin.settings.features = {
+							reactSettingsTab: true,
+							reactStatusBar: true,
+							reactModals: true,
+							reactMcpUI: true
+						}
+						await this.plugin.saveSettings()
+						this.display()
+						new Notice('All React features enabled. Restart Obsidian for changes to take effect.', 5000)
+					})
+			)
+			.addButton((button) =>
+				button.setButtonText('Disable All').onClick(async () => {
+					this.plugin.settings.features = {
+						reactSettingsTab: false,
+						reactStatusBar: false,
+						reactModals: false,
+						reactMcpUI: false
+					}
+					await this.plugin.saveSettings()
+					this.display()
+					new Notice('All React features disabled. Restart Obsidian for changes to take effect.', 5000)
+				})
+			)
+
 		// MCP Server Integration Settings
 		containerEl.createEl('br')
 		const mcpSectionContent = this.createCollapsibleSection(

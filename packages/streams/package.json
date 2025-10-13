@@ -1,52 +1,52 @@
 {
-  "name": "@tars/streams",
-  "version": "3.5.0",
-  "description": "Concurrent, anchor-aware text editing streams with piece table implementation",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "test": "vitest run",
-    "test:watch": "vitest --ui --watch",
-    "test:coverage": "vitest run --coverage",
-    "lint": "biome lint .",
-    "format": "biome format --write .",
-    "check": "biome check --write .",
-    "typecheck": "tsc --noEmit"
-  },
-  "keywords": [
-    "text-stream",
-    "piece-table",
-    "concurrent-editing",
-    "anchor",
-    "text-buffer",
-    "obsidian"
-  ],
-  "author": "C Jack<https://github.com/ae86jack>",
-  "license": "MIT",
-  "dependencies": {
-    "async-mutex": "^0.5.0"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "2.2.6",
-    "@types/node": "^24.6.1",
-    "@vitest/coverage-v8": "^3.2.4",
-    "@vitest/ui": "^3.2.4",
-    "tsup": "^8.3.5",
-    "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
-  },
-  "files": [
-    "dist",
-    "src"
-  ],
-  "engines": {
-    "node": ">=22.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ae86jack/obsidian-tars.git",
-    "directory": "packages/streams"
-  }
+	"name": "@tars/streams",
+	"version": "3.5.0",
+	"description": "Concurrent, anchor-aware text editing streams with piece table implementation",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"test": "vitest run",
+		"test:watch": "vitest --ui --watch",
+		"test:coverage": "vitest run --coverage",
+		"lint": "biome lint .",
+		"format": "biome format --write .",
+		"check": "biome check --write .",
+		"typecheck": "tsc --noEmit"
+	},
+	"keywords": [
+		"text-stream",
+		"piece-table",
+		"concurrent-editing",
+		"anchor",
+		"text-buffer",
+		"obsidian"
+	],
+	"author": "C Jack<https://github.com/ae86jack>",
+	"license": "MIT",
+	"dependencies": {
+		"async-mutex": "^0.5.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.2.6",
+		"@types/node": "^24.6.1",
+		"@vitest/coverage-v8": "^3.2.4",
+		"@vitest/ui": "^3.2.4",
+		"tsup": "^8.3.5",
+		"typescript": "^5.9.3",
+		"vitest": "^3.2.4"
+	},
+	"files": [
+		"dist",
+		"src"
+	],
+	"engines": {
+		"node": ">=22.0.0"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ae86jack/obsidian-tars.git",
+		"directory": "packages/streams"
+	}
 }

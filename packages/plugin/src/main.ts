@@ -1,5 +1,7 @@
 import { type Editor, Notice, Plugin } from 'obsidian'
 import { createLogger } from './logger'
+import { ReactBridge } from './bridge'
+import { shouldInitializeReactBridge } from './featureFlags'
 
 const logger = createLogger('plugin')
 
@@ -101,6 +103,9 @@ export default class TarsPlugin extends Plugin {
 	promptCmdIds: string[] = []
 	tagLowerCaseMap: Map<string, Omit<TagEntry, 'replacement'>> = new Map()
 	aborterInstance: AbortController | null = null
+	// React Integration
+	reactBridge: ReactBridge | null = null
+	reactStatusBarElement: HTMLElement | null = null
 	// MCP Integration
 	mcpManager: MCPServerManager | null = null
 	mcpExecutor: ToolExecutor | null = null
@@ -111,6 +116,32 @@ export default class TarsPlugin extends Plugin {
 		await this.loadSettings()
 
 		logger.info('loading tars plugin')
+
+		// Initialize React Bridge for UI components (if any React features are enabled)
+		if (ReactBridge.isReactAvailable() && shouldInitializeReactBridge(this.settings)) {
+			this.reactBridge = new ReactBridge(this.app)
+			const enabledFeatures = this.settings.features
+				? Object.entries(this.settings.features)
+						.filter(([, enabled]) => enabled)
+						.map(([feature]) => feature)
+				: []
+			logger.info('React bridge initialized', { enabledFeatures })
+
+			// Add React status bar indicator
+			this.addReactStatusBarIndicator(enabledFeatures)
+
+			// Add test command for React bridge
+			this.addCommand({
+				id: 'test-react-bridge',
+				name: 'Test React Bridge',
+				callback: () => {
+					this.testReactBridge()
+				}
+			})
+		} else {
+			const reason = ReactBridge.isReactAvailable() ? 'no React features enabled' : 'React not available'
+			logger.info(`React bridge disabled: ${reason}`)
+		}
 
 		// Initialize StatusBar early so MCP components can log errors
 		const statusBarItem = this.addStatusBarItem()
@@ -386,6 +417,18 @@ export default class TarsPlugin extends Plugin {
 	async onunload() {
 		this.statusBarManager?.dispose()
 
+		// Cleanup React Bridge
+		if (this.reactBridge) {
+			this.reactBridge.unmountAll()
+			logger.info('React bridge cleaned up')
+		}
+
+		// Cleanup React status bar
+		if (this.reactStatusBarElement) {
+			this.reactStatusBarElement.remove()
+			this.reactStatusBarElement = null
+		}
+
 		// Clear health check timer
 		if (this.mcpHealthCheckInterval) {
 			clearInterval(this.mcpHealthCheckInterval)
@@ -400,6 +443,57 @@ export default class TarsPlugin extends Plugin {
 			} catch (error) {
 				logger.error('error shutting down mcp integration', error)
 			}
+		}
+	}
+
+	/**
+	 * Test the React bridge with a simple Hello World component
+	 */
+	private testReactBridge() {
+		if (!this.reactBridge) {
+			new Notice('React bridge not available')
+			return
+		}
+
+		try {
+			const { HelloTest } = require('./bridge')
+
+			// Create a simple modal to test the bridge
+			const { Modal } = require('obsidian')
+
+			class ReactTestModal extends Modal {
+				bridge: ReactBridge
+
+				constructor(app: any, bridge: ReactBridge) {
+					super(app)
+					this.bridge = bridge
+				}
+
+				onOpen() {
+					const { containerEl } = this
+					containerEl.empty()
+
+					// Mount React component
+					this.bridge.mount(containerEl, HelloTest, {
+						message: 'React bridge test successful! 🎉',
+						onButtonClick: () => {
+							new Notice('React button clicked! This proves the bridge works.')
+						}
+					})
+				}
+
+				onClose() {
+					// Unmount React component
+					this.bridge.unmount(this.containerEl)
+					super.onClose()
+				}
+			}
+
+			new ReactTestModal(this.app, this.reactBridge).open()
+			logger.info('React bridge test modal opened')
+		} catch (error) {
+			logger.error('Failed to test React bridge', error)
+			new Notice('Failed to test React bridge. Check console for details.')
 		}
 	}
 
@@ -789,6 +883,72 @@ export default class TarsPlugin extends Plugin {
 		} else {
 			const endOffset = editor.posToOffset(cursor) + template.length
 			editor.setCursor(editor.offsetToPos(endOffset))
+		}
+	}
+
+	/**
+	 * Add React version indicator to status bar
+	 */
+	private addReactStatusBarIndicator(enabledFeatures: string[]) {
+		if (!this.reactBridge) return
+
+		try {
+			// Get React version
+			const reactVersion = require('react/package.json').version
+
+			// Create status bar element
+			this.reactStatusBarElement = this.addStatusBarItem()
+
+			// Style the React indicator
+			this.reactStatusBarElement.style.cssText = `
+				display: flex;
+				align-items: center;
+				gap: 4px;
+				padding: 2px 8px;
+				background-color: var(--interactive-accent);
+				color: var(--text-on-accent);
+				border-radius: 12px;
+				font-size: 11px;
+				font-family: var(--font-monospace);
+				font-weight: 500;
+				cursor: pointer;
+				transition: opacity 0.2s ease;
+			`
+
+			// Add React logo and version
+			this.reactStatusBarElement.innerHTML = `
+				<span>⚛️</span>
+				<span>React ${reactVersion}</span>
+				<span style="
+					background-color: var(--background-modifier-error);
+					color: white;
+					border-radius: 6px;
+					padding: 1px 3px;
+					font-size: 9px;
+					margin-left: 2px;
+				">BETA</span>
+			`
+
+			// Add tooltip
+			this.reactStatusBarElement.title = `React ${reactVersion} active\nFeatures: ${enabledFeatures.join(', ')}\nClick to test React UI`
+
+			// Add click handler to open test modal
+			this.reactStatusBarElement.addEventListener('click', () => {
+				this.testReactBridge()
+			})
+
+			// Add hover effect
+			this.reactStatusBarElement.addEventListener('mouseenter', () => {
+				this.reactStatusBarElement!.style.opacity = '0.8'
+			})
+
+			this.reactStatusBarElement.addEventListener('mouseleave', () => {
+				this.reactStatusBarElement!.style.opacity = '1'
+			})
+
+			logger.info('React status bar indicator added', { reactVersion, enabledFeatures })
+		} catch (error) {
+			logger.error('Failed to create React status bar indicator', error)
 		}
 	}
 }

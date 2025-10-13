@@ -1,62 +1,62 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Button } from '../src/components/Button';
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { Button } from '../src/components/Button'
 
 const meta = {
 	title: 'Components/Button',
 	component: Button,
 	parameters: {
-		layout: 'padded',
+		layout: 'padded'
 	},
-	tags: ['autodocs'],
-} satisfies Meta<typeof Button>;
+	tags: ['autodocs']
+} satisfies Meta<typeof Button>
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Default: Story = {
 	args: {
-		children: 'Click me',
-	},
-};
+		children: 'Click me'
+	}
+}
 
 export const Primary: Story = {
 	args: {
 		children: 'Primary Button',
-		variant: 'primary',
-	},
-};
+		variant: 'primary'
+	}
+}
 
 export const Danger: Story = {
 	args: {
 		children: 'Danger Button',
-		variant: 'danger',
-	},
-};
+		variant: 'danger'
+	}
+}
 
 export const Small: Story = {
 	args: {
 		children: 'Small Button',
-		size: 'sm',
-	},
-};
+		size: 'sm'
+	}
+}
 
 export const Large: Story = {
 	args: {
 		children: 'Large Button',
-		size: 'lg',
-	},
-};
+		size: 'lg'
+	}
+}
 
 export const Disabled: Story = {
 	args: {
 		children: 'Disabled Button',
-		disabled: true,
-	},
-};
+		disabled: true
+	}
+}
 
 export const WithIcon: Story = {
 	args: {
 		children: '⚡ Button',
-		variant: 'primary',
-	},
-};
+		variant: 'primary'
+	}
+}

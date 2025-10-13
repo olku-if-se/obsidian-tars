@@ -1,0 +1,113 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.2.6/schema.json",
+	"extends": ["../../biome.json"],
+	"files": {
+		"includes": ["src/**/*", "stories/**/*"],
+		"ignoreUnknown": false
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab",
+		"lineWidth": 120,
+		"lineEnding": "lf"
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"a11y": {
+				"noSvgWithoutTitle": "warn",
+				"useAltText": "warn",
+				"useKeyWithClickEvents": "warn",
+				"useKeyWithMouseEvents": "warn",
+				"useSemanticElements": "warn"
+			},
+			"complexity": {
+				"noExcessiveCognitiveComplexity": {
+					"level": "warn",
+					"options": { "maxAllowedComplexity": 15 }
+				},
+				"noExtraBooleanCast": "error",
+				"noAdjacentSpacesInRegex": "error"
+			},
+			"correctness": {
+				"noUnusedImports": "error",
+				"noUnusedVariables": "error",
+				"useExhaustiveDependencies": "warn",
+				"useHookAtTopLevel": "error",
+				"useYield": "error"
+			},
+			"nursery": {
+				"useSortedClasses": {
+					"level": "warn",
+					"options": { "attributes": ["className", "class"] }
+				}
+			},
+			"performance": {
+				"noAccumulatingSpread": "warn",
+				"noDelete": "error"
+			},
+			"security": {
+				"noDangerouslySetInnerHtml": "warn",
+				"noGlobalEval": "error"
+			},
+			"style": {
+				"noNegationElse": "error",
+				"noShoutyConstants": "warn",
+				"noUnusedTemplateLiteral": "error",
+				"useBlockStatements": "error",
+				"useCollapsedElseIf": "error",
+				"useConsistentArrayType": "error",
+				"useTemplate": "error"
+			},
+			"suspicious": {
+				"noArrayIndexKey": "warn",
+				"noAssignInExpressions": "error",
+				"noConfusingLabels": "error",
+				"noConfusingVoidType": "error",
+				"noDuplicateObjectKeys": "error",
+				"noDuplicateParameters": "error",
+				"noEmptyBlockStatements": "error",
+				"noExplicitAny": "warn",
+				"noFallthroughSwitchClause": "error",
+				"noFunctionAssign": "error",
+				"noGlobalIsFinite": "error",
+				"noGlobalIsNan": "error",
+				"noImportAssign": "error",
+				"noMisleadingCharacterClass": "error",
+				"noPrototypeBuiltins": "error",
+				"noRedundantUseStrict": "off",
+				"noSelfCompare": "error",
+				"noShadowRestrictedNames": "error",
+				"noUnsafeNegation": "error",
+				"noWith": "error"
+			}
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"quoteStyle": "single",
+			"jsxQuoteStyle": "single",
+			"trailingCommas": "none",
+			"semicolons": "asNeeded",
+			"arrowParentheses": "always",
+			"bracketSameLine": false,
+			"bracketSpacing": true,
+			"quoteProperties": "asNeeded"
+		}
+	},
+	"json": {
+		"formatter": {
+			"enabled": true,
+			"indentStyle": "tab",
+			"trailingCommas": "none"
+		}
+	},
+	"css": {
+		"formatter": {
+			"enabled": true,
+			"indentStyle": "tab",
+			"lineWidth": 120
+		}
+	}
+}

@@ -30,15 +30,6 @@
 		"noPropertyAccessFromIndexSignature": false,
 		"noUncheckedIndexedAccess": false
 	},
-	"include": [
-		"src/**/*"
-	],
-	"exclude": [
-		"node_modules",
-		"dist",
-		"stories",
-		".storybook",
-		"**/*.test.*",
-		"**/*.stories.*"
-	]
+	"include": ["src/**/*"],
+	"exclude": ["node_modules", "dist", "stories", ".storybook", "**/*.test.*", "**/*.stories.*"]
 }

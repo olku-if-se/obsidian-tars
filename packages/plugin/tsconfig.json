@@ -5,7 +5,8 @@
 			"src/*": ["src/*"],
 			"@tars/logger": ["../logger/src/index.ts"],
 			"@tars/mcp-hosting": ["../mcp-hosting/src/index.ts"],
-			"@tars/streams": ["../streams/src/index.ts"]
+			"@tars/streams": ["../streams/src/index.ts"],
+			"@tars/ui": ["../ui/src/index.ts"]
 		},
 		"inlineSourceMap": true,
 		"inlineSources": true,
@@ -17,8 +18,13 @@
 		"importHelpers": true,
 		"isolatedModules": true,
 		"strictNullChecks": true,
-		"lib": ["DOM", "ES5", "ES6", "ES7", "ES2023"]
+		"jsx": "react-jsx",
+		"jsxImportSource": "react",
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"lib": ["DOM", "ES5", "ES6", "ES7", "ES2023", "DOM.Iterable"]
 	},
-	"include": ["src/**/*.ts"],
+	"include": ["src/**/*.ts", "src/**/*.tsx"],
 	"exclude": ["node_modules"]
 }
