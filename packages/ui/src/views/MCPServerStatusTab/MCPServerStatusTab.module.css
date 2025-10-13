@@ -1,0 +1,47 @@
+.mcpServerStatusTab {
+	width: 100%;
+}
+
+.panelHeader {
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+	margin-bottom: var(--size-4-4);
+	padding-bottom: var(--size-4-2);
+	border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.refreshSection {
+	display: flex;
+	align-items: center;
+	gap: var(--size-4-2);
+}
+
+.refreshStatus {
+	font-size: var(--font-ui-small);
+	color: var(--text-muted);
+	font-style: italic;
+}
+
+.statusContainer {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-3);
+}
+
+.serversSection {
+	margin-top: var(--size-4-4);
+}
+
+.serversSection h3 {
+	margin: 0 0 var(--size-4-3) 0;
+	font-size: var(--font-ui-medium);
+	font-weight: var(--font-semibold);
+	color: var(--text-normal);
+}
+
+.serverList {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-2);
+}

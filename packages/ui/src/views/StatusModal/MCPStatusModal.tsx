@@ -1,9 +1,10 @@
 import type React from 'react'
 import { useCallback, useState } from 'react'
-import { Button, MCPServerStatusItem, MCPStatusSummary, Modal, TabList } from '../../atoms'
+import { Modal, TabList } from '../../atoms'
 import type { BridgeComponentProps } from '../../bridge/ReactBridge'
 import type { ErrorInfo, ErrorLogEntry, MCPStatusInfo } from '../../types'
 import { ErrorDetailView } from '../ErrorDetailView/ErrorDetailView'
+import { MCPServerStatusTab } from '../MCPServerStatusTab'
 import styles from './MCPStatusModal.module.css'
 
 export interface MCPStatusModalProps extends BridgeComponentProps {
@@ -23,11 +24,12 @@ export const MCPStatusModal: React.FC<MCPStatusModalProps> = ({
 	onClearLogs,
 	onRemoveLog,
 	onRefresh,
-	onClose
+	onClose,
+	app
 }) => {
 	const [activeTab, setActiveTab] = useState<'mcp' | 'errors'>(currentError ? 'errors' : 'mcp')
 	const [refreshStatus, setRefreshStatus] = useState<string>('')
-	const [isRefreshing, setIsRefreshing] = useState(false)
+	const [_isRefreshing, setIsRefreshing] = useState(false)
 
 	const hasErrorData = errorLog.length > 0 || !!currentError
 
@@ -73,37 +75,7 @@ export const MCPStatusModal: React.FC<MCPStatusModalProps> = ({
 		{
 			id: 'mcp',
 			label: 'MCP Server Status',
-			content: (
-				<>
-					{(onRefresh || refreshStatus) && (
-						<div className={styles.panelHeader}>
-							<div className={styles.refreshSection}>
-								{onRefresh && (
-									<Button onClick={handleRefresh} disabled={isRefreshing} variant="primary" size="sm">
-										{isRefreshing ? 'Refreshing...' : '🔄 Refresh'}
-									</Button>
-								)}
-								{refreshStatus && <div className={styles.refreshStatus}>{refreshStatus}</div>}
-							</div>
-						</div>
-					)}
-
-					<div className={styles.statusContainer}>
-						<MCPStatusSummary status={mcpStatus} />
-
-						{mcpStatus.servers.length > 0 && (
-							<div className={styles.serversSection}>
-								<h3>Servers</h3>
-								<div className={styles.serverList}>
-									{mcpStatus.servers.map((server) => (
-										<MCPServerStatusItem key={server.id} server={server} />
-									))}
-								</div>
-							</div>
-						)}
-					</div>
-				</>
-			)
+			content: <MCPServerStatusTab app={app} mcpStatus={mcpStatus} onRefresh={handleRefresh} />
 		},
 		...(hasErrorData
 			? [

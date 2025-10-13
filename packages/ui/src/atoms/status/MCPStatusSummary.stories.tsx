@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { MCPStatusSummary } from './MCPStatusSummary'
 
 const meta = {
-	title: 'Atoms/Status/MCPStatusSummary',
+	title: 'Atoms/MCPStatusSummary',
 	component: MCPStatusSummary,
 	parameters: {
 		layout: 'padded'

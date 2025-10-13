@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { MCPServerStatusItem } from './MCPServerStatusItem'
 
 const meta = {
-	title: 'Atoms/Status/MCPServerStatusItem',
+	title: 'Atoms/MCPServerStatusItem',
 	component: MCPServerStatusItem,
 	parameters: {
 		layout: 'padded'
