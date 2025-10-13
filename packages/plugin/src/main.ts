@@ -28,6 +28,7 @@ import { getTitleFromCmdId, loadTemplateFileCommand, promptTemplateCmd, template
 import { DEFAULT_SETTINGS, type PluginSettings } from './settings'
 import { TarsSettingTab } from './settingTab'
 import { StatusBarManager } from './statusBarManager'
+import { StatusBarReactManager } from './statusBarReact'
 import { getMaxTriggerLineLength, TagEditorSuggest, type TagEntry } from './suggest'
 import { MCPParameterSuggest } from './suggests/mcpParameterSuggest'
 import { MCPToolSuggest } from './suggests/mcpToolSuggest'
@@ -105,7 +106,6 @@ export default class TarsPlugin extends Plugin {
 	aborterInstance: AbortController | null = null
 	// React Integration
 	reactBridge: ReactBridge | null = null
-	reactStatusBarElement: HTMLElement | null = null
 	// MCP Integration
 	mcpManager: MCPServerManager | null = null
 	mcpExecutor: ToolExecutor | null = null
@@ -127,25 +127,28 @@ export default class TarsPlugin extends Plugin {
 				: []
 			logger.info('React bridge initialized', { enabledFeatures })
 
-			// Add React status bar indicator
-			this.addReactStatusBarIndicator(enabledFeatures)
-
-			// Add test command for React bridge
-			this.addCommand({
-				id: 'test-react-bridge',
-				name: 'Test React Bridge',
-				callback: () => {
-					this.testReactBridge()
-				}
-			})
-		} else {
+			
+			} else {
 			const reason = ReactBridge.isReactAvailable() ? 'no React features enabled' : 'React not available'
 			logger.info(`React bridge disabled: ${reason}`)
 		}
 
 		// Initialize StatusBar early so MCP components can log errors
 		const statusBarItem = this.addStatusBarItem()
-		this.statusBarManager = new StatusBarManager(this.app, statusBarItem)
+
+		// Use React status bar if React bridge is available and React features are enabled
+		if (this.reactBridge && shouldInitializeReactBridge(this.settings)) {
+			this.statusBarManager = new StatusBarReactManager(
+				this.app,
+				statusBarItem,
+				this.reactBridge,
+				this.settings
+			)
+			logger.info('Using React status bar manager')
+		} else {
+			this.statusBarManager = new StatusBarManager(this.app, statusBarItem)
+			logger.info('Using vanilla status bar manager')
+		}
 
 		// Initialize MCP Server Manager (non-blocking)
 		if (this.settings.mcpServers && this.settings.mcpServers.length > 0) {
@@ -423,12 +426,6 @@ export default class TarsPlugin extends Plugin {
 			logger.info('React bridge cleaned up')
 		}
 
-		// Cleanup React status bar
-		if (this.reactStatusBarElement) {
-			this.reactStatusBarElement.remove()
-			this.reactStatusBarElement = null
-		}
-
 		// Clear health check timer
 		if (this.mcpHealthCheckInterval) {
 			clearInterval(this.mcpHealthCheckInterval)
@@ -446,57 +443,7 @@ export default class TarsPlugin extends Plugin {
 		}
 	}
 
-	/**
-	 * Test the React bridge with a simple Hello World component
-	 */
-	private testReactBridge() {
-		if (!this.reactBridge) {
-			new Notice('React bridge not available')
-			return
-		}
-
-		try {
-			const { HelloTest } = require('./bridge')
-
-			// Create a simple modal to test the bridge
-			const { Modal } = require('obsidian')
-
-			class ReactTestModal extends Modal {
-				bridge: ReactBridge
-
-				constructor(app: any, bridge: ReactBridge) {
-					super(app)
-					this.bridge = bridge
-				}
-
-				onOpen() {
-					const { containerEl } = this
-					containerEl.empty()
-
-					// Mount React component
-					this.bridge.mount(containerEl, HelloTest, {
-						message: 'React bridge test successful! 🎉',
-						onButtonClick: () => {
-							new Notice('React button clicked! This proves the bridge works.')
-						}
-					})
-				}
-
-				onClose() {
-					// Unmount React component
-					this.bridge.unmount(this.containerEl)
-					super.onClose()
-				}
-			}
-
-			new ReactTestModal(this.app, this.reactBridge).open()
-			logger.info('React bridge test modal opened')
-		} catch (error) {
-			logger.error('Failed to test React bridge', error)
-			new Notice('Failed to test React bridge. Check console for details.')
-		}
-	}
-
+	
 	addTagCommand(cmdId: string) {
 		const tagCmdMeta = getMeta(cmdId)
 		switch (tagCmdMeta.role) {
@@ -613,6 +560,11 @@ export default class TarsPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings)
+
+		// Update React status bar manager if settings changed (feature flags might have changed)
+		if (this.statusBarManager instanceof StatusBarReactManager) {
+			this.statusBarManager.updateSettings(this.settings)
+		}
 	}
 
 	async updateMCPStatus() {
@@ -886,69 +838,4 @@ export default class TarsPlugin extends Plugin {
 		}
 	}
 
-	/**
-	 * Add React version indicator to status bar
-	 */
-	private addReactStatusBarIndicator(enabledFeatures: string[]) {
-		if (!this.reactBridge) return
-
-		try {
-			// Get React version
-			const reactVersion = require('react/package.json').version
-
-			// Create status bar element
-			this.reactStatusBarElement = this.addStatusBarItem()
-
-			// Style the React indicator
-			this.reactStatusBarElement.style.cssText = `
-				display: flex;
-				align-items: center;
-				gap: 4px;
-				padding: 2px 8px;
-				background-color: var(--interactive-accent);
-				color: var(--text-on-accent);
-				border-radius: 12px;
-				font-size: 11px;
-				font-family: var(--font-monospace);
-				font-weight: 500;
-				cursor: pointer;
-				transition: opacity 0.2s ease;
-			`
-
-			// Add React logo and version
-			this.reactStatusBarElement.innerHTML = `
-				<span>⚛️</span>
-				<span>React ${reactVersion}</span>
-				<span style="
-					background-color: var(--background-modifier-error);
-					color: white;
-					border-radius: 6px;
-					padding: 1px 3px;
-					font-size: 9px;
-					margin-left: 2px;
-				">BETA</span>
-			`
-
-			// Add tooltip
-			this.reactStatusBarElement.title = `React ${reactVersion} active\nFeatures: ${enabledFeatures.join(', ')}\nClick to test React UI`
-
-			// Add click handler to open test modal
-			this.reactStatusBarElement.addEventListener('click', () => {
-				this.testReactBridge()
-			})
-
-			// Add hover effect
-			this.reactStatusBarElement.addEventListener('mouseenter', () => {
-				this.reactStatusBarElement!.style.opacity = '0.8'
-			})
-
-			this.reactStatusBarElement.addEventListener('mouseleave', () => {
-				this.reactStatusBarElement!.style.opacity = '1'
-			})
-
-			logger.info('React status bar indicator added', { reactVersion, enabledFeatures })
-		} catch (error) {
-			logger.error('Failed to create React status bar indicator', error)
-		}
 	}
-}

@@ -1,0 +1,92 @@
+.statusBar {
+	display: inline-flex;
+	align-items: center;
+	padding: 4px 8px;
+	font-size: var(--font-ui-smaller);
+	font-family: var(--font-interface);
+	font-weight: var(--font-medium);
+	border-radius: var(--radius-s);
+	border: 0;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	white-space: nowrap;
+	min-width: 120px;
+	justify-content: center;
+}
+
+.statusBar:hover {
+	background-color: var(--interactive-hover);
+	opacity: 0.9;
+}
+
+.statusBar:focus {
+	outline: var(--focus-ring);
+	outline-offset: var(--focus-offset);
+}
+
+.text {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.icon {
+	display: inline-block;
+	text-align: center;
+	min-width: 16px;
+}
+
+.content {
+	flex: 1;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+/* Status-specific styles */
+.idle {
+	background-color: var(--interactive-normal);
+	color: var(--text-normal);
+}
+
+.generating {
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+	animation: pulse 2s infinite;
+}
+
+.success {
+	background-color: var(--text-success);
+	color: var(--text-on-accent);
+}
+
+.error {
+	background-color: var(--text-error);
+	color: var(--text-on-accent);
+	animation: shake 0.5s ease-in-out;
+}
+
+/* Animations */
+@keyframes pulse {
+	0% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.7;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes shake {
+	0%, 100% {
+		transform: translateX(0);
+	}
+	25% {
+		transform: translateX(-2px);
+	}
+	75% {
+		transform: translateX(2px);
+	}
+}
