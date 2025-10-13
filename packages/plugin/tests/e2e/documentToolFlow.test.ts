@@ -125,7 +125,7 @@ describe('E2E: Document → Tool Execution Flow', () => {
 			{
 				id: 'weather-service',
 				name: 'Weather Service',
-				configInput: 'docker run -i --rm --name tars-weather mcp/weather:latest',
+				configInput: 'echo "mock weather MCP server"',
 				enabled: true,
 				failureCount: 0,
 				autoDisabled: false
@@ -133,7 +133,7 @@ describe('E2E: Document → Tool Execution Flow', () => {
 			{
 				id: 'search-service',
 				name: 'Search Service',
-				configInput: 'docker run -i --rm --name tars-search mcp/search:latest',
+				configInput: 'echo "mock search MCP server"',
 				enabled: true,
 				failureCount: 0,
 				autoDisabled: false
@@ -331,13 +331,9 @@ num_results: 5`
 
 		it('should enforce execution limits for AI tools', async () => {
 			// GIVEN: Executor with low session limit
-			const limitedExecutor = new ToolExecutor(manager, {
+			const limitedExecutor = createToolExecutor(manager, {
 				concurrentLimit: 3,
-				sessionLimit: 2,
-				activeExecutions: new Set(),
-				totalExecuted: 0,
-				stopped: false,
-				executionHistory: []
+				sessionLimit: 2
 			})
 
 			// WHEN: Execute up to limit

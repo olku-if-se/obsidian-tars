@@ -5,7 +5,7 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { MCPServerManager } from '@tars/mcp-hosting'
-import type { MCPServerConfig } from '@tars/mcp-hostingtypes'
+import type { MCPServerConfig } from '@tars/mcp-hosting'
 
 const FAILURE_MARKERS = ['server-invalid', 'server-nonexistent']
 

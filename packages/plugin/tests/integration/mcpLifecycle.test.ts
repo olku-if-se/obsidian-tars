@@ -61,7 +61,7 @@ describe('MCP Lifecycle Integration', () => {
 				{
 					id: 'test-docker-server',
 					name: 'test-docker',
-					configInput: 'docker run -i --rm mcp-test/echo:latest',
+					configInput: 'echo "mock MCP server for testing"',
 					enabled: true,
 					failureCount: 0,
 					autoDisabled: false

@@ -4,7 +4,7 @@
 
 import { describe, expect, it } from 'vitest'
 import { canUseMCPUse, partitionConfigs, toMCPUseConfig, toMCPUseServerConfig } from '@tars/mcp-hosting'
-import type { MCPServerConfig } from '@tars/mcp-hostingtypes'
+import type { MCPServerConfig } from '@tars/mcp-hosting'
 
 describe('toMCPUseServerConfig', () => {
 	it('should use config.id as server key', () => {

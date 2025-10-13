@@ -4,7 +4,7 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { OpenAIProviderAdapter } from '@tars/mcp-hosting'
+import { OpenAIProviderAdapter } from '../../src/mcp/adapters/OpenAIProviderAdapter'
 
 // Mock OpenAI client
 const mockOpenAI = {

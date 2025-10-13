@@ -7,7 +7,7 @@ import {
 	normalizeDisplayMode,
 	remoteUrlToCommand
 } from '@tars/mcp-hosting'
-import type { MCPServerConfig } from '@tars/mcp-hostingtypes'
+import type { MCPServerConfig } from '@tars/mcp-hosting'
 
 describe('remoteUrlToCommand', () => {
 	it('converts https URL to remote command', () => {

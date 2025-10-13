@@ -8,13 +8,13 @@
  */
 
 import { beforeAll, describe, expect, it, vi } from 'vitest'
+import { ToolExecutor } from '@tars/mcp-hosting'
 import {
 	type CodeBlockProcessor,
 	createCodeBlockProcessor,
 	createMCPManager,
 	createToolExecutor,
-	type MCPServerManager,
-	ToolExecutor
+	type MCPServerManager
 } from '../../src/mcp'
 
 // Mock mcp-use library
@@ -83,7 +83,7 @@ describe('Integration: MCP Components', () => {
 		serverConfig = {
 			id: 'test-server',
 			name: 'test-server',
-			configInput: 'docker run -i --rm --name test-container test:latest',
+			configInput: 'echo "mock MCP server for testing"',
 			enabled: true,
 			failureCount: 0,
 			autoDisabled: false

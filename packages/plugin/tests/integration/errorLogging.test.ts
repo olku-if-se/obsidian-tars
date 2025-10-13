@@ -48,7 +48,7 @@ describe('Error Logging Integration', () => {
 
 			// When: Initializing with failing config
 			try {
-				await manager.initialize([failingConfig], { statusBarManager: mockStatusBarManager })
+				await manager.initialize([failingConfig])
 			} catch (_error) {
 				// Expected to fail
 			}
@@ -82,7 +82,6 @@ describe('Error Logging Integration', () => {
 			// Initialize with actual config that will fail
 			try {
 				await manager.initialize([config], {
-					statusBarManager: mockStatusBarManager,
 					retryPolicy: {
 						maxAttempts: 2,
 						initialDelay: 10,
@@ -171,7 +170,7 @@ describe('Error Logging Integration', () => {
 				executionHistory: []
 			}
 
-			const executor = new ToolExecutor(mockManager as any, tracker, {}, mockStatusBarManager)
+			const executor = new ToolExecutor(mockManager as any, tracker, { statusReporter: mockStatusBarManager })
 
 			// When: Executing tool that fails
 			try {
@@ -237,7 +236,7 @@ describe('Error Logging Integration', () => {
 				executionHistory: []
 			}
 
-			const executor = new ToolExecutor(mockManager as any, tracker, {}, mockStatusBarManager)
+			const executor = new ToolExecutor(mockManager as any, tracker, { statusReporter: mockStatusBarManager })
 
 			// When: Executing tool and cancelling it
 			const controller = new AbortController()
@@ -415,7 +414,7 @@ describe('Error Logging Integration', () => {
 
 			// When: Initializing with failing server
 			try {
-				await manager.initialize([config], { statusBarManager: mockStatusBarManager })
+				await manager.initialize([config])
 			} catch (_error) {
 				// Expected
 			}
@@ -455,7 +454,7 @@ describe('Error Logging Integration', () => {
 				executionHistory: []
 			}
 
-			const executor = new ToolExecutor(mockManager as any, tracker, {}, mockStatusBarManager)
+			const executor = new ToolExecutor(mockManager as any, tracker, { statusReporter: mockStatusBarManager })
 
 			// When: Executing tool that fails
 			try {

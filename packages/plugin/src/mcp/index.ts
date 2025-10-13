@@ -12,7 +12,11 @@ export {
 	type TextChunk,
 	type ToolCall,
 	type ToolCallChunk,
-	type ToolResponseParser
+	type ToolResponseParser,
+	MCPServerManager,
+	ToolExecutor,
+	type TransportProtocol,
+	type MCPServerConfig
 } from '@tars/mcp-hosting'
 // Core classes
 export { CodeBlockProcessor } from './codeBlockProcessor'

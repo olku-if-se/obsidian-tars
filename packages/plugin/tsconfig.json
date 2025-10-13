@@ -2,7 +2,10 @@
 	"compilerOptions": {
 		"baseUrl": ".",
 		"paths": {
-			"src/*": ["src/*"]
+			"src/*": ["src/*"],
+			"@tars/logger": ["../logger/src/index.ts"],
+			"@tars/mcp-hosting": ["../mcp-hosting/src/index.ts"],
+			"@tars/streams": ["../streams/src/index.ts"]
 		},
 		"inlineSourceMap": true,
 		"inlineSources": true,

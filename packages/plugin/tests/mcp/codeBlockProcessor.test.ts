@@ -5,7 +5,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { createCodeBlockProcessor } from '../../src/mcp'
-import type { MCPServerConfig } from '@tars/mcp-hostingtypes'
+import type { MCPServerConfig } from '@tars/mcp-hosting'
 
 describe('CodeBlockProcessor parsing contract tests', () => {
 	let processor: ReturnType<typeof createCodeBlockProcessor>

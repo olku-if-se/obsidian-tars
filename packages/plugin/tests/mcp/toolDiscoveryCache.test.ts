@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { MCPServerManager } from '@tars/mcp-hosting'
 import { ToolDiscoveryCache } from '@tars/mcp-hosting'
-import type { MCPServerConfig, ToolDefinition } from '@tars/mcp-hostingtypes'
+import type { MCPServerConfig, ToolDefinition } from '@tars/mcp-hosting'
 
 afterEach(() => {
 	vi.restoreAllMocks()

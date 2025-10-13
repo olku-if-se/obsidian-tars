@@ -5,7 +5,7 @@
 
 import type { ToolExecutor } from '@tars/mcp-hosting'
 import type { MCPServerManager } from '@tars/mcp-hosting'
-import { OllamaProviderAdapter } from '@tars/mcp-hosting'
+import { OllamaProviderAdapter } from '../../src/mcp/adapters/OllamaProviderAdapter'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Mock Ollama client

@@ -4,7 +4,7 @@
  */
 
 import { describe, expect, it } from 'vitest'
-import type { ToolDefinition } from '../../src/mcp/types'
+import type { ToolDefinition } from '@tars/mcp-hosting'
 
 describe('Tool Browser Modal - Template Generation', () => {
 	describe('Parameter placeholder generation', () => {

@@ -434,13 +434,9 @@ a: 5` // Missing 'b' parameter
 
 		it('should enforce execution limits', async () => {
 			// GIVEN: Executor with strict limits
-			const limitedExecutor = new ToolExecutor(manager, {
+			const limitedExecutor = createToolExecutor(manager, {
 				concurrentLimit: 1,
-				sessionLimit: 2,
-				activeExecutions: new Set(),
-				totalExecuted: 0,
-				stopped: false,
-				executionHistory: []
+				sessionLimit: 2
 			})
 
 			// WHEN: Execute up to limit
