@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 
 export default defineConfig({
 	plugins: [
@@ -32,7 +32,7 @@ export default defineConfig({
 	},
 	// Add Storybook-specific configuration
 	optimizeDeps: {
-		include: ['@storybook/react', '@storybook/react-vite'],
+		include: ['@storybook/react', '@storybook/react-vite', '@mdx-js/react'],
 		force: true, // Force optimization to prevent hanging
 	},
 	define: {

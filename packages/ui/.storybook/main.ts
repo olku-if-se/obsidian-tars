@@ -4,45 +4,16 @@ const config: StorybookConfig = {
 	stories: ['../stories/**/*.stories.@(ts|tsx)'],
 	addons: [
 		'@storybook/addon-links',
-		'@storybook/addon-essentials',
-		'@storybook/addon-interactions',
 		'@storybook/addon-a11y',
+		'@storybook/addon-docs'
 	],
-	framework: {
-		name: '@storybook/react-vite',
-		options: {},
-	},
-	docs: {
-		autodocs: 'tag',
-	},
+
+	framework: "@storybook/react-vite",
+
 	// Optimize for faster startup
 	typescript: {
 		check: false,
 		reactDocgen: false, // Disable docgen completely for fastest startup
-	},
-	viteFinal: async (config) => {
-		// Improve dependency optimization performance
-		config.optimizeDeps = {
-			...config.optimizeDeps,
-			force: true,
-			include: [
-				...(config.optimizeDeps?.include || []),
-				'react',
-				'react-dom',
-				'storybook',
-			],
-		};
-
-		// Reduce timeout for development server
-		config.server = {
-			...config.server,
-			watch: {
-				usePolling: false, // Disable polling which can cause issues in WSL
-				interval: 100,
-			},
-		};
-
-		return config;
 	},
 };
 

@@ -1,46 +1,46 @@
 {
-	"name": "obsidian-tars-monorepo",
-	"version": "3.5.0",
-	"private": true,
-	"description": "Obsidian TARS Plugin Monorepo",
-	"workspaces": [
-		"packages/*"
-	],
-	"scripts": {
-		"dev": "turbo dev",
-		"build": "turbo build",
-		"test": "turbo test",
-		"test:coverage": "turbo test:coverage",
-		"test:watch": "turbo test:watch",
-		"lint": "turbo lint",
-		"format": "turbo format",
-		"check": "turbo check",
-		"typecheck": "turbo typecheck:build typecheck:tests --parallel",
-		"typecheck:build": "turbo typecheck:build",
-		"typecheck:tests": "turbo typecheck:tests",
-		"quality": "turbo lint check typecheck:build --parallel",
-		"ci": "turbo lint check typecheck:build typecheck:tests build test --parallel --cache-dir=.turbo",
-		"clean": "turbo clean && rm -rf node_modules .turbo",
-		"clean:cache": "rm -rf .turbo",
-		"ui:dev": "pnpm --filter @tars/ui dev",
-		"ui:build": "pnpm --filter @tars/ui build",
-		"ui:storybook": "pnpm --filter @tars/ui storybook",
-		"ui:test": "pnpm --filter @tars/ui test",
-		"ui:lint": "pnpm --filter @tars/ui lint"
-	},
-	"keywords": [],
-	"author": "C Jack<https://github.com/ae86jack>",
-	"license": "MIT",
-	"devDependencies": {
-		"turbo": "^2.5.8",
-		"typescript": "^5.9.3"
-	},
-	"engines": {
-		"node": ">=22.0.0",
-		"pnpm": ">=9.0.0"
-	},
-	"packageManager": "pnpm@9.15.0",
-	"volta": {
-		"node": "22.20.0"
-	}
+  "name": "obsidian-tars-monorepo",
+  "version": "3.5.0",
+  "private": true,
+  "description": "Obsidian TARS Plugin Monorepo",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "test": "turbo test",
+    "test:coverage": "turbo test:coverage",
+    "test:watch": "turbo test:watch",
+    "lint": "turbo lint",
+    "format": "turbo format",
+    "check": "turbo check",
+    "typecheck": "turbo typecheck:build typecheck:tests --parallel",
+    "typecheck:build": "turbo typecheck:build",
+    "typecheck:tests": "turbo typecheck:tests",
+    "quality": "turbo lint check typecheck:build --parallel",
+    "ci": "turbo lint check typecheck:build typecheck:tests build test --parallel --cache-dir=.turbo",
+    "clean": "turbo clean && rm -rf node_modules .turbo",
+    "clean:cache": "rm -rf .turbo",
+    "ui:dev": "pnpm --filter @tars/ui dev",
+    "ui:build": "pnpm --filter @tars/ui build",
+    "ui:storybook": "pnpm --filter @tars/ui storybook",
+    "ui:test": "pnpm --filter @tars/ui test",
+    "ui:lint": "pnpm --filter @tars/ui lint"
+  },
+  "keywords": [],
+  "author": "C Jack<https://github.com/ae86jack>",
+  "license": "MIT",
+  "devDependencies": {
+    "turbo": "^2.5.8",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "volta": {
+    "node": "22.20.0"
+  }
 }
