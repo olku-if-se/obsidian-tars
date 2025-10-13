@@ -3,10 +3,10 @@
  * Verifies Ollama-specific tool calling implementation
  */
 
+import type { ToolExecutor } from '@tars/mcp-hosting'
+import type { MCPServerManager } from '@tars/mcp-hosting'
+import { OllamaProviderAdapter } from '@tars/mcp-hosting'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import type { ToolExecutor } from '../../src/mcp/executor'
-import type { MCPServerManager } from '../../src/mcp/managerMCPUse'
-import { OllamaProviderAdapter } from '../../src/mcp/providerAdapters'
 
 // Mock Ollama client
 const createMockOllamaClient = () => ({

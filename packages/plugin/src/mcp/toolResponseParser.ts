@@ -6,11 +6,10 @@
  * for OpenAI, Claude, Ollama, etc.
  */
 
+import { createLogger } from '@tars/logger'
 import type OpenAI from 'openai'
-import { createLogger } from '../logger'
-import { logError } from './utils'
 
-const logger = createLogger('mcp:tool-parser')
+const _logger = createLogger('mcp:tool-parser')
 const ollamaLogger = createLogger('mcp:tool-parser:ollama')
 
 // ============================================================================
@@ -69,7 +68,7 @@ export interface ToolResponseParser<TProviderChunk = unknown> {
 // OpenAI Tool Response Parser
 // ============================================================================
 
-interface OpenAIChunk {
+export interface OpenAIChunk {
 	choices: Array<{
 		delta?: {
 			content?: string | null
@@ -188,7 +187,7 @@ export class OpenAIToolResponseParser implements ToolResponseParser<OpenAI.ChatC
 						arguments: parsedArgs
 					})
 				} catch (error) {
-					logError(`Failed to parse tool call arguments: ${accumulated.arguments}`, error)
+					_logger.error(`Failed to parse tool call arguments: ${accumulated.arguments}`, error)
 					// Still add the tool call with raw string arguments
 					this.finishedToolCalls.push({
 						id: accumulated.id,
@@ -205,7 +204,7 @@ export class OpenAIToolResponseParser implements ToolResponseParser<OpenAI.ChatC
 // Claude Tool Response Parser
 // ============================================================================
 
-type ClaudeStreamEvent =
+export type ClaudeStreamEvent =
 	| {
 			type: 'content_block_start'
 			index: number
@@ -238,12 +237,10 @@ interface ClaudeAccumulatedToolCall {
 export class ClaudeToolResponseParser implements ToolResponseParser<ClaudeStreamEvent> {
 	private toolCalls: Map<number, ClaudeAccumulatedToolCall> = new Map()
 	private finishedToolCalls: ToolCall[] = []
-	private currentBlockIndex = -1
 
 	parseChunk(event: ClaudeStreamEvent): StreamChunk | null {
 		switch (event.type) {
 			case 'content_block_start': {
-				this.currentBlockIndex = event.index
 				if (event.content_block.type === 'tool_use') {
 					const { id, name } = event.content_block
 					this.toolCalls.set(event.index, {
@@ -285,7 +282,7 @@ export class ClaudeToolResponseParser implements ToolResponseParser<ClaudeStream
 			case 'content_block_stop': {
 				// Finalize the tool call at this index
 				const accumulated = this.toolCalls.get(event.index)
-				if (accumulated && accumulated.inputJson) {
+				if (accumulated?.inputJson) {
 					try {
 						const parsedInput = JSON.parse(accumulated.inputJson)
 						this.finishedToolCalls.push({
@@ -294,7 +291,7 @@ export class ClaudeToolResponseParser implements ToolResponseParser<ClaudeStream
 							arguments: parsedInput
 						})
 					} catch (error) {
-						logError(`Failed to parse Claude tool input: ${accumulated.inputJson}`, error)
+						_logger.error(`Failed to parse Claude tool input: ${accumulated.inputJson}`, error)
 					}
 				}
 				return null
@@ -321,7 +318,6 @@ export class ClaudeToolResponseParser implements ToolResponseParser<ClaudeStream
 	reset(): void {
 		this.toolCalls.clear()
 		this.finishedToolCalls = []
-		this.currentBlockIndex = -1
 	}
 }
 
@@ -329,7 +325,7 @@ export class ClaudeToolResponseParser implements ToolResponseParser<ClaudeStream
 // Ollama Tool Response Parser
 // ============================================================================
 
-interface OllamaChunk {
+export interface OllamaChunk {
 	message?: {
 		content?: string
 		tool_calls?: Array<{

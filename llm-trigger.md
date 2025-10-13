@@ -7,6 +7,16 @@ check which task we should solve next
 
 ---
 
+read documents `docs/2025-10-12-{review|planning|tasks|changelog|migration-guide|test-strategy}.md` 
+
+read:
+- docs/2025-10-12-mcp-hosting-extraction-plan.md
+- docs/2025-10-12-mcp-hosting-extraction-summary.md
+- docs/2025-10-12-monorepo-migration-plan.md
+- docs/2025-10-12-monorepo-migration-summary.md
+
+---
+
 continue implementation of the tasks from document @docs/2025-10-03-120627-tasks.md 
 
 tasks are based on:

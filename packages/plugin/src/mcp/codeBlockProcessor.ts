@@ -3,15 +3,20 @@
  * Handles parsing and rendering of MCP tool invocation code blocks
  */
 
+import type { ErrorInfo, MCPServerConfig, ToolExecutionResult } from '@tars/mcp-hosting'
+import { logError, YAMLParseError } from '@tars/mcp-hosting'
 import { parse as parseYAML } from 'yaml'
-
 import { createLogger } from '../logger'
-import { YAMLParseError } from './errors'
 import { renderToolResultToDOM } from './toolResultFormatter'
-import type { ErrorInfo, MCPServerConfig, ToolExecutionResult, ToolInvocation } from './types'
-import { logError } from './utils'
 
 const logger = createLogger('mcp:code-block-processor')
+
+// Local interface for tool invocation (not exported from mcp-hosting)
+interface ToolInvocation {
+	serverId: string
+	toolName: string
+	parameters: Record<string, unknown>
+}
 
 export class CodeBlockProcessor {
 	private serverConfigs: MCPServerConfig[] = []

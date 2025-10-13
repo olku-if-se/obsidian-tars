@@ -1,9 +1,7 @@
+import type { MCPServerManager, ToolExecutionResult, ToolExecutor, ToolServerInfo } from '@tars/mcp-hosting'
+import { OpenAIToolResponseParser } from '@tars/mcp-hosting'
 import { createLogger } from '../../logger'
-import type { ToolExecutor } from '../executor'
-import type { MCPServerManager } from '../managerMCPUse'
 import type { Message, ProviderAdapter } from '../toolCallingCoordinator'
-import { OpenAIToolResponseParser } from '../toolResponseParser'
-import type { ToolExecutionResult, ToolServerInfo } from '../types'
 import type { OpenAIAdapterConfig } from './OpenAIProviderAdapter'
 
 const logger = createLogger('mcp:openai-adapter-factory')

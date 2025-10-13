@@ -1,3 +1,4 @@
+import type { MCPServerConfig, MCPServerManager, ToolDefinition } from '@tars/mcp-hosting'
 import {
 	type App,
 	type Editor,
@@ -7,10 +8,7 @@ import {
 	type EditorSuggestTriggerInfo,
 	type TFile
 } from 'obsidian'
-
 import { createLogger } from '../logger'
-import type { MCPServerManager } from '../mcp/managerMCPUse'
-import type { MCPServerConfig, ToolDefinition } from '../mcp/types'
 import {
 	buildRequiredParameterInsertion,
 	collectUsedParameters,

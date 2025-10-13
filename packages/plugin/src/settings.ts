@@ -1,4 +1,4 @@
-import type { MCPServerConfig } from './mcp/types'
+import type { MCPServerConfig } from '@tars/mcp-hosting'
 import type { PromptTemplate } from './prompt'
 import type { ProviderSettings, Vendor } from './providers'
 import { azureVendor } from './providers/azure'

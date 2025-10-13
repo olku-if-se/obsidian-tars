@@ -4,10 +4,9 @@
  * with search, filtering, and code block insertion capabilities
  */
 
+import type { MCPServerManager, ToolDefinition } from '@tars/mcp-hosting'
 import { type App, type Editor, Modal } from 'obsidian'
 import { createLogger } from '../logger'
-import type { MCPServerManager } from '../mcp/managerMCPUse'
-import type { ToolDefinition } from '../mcp/types'
 
 const logger = createLogger('modal:tool-browser')
 

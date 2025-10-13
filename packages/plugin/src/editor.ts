@@ -1,3 +1,5 @@
+import type { MCPServerManager } from '@tars/mcp-hosting'
+import { TextEditStream } from '@tars/streams'
 import {
 	type App,
 	debounce,
@@ -16,9 +18,7 @@ import {
 	type Vault
 } from 'obsidian'
 import { t } from 'src/lang/helper'
-import { TextEditStream } from 'src/streams/edit-stream'
 import { createLogger } from './logger'
-import type { MCPServerManager } from './mcp/managerMCPUse'
 import { formatUtilitySectionCallout, type UtilitySectionServer } from './mcp/utilitySectionFormatter'
 import type {
 	CreatePlainText,

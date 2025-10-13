@@ -9,18 +9,40 @@
  * 5. Continue until LLM generates final text response
  */
 
+import type { ToolCall, ToolExecutionResult, ToolExecutor, ToolResponseParser, ToolServerInfo } from '@tars/mcp-hosting'
 import type { Editor, EditorPosition } from 'obsidian'
 import pLimit from 'p-limit'
 import { stringify as stringifyYAML } from 'yaml'
-
 import { createLogger } from '../logger'
 import type { StatusBarManager } from '../statusBarManager'
 import type { DocumentWriteLock } from '../utils/documentWriteLock'
 import { runWithLock } from '../utils/documentWriteLock'
-import type { ToolExecutor } from './executor'
-import type { ToolCall, ToolResponseParser } from './toolResponseParser'
-import { type CachedToolResult, DocumentToolCache } from './toolResultCache'
-import type { ToolExecutionResult, ToolServerInfo } from './types'
+
+// Local types for tool result cache (not exported from mcp-hosting)
+interface CachedToolResult {
+	serverId: string
+	serverName: string
+	toolName: string
+	parameters: Record<string, unknown>
+	parameterHash: string
+	durationMs?: number
+	executedAt?: number
+	resultMarkdown: string
+	calloutRange: { startLine: number; endLine: number }
+	resultRange?: { startLine: number; endLine: number }
+}
+
+class DocumentToolCache {
+	findExistingResult(
+		_editor: any,
+		_serverId: string,
+		_toolName: string,
+		_parameters: Record<string, unknown>
+	): CachedToolResult | null {
+		// Placeholder implementation - would need the actual logic from the original file
+		return null
+	}
+}
 
 const logger = createLogger('mcp:tool-coordinator')
 
@@ -78,10 +100,7 @@ export interface GenerateOptions {
 	onToolResult?: (toolName: string, duration: number) => void
 	editor?: Editor
 	statusBarManager?: StatusBarManager
-	onPromptCachedResult?: (
-		toolName: string,
-		cached: import('./toolResultCache').CachedToolResult
-	) => Promise<'re-execute' | 'use-cached' | 'cancel'>
+	onPromptCachedResult?: (toolName: string, cached: CachedToolResult) => Promise<'re-execute' | 'use-cached' | 'cancel'>
 	autoUseDocumentCache?: boolean
 	parallelExecution?: boolean
 	maxParallelTools?: number

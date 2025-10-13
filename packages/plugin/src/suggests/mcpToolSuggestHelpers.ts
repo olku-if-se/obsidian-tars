@@ -1,5 +1,5 @@
+import type { ToolDefinition } from '@tars/mcp-hosting'
 import { createLogger } from '../logger'
-import type { ToolDefinition } from '../mcp/types'
 
 const logger = createLogger('suggest:mcp-helpers')
 
@@ -170,7 +170,7 @@ export function extractParameterDefinitions(tool: ToolDefinition): ParameterDefi
 	const entries = Object.entries(properties)
 	return entries.map(([name, value]) => {
 		const paramSchema = value && typeof value === 'object' ? (value as Record<string, unknown>) : {}
-		const typeValue = paramSchema['type']
+		const typeValue = paramSchema.type
 		let paramType = 'any'
 		if (typeof typeValue === 'string') {
 			paramType = typeValue
@@ -182,15 +182,15 @@ export function extractParameterDefinitions(tool: ToolDefinition): ParameterDefi
 		}
 
 		const example =
-			paramSchema['example'] ??
-			(Array.isArray(paramSchema['examples']) && paramSchema['examples'].length > 0
-				? (paramSchema['examples'][0] as unknown)
+			paramSchema.example ??
+			(Array.isArray(paramSchema.examples) && paramSchema.examples.length > 0
+				? (paramSchema.examples[0] as unknown)
 				: undefined)
 
 		return {
 			name,
 			type: paramType,
-			description: typeof paramSchema['description'] === 'string' ? (paramSchema['description'] as string) : undefined,
+			description: typeof paramSchema.description === 'string' ? paramSchema.description : undefined,
 			required: required.includes(name),
 			example
 		}

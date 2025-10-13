@@ -44,6 +44,9 @@
 	},
 	"dependencies": {
 		"@modelcontextprotocol/sdk": "^1.18.2",
+		"@tars/logger": "workspace:*",
+		"@tars/mcp-hosting": "workspace:*",
+		"@tars/streams": "workspace:*",
 		"@types/debug": "^4.1.12",
 		"async-mutex": "^0.5.0",
 		"debug": "^4.4.3",

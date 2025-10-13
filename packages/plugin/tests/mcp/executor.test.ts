@@ -3,11 +3,9 @@
  * Tests concurrent limits, session limits, and execution history
  */
 
+import type { ExecutionTracker, SessionNotificationHandlers } from '@tars/mcp-hosting'
+import { MCPServerManager, ToolExecutor } from '@tars/mcp-hosting'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import type { SessionNotificationHandlers } from '../../src/mcp/executor'
-import { ToolExecutor } from '../../src/mcp/executor'
-import { MCPServerManager } from '../../src/mcp/managerMCPUse'
-import type { ExecutionTracker } from '../../src/mcp/types'
 
 describe('ToolExecutor', () => {
 	describe('constructor options', () => {

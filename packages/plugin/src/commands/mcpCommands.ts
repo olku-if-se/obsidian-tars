@@ -2,9 +2,8 @@
  * MCP-specific commands for tool execution control and history
  */
 
+import type { ExecutionHistoryEntry, ToolExecutor } from '@tars/mcp-hosting'
 import { type Command, Notice } from 'obsidian'
-import type { ToolExecutor } from '../mcp/executor'
-import type { ExecutionHistoryEntry } from '../mcp/types'
 
 /**
  * Command to stop all active MCP tool executions

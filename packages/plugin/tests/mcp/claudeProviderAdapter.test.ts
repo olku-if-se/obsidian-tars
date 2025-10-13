@@ -1,9 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
+import type { MCPServerConfig, MCPServerManager } from '@tars/mcp-hosting'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-
-import { ClaudeProviderAdapter } from '../../src/mcp/adapters/ClaudeProviderAdapter'
-import type { MCPServerManager } from '../../src/mcp/managerMCPUse'
-import type { MCPServerConfig } from '../../src/mcp/types'
+import { ClaudeProviderAdapter } from '../../src/mcp/providerAdapters'
 
 const createToolSnapshot = () => ({
 	mapping: new Map([

@@ -3,7 +3,7 @@
  * Provides unified formatting for tool execution results across different contexts
  */
 
-import type { ToolExecutionResult } from './types'
+import type { ToolExecutionResult } from '@tars/mcp-hosting'
 
 export interface FormatOptions {
 	/**
@@ -227,7 +227,7 @@ export function formatToolResult(
 	result: ToolExecutionResult,
 	containerOrOptions?: HTMLElement | FormatOptions,
 	options?: FormatOptions
-): string | void {
+): string | undefined {
 	// Handle overloaded parameters
 	if (containerOrOptions instanceof HTMLElement) {
 		// DOM rendering mode

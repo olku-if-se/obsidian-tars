@@ -6,11 +6,9 @@ import type {
 	ToolResultBlockParam,
 	ToolUseBlockParam
 } from '@anthropic-ai/sdk/resources/messages/messages'
-import type { MCPServerManager } from '../managerMCPUse'
+import type { MCPServerManager, ToolDiscoveryCache, ToolExecutionResult, ToolServerInfo } from '@tars/mcp-hosting'
+import { ClaudeToolResponseParser } from '@tars/mcp-hosting'
 import type { Message, ProviderAdapter } from '../toolCallingCoordinator'
-import type { ToolDiscoveryCache } from '../toolDiscoveryCache'
-import { ClaudeToolResponseParser } from '../toolResponseParser'
-import type { ToolExecutionResult, ToolServerInfo } from '../types'
 
 export interface ClaudeAdapterConfig {
 	mcpManager: MCPServerManager

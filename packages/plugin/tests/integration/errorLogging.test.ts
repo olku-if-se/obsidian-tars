@@ -1,8 +1,7 @@
+import type { MCPServerConfig } from '@tars/mcp-hosting'
+import { MCPServerManager, ToolExecutor } from '@tars/mcp-hosting'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { ToolExecutor } from '../../src/mcp/executor'
-import { MCPServerManager } from '../../src/mcp/managerMCPUse'
 import { ToolCallingCoordinator } from '../../src/mcp/toolCallingCoordinator'
-import type { MCPServerConfig } from '../../src/mcp/types'
 import type { ErrorLogEntry, StatusBarManager } from '../../src/statusBarManager'
 
 describe('Error Logging Integration', () => {

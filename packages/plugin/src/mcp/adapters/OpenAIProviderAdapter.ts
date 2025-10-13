@@ -1,12 +1,14 @@
+import type {
+	MCPServerManager,
+	ToolDiscoveryCache,
+	ToolExecutionResult,
+	ToolExecutor,
+	ToolServerInfo
+} from '@tars/mcp-hosting'
+import { OpenAIToolResponseParser } from '@tars/mcp-hosting'
 import type { EmbedCache } from 'obsidian'
 import type OpenAI from 'openai'
-
-import type { ToolExecutor } from '../executor'
-import type { MCPServerManager } from '../managerMCPUse'
 import type { Message, ProviderAdapter } from '../toolCallingCoordinator'
-import type { ToolDiscoveryCache } from '../toolDiscoveryCache'
-import { OpenAIToolResponseParser } from '../toolResponseParser'
-import type { ToolExecutionResult, ToolServerInfo } from '../types'
 
 export interface OpenAIAdapterConfig {
 	mcpManager: MCPServerManager

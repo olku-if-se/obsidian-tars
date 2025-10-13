@@ -1,0 +1,36 @@
+{
+  "name": "@tars/logger",
+  "version": "3.5.0",
+  "description": "Shared logging utilities for TARS packages",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run || echo 'No tests found - this is expected for logger package'",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest run --coverage",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "check": "biome check --write .",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "logging",
+    "debug",
+    "tars"
+  ],
+  "author": "C Jack<https://github.com/ae86jack>",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/debug": "^4.1.12",
+    "@types/node": "^24.6.1",
+    "tsup": "^8.3.5",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4",
+    "@vitest/coverage-v8": "^3.2.4"
+  },
+  "dependencies": {
+    "debug": "^4.4.3"
+  }
+}

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { formatUtilitySectionCallout, type UtilitySectionInfo } from '../../src/mcp/utilitySectionFormatter'
+import { formatUtilitySectionCallout, type UtilitySectionInfo } from '@tars/mcp-hosting'
 
 describe('formatUtilitySectionCallout', () => {
 	it('formats provider, model, and tools into callout', () => {

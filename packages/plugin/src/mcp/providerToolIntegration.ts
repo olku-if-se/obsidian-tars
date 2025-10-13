@@ -8,8 +8,7 @@
  * - Handle tool calling responses
  */
 
-import type { ToolExecutor } from './executor'
-import type { MCPServerManager } from './managerMCPUse'
+import type { MCPServerManager, ToolExecutor } from '@tars/mcp-hosting'
 import { buildAIToolContext } from './providerIntegration'
 
 /**

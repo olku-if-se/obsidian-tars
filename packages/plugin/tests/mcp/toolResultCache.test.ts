@@ -7,7 +7,7 @@
 
 import type { Editor } from 'obsidian'
 import { describe, expect, it } from 'vitest'
-import { DocumentToolCache } from '../../src/mcp/toolResultCache'
+import { DocumentToolCache } from '@tars/mcp-hosting'
 
 const buildEditor = (content: string): Editor =>
 	({

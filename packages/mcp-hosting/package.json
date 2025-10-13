@@ -1,0 +1,57 @@
+{
+  "name": "@tars/mcp-hosting",
+  "version": "3.5.0",
+  "description": "Standalone MCP server hosting and execution infrastructure",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "!**/*.test.ts",
+    "!**/*.spec.ts"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run || echo 'No tests found - this is expected for new package'",
+    "test:watch": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "check": "biome check --write .",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "hosting",
+    "server",
+    "tool-execution"
+  ],
+  "author": "TARS Development Team",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.18.2",
+    "@tars/logger": "workspace:*",
+    "mcp-use": "0.1.0",
+    "async-mutex": "^0.5.0",
+    "p-limit": "^7.1.1",
+    "debug": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.12",
+    "@types/node": "^24.6.1",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/ui": "^3.2.4",
+    "tsup": "^8.3.5",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

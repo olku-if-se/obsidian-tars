@@ -3,9 +3,9 @@
  * Tests with realistic streaming data from OpenAI API
  */
 
+import { OpenAIToolResponseParser } from '@tars/mcp-hosting'
 import type { ChatCompletionChunk } from 'openai/resources/chat/completions'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { OpenAIToolResponseParser } from '../../src/mcp/toolResponseParser'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 function createChunk(
 	choicePartials: Array<Partial<ChatCompletionChunk['choices'][number]>>,

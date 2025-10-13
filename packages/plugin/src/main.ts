@@ -3,6 +3,7 @@ import { createLogger } from './logger'
 
 const logger = createLogger('plugin')
 
+import { MCPServerManager, type SessionNotificationHandlers, ToolExecutor } from '@tars/mcp-hosting'
 import {
 	asstTagCmd,
 	exportCmd,
@@ -17,16 +18,11 @@ import {
 import { getMCPCommands } from './commands/mcpCommands'
 import type { RequestController } from './editor'
 import { t } from './lang/helper'
-import {
-	CodeBlockProcessor,
-	createToolExecutor,
-	HEALTH_CHECK_INTERVAL,
-	MCPServerManager,
-	type SessionNotificationHandlers,
-	type ToolExecutor
-} from './mcp'
+import { ModalNotifier, ObsidianLogger, StatusBarReporter } from './mcp/adapters'
+import { CodeBlockProcessor } from './mcp/codeBlockProcessor'
 import { registerDocumentSessionHandlers } from './mcp/documentSessionHandlers'
-import { getTitleFromCmdId, loadTemplateFileCommand, promptTemplateCmd, templateToCmdId } from './prompt'
+import { HEALTH_CHECK_INTERVAL } from './mcp/index'
+import { getTitleFromCmdId, loadTemplateFileCommand, promptTemplateCmd, templateToCmdId } from './prompt/command'
 import { DEFAULT_SETTINGS, type PluginSettings } from './settings'
 import { TarsSettingTab } from './settingTab'
 import { StatusBarManager } from './statusBarManager'
@@ -122,7 +118,16 @@ export default class TarsPlugin extends Plugin {
 
 		// Initialize MCP Server Manager (non-blocking)
 		if (this.settings.mcpServers && this.settings.mcpServers.length > 0) {
-			this.mcpManager = new MCPServerManager()
+			// Create Obsidian-specific adapters
+			const logger = new ObsidianLogger()
+			const statusReporter = new StatusBarReporter(this.statusBarManager)
+			const notifier = new ModalNotifier(this.app)
+
+			// Initialize MCP Server Manager with adapters
+			this.mcpManager = new MCPServerManager({
+				logger,
+				statusReporter
+			})
 
 			// Setup real-time status updates from MCP events (Feature-400-30)
 			this.mcpManager.on('server-started', () => this.updateMCPStatus())
@@ -131,13 +136,22 @@ export default class TarsPlugin extends Plugin {
 			this.mcpManager.on('server-auto-disabled', () => this.updateMCPStatus())
 			this.mcpManager.on('server-retry', () => this.updateMCPStatus())
 
-			// Create tool executor with settings
-			this.mcpExecutor = createToolExecutor(this.mcpManager, {
-				timeout: this.settings.mcpGlobalTimeout,
+			// Create tool executor with settings and adapters
+			const executionTracker = {
 				concurrentLimit: this.settings.mcpConcurrentLimit,
 				sessionLimit: this.settings.mcpSessionLimit,
-				statusBarManager: this.statusBarManager,
-				sessionNotifications: createNoticeSessionNotifications()
+				activeExecutions: new Set<string>(),
+				totalExecuted: 0,
+				stopped: false,
+				executionHistory: []
+			}
+
+			this.mcpExecutor = new ToolExecutor(this.mcpManager, executionTracker, {
+				timeout: this.settings.mcpGlobalTimeout,
+				sessionNotifications: createNoticeSessionNotifications(),
+				logger,
+				statusReporter,
+				notificationHandler: notifier
 			})
 
 			// Create code block processor
@@ -289,8 +303,7 @@ export default class TarsPlugin extends Plugin {
 							'ENETUNREACH',
 							'EHOSTUNREACH'
 						]
-					},
-					statusBarManager: this.statusBarManager
+					}
 				})
 				.catch((error) => {
 					logger.error('mcp initialization failed (background)', error)
@@ -621,8 +634,7 @@ export default class TarsPlugin extends Plugin {
 						'ENETUNREACH',
 						'EHOSTUNREACH'
 					]
-				},
-				statusBarManager: this.statusBarManager
+				}
 			})
 
 			// Phase 4: Reset current document session count only
@@ -691,7 +703,7 @@ export default class TarsPlugin extends Plugin {
 						(item) =>
 							item.tool.name.toLowerCase().includes(lowerQuery) ||
 							item.server.toLowerCase().includes(lowerQuery) ||
-							(item.tool.description && item.tool.description.toLowerCase().includes(lowerQuery))
+							item.tool.description?.toLowerCase().includes(lowerQuery)
 					)
 				}
 

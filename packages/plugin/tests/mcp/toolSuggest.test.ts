@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { ToolDefinition } from '../../src/mcp/types'
+import type { ToolDefinition } from '@tars/mcp-hostingtypes'
 import {
 	buildParameterPlaceholder,
 	buildRequiredParameterInsertion,

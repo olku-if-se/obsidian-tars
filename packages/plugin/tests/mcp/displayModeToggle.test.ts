@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import type { CommandDisplayModeValue } from '../../src/mcp/displayMode'
+import type { CommandDisplayModeValue } from '@tars/mcp-hosting'
 import {
 	CommandDisplayMode,
 	commandToRemoteUrl,
 	detectConversionCapability,
 	normalizeDisplayMode,
 	remoteUrlToCommand
-} from '../../src/mcp/displayMode'
-import type { MCPServerConfig } from '../../src/mcp/types'
+} from '@tars/mcp-hosting'
+import type { MCPServerConfig } from '@tars/mcp-hostingtypes'
 
 describe('remoteUrlToCommand', () => {
 	it('converts https URL to remote command', () => {

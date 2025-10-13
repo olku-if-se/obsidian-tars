@@ -1,7 +1,8 @@
+import type { MCPServerConfig } from '@tars/mcp-hosting'
+import { MCP_CONFIG_EXAMPLES, parseConfigInput, validateConfigInput } from '@tars/mcp-hosting'
 import { type App, type ButtonComponent, Notice, Setting, setIcon } from 'obsidian'
 import { createLogger } from '../logger'
 import type TarsPlugin from '../main'
-import { MCP_CONFIG_EXAMPLES, parseConfigInput, validateConfigInput } from '../mcp/config'
 import type { ConversionCapability, ConversionFormat } from '../mcp/displayMode'
 import {
 	CommandDisplayMode,
@@ -11,7 +12,6 @@ import {
 	normalizeDisplayMode,
 	remoteUrlToCommand
 } from '../mcp/displayMode'
-import type { MCPServerConfig } from '../mcp/types'
 
 const logger = createLogger('settings:mcp-servers')
 
@@ -629,7 +629,7 @@ export class MCPServerSettings {
 				if (parsed?.type === 'json' && !parsed.error) {
 					try {
 						return JSON.stringify(JSON.parse(trimmed), null, 2)
-					} catch (error) {
+					} catch (_error) {
 						return trimmed
 					}
 				}

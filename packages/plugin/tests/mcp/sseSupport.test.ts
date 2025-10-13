@@ -3,9 +3,9 @@
  * Feature-200-40: SSE Support via mcp-remote
  */
 
+import type { MCPServerConfig } from '@tars/mcp-hosting'
+import { parseConfigInput, toMCPUseFormat } from '@tars/mcp-hosting'
 import { describe, expect, it } from 'vitest'
-import { parseConfigInput, toMCPUseFormat } from '../../src/mcp/config'
-import type { MCPServerConfig } from '../../src/mcp/types'
 
 describe('SSE/URL Support via mcp-remote', () => {
 	describe('URL to mcp-remote Conversion', () => {

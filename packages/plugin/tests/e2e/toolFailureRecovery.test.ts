@@ -1,5 +1,5 @@
+import type { ToolExecutor } from '@tars/mcp-hosting'
 import { describe, expect, it, vi } from 'vitest'
-import type { ToolExecutor } from '../../src/mcp/executor'
 import type { ProviderAdapter } from '../../src/mcp/toolCallingCoordinator'
 import { ToolCallingCoordinator } from '../../src/mcp/toolCallingCoordinator'
 

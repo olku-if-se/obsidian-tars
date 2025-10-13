@@ -11,9 +11,9 @@
  * 5. Continue until LLM generates final text response
  */
 
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import type { ToolCall, ToolResponseParser } from '@tars/mcp-hosting'
+import { describe, expect, it, vi } from 'vitest'
 import { ToolCallingCoordinator } from '../../src/mcp/toolCallingCoordinator'
-import type { ToolCall, ToolResponseParser } from '../../src/mcp/toolResponseParser'
 
 // Types for coordinator (to be implemented)
 interface Message {
@@ -155,7 +155,7 @@ describe('ToolCallingCoordinator', () => {
 			let parserHasToolCalls = false
 
 			const mockAdapter: ProviderAdapter = {
-				async *sendRequest(messages: Message[]) {
+				async *sendRequest(_messages: Message[]) {
 					requestNumber++
 					if (requestNumber === 1) {
 						// First request - return tool call chunk
@@ -239,7 +239,7 @@ describe('ToolCallingCoordinator', () => {
 			}
 
 			let requestCount = 0
-			const mockAdapter: ProviderAdapter = {
+			const _mockAdapter: ProviderAdapter = {
 				async *sendRequest(_messages: Message[]) {
 					requestCount++
 					if (requestCount === 1) {
@@ -324,7 +324,7 @@ describe('ToolCallingCoordinator', () => {
 	describe('Error handling', () => {
 		it('should handle tool execution errors gracefully', async () => {
 			// GIVEN: Tool executor that throws error
-			const mockAdapter: ProviderAdapter = {
+			const _mockAdapter: ProviderAdapter = {
 				async *sendRequest(_messages: Message[]) {
 					yield { tool_calls: [{ id: 'call_1', name: 'failing_tool', arguments: {} }] }
 				},
@@ -402,7 +402,7 @@ describe('ToolCallingCoordinator', () => {
 					getToolCalls: vi.fn(() => (requestCount === 1 ? toolCalls : [])),
 					reset: vi.fn()
 				}),
-				findServer: (name: string) => ({ id: 'test-server', name: 'Test Server' }),
+				findServer: (_name: string) => ({ id: 'test-server', name: 'Test Server' }),
 				formatToolResult: (toolCallId: string, result: ToolExecutionResult) => ({
 					role: 'tool',
 					tool_call_id: toolCallId,
@@ -487,7 +487,7 @@ describe('ToolCallingCoordinator', () => {
 					getToolCalls: vi.fn(() => (requestCount === 1 ? toolCalls : [])),
 					reset: vi.fn()
 				}),
-				findServer: (name: string) => ({ id: 'test-server', name: 'Test Server' }),
+				findServer: (_name: string) => ({ id: 'test-server', name: 'Test Server' }),
 				formatToolResult: (toolCallId: string, result: ToolExecutionResult) => ({
 					role: 'tool',
 					tool_call_id: toolCallId,

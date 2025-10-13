@@ -7,10 +7,9 @@
  * - Proper cleanup on cancellation
  */
 
+import type { ExecutionTracker, MCPServerManager } from '@tars/mcp-hosting'
+import { ToolExecutor } from '@tars/mcp-hosting'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { ToolExecutor } from '../../src/mcp/executor'
-import type { MCPServerManager } from '../../src/mcp/managerMCPUse'
-import type { ExecutionTracker } from '../../src/mcp/types'
 
 // Mock the MCP client
 const mockClient = {

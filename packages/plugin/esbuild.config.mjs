@@ -45,7 +45,10 @@ const context = await esbuild.context({
 		'node:tls',
 		'node:crypto',
 		'node:os',
-		'node:child_process'
+		'node:child_process',
+		// MCP dependencies that should remain external
+		'mcp-use',
+		'@modelcontextprotocol/sdk'
 	],
 	format: 'cjs',
 	platform: 'node', // Obsidian runs on Electron (Node.js environment)

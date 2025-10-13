@@ -4,8 +4,8 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { ResultCache } from '../../src/mcp/resultCache'
-import type { ToolExecutionResult } from '../../src/mcp/types.js'
+import { ResultCache } from '@tars/mcp-hosting'
+import type { ToolExecutionResult } from '@tars/mcp-hostingtypes.js'
 
 describe('ResultCache', () => {
 	let cache: ResultCache

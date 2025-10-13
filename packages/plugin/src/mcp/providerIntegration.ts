@@ -3,10 +3,8 @@
  * Helper functions to integrate MCP tools with AI providers
  */
 
+import type { AIToolContext, MCPServerManager, ToolExecutor } from '@tars/mcp-hosting'
 import { createLogger } from '../logger'
-import type { ToolExecutor } from './executor'
-import type { MCPServerManager } from './managerMCPUse'
-import type { AIToolContext } from './types'
 
 const logger = createLogger('mcp:provider-integration')
 

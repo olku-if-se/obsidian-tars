@@ -2,8 +2,8 @@
  * Tests for MCP utility functions, specifically config parsing
  */
 
+import { parseConfigInput } from '@tars/mcp-hosting'
 import { describe, expect, it } from 'vitest'
-import { parseConfigInput } from '../../src/mcp/config'
 
 describe('parseConfigInput', () => {
 	it('should parse VS Code MCP JSON format with docker run', () => {

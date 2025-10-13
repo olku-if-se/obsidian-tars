@@ -12,7 +12,7 @@ import {
 	type RetryPolicy,
 	updateRetryState,
 	withRetry
-} from '../../src/mcp/retryUtils'
+} from '@tars/mcp-hosting'
 
 describe('Retry Utilities', () => {
 	beforeEach(() => {

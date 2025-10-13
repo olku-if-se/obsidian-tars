@@ -1,5 +1,8 @@
-import { parseConfigInput } from './config'
-import type { ConfigDisplayMode, MCPServerConfig } from './types'
+import type { MCPServerConfig } from '@tars/mcp-hosting'
+import { parseConfigInput } from '@tars/mcp-hosting'
+
+// Local type definition (not exported from mcp-hosting)
+type ConfigDisplayMode = 'simple' | 'command'
 
 export const CommandDisplayMode = {
 	Simple: 'simple' as ConfigDisplayMode,
@@ -57,7 +60,7 @@ export function isValidRemoteUrl(value: string): boolean {
 	try {
 		const parsed = new URL(value.trim())
 		return parsed.protocol === 'http:' || parsed.protocol === 'https:'
-	} catch (error) {
+	} catch (_error) {
 		return false
 	}
 }

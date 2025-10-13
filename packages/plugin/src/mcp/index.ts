@@ -3,13 +3,22 @@
  * Main entry point for MCP server integration functionality
  */
 
+// Tool calling infrastructure
+export {
+	ClaudeToolResponseParser,
+	OllamaToolResponseParser,
+	OpenAIToolResponseParser,
+	type StreamChunk,
+	type TextChunk,
+	type ToolCall,
+	type ToolCallChunk,
+	type ToolResponseParser
+} from '@tars/mcp-hosting'
 // Core classes
 export { CodeBlockProcessor } from './codeBlockProcessor'
+// Display mode utilities
+export { commandToRemoteUrl, remoteUrlToCommand } from './displayMode'
 export { registerDocumentSessionHandlers } from './documentSessionHandlers'
-export * from './errors'
-export type { SessionNotificationHandlers } from './executor'
-export { ToolExecutor } from './executor'
-export { MCPServerManager } from './managerMCPUse' // Using mcp-use library
 export {
 	buildToolServerMapping,
 	type ClaudeAdapterConfig,
@@ -50,18 +59,6 @@ export {
 	ToolCallingCoordinator,
 	type ToolExecutionRequest
 } from './toolCallingCoordinator'
-// Tool calling infrastructure
-export {
-	ClaudeToolResponseParser,
-	OllamaToolResponseParser,
-	OpenAIToolResponseParser,
-	type StreamChunk,
-	type TextChunk,
-	type ToolCall,
-	type ToolCallChunk,
-	type ToolResponseParser
-} from './toolResponseParser'
-export { type CachedToolResult, DocumentToolCache } from './toolResultCache'
 // Tool result formatting
 export {
 	type FormatOptions,
@@ -70,16 +67,12 @@ export {
 	formatToolResultAsMarkdown,
 	renderToolResultToDOM
 } from './toolResultFormatter'
-// Core types
-export * from './types'
-export * from './utils'
+// Utility section formatting
+export { formatUtilitySectionCallout } from './utilitySectionFormatter'
 
+import { MCPServerManager, type SessionNotificationHandlers, ToolExecutor } from '@tars/mcp-hosting'
 import type { StatusBarManager } from '../statusBarManager'
 import { CodeBlockProcessor } from './codeBlockProcessor'
-import type { SessionNotificationHandlers } from './executor'
-import { ToolExecutor } from './executor'
-// Import types for function signatures
-import { MCPServerManager } from './managerMCPUse'
 
 // Factory functions for common usage patterns
 export function createMCPManager(): MCPServerManager {
@@ -105,15 +98,10 @@ export function createToolExecutor(
 		executionHistory: []
 	}
 
-	return new ToolExecutor(
-		manager,
-		tracker,
-		{
-			timeout: options?.timeout ?? DEFAULT_MCP_TIMEOUT,
-			sessionNotifications: options?.sessionNotifications
-		},
-		options?.statusBarManager
-	)
+	return new ToolExecutor(manager, tracker, {
+		timeout: options?.timeout ?? DEFAULT_MCP_TIMEOUT,
+		sessionNotifications: options?.sessionNotifications
+	})
 }
 
 export function createCodeBlockProcessor(): CodeBlockProcessor {

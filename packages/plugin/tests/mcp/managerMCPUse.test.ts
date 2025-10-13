@@ -3,9 +3,9 @@
  * Tests retry logic, error recovery, and UI status updates
  */
 
+import type { MCPServerConfig, RetryPolicy } from '@tars/mcp-hosting'
+import { MCPServerManager } from '@tars/mcp-hosting'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { MCPServerManager } from '../../src/mcp/managerMCPUse'
-import type { MCPServerConfig, RetryPolicy } from '../../src/mcp/types'
 
 // Mock mcp-use at the top level
 vi.mock('mcp-use', () => ({

@@ -1,0 +1,23 @@
+{
+  "files": [],
+  "references": [
+    {
+      "path": "packages/plugin/tsconfig.json"
+    },
+    {
+      "path": "packages/plugin/tsconfig.build.json"
+    },
+    {
+      "path": "packages/plugin/tsconfig.tests.json"
+    },
+    {
+      "path": "packages/mcp-hosting/tsconfig.json"
+    },
+    {
+      "path": "packages/streams/tsconfig.json"
+    },
+    {
+      "path": "packages/logger/tsconfig.json"
+    }
+  ]
+}
