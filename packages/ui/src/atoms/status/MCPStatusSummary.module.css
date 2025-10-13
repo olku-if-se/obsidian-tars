@@ -1,0 +1,54 @@
+
+.summary {
+	padding: var(--size-4-3);
+	background-color: var(--background-secondary);
+	border-radius: var(--radius-s);
+	border: 1px solid var(--background-modifier-border);
+}
+
+.summary p {
+	margin: var(--size-4-1) 0;
+	font-size: var(--font-ui-small);
+}
+
+.summary p:first-child {
+	margin-top: 0;
+}
+
+.summary p:last-child {
+	margin-bottom: 0;
+}
+
+.activeExecutions {
+	color: var(--color-orange);
+	font-weight: var(--font-semibold);
+}
+
+.retrying {
+	color: var(--color-orange);
+	font-weight: var(--font-semibold);
+}
+
+.failed {
+	color: var(--color-red);
+	font-weight: var(--font-semibold);
+}
+
+.cacheStats {
+	color: var(--text-muted);
+	font-size: var(--font-ui-small);
+}
+
+.sessionsNormal {
+	color: var(--text-normal);
+}
+
+.sessionsWarning {
+	color: var(--color-orange);
+	font-weight: var(--font-semibold);
+}
+
+.sessionsCritical {
+	color: var(--color-red);
+	font-weight: var(--font-semibold);
+}

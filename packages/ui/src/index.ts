@@ -4,4 +4,5 @@
 export type { ComponentProps, FC, ReactNode } from 'react'
 
 export * from './components'
+export * from './types'
 export * from './views'

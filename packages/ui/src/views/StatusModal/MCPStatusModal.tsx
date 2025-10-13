@@ -1,15 +1,8 @@
 import type React from 'react'
 import { useCallback, useState } from 'react'
-import { Button, InfoSectionList, Modal, ParagraphList, TabList } from '../../atoms'
+import { Button, MCPServerStatusItem, MCPStatusSummary, Modal, TabList } from '../../atoms'
 import type { BridgeComponentProps } from '../../bridge/ReactBridge'
-import type { ErrorInfo, ErrorLogEntry, MCPStatusInfo } from '../../types/types'
-import {
-	formatRetryInfo,
-	formatSessionStatus,
-	getServerStatusIcon,
-	getServerStatusText,
-	type MCPServerInfo
-} from '../../utils/utilities'
+import type { ErrorInfo, ErrorLogEntry, MCPStatusInfo } from '../../types'
 import { ErrorDetailView } from '../ErrorDetailView/ErrorDetailView'
 import styles from './MCPStatusModal.module.css'
 
@@ -75,81 +68,6 @@ export const MCPStatusModal: React.FC<MCPStatusModalProps> = ({
 		[onRemoveLog]
 	)
 
-	const ServerStatusItem = useCallback(({ server }: { server: MCPServerInfo }) => {
-		// Data-driven approach for server info sections - following DRY principles
-		const serverInfoSections = [
-			{ content: getServerStatusIcon(server), className: styles.statusIcon },
-			{ content: server.name, className: styles.serverName },
-			{ content: `| Tools: ${server.toolCount}`, className: styles.toolsCount },
-			{ content: `| Status: ${getServerStatusText(server, formatRetryInfo)}`, className: styles.serverStatus }
-		]
-
-		return (
-			<div key={`${server.id}-${server.name}`} className={styles.serverItem}>
-				<InfoSectionList sections={serverInfoSections} containerClassName={styles.serverInfo} />
-			</div>
-		)
-	}, [])
-
-	const SummarySection = useCallback(() => {
-		// Data-driven approach for summary items - following DRY principles
-		const summaryItems = [
-			{
-				content: `Running: ${mcpStatus.runningServers} / ${mcpStatus.totalServers} servers`
-			},
-			...(mcpStatus.activeExecutions && mcpStatus.activeExecutions > 0
-				? [
-						{
-							content: `Active Executions: ${mcpStatus.activeExecutions}`,
-							className: styles.activeExecutions
-						}
-					]
-				: []),
-			...(mcpStatus.currentDocumentSessions !== undefined &&
-			mcpStatus.sessionLimit !== undefined &&
-			mcpStatus.sessionLimit > 0
-				? (() => {
-						const sessionStatus = formatSessionStatus(mcpStatus.currentDocumentSessions, mcpStatus.sessionLimit, styles)
-						return [
-							{
-								content: sessionStatus.text,
-								className: sessionStatus.className
-							}
-						]
-					})()
-				: []),
-			...(mcpStatus.retryingServers > 0
-				? [
-						{
-							content: `Retrying: ${mcpStatus.retryingServers} servers`,
-							className: styles.retrying
-						}
-					]
-				: []),
-			...(mcpStatus.failedServers && mcpStatus.failedServers > 0
-				? [
-						{
-							content: `Failed: ${mcpStatus.failedServers} servers`,
-							className: styles.failed
-						}
-					]
-				: []),
-			{
-				content: `Available Tools: ${mcpStatus.availableTools}`
-			},
-			...(mcpStatus.cacheStats
-				? [
-						{
-							content: `📦 Cache: ${mcpStatus.cacheStats.size} entries, ${mcpStatus.cacheStats.hitRate.toFixed(1)}% hit rate`,
-							className: styles.cacheStats
-						}
-					]
-				: [])
-		]
-
-		return <ParagraphList items={summaryItems} containerClassName={styles.summary} />
-	}, [mcpStatus])
-
 	// Define tabs as data - following DRY principles
 	const tabs = [
 		{
@@ -171,14 +89,14 @@ export const MCPStatusModal: React.FC<MCPStatusModalProps> = ({
 					)}
 
 					<div className={styles.statusContainer}>
-						<SummarySection />
+						<MCPStatusSummary status={mcpStatus} />
 
 						{mcpStatus.servers.length > 0 && (
 							<div className={styles.serversSection}>
 								<h3>Servers</h3>
 								<div className={styles.serverList}>
 									{mcpStatus.servers.map((server) => (
-										<ServerStatusItem key={server.id} server={server} />
+										<MCPServerStatusItem key={server.id} server={server} />
 									))}
 								</div>
 							</div>

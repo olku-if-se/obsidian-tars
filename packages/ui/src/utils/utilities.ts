@@ -88,7 +88,7 @@ export const formatRetryInfo = (server: MCPServerInfo): string => {
 // Server status icon utility
 export const getServerStatusIcon = (server: MCPServerInfo): string => {
 	if (server.isConnected) {
-		return '✅'
+		return '🟢'
 	}
 	if (server.enabled) {
 		return '🔴'

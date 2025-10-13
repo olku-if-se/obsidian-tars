@@ -1,3 +1,7 @@
 .info-section-list-span {
-	padding-right: 0.5em;
+	padding-right: 0.25em;
+}
+
+.info-section-list-span:last-child {
+	padding-right: 0;
 }
