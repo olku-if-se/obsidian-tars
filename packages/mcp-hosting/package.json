@@ -33,7 +33,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.18.2",
     "@tars/logger": "workspace:*",
-    "mcp-use": "0.1.0",
+    "mcp-use": "^1.0.0",
     "async-mutex": "^0.5.0",
     "p-limit": "^7.1.1",
     "debug": "^4.4.3"

@@ -22,10 +22,11 @@
 		"ci": "turbo lint check typecheck:build typecheck:tests build test --parallel --cache-dir=.turbo",
 		"clean": "turbo clean && rm -rf node_modules .turbo",
 		"clean:cache": "rm -rf .turbo",
-		"plugin:dev": "pnpm --filter obsidian-tars dev",
-		"plugin:build": "pnpm --filter obsidian-tars build",
-		"plugin:test": "pnpm --filter obsidian-tars test",
-		"plugin:clean": "pnpm --filter obsidian-tars clean"
+		"ui:dev": "pnpm --filter @tars/ui dev",
+		"ui:build": "pnpm --filter @tars/ui build",
+		"ui:storybook": "pnpm --filter @tars/ui storybook",
+		"ui:test": "pnpm --filter @tars/ui test",
+		"ui:lint": "pnpm --filter @tars/ui lint"
 	},
 	"keywords": [],
 	"author": "C Jack<https://github.com/ae86jack>",

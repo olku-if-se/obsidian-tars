@@ -13,20 +13,65 @@ This project uses a **monorepo** setup with **pnpm** and **Turborepo**:
 ```
 obsidian-tars/                  # Monorepo root
 ├── packages/
-│   └── plugin/                 # Main Obsidian plugin
-│       ├── src/                # Source code
-│       ├── tests/              # Test files
-│       ├── scripts/            # Build scripts
-│       └── package.json        # Plugin dependencies
+│   ├── plugin/                 # Main Obsidian plugin
+│   │   ├── src/                # Source code
+│   │   ├── tests/              # Test files
+│   │   ├── scripts/            # Build scripts
+│   │   └── package.json        # Plugin dependencies
+│   ├── logger/                 # @tars/logger - Shared logging utilities
+│   ├── mcp-hosting/           # @tars/mcp-hosting - MCP server infrastructure
+│   ├── streams/               # @tars/streams - Text editing utilities
+│   └── ui/                    # @tars/ui - React components with Storybook
 ├── pnpm-workspace.yaml         # Workspace configuration
 ├── turbo.json                  # Turborepo pipeline
 ├── biome.json                  # Code quality config
+├── mise.toml                   # Task runner configuration
 └── package.json                # Root package.json
 ```
+
+### Workspace Packages
+
+**@tars/logger (packages/logger/)**
+- Shared logging utilities using debug library
+- Workspace dependency for consistent logging across packages
+
+**@tars/mcp-hosting (packages/mcp-hosting/)**
+- Standalone MCP server hosting infrastructure
+- Docker container lifecycle management
+- Tool execution with concurrency limits
+- Published to npm as public package
+
+**@tars/streams (packages/streams/)**
+- Text editing utilities for real-time manipulation
+- TextEditStream for coordinated editor updates
+- Piece table implementation for concurrent editing
+
+**@tars/ui (packages/ui/)**
+- React component library with Storybook
+- Shared UI components for future web interface
 
 ## Development Commands
 
 **Note**: All commands can be run from the monorepo root.
+
+### Quick Start with Mise
+The project includes **mise** task runner for convenient shortcuts:
+```bash
+# Complete test workflow (build → vault → launch)
+mise test
+
+# Start development watch mode
+mise dev
+
+# Build for production
+mise build
+
+# Run all quality checks (lint + format + tests)
+mise check
+
+# Setup development environment with symlinked vault
+mise dev-setup
+```
 
 ### Build and Run
 ```bash
@@ -85,6 +130,34 @@ packages/plugin/scripts/launch-obsidian.sh
 ```
 
 After launching Obsidian, enable the plugin in Settings → Community plugins → Tars.
+
+### Docker and MCP Tools
+```bash
+# Check Docker containers and MCP servers
+mise docker-status
+
+# View MCP container logs
+mise docker-logs
+
+# Stop all MCP containers
+mise docker-stop
+```
+
+## Development Tooling
+
+### Environment Configuration
+- **Node 22.20.0** (managed via mise and Volta)
+- **pnpm 10.18.2** for package management
+- **Docker** required for MCP server functionality
+- **Biome** for linting and formatting
+- **Vitest** for testing with jsdom environment
+
+### Workspace Dependencies
+- Internal packages use `workspace:*` dependencies
+- Shared logging via @tars/logger
+- MCP infrastructure via @tars/mcp-hosting
+- Text utilities via @tars/streams
+- UI components via @tars/ui (React + Storybook)
 
 ## High-Level Architecture
 
@@ -209,6 +282,47 @@ async function* sendRequest(messages, controller): AsyncGenerator<string> {
 }
 ```
 
+## Advanced Implementation Patterns
+
+### Document Write Locking
+- **DocumentWriteLock** ensures thread-safe document editing
+- Prevents race conditions during streaming responses
+- Used extensively in `editor.ts` and MCP tool execution
+- Coordinates multiple concurrent text operations
+
+### Stream Processing Architecture
+- **TextEditStream** manages real-time text manipulation
+- Anchor points maintain cursor position during edits
+- Supports concurrent text insertion and tool execution
+- Piece table implementation for efficient editing operations
+
+### Error Ring Buffer
+- **StatusBarManager** maintains last 50 errors in memory
+- Sanitized logging (parameter keys only, no values)
+- Click status bar to view detailed error history
+- Provides context for debugging MCP and LLM issues
+
+### Provider Integration Guide
+When adding new AI providers, follow this pattern:
+
+```typescript
+// src/providers/newProvider.ts
+export const newProviderVendor: Vendor = {
+  name: 'newProvider',
+  sendRequestFunc: (options) => async function* (messages, controller) {
+    // Streaming implementation with async generators
+    for await (const chunk of streamResponse(options)) {
+      yield chunk
+    }
+  }
+}
+```
+
+1. Create provider file implementing `Vendor` interface
+2. Add to `availableVendors` in `settings.ts`
+3. If supporting tool calling, create adapter in `src/mcp/adapters/`
+4. Update `providerToolIntegration.ts` for tool integration
+
 ### Testing Strategy
 - **Unit tests**: Mock MCP SDK, Docker client, and Obsidian APIs
 - **Integration tests**: Test component interactions (Manager ↔ Executor ↔ CodeBlockProcessor)
@@ -216,6 +330,12 @@ async function* sendRequest(messages, controller): AsyncGenerator<string> {
 - **Test files**: Organized under `tests/` matching `src/` structure
 - Vitest with jsdom environment for Obsidian API mocking
 - Test coverage: 279+ tests passing, focusing on error handling and resilience
+
+#### Test Infrastructure
+- **Test Structure**: `tests/unit/`, `tests/integration/`, `tests/e2e/`
+- **Mock Strategy**: jsdom environment for Obsidian API mocking, Docker client mocking
+- **Coverage Configuration**: V8 provider with HTML reports in `coverage/`
+- **Test Commands**: `pnpm test`, `pnpm test:coverage`, `pnpm test:watch`
 
 ## Common Development Tasks
 
@@ -334,8 +454,20 @@ MCP servers configured via settings with these fields:
 - **Session limit**: Max tool executions per document (prevents infinite loops)
 - **Timeout**: Per-tool execution timeout (default 30s)
 
-## Node Version
-This project uses Node 22.20.0 (managed via Volta).
+## Environment and Dependencies
+
+### Node Version and Tools
+- **Node 22.20.0** (managed via mise and Volta)
+- **pnpm 10.18.2** for package management
+- **Docker** required for MCP server functionality
+
+### Key Dependencies
+- **@modelcontextprotocol/sdk**: MCP integration
+- **obsidian**: Obsidian plugin API
+- **async-mutex**: Document write locking
+- **debug**: Logging throughout application
+- **Biome**: Code quality (linting + formatting)
+- **Vitest**: Testing framework with jsdom mocking
 
 ## Current Development Status
 
