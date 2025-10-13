@@ -33,9 +33,15 @@ export default defineConfig({
 	// Add Storybook-specific configuration
 	optimizeDeps: {
 		include: ['@storybook/react', '@storybook/react-vite'],
+		force: true, // Force optimization to prevent hanging
 	},
 	define: {
 		// Ensure Storybook globals are available
 		global: 'globalThis',
+	},
+	server: {
+		hmr: {
+			overlay: false,
+		},
 	},
 });

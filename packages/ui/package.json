@@ -11,6 +11,7 @@
 	],
 	"scripts": {
 		"dev": "storybook dev -p 6006",
+		"dev:fast": "STORYBOOK_SKIP_DEPENDENCIES=true storybook dev -p 6006 --no-open",
 		"test": "vitest",
 		"test:watch": "vitest --ui --coverage",
 		"test:coverage": "vitest --coverage",
