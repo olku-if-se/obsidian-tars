@@ -1,5 +1,7 @@
 .errorDetailModal {
-	padding: var(--size-4-4);
+	padding: 0;
+	height: 100%;
+	overflow-y: auto;
 }
 
 .currentErrorSection {

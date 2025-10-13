@@ -1,26 +1,7 @@
 .mcpServerStatusTab {
 	width: 100%;
-}
-
-.panelHeader {
-	display: flex;
-	justify-content: flex-end;
-	align-items: center;
-	margin-bottom: var(--size-4-4);
-	padding-bottom: var(--size-4-2);
-	border-bottom: 1px solid var(--background-modifier-border);
-}
-
-.refreshSection {
-	display: flex;
-	align-items: center;
-	gap: var(--size-4-2);
-}
-
-.refreshStatus {
-	font-size: var(--font-ui-small);
-	color: var(--text-muted);
-	font-style: italic;
+	height: 100%;
+	overflow-y: auto;
 }
 
 .statusContainer {

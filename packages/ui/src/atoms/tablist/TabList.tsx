@@ -1,4 +1,5 @@
 import type React from 'react'
+import styles from './TabList.module.css'
 
 /**
  * Atomic Element: Tab List
@@ -17,30 +18,18 @@ export interface TabListProps {
 	tabs: TabItemProps[]
 	activeTab: string
 	onTabChange: (tabId: string) => void
-	tabButtonClassName?: string
-	activeTabClassName?: string
-	panelClassName?: string
 }
 
-export const TabList: React.FC<TabListProps> = ({
-	tabs,
-	activeTab,
-	onTabChange,
-	tabButtonClassName,
-	activeTabClassName,
-	panelClassName
-}) => {
-	const activeTabContent = tabs.find((tab) => tab.id === activeTab)?.content
-
+export const TabList: React.FC<TabListProps> = ({ tabs, activeTab, onTabChange }) => {
 	return (
 		<>
 			{tabs.length > 1 && (
-				<div className={tabButtonClassName}>
+				<div className={styles.tabBar}>
 					{tabs.map((tab) => (
 						<button
 							key={tab.id}
-							type='button'
-							className={`${activeTab === tab.id ? activeTabClassName : ''}`}
+							type="button"
+							className={`${styles.tabButton} ${activeTab === tab.id ? styles.active : ''}`}
 							onClick={() => onTabChange(tab.id)}
 						>
 							{tab.label}
@@ -48,7 +37,6 @@ export const TabList: React.FC<TabListProps> = ({
 					))}
 				</div>
 			)}
-			<div className={panelClassName}>{activeTabContent}</div>
 		</>
 	)
 }

@@ -19,8 +19,6 @@ export const ErrorDetailView: React.FC<ErrorDetailViewProps> = ({
 }) => {
 	return (
 		<div className={styles.errorDetailModal}>
-			<h2>Error Details</h2>
-
 			{currentError && (
 				<div className={styles.currentErrorSection}>
 					<h3>Current Error</h3>

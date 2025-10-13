@@ -1,6 +1,6 @@
 import type React from 'react'
 import { useCallback, useState } from 'react'
-import { Modal, TabList } from '../../atoms'
+import { Button, Modal, TabList } from '../../atoms'
 import type { BridgeComponentProps } from '../../bridge/ReactBridge'
 import type { ErrorInfo, ErrorLogEntry, MCPStatusInfo } from '../../types'
 import { ErrorDetailView } from '../ErrorDetailView/ErrorDetailView'
@@ -28,8 +28,7 @@ export const MCPStatusModal: React.FC<MCPStatusModalProps> = ({
 	app
 }) => {
 	const [activeTab, setActiveTab] = useState<'mcp' | 'errors'>(currentError ? 'errors' : 'mcp')
-	const [refreshStatus, setRefreshStatus] = useState<string>('')
-	const [_isRefreshing, setIsRefreshing] = useState(false)
+	const [isRefreshing, setIsRefreshing] = useState(false)
 
 	const hasErrorData = errorLog.length > 0 || !!currentError
 
@@ -39,25 +38,15 @@ export const MCPStatusModal: React.FC<MCPStatusModalProps> = ({
 		}
 
 		setIsRefreshing(true)
-		setRefreshStatus('Starting refresh...')
 
 		try {
-			await onRefresh((message) => {
-				setRefreshStatus(message)
+			await onRefresh(() => {
+				// Status updates handled internally
 			})
-		} catch (error) {
-			setRefreshStatus(`❌ Error: ${error instanceof Error ? error.message : String(error)}`)
-			setTimeout(() => {
-				setRefreshStatus('')
-				setIsRefreshing(false)
-			}, 3000)
 		} finally {
-			if (!refreshStatus.includes('Error')) {
-				setRefreshStatus('')
-				setIsRefreshing(false)
-			}
+			setIsRefreshing(false)
 		}
-	}, [onRefresh, refreshStatus])
+	}, [onRefresh])
 
 	const handleClearLogs = useCallback(() => {
 		onClearLogs?.()
@@ -75,7 +64,7 @@ export const MCPStatusModal: React.FC<MCPStatusModalProps> = ({
 		{
 			id: 'mcp',
 			label: 'MCP Server Status',
-			content: <MCPServerStatusTab app={app} mcpStatus={mcpStatus} onRefresh={handleRefresh} />
+			content: <MCPServerStatusTab app={app} mcpStatus={mcpStatus} />
 		},
 		...(hasErrorData
 			? [
@@ -98,16 +87,21 @@ export const MCPStatusModal: React.FC<MCPStatusModalProps> = ({
 	return (
 		<Modal isOpen={true} onClose={onClose} title="MCP Server Status" size="lg">
 			<div className={styles.mcpStatusModal}>
-				<TabList
-					tabs={tabs}
-					activeTab={activeTab}
-					onTabChange={(tabId: string) =>
-						tabId === 'mcp' || tabId === 'errors' ? setActiveTab(tabId as 'mcp' | 'errors') : undefined
-					}
-					tabButtonClassName={styles.tabBar}
-					activeTabClassName={styles.active}
-					panelClassName={styles.panels}
-				/>
+				<div className={styles.tabHeader}>
+					<TabList
+						tabs={tabs}
+						activeTab={activeTab}
+						onTabChange={(tabId: string) =>
+							tabId === 'mcp' || tabId === 'errors' ? setActiveTab(tabId as 'mcp' | 'errors') : undefined
+						}
+					/>
+					{onRefresh && activeTab === 'mcp' && (
+						<Button onClick={handleRefresh} disabled={isRefreshing} variant="primary" size="sm">
+							{isRefreshing ? 'Refreshing...' : '🔄 Refresh'}
+						</Button>
+					)}
+				</div>
+				<div className={styles.tabContent}>{tabs.find((tab) => tab.id === activeTab)?.content}</div>
 			</div>
 		</Modal>
 	)

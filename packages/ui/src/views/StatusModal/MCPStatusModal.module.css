@@ -2,52 +2,27 @@
 	padding: 0;
 	width: 100%;
 	max-width: 800px;
-	max-height: 90vh;
+	height: 600px;
+	max-height: 85vh;
 	overflow: hidden;
-}
-
-.tabBar {
 	display: flex;
-	border-bottom: 1px solid var(--background-modifier-border);
-	background-color: var(--background-secondary);
-	padding: 0 var(--size-4-2);
+	flex-direction: column;
 }
 
-.tabButton {
-	background: none;
-	border: none;
-	padding: var(--size-4-2) var(--size-4-4);
-	color: var(--text-muted);
-	cursor: pointer;
-	font-size: var(--font-ui-small);
-	font-weight: var(--font-semibold);
-	border-bottom: 2px solid transparent;
-	transition: all 0.2s ease;
+.tabHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--size-4-3);
+	margin-bottom: var(--size-4-3);
+	padding: var(--size-4-3) var(--size-4-3) 0;
+	flex-shrink: 0;
 }
 
-.tabButton:hover {
-	color: var(--text-normal);
-	background-color: var(--background-modifier-hover);
-}
-
-.tabButton.active {
-	color: var(--color-accent);
-	border-bottom-color: var(--color-accent);
-	background-color: var(--background-modifier-selected);
-}
-
-.panels {
+.tabContent {
 	overflow-y: auto;
-	max-height: calc(90vh - 120px);
-}
-
-.panel {
-	display: none;
-	padding: var(--size-4-4);
-}
-
-.panel.active {
-	display: block;
+	flex: 1;
+	padding: 0 var(--size-4-3) var(--size-4-3);
 }
 
 .panelHeader {
