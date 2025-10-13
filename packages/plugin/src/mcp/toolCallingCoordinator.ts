@@ -14,7 +14,7 @@ import type { Editor, EditorPosition } from 'obsidian'
 import pLimit from 'p-limit'
 import { stringify as stringifyYAML } from 'yaml'
 import { createLogger } from '../logger'
-import type { StatusBarManager } from '../statusBarManager'
+import type { StatusBarController } from '../statusBarManager'
 import type { DocumentWriteLock } from '../utils/documentWriteLock'
 import { runWithLock } from '../utils/documentWriteLock'
 
@@ -99,7 +99,7 @@ export interface GenerateOptions {
 	onToolCall?: (toolName: string) => void
 	onToolResult?: (toolName: string, duration: number) => void
 	editor?: Editor
-	statusBarManager?: StatusBarManager
+	statusBarManager?: StatusBarController
 	onPromptCachedResult?: (toolName: string, cached: CachedToolResult) => Promise<'re-execute' | 'use-cached' | 'cancel'>
 	autoUseDocumentCache?: boolean
 	parallelExecution?: boolean
@@ -258,7 +258,7 @@ export class ToolCallingCoordinator {
 			editor?: Editor
 			onToolCall?: (toolName: string) => void
 			onToolResult?: (toolName: string, duration: number) => void
-			statusBarManager?: StatusBarManager
+			statusBarManager?: StatusBarController
 			onPromptCachedResult?: (
 				toolName: string,
 				cached: CachedToolResult

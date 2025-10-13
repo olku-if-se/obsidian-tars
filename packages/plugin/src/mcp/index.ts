@@ -75,7 +75,7 @@ export {
 export { formatUtilitySectionCallout } from './utilitySectionFormatter'
 
 import { MCPServerManager, type SessionNotificationHandlers, ToolExecutor } from '@tars/mcp-hosting'
-import type { StatusBarManager } from '../statusBarManager'
+import type { StatusBarController } from '../statusBarManager'
 import { CodeBlockProcessor } from './codeBlockProcessor'
 
 // Factory functions for common usage patterns
@@ -89,7 +89,7 @@ export function createToolExecutor(
 		timeout?: number
 		concurrentLimit?: number
 		sessionLimit?: number
-		statusBarManager?: StatusBarManager
+		statusBarManager?: StatusBarController
 		sessionNotifications?: SessionNotificationHandlers
 	}
 ): ToolExecutor {

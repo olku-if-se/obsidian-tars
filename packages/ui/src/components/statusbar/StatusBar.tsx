@@ -1,10 +1,8 @@
 import type React from 'react'
-import { useEffect, useCallback } from 'react'
-import type { BridgeComponentProps } from '../bridge/ReactBridge'
-
-// Import types from other components
-import type { MCPStatusInfo, ErrorInfo } from './MCPStatusModal'
-import type { GenerationStats } from './GenerationStatsModal'
+import { useCallback, useEffect } from 'react'
+import type { BridgeComponentProps } from '../../bridge/ReactBridge'
+import type { ErrorInfo, MCPStatusInfo } from '../../types/types'
+import type { GenerationStats } from '../../views'
 
 export type StatusBarType = 'idle' | 'generating' | 'success' | 'error'
 
@@ -20,6 +18,7 @@ export interface StatusBarState {
 	mcpStatus?: MCPStatusInfo
 	timestamp: Date
 }
+
 import styles from './StatusBar.module.css'
 
 export interface StatusBarProps extends BridgeComponentProps {
@@ -29,12 +28,7 @@ export interface StatusBarProps extends BridgeComponentProps {
 	onOpenModal?: (type: 'mcp' | 'stats' | 'error') => void
 }
 
-export const StatusBar: React.FC<StatusBarProps> = ({
-	state,
-	onStateChange,
-	onClick,
-	onOpenModal
-}) => {
+export const StatusBar: React.FC<StatusBarProps> = ({ state, onStateChange, onClick, onOpenModal }) => {
 	const handleClick = useCallback(() => {
 		onClick?.()
 

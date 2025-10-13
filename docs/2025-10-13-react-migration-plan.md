@@ -110,8 +110,8 @@ packages/ui/
 │   │   ├── Input.tsx ✓
 │   │   ├── Input.module.css ✓
 │   │   └── index.ts
-│   ├── test/setup.ts ✓
 │   └── index.ts
+├── test/setup.ts ✓
 ├── package.json ✓ (React 18.3.1)
 ├── vite.config.ts ✓
 ├── tsconfig.json ✓

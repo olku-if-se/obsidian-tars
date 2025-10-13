@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
+import type { ErrorInfo, MCPStatusInfo } from '../../types'
+import type { StatusBarState } from './StatusBar'
 import { StatusBar } from './StatusBar'
-import type { StatusBarState, MCPStatusInfo, ErrorInfo } from './StatusBar'
 
 const meta: Meta<typeof StatusBar> = {
 	title: 'Components/StatusBar',
@@ -90,7 +91,8 @@ const sampleError: ErrorInfo = {
 	name: 'GenerationError',
 	message: 'Failed to generate response: Rate limit exceeded',
 	timestamp: new Date(),
-	stack: 'Error: Failed to generate response\n    at GenerationService.generate (generation.js:123:45)\n    at async processGeneration (main.js:67:89)'
+	stack:
+		'Error: Failed to generate response\n    at GenerationService.generate (generation.js:123:45)\n    at async processGeneration (main.js:67:89)'
 }
 
 // Base idle state

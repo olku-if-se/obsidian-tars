@@ -12,12 +12,13 @@ import type {
 	ErrorLogEntry,
 	MCPStatusInfo
 } from '@tars/ui'
+import type { ErrorLogType, StatusBarController } from './statusBarManager'
 import { isFeatureEnabled } from './featureFlags'
 
 /**
  * React-enabled status bar manager that uses React components when feature flags are enabled
  */
-export class StatusBarReactManager {
+export class StatusBarReactManager implements StatusBarController {
 	private state: StatusBarState
 	private autoHideTimer: NodeJS.Timeout | null = null
 	private errorLog: ErrorLogEntry[] = []
@@ -115,9 +116,9 @@ export class StatusBarReactManager {
 				{
 					app: this.app,
 					state: this.state,
-					onStateChange: (newState) => this.updateState(newState),
+					onStateChange: (newState: StatusBarState) => this.updateState(newState),
 					onClick: () => this.handleStatusClick(),
-					onOpenModal: (type) => this.handleOpenModal(type)
+					onOpenModal: (type: 'mcp' | 'stats' | 'error') => this.handleOpenModal(type)
 				}
 			)
 		} catch (error) {
@@ -190,7 +191,7 @@ export class StatusBarReactManager {
 							errorLog: this.getErrorLog(),
 							currentError: this.state.type === 'error' ? this.state.data as ErrorInfo : undefined,
 							onClearLogs: () => this.clearErrorLog(),
-							onRemoveLog: (id) => this.removeErrorLogEntry(id),
+							onRemoveLog: (id: string) => this.removeErrorLogEntry(id),
 							onRefresh: this.onRefreshMCPStatus,
 							onClose: () => {
 								this.reactBridge?.unmount(modalContainer)
@@ -209,7 +210,7 @@ export class StatusBarReactManager {
 							stats: this.state.data as GenerationStats,
 							errorLog: this.getErrorLog(),
 							onClearLogs: () => this.clearErrorLog(),
-							onRemoveLog: (id) => this.removeErrorLogEntry(id),
+							onRemoveLog: (id: string) => this.removeErrorLogEntry(id),
 							onClose: () => {
 								this.reactBridge?.unmount(modalContainer)
 								modalContainer.remove()
@@ -235,7 +236,7 @@ export class StatusBarReactManager {
 							errorLog: this.getErrorLog(),
 							currentError: this.state.data as ErrorInfo,
 							onClearLogs: () => this.clearErrorLog(),
-							onRemoveLog: (id) => this.removeErrorLogEntry(id),
+							onRemoveLog: (id: string) => this.removeErrorLogEntry(id),
 							onClose: () => {
 								this.reactBridge?.unmount(modalContainer)
 								modalContainer.remove()
@@ -269,8 +270,8 @@ export class StatusBarReactManager {
 					this.state.mcpStatus!,
 					this.getErrorLog(),
 					() => this.clearErrorLog(),
-					(id) => this.removeErrorLogEntry(id),
-					this.state.type === 'error' ? this.state.data as ErrorInfo : undefined,
+					(id: string) => this.removeErrorLogEntry(id),
+					this.state.type === 'error' ? (this.state.data as ErrorInfo) : undefined,
 					this.onRefreshMCPStatus
 				).open()
 				break
@@ -281,7 +282,7 @@ export class StatusBarReactManager {
 					this.state.data as GenerationStats,
 					this.getErrorLog(),
 					() => this.clearErrorLog(),
-					(id) => this.removeErrorLogEntry(id)
+					(id: string) => this.removeErrorLogEntry(id)
 				).open()
 				break
 
@@ -291,7 +292,7 @@ export class StatusBarReactManager {
 					this.state.data as ErrorInfo,
 					this.getErrorLog(),
 					() => this.clearErrorLog(),
-					(id) => this.removeErrorLogEntry(id)
+					(id: string) => this.removeErrorLogEntry(id)
 				).open()
 				break
 		}
@@ -505,7 +506,7 @@ export class StatusBarReactManager {
 	/**
 	 * Log an error to the error buffer
 	 */
-	logError(type: 'generation' | 'mcp' | 'tool' | 'system', message: string, error?: Error, context?: Record<string, any>) {
+	logError(type: ErrorLogType, message: string, error?: Error, context?: Record<string, any>) {
 		const logEntry: ErrorLogEntry = {
 			id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
 			timestamp: new Date(),

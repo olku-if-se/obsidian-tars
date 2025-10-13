@@ -1,35 +1,50 @@
 {
 	"compilerOptions": {
-		"target": "ES2022",
-		"lib": ["ES2022", "DOM", "DOM.Iterable"],
 		"allowJs": true,
-		"skipLibCheck": true,
-		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
-		"strict": true,
-		"forceConsistentCasingInFileNames": true,
-		"noFallthroughCasesInSwitch": true,
-		"module": "ESNext",
-		"moduleResolution": "bundler",
-		"types": ["node"],
-		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"noEmit": false,
-		"jsx": "react-jsx",
-		"outDir": "./dist",
-		"rootDir": "./src",
 		"declaration": true,
 		"declarationMap": true,
-		"sourceMap": true,
-		"removeComments": false,
+		"esModuleInterop": true,
+		"exactOptionalPropertyTypes": true,
+		"forceConsistentCasingInFileNames": true,
+		"isolatedModules": true,
+		"jsx": "react-jsx",
+		"lib": [
+			"ES2022",
+			"DOM",
+			"DOM.Iterable"
+		],
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"noEmit": false,
+		"noFallthroughCasesInSwitch": true,
+		"noImplicitOverride": true,
 		"noImplicitReturns": true,
+		"noPropertyAccessFromIndexSignature": false,
+		"noUncheckedIndexedAccess": false,
 		"noUnusedLocals": false,
 		"noUnusedParameters": false,
-		"exactOptionalPropertyTypes": true,
-		"noImplicitOverride": true,
-		"noPropertyAccessFromIndexSignature": false,
-		"noUncheckedIndexedAccess": false
+		"outDir": "./dist",
+		"removeComments": false,
+		"resolveJsonModule": true,
+		"rootDir": ".",
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"strict": true,
+		"target": "ES2022",
+		"types": [
+			"node"
+		]
 	},
-	"include": ["src/**/*"],
-	"exclude": ["node_modules", "dist", "stories", ".storybook", "**/*.test.*", "**/*.stories.*"]
+	"exclude": [
+		"node_modules",
+		"dist",
+		".storybook",
+		"**/*.test.*",
+		"**/*.stories.*"
+	],
+	"include": [
+		"src/**/*",
+		"test/**/*"
+	]
 }

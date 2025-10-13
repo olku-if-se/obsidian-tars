@@ -2,10 +2,10 @@ import type { MCPServerConfig } from '@tars/mcp-hosting'
 import { MCPServerManager, ToolExecutor } from '@tars/mcp-hosting'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ToolCallingCoordinator } from '../../src/mcp/toolCallingCoordinator'
-import type { ErrorLogEntry, StatusBarManager } from '../../src/statusBarManager'
+import type { ErrorLogEntry, StatusBarController } from '../../src/statusBarManager'
 
 describe('Error Logging Integration', () => {
-	let mockStatusBarManager: StatusBarManager
+	let mockStatusBarManager: StatusBarController
 	let errorLog: ErrorLogEntry[]
 
 	beforeEach(() => {

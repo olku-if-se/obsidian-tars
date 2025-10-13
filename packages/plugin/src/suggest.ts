@@ -13,7 +13,7 @@ import { buildRunEnv, generate, type RequestController } from './editor'
 import { t } from './lang/helper'
 import { createLogger } from './logger'
 import type { PluginSettings } from './settings'
-import type { StatusBarManager } from './statusBarManager'
+import type { StatusBarController } from './statusBarManager'
 
 export type TagRole = 'user' | 'assistant' | 'system' | 'newChat'
 
@@ -74,7 +74,7 @@ const needsNewLine = (cursor: EditorPosition, editor: Editor) => {
 export class TagEditorSuggest extends EditorSuggest<TagEntry> {
 	settings: PluginSettings
 	tagLowerCaseMap: Map<string, Omit<TagEntry, 'replacement'>>
-	statusBarManager: StatusBarManager
+	statusBarManager: StatusBarController
 	requestController: RequestController
 	mcpManager?: unknown
 	mcpExecutor?: unknown
@@ -83,7 +83,7 @@ export class TagEditorSuggest extends EditorSuggest<TagEntry> {
 		app: App,
 		settings: PluginSettings,
 		tagLowerCaseMap: Map<string, Omit<TagEntry, 'replacement'>>,
-		statusBarManager: StatusBarManager,
+		statusBarManager: StatusBarController,
 		requestController: RequestController,
 		mcpManager?: unknown,
 		mcpExecutor?: unknown

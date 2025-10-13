@@ -4,10 +4,10 @@
  */
 
 import type { IStatusReporter } from '@tars/mcp-hosting'
-import type { StatusBarManager } from '../../statusBarManager'
+import type { StatusBarController } from '../../statusBarManager'
 
 export class StatusBarReporter implements IStatusReporter {
-	constructor(private statusBarManager: StatusBarManager) {}
+	constructor(private statusBarManager: StatusBarController) {}
 
 	reportServerStatus(_serverId: string, _status: 'connected' | 'disconnected' | 'error' | 'retrying'): void {
 		// This will be handled by the status bar manager's refresh mechanism

@@ -13,7 +13,7 @@ import { buildRunEnv, generate, type RequestController } from 'src/editor'
 import { t } from 'src/lang/helper'
 import type { ProviderSettings } from 'src/providers'
 import type { PluginSettings } from 'src/settings'
-import type { StatusBarManager } from 'src/statusBarManager'
+import type { StatusBarController } from 'src/statusBarManager'
 import { toSpeakMark } from 'src/suggest'
 import { createLogger } from '../logger'
 import type { TagCmdMeta } from './tagCmd'
@@ -32,7 +32,7 @@ export const asstTagCmd = (
 	{ id, name, tag }: TagCmdMeta,
 	app: App,
 	settings: PluginSettings,
-	statusBarManager: StatusBarManager,
+	statusBarManager: StatusBarController,
 	requestController: RequestController,
 	mcpManager?: unknown,
 	mcpExecutor?: unknown
@@ -177,7 +177,7 @@ export const asstTagCmd = (
 const regenerate = async (
 	app: App,
 	settings: PluginSettings,
-	statusBarManager: StatusBarManager,
+	statusBarManager: StatusBarController,
 	requestController: RequestController,
 	editor: Editor,
 	provider: ProviderSettings,

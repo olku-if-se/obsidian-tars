@@ -27,7 +27,7 @@ import { HEALTH_CHECK_INTERVAL } from './mcp/index'
 import { getTitleFromCmdId, loadTemplateFileCommand, promptTemplateCmd, templateToCmdId } from './prompt/command'
 import { DEFAULT_SETTINGS, type PluginSettings } from './settings'
 import { TarsSettingTab } from './settingTab'
-import { StatusBarManager } from './statusBarManager'
+import { StatusBarManager, type StatusBarController } from './statusBarManager'
 import { StatusBarReactManager } from './statusBarReact'
 import { getMaxTriggerLineLength, TagEditorSuggest, type TagEntry } from './suggest'
 import { MCPParameterSuggest } from './suggests/mcpParameterSuggest'
@@ -99,7 +99,7 @@ function createNoticeSessionNotifications(): SessionNotificationHandlers {
 
 export default class TarsPlugin extends Plugin {
 	settings: PluginSettings
-	statusBarManager: StatusBarManager
+	statusBarManager: StatusBarController
 	tagCmdIds: string[] = []
 	promptCmdIds: string[] = []
 	tagLowerCaseMap: Map<string, Omit<TagEntry, 'replacement'>> = new Map()

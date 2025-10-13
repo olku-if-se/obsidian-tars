@@ -74,6 +74,22 @@ export interface MCPStatusInfo {
 	}>
 }
 
+export interface StatusBarController {
+	setRefreshCallback(callback: (updateStatus: (message: string) => void) => Promise<void>): void
+	setGeneratingStatus(round: number): void
+	updateGeneratingProgress(characters: number): void
+	setSuccessStatus(stats: GenerationStats): void
+	setMCPStatus(mcpStatus: MCPStatusInfo): void
+	setErrorStatus(error: Error): void
+	setCancelledStatus(): void
+	clearStatus(): void
+	logError(type: ErrorLogType, message: string, error?: Error, context?: Record<string, any>): void
+	getErrorLog(): ErrorLogEntry[]
+	clearErrorLog(): void
+	getState(): Readonly<StatusBarState>
+	dispose(): void
+}
+
 class MCPStatusModal extends Modal {
 	private readonly tabButtons: Partial<Record<'mcp' | 'errors', HTMLButtonElement>> = {}
 	private readonly panels: Partial<Record<'mcp' | 'errors', HTMLElement>> = {}
@@ -665,7 +681,7 @@ class ErrorDetailModal extends Modal {
 	}
 }
 
-export class StatusBarManager {
+export class StatusBarManager implements StatusBarController {
 	private state: StatusBarState
 	private autoHideTimer: NodeJS.Timeout | null = null
 	private errorLog: ErrorLogEntry[] = []

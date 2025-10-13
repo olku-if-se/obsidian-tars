@@ -30,7 +30,7 @@ import type {
 } from './providers'
 import { withStreamLogging } from './providers/decorator'
 import { APP_FOLDER, availableVendors, type EditorStatus, type PluginSettings } from './settings'
-import type { GenerationStats, StatusBarManager } from './statusBarManager'
+import type { GenerationStats, StatusBarController } from './statusBarManager'
 import type { TagRole } from './suggest'
 import { DocumentWriteLock, runWithLock } from './utils/documentWriteLock'
 
@@ -480,7 +480,7 @@ export const generate = async (
 	editor: Editor,
 	provider: ProviderSettings,
 	endOffset: number,
-	statusBarManager: StatusBarManager,
+	statusBarManager: StatusBarController,
 	editorStatus: EditorStatus,
 	requestController: RequestController,
 	mcpManager?: unknown,

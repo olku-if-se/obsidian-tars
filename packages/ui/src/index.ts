@@ -2,4 +2,6 @@
 
 // Re-export commonly used React hooks and types
 export type { ComponentProps, FC, ReactNode } from 'react'
+
 export * from './components'
+export * from './views'
