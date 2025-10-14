@@ -1,3 +1,5 @@
 export * from './ErrorDetailView'
+export * from './MCPServerStatusTab/MCPServerStatusTab'
+export * from './SettingsTab/SettingsTab'
 export * from './StatsModal/GenerationStatsModal'
 export * from './StatusModal/MCPStatusModal'

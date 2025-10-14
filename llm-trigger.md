@@ -4,6 +4,14 @@ claude --dangerously-skip-permissions
 
 ---
 
+I'm refactoring/migrating packages/plugin/src/settingTab.ts to packages/ui/src/views/SettingsTab/SettingsTab.tsx
+
+help me to achieve the same layout of the elements, focus only on layout. No theme colors or else is required. I provde the screenshot of old UI that I want to migrate to React. So I assume to see a break down of UI, to multiple UI smaller components according to packages/ui/ARCHITECTURE.md .
+
+I will provide extra screenshots (with open collapsed sections) when you are ready.
+
+---
+
 read documents `docs/2025-10-12-{review|planning|tasks|changelog|migration-guide|test-strategy}.md`
 
 read our current plan `docs/2025-10-13-react-migration-plan.md`

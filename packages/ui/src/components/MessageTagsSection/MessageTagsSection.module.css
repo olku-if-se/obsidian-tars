@@ -1,0 +1,47 @@
+.sectionDesc {
+  font-size: var(--font-ui-small);
+  color: var(--text-muted);
+  margin-bottom: var(--size-4-3);
+  line-height: 1.4;
+}
+
+.tagGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-3);
+}
+
+.tagSetting {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2-2);
+  padding: var(--size-4-2) 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tagSetting:last-child {
+  border-bottom: none;
+}
+
+.tagHeader {
+  display: flex;
+  align-items: center;
+}
+
+.tagName {
+  font-size: var(--font-ui-medium);
+  font-weight: var(--font-medium);
+  color: var(--text);
+}
+
+.tagControl {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2-2);
+  flex-wrap: wrap;
+}
+
+.tagControl input {
+  flex: 1;
+  min-width: 200px;
+}

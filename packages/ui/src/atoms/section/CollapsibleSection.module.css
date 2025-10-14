@@ -1,0 +1,93 @@
+.collapsible {
+  margin-bottom: var(--size-4-4);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--size-4-2) var(--size-4-3);
+  cursor: pointer;
+  user-select: none;
+  font-size: var(--font-ui-larger);
+  font-weight: var(--font-semibold);
+  color: var(--text-normal);
+  background: transparent;
+  border: none;
+  list-style: none;
+  transition: background-color 0.2s ease;
+}
+
+.summary:hover {
+  background-color: var(--background-modifier-hover);
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.summaryText {
+  flex: 1;
+}
+
+.arrow {
+  font-size: var(--font-ui-smaller);
+  transition: transform 0.2s ease;
+  color: var(--text-normal);
+  opacity: 0.7;
+}
+
+.arrowOpen {
+  transform: rotate(180deg);
+}
+
+.content {
+  padding: var(--size-4-3);
+  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-2);
+}
+
+/* Storybook example styles */
+.interactive-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.demo-info {
+  padding: 12px;
+  background-color: var(--background-secondary);
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.demo-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.demo-text {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.nested-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.nested-text {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.nested-section {
+  padding: 12px;
+  font-size: 14px;
+}

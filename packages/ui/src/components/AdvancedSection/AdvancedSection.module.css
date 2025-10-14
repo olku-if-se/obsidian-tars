@@ -1,0 +1,46 @@
+.advancedSection {
+  /* Section-specific styling can be added here if needed */
+}
+
+.settingRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2-1);
+  padding: var(--size-4-2) 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.settingRow:last-child {
+  border-bottom: none;
+}
+
+.settingInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2-1);
+}
+
+.settingName {
+  font-size: var(--font-ui-medium);
+  font-weight: var(--font-medium);
+  color: var(--text);
+}
+
+.settingDesc {
+  font-size: var(--font-ui-small);
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.settingControl {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2-2);
+  flex-wrap: wrap;
+}
+
+.delaySlider {
+  flex: 1;
+  min-width: 200px;
+  max-width: 300px;
+}

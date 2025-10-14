@@ -1,0 +1,18 @@
+.section {
+  margin-bottom: var(--size-4-4);
+}
+
+.sectionTitle {
+  font-size: var(--font-ui-larger);
+  font-weight: var(--font-semibold);
+  margin: 0 0 var(--size-4-2) 0;
+  color: var(--text-normal);
+  border-bottom: 1px solid var(--background-modifier-border);
+  padding-bottom: var(--size-2-1);
+}
+
+.sectionContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-2);
+}
