@@ -44,3 +44,22 @@
   min-width: 200px;
   max-width: 300px;
 }
+
+.delayControls {
+  display: flex;
+  gap: var(--size-2-2);
+  align-items: center;
+  width: 100%;
+}
+
+.delayValueDisplay {
+  font-size: var(--font-ui-small);
+  font-weight: var(--font-medium);
+  color: var(--text-normal);
+  min-width: 40px;
+  text-align: center;
+  padding: var(--size-1-1) var(--size-2-1);
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-s);
+}

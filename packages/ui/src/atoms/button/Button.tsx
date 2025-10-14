@@ -1,5 +1,5 @@
 import { forwardRef } from 'react'
-import { useSemanticColors } from '../../components/atoms/ThemeProvider'
+import { useSemanticColors } from '../../providers/themes/ThemeProvider'
 import styles from './Button.module.css'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {

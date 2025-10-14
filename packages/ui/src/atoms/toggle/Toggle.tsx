@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { forwardRef, useState } from 'react'
 import styles from './Toggle.module.css'
 
 interface ToggleProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
@@ -7,8 +7,27 @@ interface ToggleProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 
 }
 
 export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
-	({ label, description, className, checked, onChange, disabled = false, ...props }, ref) => {
+	({ label, description, className, checked: controlledChecked, onChange, disabled = false, ...props }, ref) => {
+		const [internalChecked, setInternalChecked] = useState(controlledChecked || false)
 		const toggleId = `toggle-${Math.random().toString(36).substr(2, 9)}`
+
+		// Determine if this is a controlled or uncontrolled component
+		const isControlled = controlledChecked !== undefined
+		const isChecked = isControlled ? controlledChecked : internalChecked
+
+		const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+			const newChecked = event.target.checked
+
+			// Update internal state for uncontrolled component
+			if (!isControlled) {
+				setInternalChecked(newChecked)
+			}
+
+			// Call external onChange if provided
+			if (onChange) {
+				onChange(event)
+			}
+		}
 
 		return (
 			<div className={`${styles.toggle} ${className || ''}`}>
@@ -19,8 +38,8 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
 							id={toggleId}
 							type='checkbox'
 							className={styles.input}
-							checked={checked}
-							onChange={onChange}
+							checked={isChecked}
+							onChange={handleChange}
 							disabled={disabled}
 							{...props}
 						/>

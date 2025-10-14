@@ -1,7 +1,7 @@
-import React from 'react'
 import type { Preview } from '@storybook/react-vite'
-import { ThemeProvider, useThemeContext } from '../src/components/atoms/ThemeProvider'
-import type { ThemeName } from '../src/hooks/useTheme'
+import React from 'react'
+import { ThemeProvider, useThemeContext } from '../src/providers/themes/ThemeProvider'
+import type { ThemeName } from '../src/providers/themes/theme'
 import './obsidian-theme.css'
 
 const preview: Preview = {
@@ -57,20 +57,28 @@ const preview: Preview = {
 		(Story, context) => {
 			const { theme } = context.globals
 
-			// Create theme provider wrapper
-			const ThemeWrapper = () => {
-				const { switchTheme } = useThemeContext()
+			// Create a controlled theme provider that responds to Storybook theme changes
+			const ControlledThemeProvider = ({ children }: { children: React.ReactNode }) => {
+				const { currentTheme, switchTheme } = useThemeContext()
+				const isInitialized = React.useRef(false)
 
 				React.useEffect(() => {
-					switchTheme(theme as ThemeName)
-				}, [switchTheme])
+					// Only switch theme after initial render or when theme actually changes
+					if (isInitialized.current && currentTheme !== theme) {
+						switchTheme(theme as ThemeName)
+					} else {
+						isInitialized.current = true
+					}
+				}, [currentTheme, switchTheme])
 
-				return <Story />
+				return <>{children}</>
 			}
 
 			return (
 				<ThemeProvider initialTheme={theme as ThemeName}>
-					<ThemeWrapper />
+					<ControlledThemeProvider>
+						<Story />
+					</ControlledThemeProvider>
 				</ThemeProvider>
 			)
 		}

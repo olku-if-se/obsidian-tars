@@ -67,6 +67,26 @@ The smallest, reusable UI building blocks that can be composed together:
 6. **📦 Composability**: Larger components are built from smaller, predictable pieces
 7. **🔄 Flexibility**: Views can be reused in different UI contexts (like Tab components)
 
+## Rules To apply during development
+
+1. Do not use style attribute, only className allowed. Customization only via CSS classes.
+2. To apply multiple CSS classes use `clsx` NPM library
+3. More then 5 arguments/properties to pass should be packed in object or used a smart way to pass them. We are talking about data or ui state properties. Event Handlers is not counted.
+```tsx
+const props = {
+  /* many properties */   
+}
+
+<LabelValueList {...props} />
+```
+4. Always create a storybook story for each component.
+5. Re-use Atoms as much as possible, even if may loose some semantic meaning or lack of functionality in it. We can always update atoms to support more use-cases.
+6. Prepare components for i18n support, externalise strings/texts.
+7. Always support default props and partially provided props with fallback to defaults.
+8. Keep CSS classes close to the component, do not use global CSS classes.
+9. Use typescript aliases to make Generic types more readable and smaller in size.
+10. Utilize internal state, parent controls should not fully control the child. if required data exchange in both directions, then we should propogate onChange event attribute and raise it on any state change providing old and new states as arguments.
+
 ## Usage Example
 
 ```tsx

@@ -1,5 +1,5 @@
 import { forwardRef } from 'react'
-import { useSemanticColors } from '../../components/atoms/ThemeProvider'
+import { useSemanticColors } from '../../providers/themes/ThemeProvider'
 import styles from './Input.module.css'
 
 interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {

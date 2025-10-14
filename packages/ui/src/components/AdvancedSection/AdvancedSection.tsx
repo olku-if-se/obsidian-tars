@@ -1,132 +1,179 @@
-import { Button, Input, Slider, Toggle } from '../../atoms'
-import { CollapsibleSection } from '../../atoms/section/CollapsibleSection'
+import { Button, CollapsibleSection, SettingRow, Slider, Toggle } from '../../atoms'
+import clsx from 'clsx'
+import { useState } from 'react'
 import styles from './AdvancedSection.module.css'
 
+export interface SectionSettings {
+	enableInternalLinkForAssistantMsg: boolean
+	answerDelayInMilliseconds: number
+	enableReplaceTag: boolean
+	enableExportToJSONL: boolean
+	enableTagSuggest: boolean
+}
+
 interface AdvancedSectionProps {
-  enableInternalLinkForAssistantMsg: boolean
-  answerDelayInMilliseconds: number
-  enableReplaceTag: boolean
-  enableExportToJSONL: boolean
-  enableTagSuggest: boolean
-  onToggleInternalLinkForAssistant: (enabled: boolean) => void
-  onDelayChange: (delay: number) => void
-  onToggleReplaceTag: (enabled: boolean) => void
-  onToggleExportToJSONL: (enabled: boolean) => void
-  onToggleTagSuggest: (enabled: boolean) => void
-  defaultOpen?: boolean
-  onToggleSection?: (open: boolean) => void
+	initialSettings?: Partial<SectionSettings>
+	defaultOpen?: boolean
+	onToggleSection?: (open: boolean) => void
+	onSettingsChange?: (settings: Partial<SectionSettings>) => void
 }
 
 export const AdvancedSection = ({
-  enableInternalLinkForAssistantMsg,
-  answerDelayInMilliseconds,
-  enableReplaceTag,
-  enableExportToJSONL,
-  enableTagSuggest,
-  onToggleInternalLinkForAssistant,
-  onDelayChange,
-  onToggleReplaceTag,
-  onToggleExportToJSONL,
-  onToggleTagSuggest,
-  defaultOpen = false,
-  onToggleSection
+	initialSettings,
+	defaultOpen = false,
+	onToggleSection,
+	onSettingsChange
 }: AdvancedSectionProps) => {
-  const delayInSeconds = answerDelayInMilliseconds / 1000
+	// Internal state management with initial values from props
+	const [settings, setSettings] = useState<Partial<SectionSettings>>(() => ({
+		enableInternalLinkForAssistantMsg: false,
+		answerDelayInMilliseconds: 2000,
+		enableReplaceTag: false,
+		enableExportToJSONL: false,
+		enableTagSuggest: true,
+		...initialSettings
+	}))
 
-  return (
-    <CollapsibleSection
-      title="Advanced"
-      defaultOpen={defaultOpen}
-      onToggle={onToggleSection || (() => {})}
-      className={styles.advancedSection}
-    >
-      <div className={styles.settingRow}>
-        <div className={styles.settingInfo}>
-          <div className={styles.settingName}>Internal links for assistant messages</div>
-          <div className={styles.settingDesc}>
-            Replace internal links in assistant messages with their referenced content. Note: This feature is generally not recommended as assistant-generated content may contain non-existent links.
-          </div>
-        </div>
-        <div className={styles.settingControl}>
-          <Toggle
-            checked={enableInternalLinkForAssistantMsg}
-            onChange={(e) => onToggleInternalLinkForAssistant(e.target.checked)}
-          />
-        </div>
-      </div>
+	const delayInSeconds = settings.answerDelayInMilliseconds! / 1000
 
-      <div className={styles.settingRow}>
-        <div className={styles.settingInfo}>
-          <div className={styles.settingName}>Delay before answer (Seconds)</div>
-          <div className={styles.settingDesc}>
-            If you encounter errors with missing user messages when executing assistant commands on selected text, it may be due to the need for more time to parse the messages. Please slightly increase the delay time.
-          </div>
-        </div>
-        <div className={styles.settingControl}>
-          <Button
-            variant="default"
-            size="sm"
-            onClick={() => onDelayChange(2000)}
-          >
-            Reset
-          </Button>
-          <Slider
-            min={1.5}
-            max={4}
-            step={0.5}
-            value={delayInSeconds}
-            onChange={(e) => onDelayChange(Math.round(parseFloat(e.target.value) * 1000))}
-            showValue
-            valueFormatter={(value) => `${value}s`}
-            className={styles.delaySlider}
-          />
-        </div>
-      </div>
+	// Handle setting changes and notify parent
+	const updateSetting = <K extends keyof SectionSettings>(
+		key: K,
+		value: SectionSettings[K]
+	) => {
+		const newSettings = { ...settings, [key]: value }
+		setSettings(newSettings)
+		onSettingsChange?.(newSettings)
+	}
 
-      <div className={styles.settingRow}>
-        <div className={styles.settingInfo}>
-          <div className={styles.settingName}>Replace tag Command</div>
-          <div className={styles.settingDesc}>
-            Replace the names of the two most frequently occurring speakers with tag format.
-          </div>
-        </div>
-        <div className={styles.settingControl}>
-          <Toggle
-            checked={enableReplaceTag}
-            onChange={(e) => onToggleReplaceTag(e.target.checked)}
-          />
-        </div>
-      </div>
+	// Externalized strings for i18n support
+	const strings = {
+		title: 'Advanced',
+		internalLinksTitle: 'Internal links for assistant messages',
+		internalLinksDescription: 'Replace internal links in assistant messages with their referenced content. Note: This feature is generally not recommended as assistant-generated content may contain non-existent links.',
+		delayTitle: 'Delay before answer (Seconds)',
+		delayDescription: 'If you encounter errors with missing user messages when executing assistant commands on selected text, it may be due to the need for more time to parse the messages. Please slightly increase the delay time.',
+		resetButtonText: 'Reset',
+		replaceTagTitle: 'Replace tag Command',
+		replaceTagDescription: 'Replace the names of the two most frequently occurring speakers with tag format.',
+		exportToJsonlTitle: 'Export to JSONL Command',
+		exportToJsonlDescription: 'Export conversations to JSONL',
+		tagSuggestTitle: 'Tag suggest',
+		tagSuggestDescription: 'If you only use commands without needing tag suggestions, you can disable this feature. Changes will take effect after restarting the plugin.'
+	}
 
-      <div className={styles.settingRow}>
-        <div className={styles.settingInfo}>
-          <div className={styles.settingName}>Export to JSONL Command</div>
-          <div className={styles.settingDesc}>
-            Export conversations to JSONL
-          </div>
-        </div>
-        <div className={styles.settingControl}>
-          <Toggle
-            checked={enableExportToJSONL}
-            onChange={(e) => onToggleExportToJSONL(e.target.checked)}
-          />
-        </div>
-      </div>
+	// Constants for default values
+	const DEFAULT_DELAY_MS = 2000
+	const DEFAULT_DELAY_SECONDS = 2
 
-      <div className={styles.settingRow}>
-        <div className={styles.settingInfo}>
-          <div className={styles.settingName}>Tag suggest</div>
-          <div className={styles.settingDesc}>
-            If you only use commands without needing tag suggestions, you can disable this feature. Changes will take effect after restarting the plugin.
-          </div>
-        </div>
-        <div className={styles.settingControl}>
-          <Toggle
-            checked={enableTagSuggest}
-            onChange={(e) => onToggleTagSuggest(e.target.checked)}
-          />
-        </div>
-      </div>
-    </CollapsibleSection>
-  )
+	// Only pack complex props (5+ properties) into objects
+	const sliderProps = {
+		min: 1.5,
+		max: 4,
+		step: 0.5,
+		value: delayInSeconds,
+		showValue: true as const,
+		valueFormatter: (value: number) => `${value}s`,
+		className: styles.delaySlider
+	}
+
+	// Event handlers using internal state management
+	const handleToggleInternalLink = () => {
+		const newValue = !settings.enableInternalLinkForAssistantMsg
+		updateSetting('enableInternalLinkForAssistantMsg', newValue)
+	}
+
+	const handleDelayChange = (delayMs: number) => {
+		updateSetting('answerDelayInMilliseconds', delayMs)
+	}
+
+	const handleResetDelay = () => {
+		updateSetting('answerDelayInMilliseconds', DEFAULT_DELAY_MS)
+	}
+
+	const handleToggleReplaceTag = () => {
+		const newValue = !settings.enableReplaceTag
+		updateSetting('enableReplaceTag', newValue)
+	}
+
+	const handleToggleExportToJsonl = () => {
+		const newValue = !settings.enableExportToJSONL
+		updateSetting('enableExportToJSONL', newValue)
+	}
+
+	const handleToggleTagSuggest = () => {
+		const newValue = !settings.enableTagSuggest
+		updateSetting('enableTagSuggest', newValue)
+	}
+
+	return (
+		<CollapsibleSection
+			title={strings.title}
+			defaultOpen={defaultOpen}
+			onToggle={onToggleSection || (() => {})}
+			className={styles.advancedSection}
+		>
+			<SettingRow
+				name={strings.internalLinksTitle}
+				description={strings.internalLinksDescription}
+			>
+				<Toggle
+					checked={settings.enableInternalLinkForAssistantMsg}
+					onChange={() => handleToggleInternalLink()}
+				/>
+			</SettingRow>
+
+			<SettingRow
+				name={strings.delayTitle}
+				description={strings.delayDescription}
+			>
+				<div className={styles.delayControls}>
+					<Button
+						variant="default"
+						size="sm"
+						onClick={handleResetDelay}
+					>
+						{strings.resetButtonText}
+					</Button>
+					<Slider
+						{...sliderProps}
+						onChange={(e) => handleDelayChange(Math.round(parseFloat(e.target.value) * 1000))}
+					/>
+					<div className={styles.delayValueDisplay}>
+						{delayInSeconds}s
+					</div>
+				</div>
+			</SettingRow>
+
+			<SettingRow
+				name={strings.replaceTagTitle}
+				description={strings.replaceTagDescription}
+			>
+				<Toggle
+					checked={settings.enableReplaceTag}
+					onChange={() => handleToggleReplaceTag()}
+				/>
+			</SettingRow>
+
+			<SettingRow
+				name={strings.exportToJsonlTitle}
+				description={strings.exportToJsonlDescription}
+			>
+				<Toggle
+					checked={settings.enableExportToJSONL}
+					onChange={() => handleToggleExportToJsonl()}
+				/>
+			</SettingRow>
+
+			<SettingRow
+				name={strings.tagSuggestTitle}
+				description={strings.tagSuggestDescription}
+			>
+				<Toggle
+					checked={settings.enableTagSuggest}
+					onChange={() => handleToggleTagSuggest()}
+				/>
+			</SettingRow>
+		</CollapsibleSection>
+	)
 }
