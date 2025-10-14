@@ -121,6 +121,7 @@
 	background-color: var(--interactive-accent);
 	border-radius: 2px;
 	transition: width 0.2s ease;
+	width: var(--slider-percentage, 0%);
 }
 
 .input:disabled ~ .trackBackground .trackFill {

@@ -1,7 +1,9 @@
+import clsx from 'clsx'
 import { forwardRef, useState } from 'react'
 import styles from './Toggle.module.css'
 
-interface ToggleProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
+// Type alias for better readability
+type ToggleProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> & {
 	label?: string
 	description?: string
 }
@@ -29,8 +31,10 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
 			}
 		}
 
+		const toggleClasses = clsx(styles.toggle, className)
+
 		return (
-			<div className={`${styles.toggle} ${className || ''}`}>
+			<div className={toggleClasses}>
 				<label className={styles.label} htmlFor={toggleId}>
 					<div className={styles.inputWrapper}>
 						<input

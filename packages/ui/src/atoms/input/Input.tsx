@@ -1,8 +1,9 @@
+import clsx from 'clsx'
 import { forwardRef } from 'react'
-import { useSemanticColors } from '../../providers/themes/ThemeProvider'
 import styles from './Input.module.css'
 
-interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
+// Type alias for better readability
+type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> & {
 	label?: string
 	error?: string
 	size?: 'sm' | 'md' | 'lg'
@@ -10,31 +11,34 @@ interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, '
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
 	({ label, error, size = 'md', className, id, ...props }, ref) => {
-		const colors = useSemanticColors()
 		const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`
 
+		const wrapperClasses = clsx(
+			styles.inputWrapper,
+			styles[size],
+			className
+		)
+
+		const inputClasses = clsx(
+			styles.input,
+			error && styles.error
+		)
+
 		return (
-			<div className={`${styles.inputWrapper} ${styles[size]} ${className || ''}`}>
+			<div className={wrapperClasses}>
 				{label && (
-					<label htmlFor={inputId} className={styles.label} style={{ color: colors.textMuted }}>
+					<label htmlFor={inputId} className={styles.label}>
 						{label}
 					</label>
 				)}
 				<input
 					ref={ref}
 					id={inputId}
-					className={`${styles.input} ${error ? styles.error : ''}`}
-					style={{
-						backgroundColor: colors.backgroundSecondary,
-						color: colors.text,
-						borderColor: error ? colors.error : colors.border,
-						fontFamily: 'var(--font-interface)',
-						fontSize: 'var(--font-ui-medium)'
-					}}
+					className={inputClasses}
 					{...props}
 				/>
 				{error && (
-					<div className={styles.errorText} style={{ color: colors.error }}>
+					<div className={styles.errorText}>
 						{error}
 					</div>
 				)}

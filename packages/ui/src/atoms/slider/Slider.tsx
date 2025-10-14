@@ -1,7 +1,9 @@
+import clsx from 'clsx'
 import { forwardRef, useState } from 'react'
 import styles from './Slider.module.css'
 
-interface SliderProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> {
+// Type alias for better readability
+type SliderProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'type'> & {
 	label?: string
 	description?: string
 	min?: number
@@ -47,8 +49,16 @@ export const Slider = forwardRef<HTMLInputElement, SliderProps>(
 
 		const sliderId = `slider-${Math.random().toString(36).substr(2, 9)}`
 
+		// Calculate percentage for CSS custom property
+		const percentage = max > min ? ((value - min) / (max - min)) * 100 : 0
+
+		const sliderClasses = clsx(styles.slider, className)
+		const trackFillStyles = {
+			'--slider-percentage': `${percentage}%`
+		} as React.CSSProperties
+
 		return (
-			<div className={`${styles.slider} ${className || ''}`}>
+			<div className={sliderClasses}>
 				{label && (
 					<div className={styles.header}>
 						<label className={styles.label} htmlFor={sliderId}>
@@ -73,9 +83,7 @@ export const Slider = forwardRef<HTMLInputElement, SliderProps>(
 					<div className={styles.trackBackground}>
 						<div
 							className={styles.trackFill}
-							style={{
-								width: `${((value - min) / (max - min)) * 100}%`
-							}}
+							style={trackFillStyles}
 						/>
 					</div>
 				</div>

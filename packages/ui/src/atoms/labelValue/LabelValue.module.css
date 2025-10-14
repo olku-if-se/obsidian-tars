@@ -1,0 +1,15 @@
+.labelValue {
+	display: flex;
+	align-items: center;
+	gap: var(--size-2-1);
+}
+
+.label {
+	font-weight: var(--font-medium);
+	color: var(--text-muted);
+	padding-right: 0.5em;
+}
+
+.value {
+	color: var(--text-normal);
+}

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ErrorLogItem } from './ErrorLogItem'
 
 const meta = {
-	title: 'Views/ErrorDetailView/ErrorLogItem',
+	title: 'Views/ErrorLogItem',
 	component: ErrorLogItem,
 	parameters: {
 		layout: 'padded'
@@ -117,19 +117,14 @@ export const SystemError: Story = {
 
 export const ErrorWithContext: Story = {
 	args: {
-		error: createError(
-			'generation',
-			'RateLimitError',
-			'API rate limit exceeded: Too many requests per minute',
-			{
-				provider: 'OpenAI',
-				model: 'gpt-4-turbo-preview',
-				requestCount: 75,
-				limit: 60,
-				resetTime: '2024-01-15T10:30:00Z',
-				retryAfter: 45
-			}
-		),
+		error: createError('generation', 'RateLimitError', 'API rate limit exceeded: Too many requests per minute', {
+			provider: 'OpenAI',
+			model: 'gpt-4-turbo-preview',
+			requestCount: 75,
+			limit: 60,
+			resetTime: '2024-01-15T10:30:00Z',
+			retryAfter: 45
+		}),
 		index: 0,
 		onRemove: (id: string) => console.log('remove-error', id)
 	}
@@ -182,17 +177,12 @@ export const NetworkError: Story = {
 
 export const ValidationError: Story = {
 	args: {
-		error: createError(
-			'system',
-			'ValidationError',
-			'Invalid plugin configuration: API key format is incorrect',
-			{
-				field: 'claude.apiKey',
-				value: 'invalid-key-format',
-				expected: 'sk-ant-api03-*',
-				validationRule: 'apiKeyFormat'
-			}
-		),
+		error: createError('system', 'ValidationError', 'Invalid plugin configuration: API key format is incorrect', {
+			field: 'claude.apiKey',
+			value: 'invalid-key-format',
+			expected: 'sk-ant-api03-*',
+			validationRule: 'apiKeyFormat'
+		}),
 		index: 0,
 		onRemove: (id: string) => console.log('remove-error', id)
 	}
@@ -200,17 +190,12 @@ export const ValidationError: Story = {
 
 export const PermissionError: Story = {
 	args: {
-		error: createError(
-			'tool',
-			'PermissionError',
-			'Access denied: Insufficient permissions to read file',
-			{
-				filePath: '/etc/hosts',
-				operation: 'read_file',
-				requiredPermission: 'file-system-read',
-				userPermissions: ['file-system-write']
-			}
-		),
+		error: createError('tool', 'PermissionError', 'Access denied: Insufficient permissions to read file', {
+			filePath: '/etc/hosts',
+			operation: 'read_file',
+			requiredPermission: 'file-system-read',
+			userPermissions: ['file-system-write']
+		}),
 		index: 0,
 		onRemove: (id: string) => console.log('remove-error', id)
 	}
@@ -218,17 +203,12 @@ export const PermissionError: Story = {
 
 export const TimeoutError: Story = {
 	args: {
-		error: createError(
-			'tool',
-			'TimeoutError',
-			'Tool execution timed out after 30 seconds',
-			{
-				toolName: 'web_search',
-				timeout: 30000,
-				actualDuration: 30000,
-				query: 'latest developments in AI technology'
-			}
-		),
+		error: createError('tool', 'TimeoutError', 'Tool execution timed out after 30 seconds', {
+			toolName: 'web_search',
+			timeout: 30000,
+			actualDuration: 30000,
+			query: 'latest developments in AI technology'
+		}),
 		index: 0,
 		onRemove: (id: string) => console.log('remove-error', id)
 	}
@@ -238,29 +218,17 @@ export const MultipleErrors: Story = {
 	render: () => (
 		<div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
 			<ErrorLogItem
-				error={createError(
-					'generation',
-					'APIError',
-					'Failed to connect to Claude API'
-				)}
+				error={createError('generation', 'APIError', 'Failed to connect to Claude API')}
 				index={0}
 				onRemove={(id: string) => console.log('remove-error-1', id)}
 			/>
 			<ErrorLogItem
-				error={createError(
-					'mcp',
-					'ServerConnectionError',
-					'MCP server connection failed'
-				)}
+				error={createError('mcp', 'ServerConnectionError', 'MCP server connection failed')}
 				index={1}
 				onRemove={(id: string) => console.log('remove-error-2', id)}
 			/>
 			<ErrorLogItem
-				error={createError(
-					'tool',
-					'ToolExecutionError',
-					'Tool execution timeout'
-				)}
+				error={createError('tool', 'ToolExecutionError', 'Tool execution timeout')}
 				index={2}
 				onRemove={(id: string) => console.log('remove-error-3', id)}
 			/>

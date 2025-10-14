@@ -1,13 +1,15 @@
+import clsx from 'clsx'
 import { forwardRef } from 'react'
 import styles from './Select.module.css'
 
-interface SelectOption {
+// Type alias for better readability
+type SelectOption = {
 	value: string
 	label: string
 	disabled?: boolean
 }
 
-interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+type SelectProps = React.SelectHTMLAttributes<HTMLSelectElement> & {
 	label?: string
 	description?: string
 	options: SelectOption[]
@@ -18,8 +20,10 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
 	({ label, description, options, emptyOption, className, disabled = false, ...props }, ref) => {
 		const selectId = `select-${Math.random().toString(36).substr(2, 9)}`
 
+		const selectClasses = clsx(styles.select, className)
+
 		return (
-			<div className={`${styles.select} ${className || ''}`}>
+			<div className={selectClasses}>
 				{label && (
 					<label className={styles.label} htmlFor={selectId}>
 						{label}

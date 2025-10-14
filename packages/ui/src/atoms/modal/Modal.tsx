@@ -1,8 +1,10 @@
+import clsx from 'clsx'
 import { forwardRef, useEffect, useId, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import styles from './Modal.module.css'
 
-interface ModalProps {
+// Type alias for better readability
+type ModalProps = {
 	isOpen: boolean
 	onClose: () => void
 	title?: string
@@ -25,7 +27,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
 			showCloseButton = true,
 			closeOnBackdropClick = true,
 			closeOnEscape = true,
-			className = ''
+			className
 		},
 		_ref
 	) => {
@@ -46,7 +48,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
 				}
 
 				// Prevent body scroll
-				document.body.style.overflow = 'hidden'
+				document.body.classList.add('modal-open')
 
 				// Add escape key listener if needed
 				if (closeOnEscape) {
@@ -65,7 +67,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
 					document.removeEventListener('keydown', handleEscape)
 				}
 				// Restore body scroll
-				document.body.style.overflow = ''
+				document.body.classList.remove('modal-open')
 				// Restore focus
 				if (previousFocusRef.current && typeof previousFocusRef.current.focus === 'function') {
 					previousFocusRef.current.focus()
@@ -96,7 +98,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
 					}
 				}}
 			>
-				<div ref={modalRef} className={`${styles.modal} ${styles[size]} ${className}`} tabIndex={-1}>
+				<div ref={modalRef} className={clsx(styles.modal, styles[size], className)} tabIndex={-1}>
 					{(title || showCloseButton) && (
 						<div className={styles.header}>
 							{title && (

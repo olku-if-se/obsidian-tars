@@ -69,23 +69,26 @@ The smallest, reusable UI building blocks that can be composed together:
 
 ## Rules To apply during development
 
-1. Do not use style attribute, only className allowed. Customization only via CSS classes.
-2. To apply multiple CSS classes use `clsx` NPM library
-3. More then 5 arguments/properties to pass should be packed in object or used a smart way to pass them. We are talking about data or ui state properties. Event Handlers is not counted.
+1. Never attach inline style; rely on className + scoped CSS for customization.
+2. Use clsx whenever multiple CSS classes need to be combined.
+3. When a component needs more than five props, bundle them into a well-named object. Keep data props and UI-state props separate. Reserve event handlers (on*), className, key, ref, and index for direct props. UI-state values should initialize internal state only.
+4. Ship a Storybook story for every component.
+5. Prefer existing Atom components—even if they need small upgrades—before creating new elements.
+6. Externalize every user-visible string into a strings helper to keep components i18n-ready.
+7. Define sensible defaults so components work with partial prop sets.
+8. Scope CSS to the component; avoid global styles.
+9. Introduce TypeScript aliases when generics hurt readability.
+10. Let components manage their own state. If the parent must stay in sync, expose an onChange(oldState, newState) callback and fire it on each state update.
+
 ```tsx
 const props = {
   /* many properties */   
 }
 
-<LabelValueList {...props} />
+<LabelValueList className={clsx(styles.labelValueList, props.className)} 
+  onClick={clickHandler} 
+  {...props} />
 ```
-4. Always create a storybook story for each component.
-5. Re-use Atoms as much as possible, even if may loose some semantic meaning or lack of functionality in it. We can always update atoms to support more use-cases.
-6. Prepare components for i18n support, externalise strings/texts.
-7. Always support default props and partially provided props with fallback to defaults.
-8. Keep CSS classes close to the component, do not use global CSS classes.
-9. Use typescript aliases to make Generic types more readable and smaller in size.
-10. Utilize internal state, parent controls should not fully control the child. if required data exchange in both directions, then we should propogate onChange event attribute and raise it on any state change providing old and new states as arguments.
 
 ## Usage Example
 

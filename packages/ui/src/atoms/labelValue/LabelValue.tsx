@@ -1,4 +1,6 @@
+import clsx from 'clsx'
 import type React from 'react'
+import styles from './LabelValue.module.css'
 
 /**
  * Atomic Element: Label-Value Row
@@ -6,7 +8,8 @@ import type React from 'react'
  * Category: Atom
  */
 
-export interface LabelValueProps {
+// Type alias for better readability
+type LabelValueProps = {
 	label: string
 	value: string | number
 	className?: string
@@ -14,14 +17,20 @@ export interface LabelValueProps {
 	valueClassName?: string
 }
 
-export const LabelValue: React.FC<LabelValueProps> = ({ label, value, className, labelClassName, valueClassName }) => (
-	<div className={className}>
-		<span className={labelClassName} style={{ paddingRight: '0.5em' }}>
-			{label}
-		</span>
-		<span className={valueClassName}>{value}</span>
-	</div>
-)
+export const LabelValue: React.FC<LabelValueProps> = ({ label, value, className, labelClassName, valueClassName }) => {
+	const containerClasses = clsx(styles.labelValue, className)
+	const labelClasses = clsx(styles.label, labelClassName)
+	const valueClasses = clsx(styles.value, valueClassName)
+
+	return (
+		<div className={containerClasses}>
+			<span className={labelClasses}>
+				{label}
+			</span>
+			<span className={valueClasses}>{value}</span>
+		</div>
+	)
+}
 
 /**
  * Atomic Element: Label-Value List
@@ -29,12 +38,12 @@ export const LabelValue: React.FC<LabelValueProps> = ({ label, value, className,
  * Category: Atom (composition of LabelValue atoms)
  */
 
-export interface LabelValueRow {
+type LabelValueRow = {
 	label: string
 	value: string | number
 }
 
-export interface LabelValueListProps {
+type LabelValueListProps = {
 	rows: LabelValueRow[]
 	rowClassName?: string
 	labelClassName?: string
@@ -46,17 +55,23 @@ export const LabelValueList: React.FC<LabelValueListProps> = ({
 	rowClassName,
 	labelClassName,
 	valueClassName
-}) => (
-	<>
-		{rows.map((row, index) => (
-			<LabelValue
-				key={`${row.label}-${index}`}
-				label={row.label}
-				value={row.value}
-				{...(rowClassName && { className: rowClassName })}
-				{...(labelClassName && { labelClassName })}
-				{...(valueClassName && { valueClassName })}
-			/>
-		))}
-	</>
-)
+}) => {
+	const listProps = {
+		className: rowClassName,
+		labelClassName,
+		valueClassName
+	}
+
+	return (
+		<>
+			{rows.map((row, index) => (
+				<LabelValue
+					key={`${row.label}-${index}`}
+					label={row.label}
+					value={row.value}
+					{...listProps}
+				/>
+			))}
+		</>
+	)
+}

@@ -147,3 +147,8 @@
 		padding: var(--size-4-2);
 	}
 }
+
+/* Body scroll lock class */
+:global(.modal-open) {
+	overflow: hidden;
+}

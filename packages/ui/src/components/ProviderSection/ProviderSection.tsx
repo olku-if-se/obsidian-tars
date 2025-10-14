@@ -2,7 +2,8 @@ import { Button, Input } from '../../atoms'
 import { CollapsibleSection } from '../../atoms/section/CollapsibleSection'
 import styles from './ProviderSection.module.css'
 
-interface Provider {
+// Type alias for better readability
+type Provider = {
   id: string
   name: string
   tag: string
@@ -11,13 +12,33 @@ interface Provider {
   capabilities?: string[]
 }
 
-interface ProviderSectionProps {
+type ProviderSectionProps = {
   providers: Provider[]
   availableVendors: string[]
   onAddProvider: (vendor: string) => void
   onUpdateProvider: (id: string, updates: Partial<Provider>) => void
   onRemoveProvider: (id: string) => void
 }
+
+// i18n strings object
+const strings = {
+  title: 'AI Assistants',
+  addProvider: 'Add AI Provider',
+  emptyState: 'Please add at least one AI assistant to start using the plugin.',
+  assistantMessageTag: '✨ Assistant message tag',
+  assistantMessageTagDesc: 'Tag used to trigger AI text generation',
+  model: 'Model',
+  modelPlaceholder: 'Select the model to use',
+  apiKey: 'API key',
+  apiKeyPlaceholder: 'API key (required)',
+  testConnection: 'Test connection',
+  testConnectionDesc: 'Verify API key and network connectivity',
+  testButton: 'Test',
+  remove: 'Remove',
+  removeProvider: 'Remove {name}',
+  select: 'Select',
+  supportedFeatures: 'Supported features'
+} as const
 
 export const ProviderSection = ({
   providers = [],
@@ -50,20 +71,20 @@ export const ProviderSection = ({
   return (
     <div className={styles.providerSection}>
       <div className={styles.sectionHeader}>
-        <h2>AI Assistants</h2>
+        <h2>{strings.title}</h2>
         <div className={styles.addProviderButton}>
           <Button
             variant="primary"
             onClick={handleAddProvider}
           >
-            Add AI Provider
+            {strings.addProvider}
           </Button>
         </div>
       </div>
 
       {providers.length === 0 && (
         <div className={styles.emptyState}>
-          Please add at least one AI assistant to start using the plugin.
+          {strings.emptyState}
         </div>
       )}
 
@@ -76,8 +97,8 @@ export const ProviderSection = ({
           <div className={styles.providerContent}>
             {/* Provider settings will be rendered here */}
             <div className={styles.providerSetting}>
-              <div className={styles.settingName}>✨ Assistant message tag</div>
-              <div className={styles.settingDesc}>Tag used to trigger AI text generation</div>
+              <div className={styles.settingName}>{strings.assistantMessageTag}</div>
+              <div className={styles.settingDesc}>{strings.assistantMessageTagDesc}</div>
               <div className={styles.settingControl}>
                 <Input
                   value={provider.tag || ''}
@@ -88,45 +109,47 @@ export const ProviderSection = ({
             </div>
 
             <div className={styles.providerSetting}>
-              <div className={styles.settingName}>Model</div>
+              <div className={styles.settingName}>{strings.model}</div>
               <div className={styles.settingDesc}>
-                {provider.capabilities?.map(cap => `${cap}`).join(' • ') || 'Supported features'}
+                {provider.capabilities?.map(cap => `${cap}`).join(' • ') || strings.supportedFeatures}
               </div>
               <div className={styles.settingControl}>
                 <Input
                   value={provider.model || ''}
                   onChange={(e) => handleUpdateProvider(provider.id, { model: e.target.value })}
-                  placeholder="Select the model to use"
+                  placeholder={strings.modelPlaceholder}
                 />
-                <Button variant="default">Select</Button>
+                <Button variant="default">{strings.select}</Button>
               </div>
             </div>
 
             <div className={styles.providerSetting}>
-              <div className={styles.settingName}>API key</div>
+              <div className={styles.settingName}>{strings.apiKey}</div>
               <div className={styles.settingControl}>
                 <Input
                   type="password"
                   value={provider.apiKey || ''}
                   onChange={(e) => handleUpdateProvider(provider.id, { apiKey: e.target.value })}
-                  placeholder="API key (required)"
+                  placeholder={strings.apiKeyPlaceholder}
                 />
               </div>
             </div>
 
             <div className={styles.providerSetting}>
-              <div className={styles.settingName}>Test connection</div>
-              <div className={styles.settingDesc}>Verify API key and network connectivity</div>
+              <div className={styles.settingName}>{strings.testConnection}</div>
+              <div className={styles.settingDesc}>{strings.testConnectionDesc}</div>
               <div className={styles.settingControl}>
-                <Button variant="primary">Test</Button>
+                <Button variant="primary">{strings.testButton}</Button>
               </div>
             </div>
 
             <div className={styles.removeSection}>
-              <div className={styles.settingName}>Remove {provider.name || 'Provider'}</div>
+              <div className={styles.settingName}>
+                {strings.removeProvider.replace('{name}', provider.name || 'Provider')}
+              </div>
               <div className={styles.settingControl}>
                 <Button variant="danger" onClick={() => handleRemoveProvider(provider.id)}>
-                  Remove
+                  {strings.remove}
                 </Button>
               </div>
             </div>
