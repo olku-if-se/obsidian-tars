@@ -20,7 +20,7 @@ export const ErrorLogItem: React.FC<ErrorLogItemProps> = ({ error, index, onRemo
 				<span className={styles.errorTypeIcon}>{getErrorTypeIcon(error.type)}</span>
 				<span className={styles.errorName}>{error.name || 'Error'}</span>
 				<span className={styles.errorTimestamp}>{error.timestamp.toLocaleString()}</span>
-				<button type="button" className={styles.dismissButton} onClick={handleRemove} aria-label="Dismiss error">
+				<button type='button' className={styles.dismissButton} onClick={handleRemove} aria-label='Dismiss error'>
 					×
 				</button>
 			</div>

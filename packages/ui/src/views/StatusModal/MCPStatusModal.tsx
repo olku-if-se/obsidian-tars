@@ -85,7 +85,7 @@ export const MCPStatusModal: React.FC<MCPStatusModalProps> = ({
 	]
 
 	return (
-		<Modal isOpen={true} onClose={onClose} title="MCP Server Status" size="lg">
+		<Modal isOpen={true} onClose={onClose} title='MCP Server Status' size='lg'>
 			<div className={styles.mcpStatusModal}>
 				<div className={styles.tabHeader}>
 					<TabList
@@ -96,7 +96,7 @@ export const MCPStatusModal: React.FC<MCPStatusModalProps> = ({
 						}
 					/>
 					{onRefresh && activeTab === 'mcp' && (
-						<Button onClick={handleRefresh} disabled={isRefreshing} variant="primary" size="sm">
+						<Button onClick={handleRefresh} disabled={isRefreshing} variant='primary' size='sm'>
 							{isRefreshing ? 'Refreshing...' : '🔄 Refresh'}
 						</Button>
 					)}

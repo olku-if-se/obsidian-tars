@@ -1,3 +1,25 @@
+```bash
+claude --dangerously-skip-permissions
+```
+
+---
+
+read documents `docs/2025-10-12-{review|planning|tasks|changelog|migration-guide|test-strategy}.md`
+
+read our current plan `docs/2025-10-13-react-migration-plan.md`
+
+read `packages/ui/ARCHITECTURE.md`
+
+the big shift in plan is - no need to use a feature flags, we will release a major version upgrade, so will be no granular replacement of UI.
+
+remove feature flags from settings.
+
+update `docs/2025-10-13-react-migration-plan.md`, reflect current `packages/ui` structure in plan and `packages/ui/ARCHITECTURE.md` documents.
+
+
+ok, now we are ready for implementing next step from react migration plan. I mean Settings. 
+---
+
 read documents `docs/2025-10-12-{review|planning|tasks|changelog|migration-guide|test-strategy}.md` 
 
 we also have a trello board which should be updated with the progress of the tasks in addition to the documents. Use trello mcp for that.

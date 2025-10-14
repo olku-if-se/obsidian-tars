@@ -28,7 +28,7 @@ export const TabList: React.FC<TabListProps> = ({ tabs, activeTab, onTabChange }
 					{tabs.map((tab) => (
 						<button
 							key={tab.id}
-							type="button"
+							type='button'
 							className={`${styles.tabButton} ${activeTab === tab.id ? styles.active : ''}`}
 							onClick={() => onTabChange(tab.id)}
 						>

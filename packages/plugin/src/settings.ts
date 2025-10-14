@@ -66,13 +66,6 @@ export interface PluginSettings {
 		systemMessageExpanded?: boolean
 		advancedExpanded?: boolean
 	}
-	// React UI Feature Flags
-	features: {
-		reactSettingsTab: boolean
-		reactStatusBar: boolean
-		reactModals: boolean
-		reactMcpUI: boolean
-	}
 }
 
 export const DEFAULT_SETTINGS: PluginSettings = {
@@ -117,13 +110,6 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 		mcpServersExpanded: false,
 		systemMessageExpanded: false,
 		advancedExpanded: false
-	},
-	// React UI Feature Flags
-	features: {
-		reactSettingsTab: false, // Start disabled for safety
-		reactStatusBar: false,
-		reactModals: false,
-		reactMcpUI: false
 	}
 }
 

@@ -1,19 +1,56 @@
 :root {
-	/* Light theme (default fallback) */
+	/* Things-v2 Theme Variables - Light Mode */
+	--base-h: 212; /* Base hue */
+	--base-s: 15%; /* Base saturation */
+	--base-l: 97%; /* Base lightness Light Mode */
+	--accent-h: 215; /* Accent hue */
+	--accent-s: 75%; /* Accent saturation */
+	--accent-l: 60%; /* Accent lightness Light Mode */
+
+	/* Things-v2 Color Palette */
+	--blue: #2e80f2;
+	--pink: #ff82b2;
+	--green: #3eb4bf;
+	--yellow: #e5b567;
+	--orange: #e87d3e;
+	--red: #e83e3e;
+	--purple: #9e86c8;
+
+	/* Things-v2 Theme Colors - Light Mode */
 	--background-primary: #ffffff;
-	--background-secondary: #f5f5f5;
-	--background-modifier-border: #e0e0e0;
-	--background-modifier-border-hover: #d0d0d0;
-	--text-normal: #2e3338;
-	--text-muted: #7a7a7a;
-	--text-faint: #999999;
-	--text-error: #e53e3e;
-	--text-success: #38a169;
+	--background-secondary: #f6f7f8;
+	--background-modifier-border: #ebedf0;
+	--background-modifier-border-hover: #e2e5e9;
+	--background-modifier-form-field: #fcfcfc;
+	--background-modifier-hover: #e2e5e9;
+	--background-secondary-alt: #fcfcfc;
+	--background-modifier-box-shadow: rgba(0, 0, 0, 0.1);
+	--background-modifier-cover: rgba(220, 220, 220, 0.4);
+	--text-normal: #222222;
+	--text-muted: #707070;
+	--text-faint: #ababab;
+	--text-accent: hsl(var(--accent-h), var(--accent-s), var(--accent-l));
+	--text-accent-hover: hsl(var(--accent-h), var(--accent-s), calc(var(--accent-l) - 10%));
+	--text-error: var(--red);
+	--text-success: var(--green);
 	--text-on-accent: #ffffff;
-	--interactive-normal: #f7fafc;
-	--interactive-hover: #edf2f7;
-	--interactive-accent: #3182ce;
-	--interactive-accent-hover: #2c5282;
+	--interactive-normal: #f6f7f8;
+	--interactive-hover: #e2e5e9;
+	--interactive-accent: var(--text-accent);
+	--interactive-accent-hover: var(--text-accent-hover);
+	--text-highlight-bg: rgba(255, 208, 0, 0.4);
+	--text-highlight-bg-active: rgba(255, 128, 0, 0.4);
+
+	/* Things-v2 Semantic Colors */
+	--h1-color: var(--text-normal);
+	--h2-color: var(--blue);
+	--h3-color: var(--blue);
+	--h4-color: var(--yellow);
+	--h5-color: var(--red);
+	--h6-color: var(--text-muted);
+	--strong-color: var(--pink);
+	--em-color: var(--pink);
+	--quote-color: var(--green);
 
 	/* Spacing */
 	--size-1-1: 1px;
@@ -26,21 +63,29 @@
 	--size-4-3: 16px;
 	--size-4-4: 20px;
 
-	/* Typography */
+	/* Things-v2 Typography */
+	--font-text-theme: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, Ubuntu, sans-serif;
+	--font-editor-theme: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, Ubuntu, sans-serif;
+	--font-monospace-theme: 'JetBrains Mono', 'Fira Code', Menlo, SFMono-Regular, Consolas, 'Roboto Mono', monospace;
+	--font-interface-theme: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, Ubuntu, sans-serif;
 	--font-ui-smaller: 12px;
 	--font-ui-small: 13px;
 	--font-ui-medium: 15px;
 	--font-ui-large: 18px;
 	--font-ui-larger: 20px;
-	--font-interface: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	--font-interface: var(--font-interface-theme);
 	--font-medium: 500;
 	--font-semibold: 600;
+	--font-normal-weight: 100; /* Things-v2 specific */
 
-	/* Borders */
+	/* Things-v2 Borders and Design Tokens */
+	--checkbox-radius: 30%;
 	--radius-s: 4px;
 	--radius-m: 8px;
 	--radius-l: 12px;
 	--border-width: 1px;
+	--link-external-decoration: underline;
+	--link-decoration: underline;
 
 	/* Focus states */
 	--focus-ring: 2px solid var(--interactive-accent);
@@ -52,27 +97,60 @@
 	--shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Dark theme override */
+/* Dark theme override - Things-v2 */
 [data-theme="dark"] {
-	--background-primary: #1e1e1e;
-	--background-secondary: #252525;
-	--background-modifier-border: #3a3a3a;
-	--background-modifier-border-hover: #4a4a4a;
-	--text-normal: #dcddde;
+	--base-d: 13%; /* Base lightness Dark Mode */
+	--accent-d: 70%; /* Accent lightness Dark Mode */
+
+	/* Things-v2 Theme Colors - Dark Mode */
+	--background-primary: #1c2127;
+	--background-secondary: #282c34;
+	--background-modifier-border: #252b32;
+	--background-modifier-border-hover: #3f3f3f;
+	--background-modifier-form-field: #181c20;
+	--background-modifier-hover: #3f3f3f;
+	--background-secondary-alt: #252b32;
+	--background-modifier-box-shadow: rgba(0, 0, 0, 0.3);
+	--background-modifier-cover: rgba(10, 10, 10, 0.4);
+	--text-normal: #dadada;
 	--text-muted: #999999;
 	--text-faint: #666666;
-	--text-error: #ff6b6b;
-	--text-success: #51cf66;
+	--text-accent: hsl(var(--accent-h), var(--accent-s), var(--accent-d));
+	--text-accent-hover: hsl(var(--accent-h), var(--accent-s), calc(var(--accent-d) + 12%));
+	--text-error: #fb464c;
+	--text-success: #44cf6e;
 	--text-on-accent: #ffffff;
-	--interactive-normal: #2d3748;
-	--interactive-hover: #4a5568;
-	--interactive-accent: #63b3ed;
-	--interactive-accent-hover: #4299e1;
+	--interactive-normal: #252b32;
+	--interactive-hover: #3f3f3f;
+	--interactive-accent: var(--text-accent);
+	--interactive-accent-hover: var(--text-accent-hover);
+	--text-highlight-bg: rgba(255, 208, 0, 0.4);
+	--text-highlight-bg-active: rgba(255, 128, 0, 0.4);
 
-	/* Shadows for dark theme */
-	--shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
-	--shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
-	--shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4);
+	/* Things-v2 Dark Mode Semantic Colors */
+	--h2-color: var(--blue);
+	--h3-color: var(--blue);
+	--h4-color: var(--yellow);
+	--h5-color: var(--red);
+	--strong-color: var(--pink);
+	--em-color: var(--pink);
+	--quote-color: var(--green);
+
+	/* Dark Mode Color Palette Updates */
+	--blue: #027aff;
+	--pink: #fa99cd;
+	--green: #53dfdd;
+	--yellow: #e0de71;
+	--orange: #e9973f;
+	--red: #fb464c;
+	--purple: #a882ff;
+
+	/* Shadows for dark theme - Things-v2 specific */
+	--shadow-sm: 0px 1px 2px rgba(0, 0, 0, 0.121),
+		0px 3.4px 6.7px rgba(0, 0, 0, 0.179), 0px 15px 30px rgba(0, 0, 0, 0.3);
+	--shadow-md: 0px 1.8px 7.3px rgba(0, 0, 0, 0.071),
+		0px 6.3px 24.7px rgba(0, 0, 0, 0.112), 0px 30px 90px rgba(0, 0, 0, 0.2);
+	--shadow-lg: var(--shadow-md);
 }
 
 body {

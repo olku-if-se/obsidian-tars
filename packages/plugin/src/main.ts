@@ -1,7 +1,6 @@
 import { type Editor, Notice, Plugin } from 'obsidian'
 import { createLogger } from './logger'
 import { ReactBridge } from './bridge'
-import { shouldInitializeReactBridge } from './featureFlags'
 
 const logger = createLogger('plugin')
 
@@ -117,38 +116,26 @@ export default class TarsPlugin extends Plugin {
 
 		logger.info('loading tars plugin')
 
-		// Initialize React Bridge for UI components (if any React features are enabled)
-		if (ReactBridge.isReactAvailable() && shouldInitializeReactBridge(this.settings)) {
+		// Initialize React Bridge for UI components (v4.0.0 direct migration)
+		if (ReactBridge.isReactAvailable()) {
 			this.reactBridge = new ReactBridge(this.app)
-			const enabledFeatures = this.settings.features
-				? Object.entries(this.settings.features)
-						.filter(([, enabled]) => enabled)
-						.map(([feature]) => feature)
-				: []
-			logger.info('React bridge initialized', { enabledFeatures })
-
-			
-			} else {
-			const reason = ReactBridge.isReactAvailable() ? 'no React features enabled' : 'React not available'
-			logger.info(`React bridge disabled: ${reason}`)
+			logger.info('React bridge initialized for v4.0.0')
+		} else {
+			logger.error('React not available - plugin cannot initialize')
+			throw new Error('React 18.3.1 is required for TARS v4.0.0')
 		}
 
 		// Initialize StatusBar early so MCP components can log errors
 		const statusBarItem = this.addStatusBarItem()
 
-		// Use React status bar if React bridge is available and React features are enabled
-		if (this.reactBridge && shouldInitializeReactBridge(this.settings)) {
-			this.statusBarManager = new StatusBarReactManager(
-				this.app,
-				statusBarItem,
-				this.reactBridge,
-				this.settings
-			)
-			logger.info('Using React status bar manager')
-		} else {
-			this.statusBarManager = new StatusBarManager(this.app, statusBarItem)
-			logger.info('Using vanilla status bar manager')
-		}
+		// Use React status bar (v4.0.0 direct migration)
+		this.statusBarManager = new StatusBarReactManager(
+			this.app,
+			statusBarItem,
+			this.reactBridge!,
+			this.settings
+		)
+		logger.info('Using React status bar manager')
 
 		// Initialize MCP Server Manager (non-blocking)
 		if (this.settings.mcpServers && this.settings.mcpServers.length > 0) {
@@ -561,10 +548,8 @@ export default class TarsPlugin extends Plugin {
 	async saveSettings() {
 		await this.saveData(this.settings)
 
-		// Update React status bar manager if settings changed (feature flags might have changed)
-		if (this.statusBarManager instanceof StatusBarReactManager) {
-			this.statusBarManager.updateSettings(this.settings)
-		}
+		// Update React status bar manager if settings changed
+		this.statusBarManager.updateSettings(this.settings)
 	}
 
 	async updateMCPStatus() {

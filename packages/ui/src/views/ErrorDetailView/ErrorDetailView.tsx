@@ -55,7 +55,7 @@ export const ErrorDetailView: React.FC<ErrorDetailViewProps> = ({
 						)}
 					</div>
 					<div className={styles.errorLogActions}>
-						<Button onClick={onClearLogs} disabled={errorLog.length === 0} variant="danger" size="sm">
+						<Button onClick={onClearLogs} disabled={errorLog.length === 0} variant='danger' size='sm'>
 							Clear All Logs
 						</Button>
 					</div>

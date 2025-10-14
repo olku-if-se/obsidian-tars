@@ -1,4 +1,7 @@
+import React from 'react'
 import type { Preview } from '@storybook/react-vite'
+import { ThemeProvider, useThemeContext } from '../src/components/atoms/ThemeProvider'
+import type { ThemeName } from '../src/hooks/useTheme'
 import './obsidian-theme.css'
 
 const preview: Preview = {
@@ -34,14 +37,16 @@ const preview: Preview = {
 
 	globalTypes: {
 		theme: {
-			description: 'Global theme for components',
-			defaultValue: 'light',
+			description: 'Obsidian theme for components',
+			defaultValue: 'things-v2-light',
 			toolbar: {
 				title: 'Theme',
 				icon: 'paintbrush',
 				items: [
-					{ value: 'light', title: 'Light', icon: 'sun' },
-					{ value: 'dark', title: 'Dark', icon: 'moon' }
+					{ value: 'things-v2-light', title: 'Things v2 Light', icon: 'sun' },
+					{ value: 'things-v2-dark', title: 'Things v2 Dark', icon: 'moon' },
+					{ value: 'minimal-light', title: 'Minimal Light', icon: 'sun' },
+					{ value: 'minimal-dark', title: 'Minimal Dark', icon: 'moon' }
 				],
 				dynamicTitle: true
 			}
@@ -52,12 +57,22 @@ const preview: Preview = {
 		(Story, context) => {
 			const { theme } = context.globals
 
-			// Apply theme to document element
-			if (typeof document !== 'undefined') {
-				document.documentElement.setAttribute('data-theme', theme)
+			// Create theme provider wrapper
+			const ThemeWrapper = () => {
+				const { switchTheme } = useThemeContext()
+
+				React.useEffect(() => {
+					switchTheme(theme as ThemeName)
+				}, [switchTheme])
+
+				return <Story />
 			}
 
-			return <Story />
+			return (
+				<ThemeProvider initialTheme={theme as ThemeName}>
+					<ThemeWrapper />
+				</ThemeProvider>
+			)
 		}
 	]
 }

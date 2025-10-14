@@ -1,24 +1,20 @@
-# Status Bar UI Architecture
+# UI Architecture
 
-## Atomic Design Structure
+## Component Structure
 
-This UI follows **Atomic Design** methodology with clear separation of concerns:
+This UI follows a **simplified atomic design** approach with clear separation of concerns:
 
 ```
-📄 Pages (Templates + Content)
+📄 Views (Complete user-facing interfaces)
    ↓
-🏗️ Templates (Component layout structure)
+🧬 Components (Bigger UI elements with logic, composable)
    ↓
-🧬 Views (Complex components - MCPStatusModal, GenerationStatsModal)
-   ↓
-🔧 Components (Component groups - ServerStatusItem, ErrorLogItem)
-   ↓
-⚛️ Atoms (Atomic elements - LabelValue, TabList, ParagraphList)
+⚛️ Atoms (Shared building blocks - Button, Input, LabelValue)
 ```
 
-## Atomic Elements (`./atoms/`)
+## Atoms (`./atoms/`)
 
-The smallest, indivisible UI components that cannot be broken down further:
+The smallest, reusable UI building blocks that can be composed together:
 
 ### 🏷️ **LabelValue** & **LabelValueList**
 - **Purpose**: Renders semantic label-value pairs
@@ -45,30 +41,36 @@ The smallest, indivisible UI components that cannot be broken down further:
 - **Use Case**: Descriptions, summaries, documentation
 - **Atomic Property**: Smallest text unit
 
-## Components (`./`)
+## Components (`./components/`)
 
-### 🏗️ **Organisms** (Complex Components)
-- **GenerationStatsModal**: Statistics display with atomic LabelValueList
-- **MCPStatusModal**: Complex modal with atomic TabList, InfoSectionList, ParagraphList
+### 🧬 **Components** (Bigger UI elements with logic)
+- **GenerationStatsModal**: Statistics display with composable LabelValueList
+- **MCPStatusModal**: Complex modal with composable TabList, InfoSectionList
 - **ErrorDetailView**: Error display using atomic components
+- **ToolBrowserModal**: Interactive tool selection and parameter generation
+- **ProviderSettings**: Provider configuration with validation and testing
 
-### 🔧 **Molecules** (Component Groups)
-- **ErrorLogItem**: Error log entry using atomic InfoSectionList
-- **ServerStatusItem**: Server info using atomic InfoSectionList
+## Views (`./views/`)
 
-## Benefits of Atomic Design
+### 📄 **Views** (Complete user-facing interfaces)
+- **SettingsTab**: Complete settings interface with tabs and forms
+- **StatusBar**: Status display with interactive elements
+- **TabComponents**: Reusable tab components that can be used in different contexts
 
-1. **🎯 Single Responsibility**: Each atom has one clear purpose
-2. **🔄 Reusability**: Atoms can be used across different components
-3. **🧪 Testability**: Each atom can be tested in isolation
+## Benefits of this Approach
+
+1. **🎯 Single Responsibility**: Each component has one clear purpose
+2. **🔄 Reusability**: Atoms can be used across different components and views
+3. **🧪 Testability**: Each component can be tested in isolation
 4. **🎨 Consistency**: All similar UI elements use the same atoms
 5. **🔧 Maintainability**: Changes to UI patterns only need to be made in one place
 6. **📦 Composability**: Larger components are built from smaller, predictable pieces
+7. **🔄 Flexibility**: Views can be reused in different UI contexts (like Tab components)
 
 ## Usage Example
 
 ```tsx
-// Atomic composition in GenerationStatsModal
+// Component composition in GenerationStatsModal
 const statsRows = [
   { label: 'Round:', value: stats.round.toString() },
   { label: 'Model:', value: stats.model },
@@ -83,4 +85,4 @@ const statsRows = [
 />
 ```
 
-This atomic approach ensures consistent UI patterns, better maintainability, and follows React best practices for component composition.
+This simplified approach ensures consistent UI patterns, better maintainability, maximum reusability, and follows React best practices for component composition.

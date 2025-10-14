@@ -87,7 +87,7 @@ export const StatusBar: React.FC<StatusBarProps> = ({ state, onStateChange, onCl
 
 	return (
 		<button
-			type="button"
+			type='button'
 			className={`${styles.statusBar} ${statusClassName}`}
 			onClick={handleClick}
 			title={state.content.tooltip}
