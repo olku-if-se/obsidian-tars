@@ -1,0 +1,65 @@
+.reactFeaturesSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-2);
+}
+
+.experimentalWarning {
+  background-color: var(--background-modifier-warning);
+  color: var(--text-warning);
+  padding: var(--size-2-2) var(--size-4-2);
+  border-radius: var(--radius-m);
+  border: var(--border-width) solid var(--background-modifier-warning-rgb);
+  font-size: var(--font-ui-small);
+  font-weight: var(--font-medium);
+  margin-bottom: var(--size-2-2);
+}
+
+.description {
+  color: var(--text-muted);
+  margin-bottom: var(--size-4-2);
+  line-height: 1.5;
+}
+
+.actionButtons {
+  display: flex;
+  gap: var(--size-2-1);
+  flex-wrap: wrap;
+}
+
+.actionButtons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.restartNotice {
+  background-color: var(--background-modifier-info);
+  color: var(--text-info);
+  padding: var(--size-2-2) var(--size-4-2);
+  border-radius: var(--radius-m);
+  border: var(--border-width) solid var(--background-modifier-info-rgb);
+  font-size: var(--font-ui-small);
+  margin-top: var(--size-4-2);
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .experimentalWarning {
+  background-color: rgba(255, 147, 41, 0.1);
+  border-color: rgba(255, 147, 41, 0.2);
+}
+
+[data-theme="dark"] .restartNotice {
+  background-color: rgba(68, 138, 255, 0.1);
+  border-color: rgba(68, 138, 255, 0.2);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .actionButtons {
+    flex-direction: column;
+  }
+
+  .actionButtons button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,113 @@
+.mcpServersSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-2);
+}
+
+.globalSettings {
+  margin-bottom: var(--size-4-2);
+}
+
+.addServerContainer {
+  display: flex;
+  justify-content: flex-start;
+  margin: var(--size-4-2) 0;
+}
+
+.noServers {
+  text-align: center;
+  color: var(--text-muted);
+  padding: var(--size-4-2);
+  border: var(--border-width) dashed var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  margin: var(--size-4-2) 0;
+}
+
+.serverList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-4-2);
+}
+
+.serverCard {
+  border: var(--border-width) solid var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  padding: var(--size-4-2);
+  background-color: var(--background-primary);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.serverCard:hover {
+  border-color: var(--interactive-accent);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.serverCard.selected {
+  border-color: var(--interactive-accent);
+  box-shadow: 0 0 0 1px var(--interactive-accent);
+}
+
+.serverHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--size-4-2);
+  gap: var(--size-4-2);
+}
+
+.serverInfo {
+  flex: 1;
+}
+
+.serverName {
+  margin: 0 0 var(--size-2-1) 0;
+  font-size: var(--font-ui-large);
+  font-weight: var(--font-semibold);
+  color: var(--text-normal);
+}
+
+.serverControls {
+  display: flex;
+  align-items: center;
+  gap: var(--size-2-1);
+}
+
+.serverConfiguration {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2-2);
+  padding-top: var(--size-4-2);
+  border-top: var(--border-width) solid var(--background-modifier-border);
+}
+
+/* Dark theme adjustments */
+[data-theme="dark"] .serverCard {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .serverCard:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .serverCard.selected {
+  box-shadow: 0 0 0 1px var(--interactive-accent), 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .serverHeader {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--size-2-2);
+  }
+
+  .serverControls {
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: var(--size-2-1);
+  }
+
+  .serverName {
+    font-size: var(--font-ui-medium);
+  }
+}
