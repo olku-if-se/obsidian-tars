@@ -1,0 +1,53 @@
+{
+  "session_id": "slidev_20250114_131000",
+  "presentation_type": "technical",
+  "duration_minutes": 5,
+  "state": {
+    "requirements": {
+      "target_audience": "Full stack TypeScript developers with above-middle technical expertise level - focused on advanced patterns, modern development practices, performance optimizations, and architecture decisions",
+      "key_message": "Use AI for planning and executing complex tasks with small verifiable steps",
+      "goal": "Enable viewers to confidently attempt Obsidian plugin monorepo migration on their own",
+      "context": "Internal training recorded video focused on teaching how to migrate an Obsidian plugin to a monorepo structure",
+      "technical_specifics": "Main concept: pnpm workspaces + turborepo + tsup. Use AI for migration planning with latest tool releases. Demonstrate LLM heavy lifting with documented steps. Demo: Project git history as transformation example. CTA: Plan your first migration with AI."
+    },
+    "content": {
+      "title": "AI-Powered Monorepo Migration: From Plugin to Production",
+      "sections": [
+        {
+          "slide_number": 1,
+          "title": "Migration Nightmare?",
+          "type": "hook",
+          "content": "Ever stared at a complex refactoring task and thought 'Where do I even start?'"
+        },
+        {
+          "slide_number": 2,
+          "title": "The Monorepo Solution",
+          "type": "concept",
+          "content": "Transform your Obsidian plugin into a scalable monorepo using pnpm workspaces + Turborepo + tsup"
+        },
+        {
+          "slide_number": 3,
+          "title": "AI Does the Heavy Lifting",
+          "type": "process",
+          "content": "Let AI plan your migration with step-by-step guidance, latest tool releases, and expert explanations"
+        },
+        {
+          "slide_number": 4,
+          "title": "Your Migration Starts Now",
+          "type": "cta",
+          "content": "This project shows it's possible. Go plan your first migration with AI."
+        }
+      ]
+    },
+    "visual_assets": {
+      "required": [],
+      "provided": []
+    },
+    "constraints": {
+      "slide_count": 4,
+      "time_per_slide": 1.25
+    }
+  },
+  "current_phase": "completed",
+  "slides_generated": true
+}

@@ -10,6 +10,47 @@
 	gap: var(--size-4-3);
 }
 
+.cacheSection {
+	margin-top: var(--size-4-4);
+}
+
+.cacheSection h3 {
+	margin: 0 0 var(--size-4-3) 0;
+	font-size: var(--font-ui-medium);
+	font-weight: var(--font-semibold);
+	color: var(--text-normal);
+}
+
+.cacheStats {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-2);
+}
+
+.cacheStat {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-2-1);
+}
+
+.cacheStatLabel {
+	font-size: var(--font-ui-smaller);
+	font-weight: var(--font-medium);
+	color: var(--text-muted);
+}
+
+.cacheStatValue {
+	font-size: var(--font-ui-small);
+	font-weight: var(--font-semibold);
+	color: var(--text-normal);
+}
+
+.cacheStatDetail {
+	font-size: var(--font-ui-smallest);
+	color: var(--text-muted);
+	font-style: italic;
+}
+
 .serversSection {
 	margin-top: var(--size-4-4);
 }
