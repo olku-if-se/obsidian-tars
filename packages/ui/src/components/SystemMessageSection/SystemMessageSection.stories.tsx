@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SystemMessageSection } from './SystemMessageSection'
 
 const meta = {
-	title: 'Components/SystemMessageSection',
+	title: 'Settings/SystemMessageSection',
 	component: SystemMessageSection,
 	parameters: {
 		layout: 'padded'

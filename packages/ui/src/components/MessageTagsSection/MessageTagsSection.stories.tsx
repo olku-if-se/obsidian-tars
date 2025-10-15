@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { MessageTagsSection } from './MessageTagsSection'
 
 const meta = {
-	title: 'Components/MessageTagsSection',
+	title: 'Settings/MessageTagsSection',
 	component: MessageTagsSection,
 	parameters: {
 		layout: 'padded'

@@ -1,6 +1,5 @@
-import { Button, CollapsibleSection, SettingRow, Slider, Toggle } from '../../atoms'
-import clsx from 'clsx'
 import { useState } from 'react'
+import { Button, CollapsibleSection, SettingRow, Slider, Toggle } from '../../atoms'
 import styles from './AdvancedSection.module.css'
 
 export interface SectionSettings {
@@ -37,10 +36,7 @@ export const AdvancedSection = ({
 	const delayInSeconds = settings.answerDelayInMilliseconds! / 1000
 
 	// Handle setting changes and notify parent
-	const updateSetting = <K extends keyof SectionSettings>(
-		key: K,
-		value: SectionSettings[K]
-	) => {
+	const updateSetting = <K extends keyof SectionSettings>(key: K, value: SectionSettings[K]) => {
 		const newSettings = { ...settings, [key]: value }
 		setSettings(newSettings)
 		onSettingsChange?.(newSettings)
@@ -50,22 +46,25 @@ export const AdvancedSection = ({
 	const strings = {
 		title: 'Advanced',
 		internalLinksTitle: 'Internal links for assistant messages',
-		internalLinksDescription: 'Replace internal links in assistant messages with their referenced content. Note: This feature is generally not recommended as assistant-generated content may contain non-existent links.',
+		internalLinksDescription:
+			'Replace internal links in assistant messages with their referenced content. Note: This feature is generally not recommended as assistant-generated content may contain non-existent links.',
 		delayTitle: 'Delay before answer (Seconds)',
-		delayDescription: 'If you encounter errors with missing user messages when executing assistant commands on selected text, it may be due to the need for more time to parse the messages. Please slightly increase the delay time.',
+		delayDescription:
+			'If you encounter errors with missing user messages when executing assistant commands on selected text, it may be due to the need for more time to parse the messages. Please slightly increase the delay time.',
 		resetButtonText: 'Reset',
 		replaceTagTitle: 'Replace tag Command',
 		replaceTagDescription: 'Replace the names of the two most frequently occurring speakers with tag format.',
 		exportToJsonlTitle: 'Export to JSONL Command',
 		exportToJsonlDescription: 'Export conversations to JSONL',
 		tagSuggestTitle: 'Tag suggest',
-		tagSuggestDescription: 'If you only use commands without needing tag suggestions, you can disable this feature. Changes will take effect after restarting the plugin.'
+		tagSuggestDescription:
+			'If you only use commands without needing tag suggestions, you can disable this feature. Changes will take effect after restarting the plugin.'
 	}
 
 	// Constants for default values
 	const DEFAULT_DELAY_MS = 2000
-	const DEFAULT_DELAY_SECONDS = 2
-
+	const _DEFAULT_DELAY_SECONDS = 2
+	_DEFAULT_DELAY_SECONDS
 	// Only pack complex props (5+ properties) into objects
 	const sliderProps = {
 		min: 1.5,
@@ -113,66 +112,30 @@ export const AdvancedSection = ({
 			onToggle={onToggleSection || (() => {})}
 			className={styles.advancedSection}
 		>
-			<SettingRow
-				name={strings.internalLinksTitle}
-				description={strings.internalLinksDescription}
-			>
-				<Toggle
-					checked={settings.enableInternalLinkForAssistantMsg}
-					onChange={() => handleToggleInternalLink()}
-				/>
+			<SettingRow name={strings.internalLinksTitle} description={strings.internalLinksDescription}>
+				<Toggle checked={settings.enableInternalLinkForAssistantMsg} onChange={() => handleToggleInternalLink()} />
 			</SettingRow>
 
-			<SettingRow
-				name={strings.delayTitle}
-				description={strings.delayDescription}
-			>
+			<SettingRow name={strings.delayTitle} description={strings.delayDescription}>
 				<div className={styles.delayControls}>
-					<Button
-						variant="default"
-						size="sm"
-						onClick={handleResetDelay}
-					>
+					<Button variant="default" size="sm" onClick={handleResetDelay}>
 						{strings.resetButtonText}
 					</Button>
-					<Slider
-						{...sliderProps}
-						onChange={(e) => handleDelayChange(Math.round(parseFloat(e.target.value) * 1000))}
-					/>
-					<div className={styles.delayValueDisplay}>
-						{delayInSeconds}s
-					</div>
+					<Slider {...sliderProps} onChange={(e) => handleDelayChange(Math.round(parseFloat(e.target.value) * 1000))} />
+					<div className={styles.delayValueDisplay}>{delayInSeconds}s</div>
 				</div>
 			</SettingRow>
 
-			<SettingRow
-				name={strings.replaceTagTitle}
-				description={strings.replaceTagDescription}
-			>
-				<Toggle
-					checked={settings.enableReplaceTag}
-					onChange={() => handleToggleReplaceTag()}
-				/>
+			<SettingRow name={strings.replaceTagTitle} description={strings.replaceTagDescription}>
+				<Toggle checked={settings.enableReplaceTag} onChange={() => handleToggleReplaceTag()} />
 			</SettingRow>
 
-			<SettingRow
-				name={strings.exportToJsonlTitle}
-				description={strings.exportToJsonlDescription}
-			>
-				<Toggle
-					checked={settings.enableExportToJSONL}
-					onChange={() => handleToggleExportToJsonl()}
-				/>
+			<SettingRow name={strings.exportToJsonlTitle} description={strings.exportToJsonlDescription}>
+				<Toggle checked={settings.enableExportToJSONL} onChange={() => handleToggleExportToJsonl()} />
 			</SettingRow>
 
-			<SettingRow
-				name={strings.tagSuggestTitle}
-				description={strings.tagSuggestDescription}
-			>
-				<Toggle
-					checked={settings.enableTagSuggest}
-					onChange={() => handleToggleTagSuggest()}
-				/>
+			<SettingRow name={strings.tagSuggestTitle} description={strings.tagSuggestDescription}>
+				<Toggle checked={settings.enableTagSuggest} onChange={() => handleToggleTagSuggest()} />
 			</SettingRow>
 		</CollapsibleSection>
 	)

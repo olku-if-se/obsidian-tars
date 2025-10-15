@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { AdvancedSection, type SectionSettings } from './AdvancedSection'
+import { AdvancedSection } from './AdvancedSection'
 
 const meta = {
-	title: 'Components/AdvancedSection',
+	title: 'Settings/AdvancedSection',
 	component: AdvancedSection,
 	parameters: {
 		layout: 'padded'

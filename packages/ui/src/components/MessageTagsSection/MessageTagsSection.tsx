@@ -1,6 +1,4 @@
-import { Button, Input } from '../../atoms'
-import { Section } from '../../atoms/section/Section'
-import { SettingRow } from '../../atoms/setting/SettingRow'
+import { Button, Input, Section, SettingRow } from '../../atoms'
 import styles from './MessageTagsSection.module.css'
 
 // Type alias for better readability

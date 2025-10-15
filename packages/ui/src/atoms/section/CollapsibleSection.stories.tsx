@@ -12,12 +12,12 @@ const meta = {
       description: {
         component: `
 CollapsibleSection atom provides a collapsible container with a heading.
-It maintains its own open/closed state and supports toggle callbacks.
+It supports both controlled (open) and uncontrolled (defaultOpen) usage and fires onToggle when state changes.
 
 ## Usage
 - Use for content that can be shown/hidden to save space
-- Provides smooth expand/collapse animations
-- Maintains state persistence through onToggle callbacks
+- Choose uncontrolled for local, component-managed state via defaultOpen
+- Choose controlled for external state via open + onToggle
 - Best for advanced settings or optional content sections
         `
       }
@@ -203,6 +203,36 @@ export const InteractiveDemo: Story = {
             <Input value="Interactive content" onChange={() => {}} />
           </div>
         </CollapsibleSection>
+      </div>
+    )
+  }
+}
+
+// Controlled example using the `open` prop
+export const Controlled: Story = {
+  args: {
+    title: 'Controlled Section',
+    children: (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div>This section is controlled by parent state.</div>
+        <Input value="Some value" onChange={() => {}} />
+      </div>
+    )
+  },
+  render: (args) => {
+    const [open, setOpen] = useState(false)
+    return (
+      <div>
+        <div style={{ marginBottom: 12 }}>
+          <Button variant="default" onClick={() => setOpen((v) => !v)}>
+            Toggle from parent (current: {open ? 'open' : 'closed'})
+          </Button>
+        </div>
+        <CollapsibleSection
+          {...args}
+          open={open}
+          onToggle={(next) => setOpen(next)}
+        />
       </div>
     )
   }
