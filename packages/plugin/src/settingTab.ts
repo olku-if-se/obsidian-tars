@@ -4,15 +4,20 @@ import { exportCmdId } from './commands/export'
 import { t } from './lang/helper'
 import type TarsPlugin from './main'
 import { SelectModelModal, SelectVendorModal } from './modal'
-import type { BaseOptions, Optional, ProviderSettings, Vendor } from './providers'
-import { type ClaudeOptions, claudeVendor } from './providers/claude'
-import { type GptImageOptions, gptImageVendor } from './providers/gptImage'
-import { grokVendor } from './providers/grok'
-import { kimiVendor } from './providers/kimi'
-import { ollamaVendor } from './providers/ollama'
-import { openRouterVendor } from './providers/openRouter'
-import { siliconFlowVendor } from './providers/siliconflow'
-import { getCapabilityEmoji, testProviderConnection } from './providers/utils'
+import type { BaseOptions, Optional, ProviderSettings, Vendor } from '@tars/providers'
+import {
+	type ClaudeOptions,
+	claudeVendor,
+	type GptImageOptions,
+	gptImageVendor,
+	grokVendor,
+	kimiVendor,
+	ollamaVendor,
+	openRouterVendor,
+	siliconFlowVendor,
+	getCapabilityEmoji,
+	testProviderConnection
+} from '@tars/providers'
 import { availableVendors, DEFAULT_SETTINGS } from './settings'
 import { MCPServerSettings } from './settings/MCPServerSettings'
 

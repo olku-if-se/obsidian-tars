@@ -1,6 +1,6 @@
-import { Button, SettingRow, Toggle, ConfigurationInput } from '../../atoms'
-import type { MCPServerConfig } from '../MCPServersSection/MCPServersSection'
+import { Button, CollapsibleSection, ConfigurationInput, Input, SettingRow, Toggle } from '../../atoms'
 import { useDebouncedCallbackWithCleanup } from '../../hooks/useDebouncedCallback'
+import type { MCPServerConfig } from '../MCPServersSection/MCPServersSection'
 import styles from './MCPServerCard.module.css'
 
 // Type aliases following React rules (bundled props for >5 props)
@@ -153,28 +153,23 @@ export const MCPServerCard: React.FC<MCPServerCardProps> = ({
 	}
 
 	// Memoize objects to prevent unnecessary re-renders
-	const controlsContainerClass = [
-		styles.controlsContainer,
-		testLoading && styles.loading
-	].filter(Boolean).join(' ')
+	const controlsContainerClass = [styles.controlsContainer, testLoading && styles.loading].filter(Boolean).join(' ')
 
-	const serverCardClass = [
+	const _serverCardClass = [
 		styles.serverCard,
 		isSelected && styles.selected,
 		testLoading && styles.loading,
 		statusInfo.type && styles[statusInfo.type]
-	].filter(Boolean).join(' ')
+	]
+		.filter(Boolean)
+		.join(' ')
 
 	return (
-		<div className={serverCardClass}>
+		<CollapsibleSection title={server.name}>
 			{/* Row 1: Controls - Enable/Disable, Test, Delete */}
 			<SettingRow name={strings.controls} description="">
 				<div className={controlsContainerClass}>
-					<Toggle
-						checked={server.enabled}
-						onChange={handleToggle}
-						disabled={testLoading}
-					/>
+					<Toggle checked={server.enabled} onChange={handleToggle} disabled={testLoading} />
 					<Button
 						variant="default"
 						size="sm"
@@ -183,12 +178,7 @@ export const MCPServerCard: React.FC<MCPServerCardProps> = ({
 					>
 						{testLoading ? strings.testing : strings.test}
 					</Button>
-					<Button
-						variant="danger"
-						size="sm"
-						onClick={onRemove}
-						disabled={testLoading}
-					>
+					<Button variant="danger" size="sm" onClick={onRemove} disabled={testLoading}>
 						{strings.delete}
 					</Button>
 				</div>
@@ -196,7 +186,7 @@ export const MCPServerCard: React.FC<MCPServerCardProps> = ({
 
 			{/* Row 2: Server Name */}
 			<SettingRow name={strings.serverName} description={strings.serverNameDesc}>
-				<input
+				<Input
 					type="text"
 					value={server.name}
 					onChange={handleServerNameChange}
@@ -223,9 +213,7 @@ export const MCPServerCard: React.FC<MCPServerCardProps> = ({
 			{/* Row 4: Status Display */}
 			<SettingRow name={strings.status} description="" vertical={true}>
 				<div className={styles.statusContainer}>
-					<div className={`${styles.statusMessage} ${styles[statusInfo.type]}`}>
-						{statusInfo.text}
-					</div>
+					<div className={`${styles.statusMessage} ${styles[statusInfo.type]}`}>{statusInfo.text}</div>
 
 					{/* Show format information */}
 					<div className={styles.statusDetail}>
@@ -264,6 +252,6 @@ export const MCPServerCard: React.FC<MCPServerCardProps> = ({
 					)}
 				</div>
 			</SettingRow>
-		</div>
+		</CollapsibleSection>
 	)
 }

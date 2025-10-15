@@ -1,21 +1,23 @@
 import type { MCPServerConfig } from '@tars/mcp-hosting'
 import type { PromptTemplate } from './prompt'
-import type { ProviderSettings, Vendor } from './providers'
-import { azureVendor } from './providers/azure'
-import { claudeVendor } from './providers/claude'
-import { deepSeekVendor } from './providers/deepSeek'
-import { doubaoVendor } from './providers/doubao'
-import { geminiVendor } from './providers/gemini'
-import { gptImageVendor } from './providers/gptImage'
-import { grokVendor } from './providers/grok'
-import { kimiVendor } from './providers/kimi'
-import { ollamaVendor } from './providers/ollama'
-import { openAIVendor } from './providers/openAI'
-import { openRouterVendor } from './providers/openRouter'
-import { qianFanVendor } from './providers/qianFan'
-import { qwenVendor } from './providers/qwen'
-import { siliconFlowVendor } from './providers/siliconflow'
-import { zhipuVendor } from './providers/zhipu'
+import type { ProviderSettings, Vendor } from '@tars/providers'
+import {
+	azureVendor,
+	claudeVendor,
+	deepSeekVendor,
+	doubaoVendor,
+	geminiVendor,
+	gptImageVendor,
+	grokVendor,
+	kimiVendor,
+	ollamaVendor,
+	openAIVendor,
+	openRouterVendor,
+	qianFanVendor,
+	qwenVendor,
+	siliconFlowVendor,
+	zhipuVendor
+} from '@tars/providers'
 
 export const APP_FOLDER = 'Tars'
 

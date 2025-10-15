@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
-import { MCPServerCard } from './MCPServerCard'
 import type { MCPServerConfig } from '../MCPServersSection/MCPServersSection'
+import { MCPServerCard } from './MCPServerCard'
 
 const meta: Meta<typeof MCPServerCard> = {
 	title: 'Components/MCPServerCard',
@@ -24,24 +24,6 @@ The component consists of exactly 5 SettingRow components stacked vertically:
 3. **Row 3 - Configuration**: Title and description only (configuration entered below)
 4. **Row 4 - Configuration Format**: Button to cycle through URL, command, and JSON formats
 5. **Row 5 - Status**: Multiple labels showing error messages, shell commands, or parsing status
-
-## Features
-
-- **Exact UI Parity**: Matches the original MCPServerSettings.ts layout exactly
-- **Format Cycling**: Click format button to toggle between URL, shell command, and JSON representations
-- **Status Management**: Shows validation errors, connection status, and parsing information
-- **Responsive Design**: Adapts to mobile and desktop layouts
-- **Loading States**: Visual feedback during connection testing
-- **Accessibility**: Proper focus management and keyboard navigation
-
-## Architecture
-
-Follows the atomic design principles as a **Component** that composes multiple **Atoms**:
-- \`SettingRow\` for each of the 5 rows
-- \`Toggle\` for enable/disable functionality
-- \`Button\` for actions (test, delete, format toggle)
-- \`Input\` for server name editing
-- Custom status displays for validation and connection feedback
 				`
 			}
 		}

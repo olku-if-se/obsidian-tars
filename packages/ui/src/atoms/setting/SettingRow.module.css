@@ -25,6 +25,7 @@
   flex-direction: column;
   gap: var(--size-2-1);
   min-width: 0; /* Allows text truncation */
+  flex-grow: 1;
 }
 
 .settingName {
@@ -47,6 +48,12 @@
   gap: var(--size-2-2);
   flex-wrap: wrap;
   min-width: 0; /* Allows proper wrapping */
+  flex-grow: 0;
+}
+
+.settingControl input {
+  min-width: 100px;
+  max-width: 100px;
 }
 
 /* Vertical layout specific styles */

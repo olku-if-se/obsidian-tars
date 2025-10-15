@@ -8,17 +8,27 @@
   margin-bottom: var(--size-4-2);
 }
 
+.globalSettings :global(.settingRow) {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--size-4-3);
+}
+
+.globalSettings :global(.settingInfo) {
+  flex: 0 0 70%;
+  min-width: 0;
+}
+
 .globalSettings :global(.settingControl) {
   display: flex;
   align-items: center;
-  min-width: 120px;
+  flex: 0 0 30%;
   justify-content: flex-start;
 }
 
 .globalSettings :global(.input) {
-  width: 120px;
-  max-width: 120px;
-  min-width: 120px;
+  width: 100%;
+  max-width: 100%;
 }
 
 .globalSettings :global(.toggle) {

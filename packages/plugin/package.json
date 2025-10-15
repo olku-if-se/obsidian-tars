@@ -48,6 +48,7 @@
 		"@modelcontextprotocol/sdk": "^1.18.2",
 		"@tars/logger": "workspace:*",
 		"@tars/mcp-hosting": "workspace:*",
+		"@tars/providers": "workspace:*",
 		"@tars/streams": "workspace:*",
 		"@tars/ui": "workspace:*",
 		"@types/debug": "^4.1.12",

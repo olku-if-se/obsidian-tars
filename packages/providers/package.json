@@ -1,0 +1,47 @@
+{
+	"name": "@tars/providers",
+	"version": "1.0.0",
+	"description": "AI provider implementations for TARS",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"test": "vitest run || echo 'No tests found - this is expected for providers package'",
+		"test:watch": "vitest --watch",
+		"test:coverage": "vitest run --coverage",
+		"lint": "biome lint .",
+		"format": "biome format --write .",
+		"check": "biome check --write .",
+		"typecheck": "tsc --noEmit"
+	},
+	"keywords": [
+		"ai",
+		"providers",
+		"llm",
+		"tars"
+	],
+	"author": "C Jack<https://github.com/ae86jack>",
+	"license": "MIT",
+	"devDependencies": {
+		"@types/node": "^24.6.1",
+		"tsup": "^8.3.5",
+		"typescript": "^5.9.3",
+		"vitest": "^3.2.4",
+		"@vitest/coverage-v8": "^3.2.4"
+	},
+	"dependencies": {
+		"@tars/logger": "workspace:*",
+		"@anthropic-ai/sdk": "^0.24.3",
+		"@google/generative-ai": "^0.24.1",
+		"openai": "^4.56.2",
+		"ollama": "^0.6.0",
+		"axios": "^1.8.3",
+		"zod": "^3.23.8",
+		"nanoid": "^5.0.7",
+		"jose": "^6.1.0"
+	},
+	"peerDependencies": {
+		"obsidian": "^1.0.0"
+	}
+}

@@ -27,8 +27,8 @@ import type {
 	ResolveEmbedAsBinary,
 	SaveAttachment,
 	Vendor
-} from './providers'
-import { withStreamLogging } from './providers/decorator'
+} from '@tars/providers'
+import { withStreamLogging } from '@tars/providers'
 import { APP_FOLDER, availableVendors, type EditorStatus, type PluginSettings } from './settings'
 import type { GenerationStats, StatusBarController } from './statusBarManager'
 import type { TagRole } from './suggest'
