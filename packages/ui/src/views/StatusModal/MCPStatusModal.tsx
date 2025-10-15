@@ -85,7 +85,12 @@ export const MCPStatusModal: React.FC<MCPStatusModalProps> = ({
 	]
 
 	return (
-		<Modal isOpen={true} onClose={onClose} title='MCP Server Status' size='lg'>
+		<Modal
+			isOpen={true}
+			onClose={onClose}
+			title='MCP Server Status'
+			size='lg'
+		>
 			<div className={styles.mcpStatusModal}>
 				<div className={styles.tabHeader}>
 					<TabList

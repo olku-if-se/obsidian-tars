@@ -1,3 +1,5 @@
+import React from 'react'
+
 // Prop validation utilities for React components
 
 // Type guards
@@ -49,7 +51,7 @@ export const validateProps = <T extends Record<string, any>>(
 
 	Object.entries(validators).forEach(([prop, validator]) => {
 		const value = props[prop]
-		if (value !== undefined && !validator(value)) {
+		if (value !== undefined && validator && !validator(value)) {
 			console.warn(
 				`Invalid prop "${prop}" supplied to ${componentName}. ` +
 				`Received: ${typeof value} (${JSON.stringify(value)})`

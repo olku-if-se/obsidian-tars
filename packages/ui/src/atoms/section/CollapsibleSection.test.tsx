@@ -46,7 +46,9 @@ describe('CollapsibleSection', () => {
 		)
 
 		const summary = screen.getByText('Test Section').closest('summary')
-		fireEvent.click(summary!)
+		if (summary) {
+			fireEvent.click(summary)
+		}
 
 		expect(handleToggle).toHaveBeenCalledWith(true)
 	})
@@ -59,7 +61,9 @@ describe('CollapsibleSection', () => {
 		)
 
 		const summary = screen.getByText('Test Section').closest('summary')
-		fireEvent.click(summary!)
+		if (summary) {
+			fireEvent.click(summary)
+		}
 
 		expect(screen.getByText('Content')).toBeInTheDocument()
 	})
@@ -73,14 +77,18 @@ describe('CollapsibleSection', () => {
 		)
 
 		const summary = screen.getByText('Test Section').closest('summary')
-		fireEvent.click(summary!)
+		if (summary) {
+			fireEvent.click(summary)
+		}
 
 		expect(handleToggle).toHaveBeenCalledWith(true)
 	})
 
 	it('handles async onToggle without errors', async () => {
 		const handleToggle = vi.fn().mockResolvedValue(undefined)
-		const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+		const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {
+        // Intentionally empty for test
+      })
 
 		render(
 			<CollapsibleSection title='Test Section' onToggle={handleToggle}>
@@ -89,7 +97,9 @@ describe('CollapsibleSection', () => {
 		)
 
 		const summary = screen.getByText('Test Section').closest('summary')
-		fireEvent.click(summary!)
+		if (summary) {
+			fireEvent.click(summary)
+		}
 
 		// Wait for async operation
 		await vi.waitFor(() => expect(handleToggle).toHaveBeenCalled())
@@ -101,7 +111,9 @@ describe('CollapsibleSection', () => {
 	it('warns about controlled/uncontrolled mismatch in development', () => {
 		const originalEnv = process.env.NODE_ENV
 		process.env.NODE_ENV = 'development'
-		const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+		const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {
+        // Intentionally empty for test
+      })
 
 		const { rerender } = render(
 			<CollapsibleSection title='Test Section'>

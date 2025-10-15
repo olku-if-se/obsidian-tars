@@ -56,7 +56,12 @@ export const GenerationStatsModal: React.FC<GenerationStatsModalProps> = ({ stat
 	]
 
 	return (
-		<Modal isOpen={true} onClose={onClose} title='AI Generation Details' size='md'>
+		<Modal
+			isOpen={true}
+			onClose={onClose}
+			title='AI Generation Details'
+			size='md'
+		>
 			<div className={styles.generationStatsModal}>
 				{errorLog.length > 0 && (
 					<div className={styles.actionButtons}>

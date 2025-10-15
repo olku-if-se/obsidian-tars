@@ -1,11 +1,20 @@
-import { Button, CollapsibleSection, Input, LabelValueList, Section, SettingRow, Toggle } from '../../atoms'
+import { Button, CollapsibleSection, Input, Section, SettingRow, Toggle } from '../../atoms'
+import { MCPServerCard } from '../MCPServerCard'
 import styles from './MCPServersSection.module.css'
 
-// Type aliases for better readability (exported for use in other components)
+import type { ValidationResult } from '../../utilities/validation'
+
+// Enhanced server configuration type for new MCP settings UI
 export type MCPServerConfig = {
 	id: string
 	name: string
 	enabled: boolean
+	configInput: string
+	displayMode: 'url' | 'command' | 'json'
+	validationState: ValidationResult
+	failureCount: number
+	autoDisabled: boolean
+	// Legacy fields for backward compatibility
 	deploymentType: 'managed' | 'external'
 	transport: 'stdio' | 'sse'
 	dockerConfig?: {
@@ -30,6 +39,9 @@ type MCPServersSectionData = {
 		concurrentExecutions: number
 		sessionLimitPerDocument: number
 		defaultTimeout: number
+		parallelExecutionEnabled: boolean
+		llmUtilityEnabled: boolean
+		maxParallelTools: number
 	}
 }
 
@@ -59,9 +71,15 @@ const strings = {
 	concurrentExecutions: 'Concurrent Executions',
 	concurrentExecutionsDesc: 'Maximum number of simultaneous tool executions across all servers',
 	sessionLimit: 'Session Limit per Document',
-	sessionLimitDesc: 'Maximum tool executions per document (prevents infinite loops)',
-	defaultTimeout: 'Default Timeout (seconds)',
+	sessionLimitDesc: 'Maximum tool executions per document (prevents infinite loops, -1 for unlimited)',
+	defaultTimeout: 'Default Timeout (ms)',
 	defaultTimeoutDesc: 'Default timeout for individual tool executions',
+	parallelExecution: 'Parallel Execution',
+	parallelExecutionDesc: 'Enable parallel execution of multiple tools simultaneously',
+	llmUtility: 'LLM Utility Integration',
+	llmUtilityDesc: 'Enable LLM providers to access MCP tools directly',
+	maxParallelTools: 'Max Parallel Tools',
+	maxParallelToolsDesc: 'Maximum number of tools that can run in parallel (when parallel execution is enabled)',
 	serverName: 'Server Name',
 	serverStatus: 'Status',
 	enabled: 'Enabled',
@@ -85,7 +103,10 @@ export const MCPServersSection: React.FC<MCPServersSectionProps> = ({
 	globalLimits = {
 		concurrentExecutions: 5,
 		sessionLimitPerDocument: 50,
-		defaultTimeout: 30
+		defaultTimeout: 30000,
+		parallelExecutionEnabled: false,
+		llmUtilityEnabled: false,
+		maxParallelTools: 3
 	},
 	expanded = false,
 	selectedServerId,
@@ -95,7 +116,7 @@ export const MCPServersSection: React.FC<MCPServersSectionProps> = ({
 	onToggleServer,
 	onTestConnection,
 	onToggleSection,
-	onUpdateGlobalLimits
+	onUpdateGlobalLimits,
 }) => {
 	const handleTestConnection = async (serverId: string) => {
 		try {
@@ -107,71 +128,87 @@ export const MCPServersSection: React.FC<MCPServersSectionProps> = ({
 		}
 	}
 
-	const globalSettingsRows = [
-		{
-			label: strings.concurrentExecutions,
-			value: globalLimits.concurrentExecutions.toString()
-		},
-		{
-			label: strings.sessionLimit,
-			value: globalLimits.sessionLimitPerDocument.toString()
-		},
-		{
-			label: strings.defaultTimeout,
-			value: `${globalLimits.defaultTimeout}s`
-		}
-	]
-
 	return (
 		<CollapsibleSection title={strings.title} open={expanded} onToggle={onToggleSection}>
 			{/* Global Settings */}
-			<Section title={strings.globalSettings}>
-				<div className={styles.globalSettings}>
-					<LabelValueList rows={globalSettingsRows} />
-				</div>
+			<SettingRow name={strings.concurrentExecutions} description={strings.concurrentExecutionsDesc}>
+				<Input
+					type="number"
+					value={globalLimits.concurrentExecutions}
+					onChange={(e) =>
+						onUpdateGlobalLimits({
+							concurrentExecutions: parseInt(e.target.value, 10) || 1
+						})
+					}
+					min="1"
+					max="10"
+				/>
+			</SettingRow>
 
-				<SettingRow name={strings.concurrentExecutions} description={strings.concurrentExecutionsDesc}>
-					<Input
-						type="number"
-						value={globalLimits.concurrentExecutions.toString()}
-						onChange={(e) =>
-							onUpdateGlobalLimits({
-								concurrentExecutions: parseInt(e.target.value, 10) || 1
-							})
-						}
-						min="1"
-						max="20"
-					/>
-				</SettingRow>
+			<SettingRow name={strings.sessionLimit} description={strings.sessionLimitDesc}>
+				<Input
+					type="number"
+					value={globalLimits.sessionLimitPerDocument}
+					onChange={(e) =>
+						onUpdateGlobalLimits({
+							sessionLimitPerDocument: parseInt(e.target.value, 10) || -1
+						})
+					}
+					min="-1"
+					max="100"
+				/>
+			</SettingRow>
 
-				<SettingRow name={strings.sessionLimit} description={strings.sessionLimitDesc}>
-					<Input
-						type="number"
-						value={globalLimits.sessionLimitPerDocument.toString()}
-						onChange={(e) =>
-							onUpdateGlobalLimits({
-								sessionLimitPerDocument: parseInt(e.target.value, 10) || 1
-							})
-						}
-						min="1"
-						max="200"
-					/>
-				</SettingRow>
+			<SettingRow name={strings.defaultTimeout} description={strings.defaultTimeoutDesc}>
+				<Input
+					type="number"
+					value={globalLimits.defaultTimeout}
+					onChange={(e) =>
+						onUpdateGlobalLimits({
+							defaultTimeout: parseInt(e.target.value, 10) || 1000
+						})
+					}
+					min="1000"
+					max="300000"
+				/>
+			</SettingRow>
 
-				<SettingRow name={strings.defaultTimeout} description={strings.defaultTimeoutDesc}>
-					<Input
-						type="number"
-						value={globalLimits.defaultTimeout.toString()}
-						onChange={(e) =>
-							onUpdateGlobalLimits({
-								defaultTimeout: parseInt(e.target.value, 10) || 10
-							})
-						}
-						min="5"
-						max="300"
-					/>
-				</SettingRow>
-			</Section>
+			<SettingRow name={strings.parallelExecution} description={strings.parallelExecutionDesc}>
+				<Toggle
+					checked={globalLimits.parallelExecutionEnabled}
+					onChange={(e) =>
+						onUpdateGlobalLimits({
+							parallelExecutionEnabled: e.target.checked
+						})
+					}
+				/>
+			</SettingRow>
+
+			<SettingRow name={strings.llmUtility} description={strings.llmUtilityDesc}>
+				<Toggle
+					checked={globalLimits.llmUtilityEnabled}
+					onChange={(e) =>
+						onUpdateGlobalLimits({
+							llmUtilityEnabled: e.target.checked
+						})
+					}
+				/>
+			</SettingRow>
+
+			<SettingRow name={strings.maxParallelTools} description={strings.maxParallelToolsDesc}>
+				<Input
+					type="number"
+					value={globalLimits.maxParallelTools}
+					onChange={(e) =>
+						onUpdateGlobalLimits({
+							maxParallelTools: parseInt(e.target.value, 10) || 1
+						})
+					}
+					min="1"
+					max="5"
+					disabled={!globalLimits.parallelExecutionEnabled}
+				/>
+			</SettingRow>
 
 			{/* Add Server Button */}
 			<div className={styles.addServerContainer}>
@@ -199,94 +236,5 @@ export const MCPServersSection: React.FC<MCPServersSectionProps> = ({
 				</div>
 			)}
 		</CollapsibleSection>
-	)
-}
-
-// Server Card Component
-type MCPServerCardProps = {
-	server: MCPServerConfig
-	isSelected: boolean
-	onToggle: (enabled: boolean) => void
-	onUpdate: (updates: Partial<MCPServerConfig>) => void
-	onTest: () => void
-	onRemove: () => void
-}
-
-const MCPServerCard: React.FC<MCPServerCardProps> = ({ server, isSelected, onToggle, onUpdate, onTest, onRemove }) => {
-	const serverInfoRows: { label: string; value: string }[] = [
-		{ label: 'Status', value: server.enabled ? strings.enabled : strings.disabled },
-		{ label: strings.deploymentType, value: server.deploymentType },
-		{ label: strings.transport, value: server.transport }
-	]
-
-	if (server.dockerConfig) {
-		serverInfoRows.push({ label: strings.dockerImage, value: server.dockerConfig.image })
-	}
-
-	return (
-		<div className={`${styles.serverCard} ${isSelected ? styles.selected : ''}`}>
-			<div className={styles.serverHeader}>
-				<div className={styles.serverInfo}>
-					<h3 className={styles.serverName}>{server.name}</h3>
-					<LabelValueList rows={serverInfoRows} />
-				</div>
-				<div className={styles.serverControls}>
-					<Toggle checked={server.enabled} onChange={(e) => onToggle(e.target.checked)} />
-					<Button variant="default" size="sm" onClick={onTest}>
-						{strings.testConnection}
-					</Button>
-					<Button variant="danger" size="sm" onClick={onRemove}>
-						{strings.remove}
-					</Button>
-				</div>
-			</div>
-
-			{/* Configuration Details */}
-			<div className={styles.serverConfiguration}>
-				<SettingRow name="Server ID">
-					<Input
-						value={server.id}
-						onChange={(e) => onUpdate({ id: e.target.value })}
-						placeholder="Unique server identifier"
-					/>
-				</SettingRow>
-
-				<SettingRow name="Server Name">
-					<Input
-						value={server.name}
-						onChange={(e) => onUpdate({ name: e.target.value })}
-						placeholder="Display name for server"
-					/>
-				</SettingRow>
-
-				{server.dockerConfig && (
-					<SettingRow name={strings.dockerImage}>
-						<Input
-							value={server.dockerConfig.image}
-							onChange={(e) =>
-								onUpdate({
-									dockerConfig: { ...server.dockerConfig, image: e.target.value }
-								})
-							}
-							placeholder="docker/image:tag"
-						/>
-					</SettingRow>
-				)}
-
-				{server.sseConfig && (
-					<SettingRow name="SSE URL">
-						<Input
-							value={server.sseConfig.url}
-							onChange={(e) =>
-								onUpdate({
-									sseConfig: { ...server.sseConfig, url: e.target.value }
-								})
-							}
-							placeholder="https://server.example.com/sse"
-						/>
-					</SettingRow>
-				)}
-			</div>
-		</div>
 	)
 }

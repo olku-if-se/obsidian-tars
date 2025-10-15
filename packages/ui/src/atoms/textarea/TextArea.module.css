@@ -24,6 +24,8 @@
 	line-height: 1.5;
 	resize: vertical;
 	transition: all 0.2s ease;
+	/* Fix box model to include padding and border in width calculation */
+	box-sizing: border-box;
 }
 
 .input:hover {

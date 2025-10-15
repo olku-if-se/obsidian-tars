@@ -16,7 +16,7 @@ export interface AsyncOperationOptions {
 
 // Hook for managing async operations with loading states, error handling, and caching
 export function useAsyncOperation<T = any>(
-	asyncFn: () => Promise<T>,
+	asyncFn: (...args: any[]) => Promise<T>,
 	options: AsyncOperationOptions = {}
 ) {
 	const [state, setState] = useState<AsyncOperationState<T>>({
@@ -111,7 +111,7 @@ export function useAsyncOperation<T = any>(
 }
 
 // Hook for managing multiple async operations
-export function useAsyncOperations<T = any>(operations: Record<string, () => Promise<T>>) {
+export function useAsyncOperations<T = any>(operations: Record<string, (...args: any[]) => Promise<T>>) {
 	const [states, setStates] = useState<Record<string, AsyncOperationState<T>>>(() =>
 		Object.keys(operations).reduce((acc, key) => ({
 			...acc,

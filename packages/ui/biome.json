@@ -108,6 +108,9 @@
 			"enabled": true,
 			"indentStyle": "tab",
 			"lineWidth": 120
+		},
+		"parser": {
+			"cssModules": true
 		}
 	}
 }

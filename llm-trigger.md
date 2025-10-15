@@ -4,6 +4,218 @@ claude --dangerously-skip-permissions
 
 ---
 
+We are reviewing the code: packages/plugin/src/settings/MCPServerSettings.ts
+
+ask @agent-code-to-ui-spec to create a UI design specification and ask @agent-ui-spec-validator to help validating the design specification.Collaborate on specification until it become ready as much as possible, and raise unconfirmed/unanswered question for human at the end.
+
+---
+# Agent: from-code-to-ui-spec
+
+review the code and in text describe what is the layout of the UI that created by this code, code: packages/plugin/src/settings/MCPServerSettings.ts
+
+Goal: produce description that is sufficient to recreate UI in any framework or even TUI
+
+Include in description the layout important rules that this implementation follow, like: 
+- which paddings/offset/margins should be used?
+- are we keeping the same whitespace from left and right? Are we keeping the same whitespace from top and bottom? Are we following a baseline grid?
+- are we using any separators/dividers, like: horizontal lines, gap space or vertical line (border color, line, or spacing multiplier)?
+- how controls are aligned in relation to container? anchors to any corner? how it will behave on different screen resolution?
+- how controls aligned in relation to each other, are they behave as a group, responsive to container or are absolute in positioning? 
+- used Layout understanding principles (be inspired by Material design layout logic, but stay agnostic to Brand): 
+  - https://m2.material.io/design/layout/understanding-layout.html#layout-anatomy
+  - https://m2.material.io/design/layout/spacing-methods.html#baseline-grid 
+- Should controls start expanded or collapsed, enabled or disabled?
+- What are the expected actions on UI interactions: onClick, onHover, etc. ? Try to capture behavior in different logical states.
+- Try to be more specific about entity that visualized, example: bad "Add Custom Server Button" vs good: "Add Custom MCP Server Button". 
+- Try to identify data entities that used during visualization (like: MCP Server, Global Settings, etc)
+
+make a design-ready specification from code
+
+verify specification with @agent:from-spec-to-tui
+
+---
+# Agent : from-spec-to-tui
+
+Recreate UI from description below (TUI draft preview).
+
+Identify what information is missed in description that is important for UI creation, do it as a checklist with question which should be answered.
+
+ask questions: @agent:from-code-to-ui-spec
+
+---
+
+review the code and in text describe what is the layout of the UI that created by this code, code: packages/plugin/src/settings/MCPServerSettings.ts
+
+
+  UI Layout Overview
+
+  The MCPServerSettings class creates a comprehensive settings interface for configuring MCP (Model Context Protocol) servers within Obsidian. The layout is organized into several
+  main sections:
+
+  1. Global Settings Section
+
+  At the top, it renders global MCP configuration controls:
+  - Global timeout field - Text input for maximum tool execution time (default: 30000ms)
+  - Concurrent limit field - Text input for max simultaneous tool executions (default: 3)
+  - Session limit field - Text input for max tool executions per session (default: 25, -1 for unlimited)
+  - Parallel execution toggle - Toggle switch for enabling concurrent tool execution
+  - LLM utility section toggle - Toggle for inserting provider/model info in responses
+  - Max parallel tools field - Text input for maximum parallel tools (default: 3)
+
+  2. Server List Section
+
+  Below global settings, it displays configured MCP servers:
+  - Empty state message - Shows "No MCP servers configured" when no servers exist
+  - Collapsible server sections - Each server is rendered in a <details> element with:
+    - Summary bar showing server name and status indicator:
+        - Green "✓ Enabled" for active servers
+      - Red "✗ Error" for auto-disabled servers
+      - Red "✗ Disabled" for manually disabled servers
+
+  3. Individual Server Section Content
+
+  Each server section contains:
+
+  Controls Row (rendered by renderServerControls):
+  - Enable/Disable button - Toggles server state with dynamic button text
+  - Test button - Tests server connection, shows "Testing..." during execution with success/error notices
+  - Delete button - Red warning button to remove the server
+
+  Server Name Input (rendered by renderServerNameInput):
+  - Text field for server name with real-time uniqueness validation
+  - Shows red border and error message if name duplicates existing server
+  - Updates the summary bar name dynamically as you type
+
+  Configuration Section (rendered by renderConfigurationSection):
+  - Configuration header with description "Supports 3 formats: Command, Claude JSON, or URL"
+  - Format toggle button - Cycles through available formats (Show as URL/Show as command/Show as JSON)
+  - Dynamic input area that changes based on format:
+    - URL mode: Simple text input with live command preview below
+    - Command/JSON mode: Multi-line textarea with monospace font for advanced configuration
+  - Real-time validation feedback:
+    - Green checkmarks for valid configurations
+    - Red error messages with copy-to-clipboard button for errors
+    - Format detection messages showing detected type and server name
+
+  4. Quick Add Section
+
+  Pre-configured popular server options:
+  - Section header: "Quick Add Popular Servers" with description
+  - Exa Search button - Adds pre-configured Exa search server
+  - Filesystem Server button - Adds filesystem server with placeholder path
+
+  5. Add Custom Server Section
+
+  Final section with:
+  - "Add Custom MCP Server" button - Creates new empty server configuration with unique name
+
+  Interactive Features
+
+  - Real-time validation - All inputs validate immediately with visual feedback
+  - Format conversion - Seamless conversion between URL, command, and JSON formats
+  - Status synchronization - Server status updates across all UI elements when changed
+  - Error handling - Comprehensive error display with helpful tips and clipboard copying
+  - Dynamic UI updates - Interface re-renders after adding/removing servers
+  - Collapsible sections - Server configurations can be expanded/collapsed for better organization
+
+  The UI follows Obsidian's design patterns using the Setting component class and maintains consistency with the rest of the plugin's settings interface.
+
+Include in description the layout important rules that this implementation follow, like: 
+- which paddings/offset/margins should be used?
+- are we keeping the same whitespace from left and right? Are we keeping the same whitespace from top and bottom? Are we following a baseline grid?
+- are we using any separators/dividers, like: horizontal lines, gap space or vertical line (border color, line, or spacing multiplier)?
+- how controls are aligned in relation to container? anchors to any corner? how it will behave on different screen resolution?
+- how controls aligned in relation to each other, are they behave as a group, responsive to container or are absolute in positioning? 
+- used Layout understanding principles: 
+  - https://m2.material.io/design/layout/understanding-layout.html#layout-anatomy
+  - https://m2.material.io/design/layout/spacing-methods.html#baseline-grid 
+- Should controls start expanded or collapsed, enabled or disabled?
+- What are the expected actions on UI interactions: onClick, onHover, etc. ? Try to capture behavior in different logical states.
+- Try to be more specific about entity that visualized, example: bad "Add Custom Server Button" vs good: "Add Custom MCP Server Button"
+ 
+final description should contain additional description: Purpose, Behavior, Description, Layout Behavior
+
+  MCPServerSettings UI Layout Description
+
+  Purpose
+
+  The MCPServerSettings class creates a comprehensive settings interface for configuring Model Context Protocol (MCP) servers within the Obsidian plugin settings. It provides both
+  global MCP configuration controls and individual server management capabilities.
+
+  Behavior
+
+  - Dynamic server management: Add, remove, enable/disable, and test MCP server connections
+  - Real-time validation: Immediate feedback on configuration inputs with error handling
+  - Format conversion: Seamless switching between URL, command, and JSON configuration formats
+  - Status synchronization: Live updates of server connection status across all UI elements
+  - Collapsible organization: Server configurations can be expanded/collapsed for better space management
+
+  Description
+
+  The UI renders a hierarchical settings interface composed of five main sections:
+
+  1. Global Settings - Universal MCP configuration controls
+  2. Server List - Collapsible sections for each configured MCP server
+  3. Individual Server Controls - Per-server management interface
+  4. Quick Add Section - Pre-configured popular server templates
+  5. Custom Server Addition - Manual server creation capability
+
+  Layout Behavior
+
+  Positioning & Container Structure
+
+  - Flow-based layout: Uses standard document flow (no absolute positioning)
+  - Responsive to container: All elements are block or flex and adapt to container width
+  - Hierarchical nesting: Settings contain nested containers with proper semantic structure
+
+  Spacing System (CSS Custom Properties)
+
+  - Vertical spacing: Consistent use of var(--size-4-2) (8px) and var(--size-4-3) (12px) margins
+  - Component spacing: var(--size-4-4) (16px) between major sections
+  - Tight spacing: var(--size-2-2) (4px) for related elements within components
+  - Error spacing: margin-top: var(--size-2-2) for error messages below inputs
+
+  Control Alignment & Grouping
+
+  - Button groups: Controls aligned horizontally using display: flex with consistent gaps
+  - Control button sizing: Uniform min-width: 80px; height: 32px for visual consistency
+  - Text inputs: Full width (width: 100%) with box-sizing: border-box
+  - Label alignment: Standard Obsidian Setting component alignment patterns
+
+  Visual Hierarchy
+
+  - Collapsible sections: <details> elements with styled summary headers (48px min-height)
+  - Status indicators: 8px left margin for status text with color coding
+  - Typography hierarchy: Uses Obsidian's font scale (--font-ui-medium, --font-ui-small, --font-ui-smaller)
+  - Interactive feedback: Hover states and focus indicators with smooth transitions
+
+  Input Layout Patterns
+
+  - Form controls: Follow Obsidian's Setting component layout (label on left, control on right)
+  - Validation feedback: Inline error messages with red borders and text
+  - Dynamic content areas: Conditional visibility based on format selection (URL vs command vs JSON)
+  - Monospace formatting: Code inputs use var(--font-monospace) with 13px font size
+
+  Responsive Behavior
+
+  - Full-width elements: All inputs and buttons expand to fill available space
+  - Flexible text areas: Vertical resize (resize: vertical) with min-height: 150px
+  - Adaptive button layouts: Button groups wrap if container is too narrow
+  - Scrollable content: Overflow areas use overflow-y: auto with max-height constraints
+
+  State-Driven Styling
+
+  - Status colors: Dynamic color classes (mcp-status-enabled, mcp-status-disabled, mcp-status-error)
+  - Interactive states: Hover, focus, and disabled states following Obsidian theme variables
+  - Validation states: Border color changes (var(--text-error)) for invalid inputs
+  - Loading states: Button text changes and disabled states during operations
+
+  The layout strictly follows Obsidian's design system using CSS custom properties for consistent spacing, typography, and theming while maintaining accessibility and responsive
+  behavior across different screen sizes and theme variations.
+
+
+---
+
 investigate i18n implemntation in our project, start point: `packages/plugin/src/lang`
 
 propose a proper several steps migration process to a real i18n.

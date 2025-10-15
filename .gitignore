@@ -38,3 +38,7 @@ coverage/
 
 # Turborepo
 .turbo/
+
+# logs
+*.log
+*.jsonl

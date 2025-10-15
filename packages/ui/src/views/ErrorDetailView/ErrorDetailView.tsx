@@ -1,5 +1,5 @@
-import type React from 'react'
-import { ActionButtonGroup, Button, StatusBadge } from '../../atoms'
+import React from 'react'
+import { Button } from '../../atoms'
 import { COMMON_STRINGS, ERROR_STRINGS } from '../../constants/strings'
 import type { ErrorInfo, ErrorLogEntry } from '../../types/types'
 import styles from './ErrorDetailView.module.css'
@@ -24,10 +24,7 @@ const ErrorDetailView = ({
 		<div className={styles.errorDetailModal}>
 			{currentError && (
 				<div className={styles.currentErrorSection}>
-					<div className={styles.sectionHeader}>
-						<h3>{COMMON_STRINGS.MESSAGE.ERROR}</h3>
-						<StatusBadge status="error" size="sm" />
-					</div>
+					<h3>{COMMON_STRINGS.MESSAGE.ERROR}</h3>
 					<div className={styles.errorDetails}>
 						<p>
 							<strong>{ERROR_STRINGS.TYPES.VALIDATION}:</strong> {currentError.name || COMMON_STRINGS.MESSAGE.UNKNOWN_ERROR}
@@ -50,10 +47,7 @@ const ErrorDetailView = ({
 
 			{errorLog.length > 0 && (
 				<details className={styles.errorLogDetails} open>
-					<summary className={styles.summaryHeader}>
-						<span>{ERROR_STRINGS.MESSAGES.INVALID_RESPONSE} ({errorLog.length})</span>
-						<StatusBadge status="error" variant="subtle" size="sm" />
-					</summary>
+					<summary>{ERROR_STRINGS.MESSAGES.INVALID_RESPONSE} ({errorLog.length})</summary>
 					<div className={styles.errorLogContainer}>
 						{errorLog.length === 0 ? (
 							<div className={styles.emptyLog}>{COMMON_STRINGS.MESSAGE.NO_DATA}</div>
@@ -64,19 +58,9 @@ const ErrorDetailView = ({
 						)}
 					</div>
 					<div className={styles.errorLogActions}>
-						<ActionButtonGroup
-							actions={[
-								{
-									id: 'clear-logs',
-									label: COMMON_STRINGS.ACTION.CLEAR,
-									variant: 'danger',
-									size: 'sm',
-									onClick: onClearLogs,
-									disabled: errorLog.length === 0
-								}
-							]}
-							size="sm"
-						/>
+						<Button onClick={onClearLogs} disabled={errorLog.length === 0} variant='danger' size='sm'>
+							{COMMON_STRINGS.ACTION.CLEAR}
+						</Button>
 					</div>
 				</details>
 			)}

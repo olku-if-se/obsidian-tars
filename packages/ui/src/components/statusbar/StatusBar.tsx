@@ -1,4 +1,4 @@
-import type React from 'react'
+import React from 'react'
 import { useCallback, useEffect, useMemo } from 'react'
 import type { BridgeComponentProps } from '../../bridge/ReactBridge'
 import type { ErrorInfo, MCPStatusInfo } from '../../types/types'

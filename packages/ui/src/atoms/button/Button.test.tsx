@@ -59,9 +59,11 @@ describe('Button', () => {
 	it('validates variant in development mode', () => {
 		const originalEnv = process.env.NODE_ENV
 		process.env.NODE_ENV = 'development'
-		const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+		const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {
+        // Intentionally empty for test
+      })
 
-		// @ts-ignore - intentionally testing invalid prop
+		// @ts-expect-error - intentionally testing invalid prop
 		render(<Button variant='invalid'>Invalid</Button>)
 		expect(consoleSpy).toHaveBeenCalledWith(
 			expect.stringContaining('Invalid variant "invalid"')
@@ -74,9 +76,11 @@ describe('Button', () => {
 	it('validates size in development mode', () => {
 		const originalEnv = process.env.NODE_ENV
 		process.env.NODE_ENV = 'development'
-		const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+		const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {
+        // Intentionally empty for test
+      })
 
-		// @ts-ignore - intentionally testing invalid prop
+		// @ts-expect-error - intentionally testing invalid prop
 		render(<Button size='invalid'>Invalid</Button>)
 		expect(consoleSpy).toHaveBeenCalledWith(
 			expect.stringContaining('Invalid size "invalid"')

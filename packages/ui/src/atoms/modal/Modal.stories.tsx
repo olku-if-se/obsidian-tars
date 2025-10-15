@@ -18,7 +18,14 @@ const meta = {
 	title: 'Atoms/Modal',
 	component: Modal,
 	parameters: {
-		layout: 'centered'
+		layout: {
+			constrainWidth: false, // Modals should use full viewport
+			center: true,
+		},
+		// Disable viewport for modals since they use portal rendering
+		viewport: {
+			disable: true,
+		}
 	},
 	tags: ['autodocs'],
 	argTypes: {

@@ -42,7 +42,7 @@ export const CollapsibleSection = forwardRef<HTMLDetailsElement, CollapsibleSect
 				if (!isControlled) {
 					// For React 19, wrap state updates in startTransition if they cause UI shifts
 					if (typeof window !== 'undefined' && 'startTransition' in window) {
-						// @ts-ignore - React 19 startTransition will be available globally
+						// @ts-expect-error - React 19 startTransition will be available globally
 						window.startTransition(() => {
 							setUncontrolledOpen(next)
 						})

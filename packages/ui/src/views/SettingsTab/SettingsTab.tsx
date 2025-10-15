@@ -52,6 +52,9 @@ type SettingsTabData = {
     concurrentExecutions: number
     sessionLimitPerDocument: number
     defaultTimeout: number
+    parallelExecutionEnabled: boolean
+    llmUtilityEnabled: boolean
+    maxParallelTools: number
   }
 }
 
@@ -149,7 +152,10 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({
   globalLimits = {
     concurrentExecutions: 5,
     sessionLimitPerDocument: 50,
-    defaultTimeout: 30
+    defaultTimeout: 30000,
+    parallelExecutionEnabled: false,
+    llmUtilityEnabled: false,
+    maxParallelTools: 3
   },
   systemMessageExpanded = false,
   advancedExpanded = false,
@@ -340,23 +346,14 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({
         servers={mcpServers}
         globalLimits={globalLimits}
         expanded={mcpServersExpanded}
-        onAddServer={eventHandlers.mcp.onAddServer}
-        onRemoveServer={eventHandlers.mcp.onRemoveServer}
-        onUpdateServer={eventHandlers.mcp.onUpdateServer}
-        onToggleServer={eventHandlers.mcp.onToggleServer}
-        onTestConnection={eventHandlers.mcp.onTestConnection}
-        onToggleSection={eventHandlers.mcp.onToggleSection}
-        onUpdateGlobalLimits={eventHandlers.mcp.onUpdateGlobalLimits}
+        {...eventHandlers.mcp}
       />
 
       {/* React Features Section */}
       <ReactFeaturesSection
         features={reactFeatures}
         expanded={reactFeaturesExpanded}
-        onToggleFeature={eventHandlers.reactFeatures.onToggleFeature}
-        onToggleSection={eventHandlers.reactFeatures.onToggleSection}
-        onEnableAll={eventHandlers.reactFeatures.onEnableAll}
-        onDisableAll={eventHandlers.reactFeatures.onDisableAll}
+        {...eventHandlers.reactFeatures}
       />
     </div>
   )

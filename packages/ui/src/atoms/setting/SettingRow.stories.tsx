@@ -57,7 +57,9 @@ export const WithToggle: Story = {
     name: 'Enable notifications',
     description: 'Receive notifications when new messages arrive',
     children: (
-      <Toggle checked={true} onChange={() => {}} />
+      <Toggle checked={true} onChange={() => {
+        // Intentionally empty for storybook example
+      }} />
     )
   }
 }
@@ -72,7 +74,9 @@ export const WithInput: Story = {
         type="password"
         placeholder="sk-..."
         value="sk-test123"
-        onChange={() => {}}
+        onChange={() => {
+        // Intentionally empty for storybook example
+      }}
       />
     )
   }
@@ -91,7 +95,9 @@ export const WithSlider: Story = {
         value={10}
         showValue
         valueFormatter={(value) => `${value}s`}
-        onChange={() => {}}
+        onChange={() => {
+        // Intentionally empty for storybook example
+      }}
       />
     )
   }
@@ -107,7 +113,9 @@ export const WithButtons: Story = {
         <Button variant="default" size="sm">Reset</Button>
         <Input
           value="gpt-4"
-          onChange={() => {}}
+          onChange={() => {
+        // Intentionally empty for storybook example
+      }}
           placeholder="Select model"
         />
         <Button variant="primary" size="sm">Browse</Button>
@@ -132,7 +140,9 @@ export const WithoutDescription: Story = {
   args: {
     name: 'Debug mode',
     children: (
-      <Toggle checked={false} onChange={() => {}} />
+      <Toggle checked={false} onChange={() => {
+        // Intentionally empty for storybook example
+      }} />
     )
   }
 }
@@ -144,8 +154,12 @@ export const ComplexControls: Story = {
     description: 'Configure advanced settings with multiple options',
     children: (
       <div className="complex-controls">
-        <Toggle checked={true} onChange={() => {}} />
-        <Input value="80" onChange={() => {}} />
+        <Toggle checked={true} onChange={() => {
+        // Intentionally empty for storybook example
+      }} />
+        <Input value="80" onChange={() => {
+        // Intentionally empty for storybook example
+      }} />
         <Button variant="default" size="sm">Auto</Button>
         <Button variant="primary" size="sm">Apply</Button>
       </div>
@@ -160,7 +174,9 @@ export const Disabled: Story = {
     description: 'Sync settings across devices (premium feature)',
     children: (
       <>
-        <Toggle checked={false} disabled onChange={() => {}} />
+        <Toggle checked={false} disabled onChange={() => {
+        // Intentionally empty for storybook example
+      }} />
         <Button variant="primary" disabled>Upgrade</Button>
       </>
     )
@@ -173,7 +189,9 @@ export const LongDescription: Story = {
     name: 'Internal links for assistant messages',
     description: 'Replace internal links in assistant messages with their referenced content. Note: This feature is generally not recommended as assistant-generated content may contain non-existent links that could lead to unexpected behavior.',
     children: (
-      <Toggle checked={false} onChange={() => {}} />
+      <Toggle checked={false} onChange={() => {
+        // Intentionally empty for storybook example
+      }} />
     )
   }
 }
@@ -186,10 +204,14 @@ export const VerticalLayout: Story = {
     vertical: true,
     children: (
       <div className="vertical-controls">
-        <Toggle checked={true} onChange={() => {}} />
+        <Toggle checked={true} onChange={() => {
+        // Intentionally empty for storybook example
+      }} />
         <Input
           value="You are a helpful assistant."
-          onChange={() => {}}
+          onChange={() => {
+        // Intentionally empty for storybook example
+      }}
         />
       </div>
     )

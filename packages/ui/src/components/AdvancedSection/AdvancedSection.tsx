@@ -109,7 +109,9 @@ export const AdvancedSection = ({
 		<CollapsibleSection
 			title={strings.title}
 			defaultOpen={defaultOpen}
-			onToggle={onToggleSection || (() => {})}
+			onToggle={onToggleSection || (() => {
+				// Optional callback - no action needed by default
+			})}
 			className={styles.advancedSection}
 		>
 			<SettingRow name={strings.internalLinksTitle} description={strings.internalLinksDescription}>

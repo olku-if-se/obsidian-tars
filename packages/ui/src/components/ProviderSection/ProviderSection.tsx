@@ -1,4 +1,4 @@
-import { Button, CollapsibleSection, Input } from '../../atoms'
+import { Button, CollapsibleSection, Input, SettingRow } from '../../atoms'
 import styles from './ProviderSection.module.css'
 
 // Type alias for better readability
@@ -33,8 +33,10 @@ const strings = {
 	testConnection: 'Test connection',
 	testConnectionDesc: 'Verify API key and network connectivity',
 	testButton: 'Test',
-	remove: 'Remove',
-	removeProvider: 'Remove {name}',
+	disableButton: 'Disable',
+	remove: 'Delete',
+	controlProvider: 'Controls',
+	controls: 'Test connection or remove this provider',
 	select: 'Select',
 	supportedFeatures: 'Supported features'
 } as const
@@ -87,24 +89,19 @@ export const ProviderSection = ({
 					defaultOpen={index === providers.length - 1}
 				>
 					<div className={styles.providerContent}>
-						{/* Provider settings will be rendered here */}
-						<div className={styles.providerSetting}>
-							<div className={styles.settingName}>{strings.assistantMessageTag}</div>
-							<div className={styles.settingDesc}>{strings.assistantMessageTagDesc}</div>
-							<div className={styles.settingControl}>
-								<Input
-									value={provider.tag || ''}
-									onChange={(e) => handleUpdateProvider(provider.id, { tag: e.target.value })}
-									placeholder={provider.name || 'Tag'}
-								/>
-							</div>
-						</div>
+						{/* Provider settings using SettingRow pattern */}
+						<SettingRow name={strings.assistantMessageTag} description={strings.assistantMessageTagDesc}>
+							<Input
+								value={provider.tag || ''}
+								onChange={(e) => handleUpdateProvider(provider.id, { tag: e.target.value })}
+								placeholder={provider.name || 'Tag'}
+							/>
+						</SettingRow>
 
-						<div className={styles.providerSetting}>
-							<div className={styles.settingName}>{strings.model}</div>
-							<div className={styles.settingDesc}>
-								{provider.capabilities?.map((cap) => `${cap}`).join(' • ') || strings.supportedFeatures}
-							</div>
+						<SettingRow
+							name={strings.model}
+							description={provider.capabilities?.map((cap) => `${cap}`).join(' • ') || strings.supportedFeatures}
+						>
 							<div className={styles.settingControl}>
 								<Input
 									value={provider.model || ''}
@@ -113,38 +110,25 @@ export const ProviderSection = ({
 								/>
 								<Button variant="default">{strings.select}</Button>
 							</div>
-						</div>
+						</SettingRow>
 
-						<div className={styles.providerSetting}>
-							<div className={styles.settingName}>{strings.apiKey}</div>
-							<div className={styles.settingControl}>
-								<Input
-									type="password"
-									value={provider.apiKey || ''}
-									onChange={(e) => handleUpdateProvider(provider.id, { apiKey: e.target.value })}
-									placeholder={strings.apiKeyPlaceholder}
-								/>
-							</div>
-						</div>
+						<SettingRow name={strings.apiKey}>
+							<Input
+								type="password"
+								value={provider.apiKey || ''}
+								onChange={(e) => handleUpdateProvider(provider.id, { apiKey: e.target.value })}
+								placeholder={strings.apiKeyPlaceholder}
+							/>
+						</SettingRow>
 
-						<div className={styles.providerSetting}>
-							<div className={styles.settingName}>{strings.testConnection}</div>
-							<div className={styles.settingDesc}>{strings.testConnectionDesc}</div>
-							<div className={styles.settingControl}>
-								<Button variant="primary">{strings.testButton}</Button>
-							</div>
-						</div>
-
-						<div className={styles.removeSection}>
-							<div className={styles.settingName}>
-								{strings.removeProvider.replace('{name}', provider.name || 'Provider')}
-							</div>
-							<div className={styles.settingControl}>
-								<Button variant="danger" onClick={() => handleRemoveProvider(provider.id)}>
-									{strings.remove}
-								</Button>
-							</div>
-						</div>
+						<SettingRow name={strings.controlProvider.replace('{name}', provider.name || 'Provider')}
+							description={strings.controls}>
+							<Button variant="primary">{strings.disableButton}</Button>
+							<Button variant="primary">{strings.testButton}</Button>
+							<Button variant="danger" onClick={() => handleRemoveProvider(provider.id)}>
+								{strings.remove}
+							</Button>
+						</SettingRow>
 					</div>
 				</CollapsibleSection>
 			))}

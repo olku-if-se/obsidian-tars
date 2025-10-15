@@ -116,6 +116,11 @@ Every rule follows:
 * **Early returns for loading/error/empty → content** — when structuring render — to flatten branches; otherwise JSX nesting explodes.
 * **Conditional rendering:** avoid nested ternaries > 1; name boolean expressions; extract complex blocks to subcomponents.
 * **Boolean safety:** guard with comparisons (e.g., `count > 0 &&`), use optional chaining `?.`, prefer `??` over `||` for numeric zero.
+* **Small files:** try to keep components short, less than 250 lines.
+* **Single responsibility:** keep each react component in own file, so each component can be tested separately.
+* **Extract utilities:** reusable utility functions should be extracted to own file, usually `utilities.ts` or `helpers.ts`.
+* **Defaults:** define sensible defaults so components work with partial prop sets.
+* **Readability:** introduce TypeScript aliases when generics hurt readability
 
 ### 2.9 Common Use-Case Patterns
 

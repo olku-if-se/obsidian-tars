@@ -1,75 +1,33 @@
 import clsx from 'clsx'
-import React, { forwardRef, useCallback, useEffect, useId, useRef } from 'react'
+import type React from 'react'
+import { forwardRef, useCallback, useEffect, useId, useRef } from 'react'
 import { createPortal } from 'react-dom'
-import { validateProps, VALIDATION_RULES, sanitizeHtml } from '../../utils/validation'
 import styles from './Modal.module.css'
 
-// Bundled configuration props
-interface ModalConfig {
+type ModalProps = {
+	isOpen: boolean
+	onClose: () => void
+	title?: string
+	children: React.ReactNode
 	size?: 'sm' | 'md' | 'lg' | 'xl'
 	showCloseButton?: boolean
 	closeOnBackdropClick?: boolean
 	closeOnEscape?: boolean
-}
-
-// Type alias for better readability
-type ModalProps = {
-	// Required data props
-	isOpen: boolean
-	onClose: () => void
-	// Optional data props
-	title?: string
-	children: React.ReactNode
-	// UI state props
-	config?: ModalConfig
 	className?: string
 }
 
-// Prop validation for Modal
-const validateModalProps = (props: ModalProps, componentName: string) => {
-	return validateProps(props, {
-		isOpen: VALIDATION_RULES.required,
-		onClose: VALIDATION_RULES.eventHandler,
-		title: VALIDATION_RULES.string,
-		children: VALIDATION_RULES.required
-	}, componentName)
-}
-
-// Define default config
-const defaultModalConfig: Required<ModalConfig> = {
-	size: 'md',
-	showCloseButton: true,
-	closeOnBackdropClick: true,
-	closeOnEscape: true
-}
-
 export const Modal = forwardRef<HTMLDivElement, ModalProps>(
-	(
-		{
-			isOpen,
-			onClose,
-			title,
-			children,
-			config = {},
-			className
-		},
-		_ref
-	) => {
-		// Validate props in development
-		if (process.env.NODE_ENV === 'development') {
-			validateModalProps({ isOpen, onClose, title, children, config, className }, 'Modal')
-		}
-
-		// Merge config with defaults
-		const {
-			size,
-			showCloseButton,
-			closeOnBackdropClick,
-			closeOnEscape
-		} = { ...defaultModalConfig, ...config }
-
-		// Sanitize title to prevent XSS
-		const sanitizedTitle = title ? sanitizeHtml(title) : undefined
+	({
+		isOpen,
+		onClose,
+		title,
+		children,
+		size = 'md',
+		showCloseButton = true,
+		closeOnBackdropClick = true,
+		closeOnEscape = true,
+		className
+	}, _ref) => {
 		const modalRef = useRef<HTMLDivElement>(null)
 		const previousFocusRef = useRef<HTMLElement | null>(null)
 		const titleId = useId()
@@ -127,17 +85,17 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
 			<div
 				className={styles.overlay}
 				onClick={handleBackdropClick}
-				onKeyDown={handleEscape}
+				onKeyDown={undefined}
 				role='dialog'
 				aria-modal='true'
 				aria-labelledby={title ? titleId : undefined}
 			>
 				<div ref={modalRef} className={clsx(styles.modal, styles[size], className)} tabIndex={-1}>
-					{(sanitizedTitle || showCloseButton) && (
+					{(title || showCloseButton) && (
 						<div className={styles.header}>
-							{sanitizedTitle && (
+							{title && (
 								<h2 id={titleId} className={styles.title}>
-									{sanitizedTitle}
+									{title}
 								</h2>
 							)}
 							{showCloseButton && (
@@ -167,17 +125,3 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
 )
 
 Modal.displayName = 'Modal'
-
-// Wrap with React.memo for performance optimization with custom comparison
-const MemoizedModal = React.memo(Modal, (prevProps, nextProps) => {
-	// Custom comparison for better memoization
-	return (
-		prevProps.isOpen === nextProps.isOpen &&
-		prevProps.title === nextProps.title &&
-		prevProps.className === nextProps.className &&
-		prevProps.children === nextProps.children &&
-		JSON.stringify(prevProps.config) === JSON.stringify(nextProps.config)
-	)
-})
-
-export { MemoizedModal as Modal }

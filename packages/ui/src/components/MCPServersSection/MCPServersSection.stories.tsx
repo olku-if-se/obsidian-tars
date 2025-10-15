@@ -32,7 +32,7 @@ export const Empty: Story = {
       sessionLimitPerDocument: 50,
       defaultTimeout: 30
     },
-    expanded: false,
+    expanded: true,
     ...mockHandlers
   }
 }

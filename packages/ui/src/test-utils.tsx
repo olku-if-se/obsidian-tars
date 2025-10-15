@@ -1,5 +1,5 @@
-import { render, type RenderOptions } from '@testing-library/react'
-import { ReactElement } from 'react'
+import { render, type RenderOptions, type RenderResult } from '@testing-library/react'
+import type { ReactElement } from 'react'
 
 // Test providers wrapper
 const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
@@ -8,10 +8,10 @@ const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
 }
 
 // Custom render function with providers
-const customRender = (
+const customRender = <T = {}>(
 	ui: ReactElement,
-	options?: Omit<RenderOptions, 'wrapper'>
-) => render(ui, { wrapper: AllTheProviders, ...options })
+	options?: Omit<RenderOptions, 'wrapper'> & T
+): RenderResult => render(ui, { wrapper: AllTheProviders, ...options })
 
 // Re-export everything from testing-library
 export * from '@testing-library/react'

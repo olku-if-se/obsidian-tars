@@ -153,6 +153,13 @@
 	--shadow-lg: var(--shadow-md);
 }
 
+/* Global box-sizing fix to prevent width/padding overflow issues */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
 body {
 	background-color: var(--background-primary);
 	color: var(--text-normal);

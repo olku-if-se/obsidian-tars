@@ -26,7 +26,9 @@ export const SystemMessageSection = ({
 	onToggleEnable,
 	onMessageChange,
 	defaultOpen = false,
-	onToggleSection = () => {}
+	onToggleSection = () => {
+		// Optional callback - no action needed by default
+	}
 }: SystemMessageSectionProps) => {
 	// Props object pattern for better organization
 	const textAreaProps = {

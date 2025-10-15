@@ -1,0 +1,338 @@
+/* Template selector styles */
+.filters {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-2-2);
+	margin-bottom: var(--size-4-3);
+	padding: var(--size-3-2);
+	background-color: var(--background-secondary);
+	border-radius: var(--radius-m);
+	border: 1px solid var(--background-modifier-border);
+}
+
+.noTemplates {
+	text-align: center;
+	padding: var(--size-4-4);
+	color: var(--text-muted);
+	font-style: italic;
+	background-color: var(--background-secondary);
+	border-radius: var(--radius-m);
+	border: 1px dashed var(--background-modifier-border);
+}
+
+.templateList {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-3-2);
+}
+
+.templateCard {
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	background-color: var(--background-primary);
+	transition: all 0.2s ease;
+	overflow: hidden;
+}
+
+.templateCard:hover {
+	border-color: var(--interactive-accent);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.templateCard.selected {
+	border-color: var(--interactive-accent);
+	box-shadow: 0 0 0 2px var(--interactive-accent);
+}
+
+.templateCard.expanded {
+	border-color: var(--interactive-accent);
+}
+
+.templateHeader {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	padding: var(--size-3-2);
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+.templateHeader:hover {
+	background-color: var(--background-modifier-hover);
+}
+
+.templateInfo {
+	flex: 1;
+	margin-right: var(--size-2-2);
+}
+
+.templateName {
+	font-size: var(--font-ui-medium);
+	font-weight: var(--font-semibold);
+	color: var(--text-normal);
+	margin: 0 0 var(--size-1-1) 0;
+}
+
+.templateDescription {
+	font-size: var(--font-ui-small);
+	color: var(--text-muted);
+	margin: 0 0 var(--size-2-1) 0;
+	line-height: 1.4;
+}
+
+.templateMeta {
+	display: flex;
+	gap: var(--size-2-1);
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.category {
+	background-color: var(--background-modifier-hover);
+	color: var(--text-normal);
+	padding: var(--size-1-1) var(--size-2-1);
+	border-radius: var(--radius-s);
+	font-size: var(--font-ui-smaller);
+	font-weight: var(--font-medium);
+}
+
+.difficulty {
+	padding: var(--size-1-1) var(--size-2-1);
+	border-radius: var(--radius-s);
+	font-size: var(--font-ui-smaller);
+	font-weight: var(--font-medium);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.difficultyBeginner {
+	background-color: var(--background-modifier-success);
+	color: var(--text-success);
+}
+
+.difficultyIntermediate {
+	background-color: var(--background-modifier-warning);
+	color: var(--text-warning);
+}
+
+.difficultyAdvanced {
+	background-color: var(--background-modifier-error);
+	color: var(--text-error);
+}
+
+.templateActions {
+	display: flex;
+	align-items: flex-start;
+}
+
+.templateDetails {
+	padding: var(--size-3-2);
+	border-top: 1px solid var(--background-modifier-border);
+	background-color: var(--background-secondary);
+}
+
+.section {
+	margin-bottom: var(--size-3-2);
+}
+
+.section:last-child {
+	margin-bottom: 0;
+}
+
+.section h4 {
+	font-size: var(--font-ui-small);
+	font-weight: var(--font-semibold);
+	color: var(--text-normal);
+	margin: 0 0 var(--size-2-1) 0;
+}
+
+.section p {
+	font-size: var(--font-ui-small);
+	color: var(--text-muted);
+	margin: 0;
+	line-height: 1.4;
+}
+
+.section ul {
+	margin: 0;
+	padding-left: var(--size-4-2);
+}
+
+.section li {
+	font-size: var(--font-ui-small);
+	color: var(--text-muted);
+	margin-bottom: var(--size-1-1);
+	line-height: 1.4;
+}
+
+.section li:last-child {
+	margin-bottom: 0;
+}
+
+.tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--size-1-1);
+}
+
+.tag {
+	background-color: var(--background-modifier-border);
+	color: var(--text-muted);
+	padding: var(--size-1-1) var(--size-2-1);
+	border-radius: var(--radius-s);
+	font-size: var(--font-ui-smaller);
+}
+
+.configuration {
+	background-color: var(--background-primary);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-s);
+	padding: var(--size-2-2);
+	font-family: var(--font-monospace);
+	font-size: var(--font-ui-smaller);
+	overflow-x: auto;
+}
+
+.configuration code {
+	color: var(--text-normal);
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.actions {
+	display: flex;
+	justify-content: flex-end;
+	gap: var(--size-2-2);
+	margin-top: var(--size-4-3);
+	padding-top: var(--size-4-2);
+	border-top: 1px solid var(--background-modifier-border);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+	.filters {
+		padding: var(--size-2-2);
+		gap: var(--size-2-1);
+	}
+
+	.templateHeader {
+		flex-direction: column;
+		gap: var(--size-2-1);
+	}
+
+	.templateInfo {
+		margin-right: 0;
+	}
+
+	.templateActions {
+		align-self: stretch;
+	}
+
+	.templateActions button {
+		width: 100%;
+	}
+
+	.templateDetails {
+		padding: var(--size-2-2);
+	}
+
+	.section {
+		margin-bottom: var(--size-2-2);
+	}
+
+	.tags {
+		gap: var(--size-1-1);
+	}
+
+	.actions {
+		flex-direction: column;
+	}
+
+	.actions button {
+		width: 100%;
+	}
+}
+
+@media (max-width: 480px) {
+	.templateName {
+		font-size: var(--font-ui-small);
+	}
+
+	.templateDescription {
+		font-size: var(--font-ui-smaller);
+	}
+
+	.templateMeta {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--size-1-1);
+	}
+
+	.configuration {
+		font-size: var(--font-ui-smallest);
+		padding: var(--size-1-2);
+	}
+}
+
+/* Touch target optimization */
+@media (pointer: coarse) {
+	.templateHeader {
+		padding: var(--size-3-3);
+	}
+
+	.templateActions button {
+		min-height: 44px;
+		min-width: 44px;
+	}
+
+	.actions button {
+		min-height: 44px;
+	}
+}
+
+/* Focus and accessibility */
+.templateCard:focus-within {
+	outline: 2px solid var(--interactive-accent);
+	outline-offset: 2px;
+}
+
+.templateHeader:focus-visible {
+	outline: none;
+}
+
+/* Animation for expanding */
+.templateDetails {
+	transition: all 0.3s ease;
+	max-height: 1000px;
+	overflow: hidden;
+}
+
+.templateCard:not(.expanded) .templateDetails {
+	max-height: 0;
+	opacity: 0;
+	padding: 0 var(--size-3-2);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+	.templateCard {
+		border-width: 2px;
+	}
+
+	.templateCard.selected {
+		border-width: 3px;
+	}
+
+	.difficulty {
+		border: 1px solid currentColor;
+	}
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+	.templateCard,
+	.templateHeader,
+	.templateDetails {
+		transition: none;
+	}
+}

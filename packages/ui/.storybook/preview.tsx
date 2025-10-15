@@ -32,7 +32,42 @@ const preview: Preview = {
 				height: '400px'
 			}
 		},
-		layout: 'padded'
+		layout: {
+			// Default layout behavior for responsive stories
+			constrainWidth: true,
+			center: true,
+			// Add viewports to show responsive behavior
+			viewports: {
+				mobile: {
+					name: 'Mobile',
+					styles: {
+						width: '375px',
+						height: '667px',
+					},
+				},
+				tablet: {
+					name: 'Tablet',
+					styles: {
+						width: '768px',
+						height: '1024px',
+					},
+				},
+				desktop: {
+					name: 'Desktop',
+					styles: {
+						width: '1024px',
+						height: '768px',
+					},
+				},
+				wide: {
+					name: 'Wide',
+					styles: {
+						width: '1440px',
+						height: '900px',
+					},
+				},
+			},
+		},
 	},
 
 	globalTypes: {
@@ -74,10 +109,45 @@ const preview: Preview = {
 				return <>{children}</>
 			}
 
+			// Responsive container decorator
+			const ResponsiveContainer = ({ children }: { children: React.ReactNode }) => {
+				const layout = context.parameters.layout || {}
+				const shouldConstrainWidth = layout.constrainWidth ?? true
+				const shouldCenter = layout.center ?? true
+
+				return (
+					<div
+						style={{
+							display: 'flex',
+							justifyContent: shouldCenter ? 'center' : 'flex-start',
+							alignItems: 'flex-start',
+							minHeight: '100vh',
+							padding: '2rem',
+							background: 'var(--color-background)',
+						}}
+					>
+						<div
+							style={{
+								// Allow components to be responsive within reasonable bounds
+								width: '100%',
+								maxWidth: shouldConstrainWidth ? '1200px' : 'none',
+								minWidth: shouldConstrainWidth ? '320px' : 'auto',
+								// Let components control their own height
+								minHeight: 'auto',
+							}}
+						>
+							{children}
+						</div>
+					</div>
+				)
+			}
+
 			return (
 				<ThemeProvider initialTheme={theme as ThemeName}>
 					<ControlledThemeProvider>
-						<Story />
+						<ResponsiveContainer>
+							<Story />
+						</ResponsiveContainer>
 					</ControlledThemeProvider>
 				</ThemeProvider>
 			)

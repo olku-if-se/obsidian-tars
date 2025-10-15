@@ -50,6 +50,7 @@ export const COMMON_STRINGS = {
 
 	// Messages
 	MESSAGE: {
+		ERROR: 'Error',
 		NO_DATA: 'No data available',
 		NO_RESULTS: 'No results found',
 		EMPTY_STATE: 'Nothing to show here',

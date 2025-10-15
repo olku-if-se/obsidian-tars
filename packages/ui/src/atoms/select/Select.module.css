@@ -33,6 +33,8 @@
 	appearance: none;
 	-webkit-appearance: none;
 	-moz-appearance: none;
+	/* Fix box model to include padding and border in width calculation */
+	box-sizing: border-box;
 }
 
 .input:hover {
