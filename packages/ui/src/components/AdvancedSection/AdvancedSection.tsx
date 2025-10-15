@@ -24,16 +24,21 @@ export const AdvancedSection = ({
 	onSettingsChange
 }: AdvancedSectionProps) => {
 	// Internal state management with initial values from props
-	const [settings, setSettings] = useState<Partial<SectionSettings>>(() => ({
-		enableInternalLinkForAssistantMsg: false,
-		answerDelayInMilliseconds: 2000,
-		enableReplaceTag: false,
-		enableExportToJSONL: false,
-		enableTagSuggest: true,
-		...initialSettings
-	}))
+	const [settings, setSettings] = useState<Partial<SectionSettings>>(() => {
+		const sanitizedInitialSettings = Object.fromEntries(
+			Object.entries(initialSettings ?? {}).filter(([, value]) => value !== undefined)
+		) as Partial<SectionSettings>
+		return {
+			enableInternalLinkForAssistantMsg: false,
+			answerDelayInMilliseconds: 2000,
+			enableReplaceTag: false,
+			enableExportToJSONL: false,
+			enableTagSuggest: true,
+			...sanitizedInitialSettings
+		}
+	})
 
-	const delayInSeconds = settings.answerDelayInMilliseconds! / 1000
+	const delayInSeconds = ((settings.answerDelayInMilliseconds ?? 2000) / 1000)
 
 	// Handle setting changes and notify parent
 	const updateSetting = <K extends keyof SectionSettings>(key: K, value: SectionSettings[K]) => {

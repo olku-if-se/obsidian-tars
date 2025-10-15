@@ -1,6 +1,6 @@
 import { type App, type Command, Modal, Notice, Setting } from 'obsidian'
 import { t } from 'src/lang/helper'
-import { createLogger } from '../logger'
+import { createLogger } from '@tars/logger'
 
 const logger = createLogger('commands:replace-tag')
 

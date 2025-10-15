@@ -2,7 +2,7 @@ import { type App, type Command, type Editor, type MarkdownView, Notice, Platfor
 import { t } from 'src/lang/helper'
 import type { PluginSettings } from 'src/settings'
 import { toSpeakMark } from 'src/suggest'
-import { createLogger } from '../logger'
+import { createLogger } from '@tars/logger'
 import type { TagCmdMeta } from './tagCmd'
 import { fetchTagMeta, insertMarkToBegin, insertMarkToEmptyLines, isEmptyLines, replaceTag } from './tagUtils'
 

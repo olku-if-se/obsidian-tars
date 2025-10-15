@@ -1,5 +1,5 @@
 import { Ollama } from 'ollama/browser'
-import { createLogger } from '../logger'
+import { createLogger } from '@tars/logger'
 import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '.'
 
 const logger = createLogger('providers:ollama')

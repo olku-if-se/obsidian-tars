@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { type EmbedCache, Notice } from 'obsidian'
 import { t } from 'src/lang/helper'
-import { createLogger } from '../logger'
+import { createLogger } from '@tars/logger'
 import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '.'
 import {
 	arrayBufferToBase64,

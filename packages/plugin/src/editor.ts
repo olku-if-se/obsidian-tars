@@ -18,7 +18,7 @@ import {
 	type Vault
 } from 'obsidian'
 import { t } from 'src/lang/helper'
-import { createLogger } from './logger'
+import { createLogger } from '@tars/logger'
 import { formatUtilitySectionCallout, type UtilitySectionServer } from './mcp/utilitySectionFormatter'
 import type {
 	CreatePlainText,

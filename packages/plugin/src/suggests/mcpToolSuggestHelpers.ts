@@ -1,5 +1,5 @@
 import type { ToolDefinition } from '@tars/mcp-hosting'
-import { createLogger } from '../logger'
+import { createLogger } from '@tars/logger'
 
 const logger = createLogger('suggest:mcp-helpers')
 

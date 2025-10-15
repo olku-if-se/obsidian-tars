@@ -1,4 +1,4 @@
-import { Button, CollapsibleSection, Input, Section, SettingRow, Toggle } from '../../atoms'
+import { Button, CollapsibleSection, Input, SettingRow, Toggle } from '../../atoms'
 import { MCPServerCard } from '../MCPServerCard'
 import styles from './MCPServersSection.module.css'
 
@@ -131,84 +131,86 @@ export const MCPServersSection: React.FC<MCPServersSectionProps> = ({
 	return (
 		<CollapsibleSection title={strings.title} open={expanded} onToggle={onToggleSection}>
 			{/* Global Settings */}
-			<SettingRow name={strings.concurrentExecutions} description={strings.concurrentExecutionsDesc}>
-				<Input
-					type="number"
-					value={globalLimits.concurrentExecutions}
-					onChange={(e) =>
-						onUpdateGlobalLimits({
-							concurrentExecutions: parseInt(e.target.value, 10) || 1
-						})
-					}
-					min="1"
-					max="10"
-				/>
-			</SettingRow>
+			<div className={styles.globalSettings}>
+				<SettingRow name={strings.concurrentExecutions} description={strings.concurrentExecutionsDesc}>
+					<Input
+						type="number"
+						value={globalLimits.concurrentExecutions}
+						onChange={(e) =>
+							onUpdateGlobalLimits({
+								concurrentExecutions: parseInt(e.target.value, 10) || 1
+							})
+						}
+						min="1"
+						max="10"
+					/>
+				</SettingRow>
 
-			<SettingRow name={strings.sessionLimit} description={strings.sessionLimitDesc}>
-				<Input
-					type="number"
-					value={globalLimits.sessionLimitPerDocument}
-					onChange={(e) =>
-						onUpdateGlobalLimits({
-							sessionLimitPerDocument: parseInt(e.target.value, 10) || -1
-						})
-					}
-					min="-1"
-					max="100"
-				/>
-			</SettingRow>
+				<SettingRow name={strings.sessionLimit} description={strings.sessionLimitDesc}>
+					<Input
+						type="number"
+						value={globalLimits.sessionLimitPerDocument}
+						onChange={(e) =>
+							onUpdateGlobalLimits({
+								sessionLimitPerDocument: parseInt(e.target.value, 10) || -1
+							})
+						}
+						min="-1"
+						max="100"
+					/>
+				</SettingRow>
 
-			<SettingRow name={strings.defaultTimeout} description={strings.defaultTimeoutDesc}>
-				<Input
-					type="number"
-					value={globalLimits.defaultTimeout}
-					onChange={(e) =>
-						onUpdateGlobalLimits({
-							defaultTimeout: parseInt(e.target.value, 10) || 1000
-						})
-					}
-					min="1000"
-					max="300000"
-				/>
-			</SettingRow>
+				<SettingRow name={strings.defaultTimeout} description={strings.defaultTimeoutDesc}>
+					<Input
+						type="number"
+						value={globalLimits.defaultTimeout}
+						onChange={(e) =>
+							onUpdateGlobalLimits({
+								defaultTimeout: parseInt(e.target.value, 10) || 1000
+							})
+						}
+						min="1000"
+						max="300000"
+					/>
+				</SettingRow>
 
-			<SettingRow name={strings.parallelExecution} description={strings.parallelExecutionDesc}>
-				<Toggle
-					checked={globalLimits.parallelExecutionEnabled}
-					onChange={(e) =>
-						onUpdateGlobalLimits({
-							parallelExecutionEnabled: e.target.checked
-						})
-					}
-				/>
-			</SettingRow>
+				<SettingRow name={strings.parallelExecution} description={strings.parallelExecutionDesc}>
+					<Toggle
+						checked={globalLimits.parallelExecutionEnabled}
+						onChange={(e) =>
+							onUpdateGlobalLimits({
+								parallelExecutionEnabled: e.target.checked
+							})
+						}
+					/>
+				</SettingRow>
 
-			<SettingRow name={strings.llmUtility} description={strings.llmUtilityDesc}>
-				<Toggle
-					checked={globalLimits.llmUtilityEnabled}
-					onChange={(e) =>
-						onUpdateGlobalLimits({
-							llmUtilityEnabled: e.target.checked
-						})
-					}
-				/>
-			</SettingRow>
+				<SettingRow name={strings.llmUtility} description={strings.llmUtilityDesc}>
+					<Toggle
+						checked={globalLimits.llmUtilityEnabled}
+						onChange={(e) =>
+							onUpdateGlobalLimits({
+								llmUtilityEnabled: e.target.checked
+							})
+						}
+					/>
+				</SettingRow>
 
-			<SettingRow name={strings.maxParallelTools} description={strings.maxParallelToolsDesc}>
-				<Input
-					type="number"
-					value={globalLimits.maxParallelTools}
-					onChange={(e) =>
-						onUpdateGlobalLimits({
-							maxParallelTools: parseInt(e.target.value, 10) || 1
-						})
-					}
-					min="1"
-					max="5"
-					disabled={!globalLimits.parallelExecutionEnabled}
-				/>
-			</SettingRow>
+				<SettingRow name={strings.maxParallelTools} description={strings.maxParallelToolsDesc}>
+					<Input
+						type="number"
+						value={globalLimits.maxParallelTools}
+						onChange={(e) =>
+							onUpdateGlobalLimits({
+								maxParallelTools: parseInt(e.target.value, 10) || 1
+							})
+						}
+						min="1"
+						max="5"
+						disabled={!globalLimits.parallelExecutionEnabled}
+					/>
+				</SettingRow>
+			</div>
 
 			{/* Add Server Button */}
 			<div className={styles.addServerContainer}>

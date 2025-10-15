@@ -4,7 +4,7 @@
  */
 
 import type { ILogger } from '@tars/mcp-hosting'
-import { createLogger } from '../../logger'
+import { createLogger } from '@tars/logger'
 
 export class ObsidianLogger implements ILogger {
 	private logger = createLogger('mcp')

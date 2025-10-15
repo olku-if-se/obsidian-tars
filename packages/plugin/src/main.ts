@@ -1,5 +1,5 @@
 import { type Editor, Notice, Plugin } from 'obsidian'
-import { createLogger } from './logger'
+import { createLogger } from '@tars/logger'
 import { ReactBridge } from './bridge'
 
 const logger = createLogger('plugin')

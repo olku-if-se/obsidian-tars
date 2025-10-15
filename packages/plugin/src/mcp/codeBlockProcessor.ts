@@ -6,7 +6,7 @@
 import type { ErrorInfo, MCPServerConfig, ToolExecutionResult } from '@tars/mcp-hosting'
 import { logError, YAMLParseError } from '@tars/mcp-hosting'
 import { parse as parseYAML } from 'yaml'
-import { createLogger } from '../logger'
+import { createLogger } from '@tars/logger'
 import { renderToolResultToDOM } from './toolResultFormatter'
 
 const logger = createLogger('mcp:code-block-processor')

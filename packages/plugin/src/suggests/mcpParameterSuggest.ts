@@ -8,7 +8,7 @@ import {
 	type EditorSuggestTriggerInfo,
 	type TFile
 } from 'obsidian'
-import { createLogger } from '../logger'
+import { createLogger } from '@tars/logger'
 import {
 	collectUsedParameters,
 	detectMCPCodeBlockContext,

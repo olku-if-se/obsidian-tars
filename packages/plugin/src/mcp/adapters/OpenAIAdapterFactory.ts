@@ -1,6 +1,6 @@
 import type { MCPServerManager, ToolExecutionResult, ToolExecutor, ToolServerInfo } from '@tars/mcp-hosting'
 import { OpenAIToolResponseParser } from '@tars/mcp-hosting'
-import { createLogger } from '../../logger'
+import { createLogger } from '@tars/logger'
 import type { Message, ProviderAdapter } from '../toolCallingCoordinator'
 import type { OpenAIAdapterConfig } from './OpenAIProviderAdapter'
 

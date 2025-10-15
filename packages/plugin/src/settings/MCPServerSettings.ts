@@ -1,7 +1,7 @@
 import type { MCPServerConfig } from '@tars/mcp-hosting'
 import { MCP_CONFIG_EXAMPLES, parseConfigInput, validateConfigInput } from '@tars/mcp-hosting'
 import { type App, type ButtonComponent, Notice, Setting, setIcon } from 'obsidian'
-import { createLogger } from '../logger'
+import { createLogger } from '@tars/logger'
 import type TarsPlugin from '../main'
 import type { ConversionCapability, ConversionFormat } from '../mcp/displayMode'
 import {

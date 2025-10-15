@@ -1,6 +1,6 @@
 //Solution copied from obsidian-kanban: https://github.com/mgmeyers/obsidian-kanban/blob/main/src/lang/helpers.ts
 
-import { createLogger } from '../logger'
+import { createLogger } from '@tars/logger'
 import en from './locale/en'
 import zhCN from './locale/zh-cn'
 import zhTW from './locale/zh-tw'

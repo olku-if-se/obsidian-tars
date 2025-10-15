@@ -1,6 +1,6 @@
 import type { App, HeadingCache, SectionCache } from 'obsidian'
 import { t } from 'src/lang/helper'
-import { createLogger } from '../logger'
+import { createLogger } from '@tars/logger'
 
 export interface PromptTemplate {
 	readonly title: string

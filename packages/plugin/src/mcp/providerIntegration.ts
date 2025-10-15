@@ -4,7 +4,7 @@
  */
 
 import type { AIToolContext, MCPServerManager, ToolExecutor } from '@tars/mcp-hosting'
-import { createLogger } from '../logger'
+import { createLogger } from '@tars/logger'
 
 const logger = createLogger('mcp:provider-integration')
 

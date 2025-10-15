@@ -15,7 +15,7 @@ import type { ProviderSettings } from 'src/providers'
 import type { PluginSettings } from 'src/settings'
 import type { StatusBarController } from 'src/statusBarManager'
 import { toSpeakMark } from 'src/suggest'
-import { createLogger } from '../logger'
+import { createLogger } from '@tars/logger'
 import type { TagCmdMeta } from './tagCmd'
 import {
 	fetchTagMeta,

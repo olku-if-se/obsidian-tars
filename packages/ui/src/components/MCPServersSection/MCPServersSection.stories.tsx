@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { MCPServersSection } from './MCPServersSection'
+import type { MCPServerConfig } from './MCPServersSection'
 
 const meta = {
   title: 'Settings/MCPServersSection',
@@ -12,6 +13,35 @@ const meta = {
 
 export default meta
 type Story = StoryObj<typeof meta>
+
+// Shared fixtures
+const defaultValidationState: MCPServerConfig['validationState'] = {
+  isValid: true,
+  errors: [],
+  warnings: []
+}
+
+const managedServerBase: Pick<MCPServerConfig, 'configInput' | 'displayMode' | 'validationState' | 'failureCount' | 'autoDisabled' | 'retryPolicy' | 'timeout'> = {
+  configInput: 'npx @modelcontextprotocol/server-filesystem /vault',
+  displayMode: 'command',
+  validationState: defaultValidationState,
+  failureCount: 0,
+  autoDisabled: false,
+  retryPolicy: {
+    maxRetries: 3,
+    backoffMs: 1000
+  },
+  timeout: 30
+}
+
+const externalServerBase: Pick<MCPServerConfig, 'configInput' | 'displayMode' | 'validationState' | 'failureCount' | 'autoDisabled' | 'timeout'> = {
+  configInput: 'https://api.example.com/mcp',
+  displayMode: 'url',
+  validationState: defaultValidationState,
+  failureCount: 0,
+  autoDisabled: false,
+  timeout: 45
+}
 
 // Mock handlers
 const mockHandlers = {
@@ -30,7 +60,10 @@ export const Empty: Story = {
     globalLimits: {
       concurrentExecutions: 5,
       sessionLimitPerDocument: 50,
-      defaultTimeout: 30
+      defaultTimeout: 30000,
+      parallelExecutionEnabled: false,
+      llmUtilityEnabled: false,
+      maxParallelTools: 3
     },
     expanded: true,
     ...mockHandlers
@@ -44,6 +77,7 @@ export const WithServers: Story = {
         id: 'filesystem',
         name: 'Filesystem Access',
         enabled: true,
+        ...managedServerBase,
         deploymentType: 'managed',
         transport: 'stdio',
         dockerConfig: {
@@ -58,6 +92,7 @@ export const WithServers: Story = {
         id: 'web-search',
         name: 'Web Search',
         enabled: false,
+        ...externalServerBase,
         deploymentType: 'external',
         transport: 'sse',
         sseConfig: {
@@ -68,7 +103,10 @@ export const WithServers: Story = {
     globalLimits: {
       concurrentExecutions: 3,
       sessionLimitPerDocument: 25,
-      defaultTimeout: 45
+      defaultTimeout: 45000,
+      parallelExecutionEnabled: false,
+      llmUtilityEnabled: false,
+      maxParallelTools: 3
     },
     expanded: true,
     selectedServerId: 'filesystem',
@@ -83,6 +121,7 @@ export const ManyServers: Story = {
         id: 'filesystem',
         name: 'Filesystem Access',
         enabled: true,
+        ...managedServerBase,
         deploymentType: 'managed',
         transport: 'stdio',
         dockerConfig: {
@@ -94,6 +133,7 @@ export const ManyServers: Story = {
         id: 'web-search',
         name: 'Web Search',
         enabled: true,
+        ...externalServerBase,
         deploymentType: 'external',
         transport: 'sse',
         sseConfig: {
@@ -104,6 +144,7 @@ export const ManyServers: Story = {
         id: 'database',
         name: 'Database Query',
         enabled: false,
+        ...managedServerBase,
         deploymentType: 'managed',
         transport: 'stdio',
         dockerConfig: {
@@ -118,6 +159,7 @@ export const ManyServers: Story = {
         id: 'git',
         name: 'Git Operations',
         enabled: true,
+        ...managedServerBase,
         deploymentType: 'external',
         transport: 'stdio',
         dockerConfig: {
@@ -129,7 +171,10 @@ export const ManyServers: Story = {
     globalLimits: {
       concurrentExecutions: 10,
       sessionLimitPerDocument: 100,
-      defaultTimeout: 60
+      defaultTimeout: 60000,
+      parallelExecutionEnabled: true,
+      llmUtilityEnabled: true,
+      maxParallelTools: 5
     },
     expanded: true,
     ...mockHandlers
@@ -155,13 +200,26 @@ export const CustomLimits: Story = {
         dockerConfig: {
           image: 'mcp/filesystem',
           name: 'tars-filesystem-server'
-        }
+        },
+        configInput: 'npx @modelcontextprotocol/server-filesystem /vault',
+        displayMode: 'command',
+        validationState: defaultValidationState,
+        failureCount: 0,
+        autoDisabled: false,
+        retryPolicy: {
+          maxRetries: 3,
+          backoffMs: 1000
+        },
+        timeout: 30
       }
     ],
     globalLimits: {
       concurrentExecutions: 1,
       sessionLimitPerDocument: 10,
-      defaultTimeout: 15
+      defaultTimeout: 15000,
+      parallelExecutionEnabled: false,
+      llmUtilityEnabled: false,
+      maxParallelTools: 1
     },
     expanded: true,
     ...mockHandlers

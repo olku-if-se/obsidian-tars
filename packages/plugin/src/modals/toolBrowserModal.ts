@@ -6,7 +6,7 @@
 
 import type { MCPServerManager, ToolDefinition } from '@tars/mcp-hosting'
 import { type App, type Editor, Modal } from 'obsidian'
-import { createLogger } from '../logger'
+import { createLogger } from '@tars/logger'
 
 const logger = createLogger('modal:tool-browser')
 

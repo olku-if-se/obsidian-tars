@@ -13,7 +13,7 @@ import type { ToolCall, ToolExecutionResult, ToolExecutor, ToolResponseParser, T
 import type { Editor, EditorPosition } from 'obsidian'
 import pLimit from 'p-limit'
 import { stringify as stringifyYAML } from 'yaml'
-import { createLogger } from '../logger'
+import { createLogger } from '@tars/logger'
 import type { StatusBarController } from '../statusBarManager'
 import type { DocumentWriteLock } from '../utils/documentWriteLock'
 import { runWithLock } from '../utils/documentWriteLock'

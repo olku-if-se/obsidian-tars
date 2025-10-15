@@ -7,7 +7,7 @@ import type {
 } from '@tars/mcp-hosting'
 import { OllamaToolResponseParser } from '@tars/mcp-hosting'
 import type { Ollama } from 'ollama/browser'
-import { createLogger } from '../../logger'
+import { createLogger } from '@tars/logger'
 import type { Message, ProviderAdapter } from '../toolCallingCoordinator'
 
 const logger = createLogger('mcp:ollama-adapter')

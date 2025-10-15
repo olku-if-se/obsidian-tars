@@ -11,7 +11,7 @@ import {
 } from 'obsidian'
 import { buildRunEnv, generate, type RequestController } from './editor'
 import { t } from './lang/helper'
-import { createLogger } from './logger'
+import { createLogger } from '@tars/logger'
 import type { PluginSettings } from './settings'
 import type { StatusBarController } from './statusBarManager'
 
