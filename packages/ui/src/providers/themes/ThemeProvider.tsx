@@ -1,4 +1,4 @@
-import { createContext, type ReactNode, useContext } from 'react'
+import { createContext, type ReactNode, useContext, useMemo } from 'react'
 import { useTheme } from '../../hooks/useTheme'
 import type { Theme, ThemeName } from './theme'
 
@@ -21,7 +21,10 @@ export interface ThemeProviderProps {
 export function ThemeProvider({ children, initialTheme }: ThemeProviderProps) {
 	const themeData = useTheme(initialTheme)
 
-	return <ThemeContext.Provider value={themeData}>{children}</ThemeContext.Provider>
+	// Memoize context value to prevent unnecessary re-renders
+	const memoizedValue = useMemo(() => themeData, [themeData.theme, themeData.currentTheme])
+
+	return <ThemeContext.Provider value={memoizedValue}>{children}</ThemeContext.Provider>
 }
 
 export function useThemeContext(): ThemeContextValue {

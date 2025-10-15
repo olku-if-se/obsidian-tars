@@ -1,5 +1,6 @@
 import clsx from 'clsx'
-import { forwardRef } from 'react'
+import React, { forwardRef, useId } from 'react'
+import { validateProps, VALIDATION_RULES } from '../../utils/validation'
 import styles from './Input.module.css'
 
 // Type alias for better readability
@@ -9,9 +10,27 @@ type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> & {
 	size?: 'sm' | 'md' | 'lg'
 }
 
+// Prop validation for Input
+const validateInputProps = (props: InputProps, componentName: string) => {
+	return validateProps(props, {
+		label: VALIDATION_RULES.string,
+		error: VALIDATION_RULES.string
+	}, componentName)
+}
+
 export const Input = forwardRef<HTMLInputElement, InputProps>(
 	({ label, error, size = 'md', className, id, ...props }, ref) => {
-		const inputId = id || `input-${Math.random().toString(36).substr(2, 9)}`
+		// Validate props in development
+		if (process.env.NODE_ENV === 'development') {
+			validateInputProps({ label, error, size, className, id, ...props }, 'Input')
+		}
+
+		const generatedId = useId()
+		const inputId = id || generatedId
+
+		// Security: Ensure no dangerous attributes are passed through
+		const safeProps = { ...props }
+		delete (safeProps as any).dangerouslySetInnerHTML
 
 		const wrapperClasses = clsx(
 			styles.inputWrapper,
@@ -35,7 +54,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 					ref={ref}
 					id={inputId}
 					className={inputClasses}
-					{...props}
+					{...safeProps}
 				/>
 				{error && (
 					<div className={styles.errorText}>
@@ -48,3 +67,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 )
 
 Input.displayName = 'Input'
+
+// Wrap with React.memo for performance optimization
+const MemoizedInput = React.memo(Input)
+export { MemoizedInput as Input }

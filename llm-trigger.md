@@ -4,6 +4,19 @@ claude --dangerously-skip-permissions
 
 ---
 
+investigate i18n implemntation in our project, start point: `packages/plugin/src/lang`
+
+propose a proper several steps migration process to a real i18n.
+
+compose plan markdown document: `docs/{timestamp}-i18n-migration.md`
+
+Expectations:
+- migration will happens in several releases
+- we need to prepare project for propert i18n, like externalize string and use some kind of simple wrappers/tools/npm-libs that help to make next steps even simpler
+- propose a way to structure texts, so it is easy to translate them and community can be involved for providing extra translations (or AI can help with a translations)
+
+---
+
 I'm refactoring/migrating packages/plugin/src/settingTab.ts to packages/ui/src/views/SettingsTab/SettingsTab.tsx
 
 help me to achieve the same layout of the elements, focus only on layout. No theme colors or else is required. I provde the screenshot of old UI that I want to migrate to React. So I assume to see a break down of UI, to multiple UI smaller components according to packages/ui/ARCHITECTURE.md .

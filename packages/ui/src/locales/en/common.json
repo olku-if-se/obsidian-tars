@@ -1,0 +1,35 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "close": "Close",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "ok": "OK"
+  },
+  "modal": {
+    "close": "Close modal",
+    "closeButton": "Close"
+  },
+  "error": {
+    "currentError": "Current Error",
+    "errorType": "Error Type",
+    "errorMessage": "Error Message",
+    "occurrenceTime": "Occurrence Time",
+    "stackTrace": "Stack Trace",
+    "context": "Context",
+    "recentErrors": "Recent Errors",
+    "clearAllLogs": "Clear All Logs",
+    "noRecentErrors": "No recent errors",
+    "dismissError": "Dismiss error",
+    "unknownError": "Unknown Error"
+  },
+  "status": {
+    "ready": "Tars",
+    "readyTooltip": "Tars AI assistant is ready",
+    "clickForDetails": "Status: {{text}}. Click for details."
+  }
+}

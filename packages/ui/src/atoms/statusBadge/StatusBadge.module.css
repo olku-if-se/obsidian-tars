@@ -1,0 +1,112 @@
+.statusBadge {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--spacing-xs, 4px);
+	font-weight: 500;
+	border-radius: var(--border-radius-md, 6px);
+	padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
+	font-size: 0.875rem;
+	line-height: 1.25;
+	transition: all 0.2s ease;
+}
+
+/* Variants */
+.default {
+	background-color: var(--background-secondary);
+	border: 1px solid var(--background-modifier-border);
+	color: var(--text-normal);
+}
+
+.subtle {
+	background-color: transparent;
+	color: var(--text-muted);
+}
+
+.filled {
+	color: white;
+	border: none;
+}
+
+/* Status colors */
+.idle {
+	background-color: var(--background-secondary);
+	color: var(--text-muted);
+}
+
+.idle.filled {
+	background-color: var(--text-muted);
+}
+
+.generating {
+	background-color: var(--blue);
+	color: white;
+}
+
+.generating.filled {
+	background-color: var(--blue);
+}
+
+.success {
+	background-color: var(--green);
+	color: white;
+}
+
+.success.filled {
+	background-color: var(--green);
+}
+
+.error {
+	background-color: var(--red);
+	color: white;
+}
+
+.error.filled {
+	background-color: var(--red);
+}
+
+.warning {
+	background-color: var(--yellow);
+	color: var(--text-normal);
+}
+
+.warning.filled {
+	background-color: var(--yellow);
+}
+
+.info {
+	background-color: var(--blue);
+	color: white;
+}
+
+.info.filled {
+	background-color: var(--blue);
+}
+
+/* Sizes */
+.sm {
+	padding: 2px var(--spacing-xs, 4px);
+	font-size: 0.75rem;
+}
+
+.md {
+	padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
+	font-size: 0.875rem;
+}
+
+.lg {
+	padding: var(--spacing-sm, 8px) var(--spacing-md, 12px);
+	font-size: 1rem;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 1em;
+	height: 1em;
+	font-size: 1em;
+}
+
+.text {
+	font-variant-numeric: tabular-nums;
+}

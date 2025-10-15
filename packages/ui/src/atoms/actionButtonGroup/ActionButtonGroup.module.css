@@ -1,0 +1,126 @@
+.actionButtonGroup {
+	display: flex;
+	gap: var(--spacing-sm, 8px);
+	align-items: center;
+}
+
+/* Variants */
+.horizontal {
+	flex-direction: row;
+}
+
+.vertical {
+	flex-direction: column;
+}
+
+/* Alignment */
+.left {
+	justify-content: flex-start;
+}
+
+.center {
+	justify-content: center;
+}
+
+.right {
+	justify-content: flex-end;
+}
+
+/* Sizes */
+.sm .actionButton {
+	min-height: 1.75rem;
+	padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
+	font-size: 0.8125rem;
+}
+
+.md .actionButton {
+	min-height: 2.25rem;
+	padding: var(--spacing-sm, 8px) var(--spacing-md, 12px);
+	font-size: 0.875rem;
+}
+
+.lg .actionButton {
+	min-height: 2.75rem;
+	padding: var(--spacing-md, 12px) var(--spacing-lg, 16px);
+	font-size: 1rem;
+}
+
+/* Compact mode */
+.compact {
+	gap: var(--spacing-xs, 4px);
+}
+
+.compact .actionButton {
+	min-height: auto;
+	padding: var(--spacing-xs, 4px) var(--spacing-sm, 8px);
+}
+
+/* Button styling */
+.actionButton {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: all 0.2s ease;
+	position: relative;
+}
+
+.buttonContent {
+	display: flex;
+	align-items: center;
+	gap: var(--spacing-xs, 4px);
+}
+
+.loadingSpinner {
+	animation: spin 1s linear infinite;
+	font-size: 0.875em;
+}
+
+.icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1em;
+}
+
+.label {
+	font-weight: 500;
+}
+
+/* States */
+.actionButton.loading {
+	opacity: 0.7;
+	pointer-events: none;
+}
+
+.actionButton.disabled {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+/* Hover effects */
+.actionButton:not(.disabled):not(.loading):hover {
+	transform: translateY(-1px);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.actionButton:not(.disabled):not(.loading):active {
+	transform: translateY(0);
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive behavior */
+@media (max-width: 768px) {
+	.horizontal {
+		flex-wrap: wrap;
+	}
+
+	.compact .label {
+		display: none;
+	}
+}
+
+/* Animation */
+@keyframes spin {
+	from { transform: rotate(0deg); }
+	to { transform: rotate(360deg); }
+}

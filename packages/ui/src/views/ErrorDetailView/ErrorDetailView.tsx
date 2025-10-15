@@ -1,40 +1,46 @@
 import type React from 'react'
-import { Button } from '../../atoms'
+import { ActionButtonGroup, Button, StatusBadge } from '../../atoms'
+import { COMMON_STRINGS, ERROR_STRINGS } from '../../constants/strings'
 import type { ErrorInfo, ErrorLogEntry } from '../../types/types'
 import styles from './ErrorDetailView.module.css'
 import { ErrorLogItem } from './ErrorLogItem'
 
 export interface ErrorDetailViewProps {
+	// Data props
 	currentError?: ErrorInfo | undefined
 	errorLog: ErrorLogEntry[]
+	// Event handlers
 	onClearLogs: () => void
 	onRemoveLog: (id: string) => void
 }
 
-export const ErrorDetailView: React.FC<ErrorDetailViewProps> = ({
+const ErrorDetailView = ({
 	currentError,
 	errorLog,
 	onClearLogs,
 	onRemoveLog
-}) => {
+}: ErrorDetailViewProps): JSX.Element => {
 	return (
 		<div className={styles.errorDetailModal}>
 			{currentError && (
 				<div className={styles.currentErrorSection}>
-					<h3>Current Error</h3>
+					<div className={styles.sectionHeader}>
+						<h3>{COMMON_STRINGS.MESSAGE.ERROR}</h3>
+						<StatusBadge status="error" size="sm" />
+					</div>
 					<div className={styles.errorDetails}>
 						<p>
-							<strong>Error Type:</strong> {currentError.name || 'Unknown Error'}
+							<strong>{ERROR_STRINGS.TYPES.VALIDATION}:</strong> {currentError.name || COMMON_STRINGS.MESSAGE.UNKNOWN_ERROR}
 						</p>
 						<p>
-							<strong>Error Message:</strong> {currentError.message}
+							<strong>{COMMON_STRINGS.FORM.INVALID}:</strong> {currentError.message}
 						</p>
 						<p>
-							<strong>Occurrence Time:</strong> {currentError.timestamp.toLocaleString()}
+							<strong>{ERROR_STRINGS.MESSAGES.SERVER_ERROR}:</strong> {currentError.timestamp.toLocaleString()}
 						</p>
 						{currentError.stack && (
 							<details className={styles.stackTrace} open>
-								<summary>Stack Trace</summary>
+								<summary>{ERROR_STRINGS.MESSAGES.SERVER_ERROR}</summary>
 								<pre className={styles.stackTracePre}>{currentError.stack}</pre>
 							</details>
 						)}
@@ -44,10 +50,13 @@ export const ErrorDetailView: React.FC<ErrorDetailViewProps> = ({
 
 			{errorLog.length > 0 && (
 				<details className={styles.errorLogDetails} open>
-					<summary>Recent Errors ({errorLog.length})</summary>
+					<summary className={styles.summaryHeader}>
+						<span>{ERROR_STRINGS.MESSAGES.INVALID_RESPONSE} ({errorLog.length})</span>
+						<StatusBadge status="error" variant="subtle" size="sm" />
+					</summary>
 					<div className={styles.errorLogContainer}>
 						{errorLog.length === 0 ? (
-							<div className={styles.emptyLog}>No recent errors</div>
+							<div className={styles.emptyLog}>{COMMON_STRINGS.MESSAGE.NO_DATA}</div>
 						) : (
 							errorLog.map((error, index) => (
 								<ErrorLogItem key={error.id} error={error} index={index} onRemove={onRemoveLog} />
@@ -55,12 +64,34 @@ export const ErrorDetailView: React.FC<ErrorDetailViewProps> = ({
 						)}
 					</div>
 					<div className={styles.errorLogActions}>
-						<Button onClick={onClearLogs} disabled={errorLog.length === 0} variant='danger' size='sm'>
-							Clear All Logs
-						</Button>
+						<ActionButtonGroup
+							actions={[
+								{
+									id: 'clear-logs',
+									label: COMMON_STRINGS.ACTION.CLEAR,
+									variant: 'danger',
+									size: 'sm',
+									onClick: onClearLogs,
+									disabled: errorLog.length === 0
+								}
+							]}
+							size="sm"
+						/>
 					</div>
 				</details>
 			)}
 		</div>
 	)
 }
+
+// Wrap with React.memo for performance optimization
+const MemoizedErrorDetailView = React.memo(ErrorDetailView, (prevProps, nextProps) => {
+	return (
+		prevProps.currentError === nextProps.currentError &&
+		prevProps.errorLog === nextProps.errorLog &&
+		prevProps.onClearLogs === nextProps.onClearLogs &&
+		prevProps.onRemoveLog === nextProps.onRemoveLog
+	)
+})
+
+export { MemoizedErrorDetailView as ErrorDetailView }
