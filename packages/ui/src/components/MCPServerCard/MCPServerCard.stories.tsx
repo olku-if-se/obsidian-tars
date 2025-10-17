@@ -1,7 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
+import type { MCPServerCardProps } from './MCPServerCard'
 import type { MCPServerConfig } from '../MCPServersSection/MCPServersSection'
 import { MCPServerCard } from './MCPServerCard'
+import storyStyles from './MCPServerCard.stories.module.css'
 
 const meta: Meta<typeof MCPServerCard> = {
 	title: 'Components/MCPServerCard',
@@ -10,89 +12,86 @@ const meta: Meta<typeof MCPServerCard> = {
 		layout: 'padded',
 		docs: {
 			description: {
-				component: `
-# MCPServerCard Component
-
-A MCP server configuration card that displays 5 vertical SettingRow components matching the original Obsidian settings UI.
-
-## Structure
-
-The component consists of exactly 5 SettingRow components stacked vertically:
-
-1. **Row 1 - Controls**: Enable/Disable toggle, Test button, Delete button
-2. **Row 2 - Server Name**: Editable input field for server display name
-3. **Row 3 - Configuration**: Title and description only (configuration entered below)
-4. **Row 4 - Configuration Format**: Button to cycle through URL, command, and JSON formats
-5. **Row 5 - Status**: Multiple labels showing error messages, shell commands, or parsing status
-				`
-			}
-		}
+				component: [
+					'# MCPServerCard',
+					'',
+					'Displays a collapsible MCP server configuration card composed of four stacked SettingRow components that mirror Obsidian\'s native settings layout.',
+					'',
+					'1. **Controls** – enable toggle plus Test and Delete buttons.',
+					'2. **Server Name** – editable display name field.',
+					'3. **Configuration** – format-aware input with a toggle cycling URL/command/JSON formats.',
+					'4. **Status** – derived message, format details, failure counts, and validation feedback.',
+				].join('\n'),
+			},
+		},
 	},
 	tags: ['autodocs'],
 	argTypes: {
 		server: {
 			description: 'The MCP server configuration object',
-			control: 'object'
+			control: 'object',
 		},
 		isSelected: {
 			description: 'Whether this server card is currently selected',
-			control: 'boolean'
+			control: 'boolean',
 		},
 		testLoading: {
 			description: 'Whether a connection test is currently in progress',
-			control: 'boolean'
+			control: 'boolean',
 		},
 		statusMessage: {
 			description: 'Custom status message to display',
-			control: 'text'
-		},
-		formatType: {
-			description: 'Current configuration format type',
-			control: 'select',
-			options: ['url', 'shell', 'json']
-		},
-		validationError: {
-			description: 'Validation error message to display',
-			control: 'text'
+			control: 'text',
 		},
 		onToggle: {
 			description: 'Callback when server enable/disable toggle is changed',
-			action: 'toggled'
+			action: 'toggled',
 		},
 		onUpdate: {
 			description: 'Callback when server configuration is updated',
-			action: 'updated'
+			action: 'updated',
 		},
 		onTest: {
 			description: 'Callback when connection test is requested',
-			action: 'tested'
+			action: 'tested',
 		},
 		onRemove: {
 			description: 'Callback when server removal is requested',
-			action: 'removed'
+			action: 'removed',
 		},
-		onToggleFormat: {
-			description: 'Callback when format toggle is clicked',
-			action: 'formatToggled'
-		}
-	}
+	},
 }
 
 export default meta
+
 type Story = StoryObj<typeof meta>
 
-// Sample server configurations for stories
-const sampleManagedServer: MCPServerConfig = {
+const createValidationState = (
+	overrides?: Partial<MCPServerConfig['validationState']>,
+): MCPServerConfig['validationState'] => ({
+	isValid: overrides?.isValid ?? true,
+	errors: overrides?.errors ?? [],
+	warnings: overrides?.warnings ?? [],
+	formatCompatibility: {
+		canShowAsUrl: overrides?.formatCompatibility?.canShowAsUrl ?? true,
+		canShowAsCommand: overrides?.formatCompatibility?.canShowAsCommand ?? true,
+		canShowAsJson: overrides?.formatCompatibility?.canShowAsJson ?? true,
+	},
+})
+
+const managedServerConfig: MCPServerConfig = {
 	id: 'filesystem-server',
 	name: 'Filesystem Server',
 	enabled: true,
 	configInput: 'npx @modelcontextprotocol/server-filesystem /Users/documents',
 	displayMode: 'command',
-	validationState: {
-		isValid: true,
-		errors: [],
-		warnings: []
-	},
+	validationState: createValidationState({
+		formatCompatibility: {
+			canShowAsUrl: false,
+			canShowAsCommand: true,
+			canShowAsJson: true,
+		},
+	}),
 	failureCount: 0,
 	autoDisabled: false,
 	deploymentType: 'managed',
@@ -101,289 +100,253 @@ const sampleManagedServer: MCPServerConfig = {
 		image: 'mcp/filesystem:latest',
 		name: 'filesystem-mcp',
 		env: {
-			ALLOWED_PATHS: '/Users/documents'
-		}
+			ALLOWED_PATHS: '/Users/documents',
+		},
 	},
 	retryPolicy: {
 		maxRetries: 3,
-		backoffMs: 1000
+		backoffMs: 1000,
 	},
-	timeout: 30
+	timeout: 30,
 }
 
-const sampleExternalServer: MCPServerConfig = {
+const externalServerConfig: MCPServerConfig = {
 	id: 'exa-search',
 	name: 'Exa Search',
-	enabled: false,
+	enabled: true,
 	configInput: 'https://api.exa.ai/mcp',
 	displayMode: 'url',
-	validationState: {
-		isValid: true,
-		errors: [],
-		warnings: ['This external server requires API key configuration']
-	},
+	validationState: createValidationState({
+		warnings: ['This external server requires API key configuration'],
+		formatCompatibility: {
+			canShowAsUrl: true,
+			canShowAsCommand: false,
+			canShowAsJson: true,
+		},
+	}),
 	failureCount: 2,
 	autoDisabled: false,
 	deploymentType: 'external',
 	transport: 'sse',
 	sseConfig: {
-		url: 'https://api.exa.ai/mcp'
+		url: 'https://api.exa.ai/mcp',
 	},
 	retryPolicy: {
 		maxRetries: 5,
-		backoffMs: 2000
+		backoffMs: 2000,
 	},
-	timeout: 45
+	timeout: 45,
 }
 
-const sampleDisabledServer: MCPServerConfig = {
+const invalidJsonServerConfig: MCPServerConfig = {
 	id: 'custom-server',
 	name: 'Custom Server',
-	enabled: false,
+	enabled: true,
 	configInput: '{"mcpServers": {"custom": {"command": "invalid-command", "args": []}}}',
 	displayMode: 'json',
-	validationState: {
+	validationState: createValidationState({
 		isValid: false,
 		errors: ['Invalid JSON configuration', 'Command not found: invalid-command'],
-		warnings: ['This server configuration may not work properly']
-	},
+		warnings: ['This server configuration may not work properly'],
+		formatCompatibility: {
+			canShowAsUrl: false,
+			canShowAsCommand: false,
+			canShowAsJson: true,
+		},
+	}),
 	failureCount: 5,
+	autoDisabled: false,
+	deploymentType: 'managed',
+	transport: 'stdio',
+	dockerConfig: {
+		image: 'custom/mcp:1.0.0',
+	},
+	retryPolicy: {
+		maxRetries: 2,
+		backoffMs: 1500,
+	},
+	timeout: 60,
+}
+
+const autoDisabledServerConfig: MCPServerConfig = {
+	id: 'filesystem-auto-disabled',
+	name: 'Filesystem Server (Auto Disabled)',
+	enabled: false,
+	configInput: 'npx @modelcontextprotocol/server-filesystem /Users/documents',
+	displayMode: 'command',
+	validationState: createValidationState({
+		warnings: ['Server disabled until manual review completes'],
+		formatCompatibility: {
+			canShowAsUrl: false,
+			canShowAsCommand: true,
+			canShowAsJson: true,
+		},
+	}),
+	failureCount: 7,
 	autoDisabled: true,
 	deploymentType: 'managed',
 	transport: 'stdio',
 	dockerConfig: {
-		image: 'custom/mcp:1.0.0'
-	}
+		image: 'mcp/filesystem:latest',
+		name: 'filesystem-mcp',
+	},
+	retryPolicy: {
+		maxRetries: 3,
+		backoffMs: 2000,
+	},
+	timeout: 30,
 }
 
-// Basic story with a managed server
+type CardHandlers = Pick<MCPServerCardProps, 'onToggle' | 'onUpdate' | 'onTest' | 'onRemove'>
+
+const createActionHandlers = (): CardHandlers => ({
+	onToggle: fn(),
+	onUpdate: fn(),
+	onTest: fn(),
+	onRemove: fn(),
+})
+
 export const ManagedServer: Story = {
 	args: {
-		server: sampleManagedServer,
+		server: managedServerConfig,
 		isSelected: false,
 		testLoading: false,
-		formatType: 'shell',
-		onToggle: fn(),
-		onUpdate: fn(),
-		onTest: fn(),
-		onRemove: fn(),
-		onToggleFormat: fn()
-	}
+		...createActionHandlers(),
+	},
 }
 
-// Story showing shell command format
-export const ShellFormat: Story = {
+export const CommandFormat: Story = {
 	args: {
-		server: sampleManagedServer,
+		server: managedServerConfig,
 		isSelected: false,
 		testLoading: false,
-		formatType: 'shell',
-		statusMessage: 'Ready',
-		onToggle: fn(),
-		onUpdate: fn(),
-		onTest: fn(),
-		onRemove: fn(),
-		onToggleFormat: fn()
+		...createActionHandlers(),
 	},
 	parameters: {
 		docs: {
 			description: {
-				story: `
-Shows the server card in shell command format:
-
-- **Row 1**: Controls with toggle, test, and delete buttons
-- **Row 2**: Editable server name input
-- **Row 3**: Configuration title and description
-- **Row 4**: Format toggle button showing next format ("Show as URL")
-- **Row 5**: Status showing "Ready" and current shell command
-				`
-			}
-		}
-	}
+				story: 'Shows a managed server using the command format. The configuration row exposes the format toggle while the status row defaults to the built-in "Ready" message.',
+			},
+		},
+	},
 }
 
-// Story showing URL format
 export const UrlFormat: Story = {
 	args: {
-		server: sampleExternalServer,
+		server: externalServerConfig,
 		isSelected: false,
 		testLoading: false,
-		formatType: 'url',
 		statusMessage: 'Connected successfully',
-		onToggle: fn(),
-		onUpdate: fn(),
-		onTest: fn(),
-		onRemove: fn(),
-		onToggleFormat: fn()
+		...createActionHandlers(),
 	},
 	parameters: {
 		docs: {
 			description: {
-				story: `
-Shows the server card in URL format:
-
-- **Row 1**: Controls with toggle, test, and delete buttons
-- **Row 2**: Editable server name input
-- **Row 3**: Configuration title and description
-- **Row 4**: Format toggle button showing next format ("Show as JSON")
-- **Row 5**: Status showing connection success and current URL
-				`
-			}
-		}
-	}
+				story: 'Demonstrates a URL-driven server, including the "Show as JSON" toggle label and a success status message when connectivity tests pass.',
+			},
+		},
+	},
 }
 
-// Story showing JSON format
 export const JsonFormat: Story = {
 	args: {
-		server: sampleDisabledServer,
+		server: invalidJsonServerConfig,
 		isSelected: false,
 		testLoading: false,
-		formatType: 'json',
-		validationError: 'Invalid JSON configuration',
-		onToggle: fn(),
-		onUpdate: fn(),
-		onTest: fn(),
-		onRemove: fn(),
-		onToggleFormat: fn()
+		...createActionHandlers(),
 	},
 	parameters: {
 		docs: {
 			description: {
-				story: `
-Shows the server card in JSON format with validation error:
-
-- **Row 1**: Controls with toggle, test, and delete buttons
-- **Row 2**: Editable server name input
-- **Row 3**: Configuration title and description
-- **Row 4**: Format toggle button showing next format ("Show as URL")
-- **Row 5**: Status showing validation error in red and current format type
-				`
-			}
-		}
-	}
+				story: 'Highlights validation feedback when parsing fails. The status section surfaces the error banner and lists individual validation errors and warnings.',
+			},
+		},
+	},
 }
 
-// Story showing loading state during connection test
 export const TestingConnection: Story = {
 	args: {
-		server: sampleManagedServer,
+		server: managedServerConfig,
 		isSelected: false,
 		testLoading: true,
-		formatType: 'shell',
-		statusMessage: 'Testing connection...',
-		onToggle: fn(),
-		onUpdate: fn(),
-		onTest: fn(),
-		onRemove: fn(),
-		onToggleFormat: fn()
-	}
-}
-
-// Story showing disabled server
-export const DisabledServer: Story = {
-	args: {
-		server: sampleDisabledServer,
-		isSelected: false,
-		testLoading: false,
-		formatType: 'shell',
-		statusMessage: 'Server disabled',
-		onToggle: fn(),
-		onUpdate: fn(),
-		onTest: fn(),
-		onRemove: fn(),
-		onToggleFormat: fn()
-	}
-}
-
-// Interactive story for testing user interactions
-export const Interactive: Story = {
-	args: {
-		server: sampleManagedServer,
-		isSelected: false,
-		testLoading: false,
-		formatType: 'shell',
-		onToggle: fn(),
-		onUpdate: fn(),
-		onTest: fn(),
-		onRemove: fn(),
-		onToggleFormat: fn()
+		...createActionHandlers(),
 	},
 	parameters: {
 		docs: {
 			description: {
-				story: `
-Interactive story that demonstrates all user interactions:
-
-- **Toggle Enable/Disable**: Click the toggle switch to enable or disable the server
-- **Test Connection**: Click the "Test" button to simulate a connection test
-- **Remove Server**: Click the "Delete" button to trigger server removal
-- **Edit Server Name**: Modify the server name input field
-- **Toggle Format**: Click "Show as URL/Command/JSON" to cycle between formats
-- **Select Card**: The card can be selected/deselected programmatically
-
-All interactions are logged in the Actions panel at the bottom of the Storybook interface.
-				`
-			}
-		}
-	}
+				story: 'Toggles the loading state so the Test button is disabled and the status row switches to the built-in "Testing..." label.',
+			},
+		},
+	},
 }
 
-// Multiple servers story for layout testing
-export const MultipleServers: Story = {
-	render: () => (
-		<div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-			<MCPServerCard
-				server={sampleManagedServer}
-				isSelected={true}
-				testLoading={false}
-				formatType="shell"
-				statusMessage="Ready"
-				onToggle={fn()}
-				onUpdate={fn()}
-				onTest={fn()}
-				onRemove={fn()}
-				onToggleFormat={fn()}
-			/>
-			<MCPServerCard
-				server={sampleExternalServer}
-				isSelected={false}
-				testLoading={false}
-				formatType="url"
-				statusMessage="Connected successfully"
-				onToggle={fn()}
-				onUpdate={fn()}
-				onTest={fn()}
-				onRemove={fn()}
-				onToggleFormat={fn()}
-			/>
-			<MCPServerCard
-				server={sampleDisabledServer}
-				isSelected={false}
-				testLoading={true}
-				formatType="json"
-				validationError="Invalid JSON configuration"
-				onToggle={fn()}
-				onUpdate={fn()}
-				onTest={fn()}
-				onRemove={fn()}
-				onToggleFormat={fn()}
-			/>
-		</div>
-	),
+export const DisabledServer: Story = {
+	args: {
+		server: autoDisabledServerConfig,
+		isSelected: false,
+		testLoading: false,
+		...createActionHandlers(),
+	},
 	parameters: {
 		docs: {
 			description: {
-				story: `
-Demonstrates how multiple MCPServerCard components look when used together, showing:
-- Different server types (managed vs external)
-- Various states (enabled, disabled, selected, loading)
-- Different format types (shell, url, json)
-- Different status messages and validation errors
-- Proper vertical SettingRow layout
-- Consistent spacing and visual hierarchy
-				`
-			}
-		}
-	}
+				story: 'Shows a server that has been auto-disabled after repeated failures. The status row communicates the lockout state and the accumulated failure count.',
+			},
+		},
+	},
+}
+
+export const Interactive: Story = {
+	args: {
+		server: managedServerConfig,
+		isSelected: false,
+		testLoading: false,
+		...createActionHandlers(),
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: 'Use this playground story to exercise every handler: toggle enablement, edit the name, switch configuration formats, run tests, and request removal. Each interaction is logged in Storybook\'s Actions panel.',
+			},
+		},
+	},
+}
+
+export const MultipleServers: Story = {
+	render: () => {
+		const managedHandlers = createActionHandlers()
+		const externalHandlers = createActionHandlers()
+		const invalidHandlers = createActionHandlers()
+
+		return (
+			<div className={storyStyles.stack}>
+				<MCPServerCard
+					server={managedServerConfig}
+					isSelected
+					testLoading={false}
+					{...managedHandlers}
+				/>
+				<MCPServerCard
+					server={externalServerConfig}
+					isSelected={false}
+					testLoading={false}
+					statusMessage="Connected successfully"
+					{...externalHandlers}
+				/>
+				<MCPServerCard
+					server={invalidJsonServerConfig}
+					isSelected={false}
+					testLoading={false}
+					{...invalidHandlers}
+				/>
+			</div>
+		)
+	},
+	parameters: {
+		docs: {
+			description: {
+				story: 'Stacks multiple MCPServerCard components to validate consistent spacing, selection styling, and the interplay of success, warning, and error states.',
+			},
+		},
+	},
 }

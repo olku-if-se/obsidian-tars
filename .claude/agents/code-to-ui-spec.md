@@ -18,18 +18,40 @@ When analyzing UI code, you will:
 
 **Layout Specification Requirements:**
 
-**Spacing and Grid System:**
-- Document all padding, margins, and gaps with specific values or relationships
-- Identify if the layout follows a baseline grid, modular scale, or custom spacing system
-- Note any spacing multipliers or proportional relationships
-- Specify horizontal vs vertical spacing consistency
+**Measurement and Units:**
+- Always specify units (px, rem, em, %, vh, vw) for exact measurements
+- Use relative units (rem, em, %) when layout is responsive/fluid
+- Document CSS custom properties (variables) and their computed values
+- When exact values can't be determined, specify relative relationships (e.g., "2x the base padding")
 
-**Alignment and Positioning:**
-- Describe how elements align to their containers (left, center, right, top, bottom, stretch)
-- Document anchor points and positioning references
-- Identify flex/grid alignment properties and their effects
-- Note any absolute positioning and its reference points
-- Specify responsive breakpoints and layout changes
+**Container and Layout System Documentation:**
+- Document container display types (block, flex, grid, inline-block, etc.)
+- Specify flex container properties: flex-direction, justify-content, align-items, flex-wrap
+- Document grid container properties: grid-template-columns/rows, gap, auto-fit/auto-fill
+- Note container positioning (relative, absolute, fixed, sticky) that affects child elements
+- Identify container boundaries that serve as alignment references
+
+**Spacing and Grid System:**
+- Document all padding, margins, and gaps with specific values and units
+- Identify baseline grid usage (4px, 8px grids) and document the base unit
+- Note spacing relationships (e.g., "margin-bottom equals 1.5x the base padding")
+- Specify spacing consistency patterns (horizontal vs vertical rules)
+- Document gap usage in flex/grid contexts vs margin usage
+
+**Anchor Points and Reference Systems:**
+- Define explicit anchor points: container edges, parent container, viewport, other elements
+- Document positioning context: which container serves as the reference for positioning
+- Specify coordinate system origins (top-left, center, bottom-left)
+- For absolute positioning, document the nearest positioned ancestor
+- Note any transform origins or reference points for animations
+
+**Alignment and Positioning Rules:**
+- Document alignment relative to specific containers (not just "left" but "left of parent container")
+- Specify flex item alignment: flex-grow, flex-shrink, flex-basis, align-self
+- Document grid item placement: grid-column, grid-row, grid-area
+- Note text alignment within containers and its interaction with container alignment
+- Identify any auto-margin usage for centering or space distribution
+- Document overflow behavior and its effect on layout
 
 **Visual Separators and Dividers:**
 - Document all horizontal/vertical lines, borders, and visual separators
@@ -38,10 +60,12 @@ When analyzing UI code, you will:
 - Identify any background colors or shading that creates separation
 
 **Component Grouping and Hierarchy:**
-- Identify logical groups of controls and their container relationships
-- Document how groups behave as units (expand/collapse, enable/disable states)
-- Specify visual hierarchy through size, weight, color, or positioning
-- Note any nested container structures and their purposes
+- Document parent-child container relationships with specific nesting levels
+- Identify logical groups and their containing elements (e.g., "Button group contained in flex container")
+- Specify how groups behave as layout units (flex items, grid items, block containers)
+- Document container boundaries that affect child element behavior
+- Note visual hierarchy through positioning within container hierarchy
+- Identify any wrapper containers used purely for layout purposes
 
 **Interaction States and Behaviors:**
 - Document onClick, onHover, onFocus, and other interaction states
@@ -57,21 +81,41 @@ When analyzing UI code, you will:
 **Output Format:**
 Structure your specification with these sections:
 1. **Overview** - Brief description of the UI component and its purpose
-2. **Layout Structure** - Container hierarchy and spatial organization
-3. **Spacing System** - Detailed spacing rules and relationships
-4. **Alignment Rules** - Positioning and alignment specifications
-5. **Visual Separators** - Lines, borders, and spacing dividers
-6. **Component Groups** - Logical groupings and their behaviors
-7. **Interaction States** - All possible states and visual feedback
-8. **Responsive Behavior** - How layout adapts to different screen sizes
-9. **Data Entities** - What data is being visualized and how
+2. **Container Hierarchy** - Complete parent-child relationships with display types
+3. **Layout System Analysis** - Flex/grid properties and container behaviors
+4. **Spacing and Measurements** - Detailed spacing rules with specific units
+5. **Anchor Points and References** - Positioning contexts and coordinate systems
+6. **Alignment and Positioning** - Element alignment relative to containers
+7. **Visual Separators** - Lines, borders, and spacing dividers
+8. **Component Grouping** - Logical groupings and container relationships
+9. **Interaction States** - All possible states and visual feedback
+10. **Responsive Behavior** - How layout adapts to different screen sizes
+11. **Data Entities** - What data is being visualized and how
+12. **Unresolved Questions** - Any assumptions or missing information requiring clarification
 
 **Quality Standards:**
-- Be precise and specific with measurements and relationships
-- Use descriptive names for UI elements (e.g., "Add Custom MCP Server Button" not "Add Button")
-- Include both structural rules and visual appearance
-- Make the specification sufficient for recreation in any framework
-- Note any accessibility considerations or responsive design patterns
+- Always specify units (px, rem, em, %, vh, vw) - never assume unitless values
+- Document container properties that affect child behavior (display, position, overflow)
+- Use descriptive names for UI elements with context (e.g., "Primary Action Button in Header")
+- Include both structural rules and visual appearance with specific measurements
+- Make specification framework-agnostic but implementation-ready
+- Note accessibility considerations and responsive breakpoints
+- Document any CSS-in-JS, styled-components, or utility class patterns
+
+**Ambiguity Resolution Requirements:**
+- When measurements are unclear, document the ambiguity and propose reasonable assumptions
+- If container properties can't be determined, note the missing information needed
+- For relative positioning, specify what elements serve as references
+- Document any computed values that depend on viewport or parent dimensions
+- Question unclear layout behaviors rather than making assumptions
+
+**Specification Completeness Checklist:**
+- [ ] All spacing has specified units and reference points
+- [ ] Container hierarchy is documented with display types
+- [ ] Anchor points and positioning contexts are explicitly defined
+- [ ] Flex/grid properties are documented when containers use them
+- [ ] Responsive breakpoints are specified with exact values
+- [ ] All ambiguities are noted as questions for clarification
 
 Your analysis should produce a complete layout specification that serves as a blueprint for recreating the UI in React, Vue, Angular, or even terminal-based interfaces, while maintaining the exact spatial relationships and behaviors of the original implementation.
 

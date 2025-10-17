@@ -6,7 +6,9 @@ claude --dangerously-skip-permissions
 
 We are reviewing the code: packages/plugin/src/settings/MCPServerSettings.ts
 
-ask @agent-code-to-ui-spec to create a UI design specification and ask @agent-ui-spec-validator to help validating the design specification.Collaborate on specification until it become ready as much as possible, and raise unconfirmed/unanswered question for human at the end.
+ask @agent-code-to-ui-spec to create a UI design specification and ask @agent-ui-spec-validator to help validating the design specification.Collaborate on specification until it become ready as much as possible, and raise unconfirmed/unanswered question for human and clarify them, until we are ready to ask @agent-from-spec-to-tui to recreate UI from description. Terminal UI is used as a draft preview of the UI, not as a final implementation, it is used to validate the design specification. Keep findings of agents visible and visible to human.
+
+complete specification should be saved in a file: `docs/{yyyy-mm-dd}-ui-specification-for-{ui_control_short_name}.md`
 
 ---
 # Agent: from-code-to-ui-spec
