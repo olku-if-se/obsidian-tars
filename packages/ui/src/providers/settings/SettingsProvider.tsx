@@ -1,6 +1,6 @@
-import { createContext, type ReactNode, useContext, useReducer, useCallback, useMemo } from 'react'
+import { createContext, type ReactNode, useCallback, useContext, useMemo, useReducer } from 'react'
 import type { MCPServerConfig } from '../../components'
-import { validateFormat, type ValidationResult } from '../../utilities/validation'
+import { type ValidationResult, validateFormat } from '../../utils/validation.v2'
 
 // Type aliases for better readability
 export type Provider = {
@@ -96,7 +96,7 @@ function getDefaultTransport(displayMode: MCPDisplayMode, template: MCPServerTem
 
 function generateUniqueServerName(baseName: string, existing: MCPServerConfig[]): string {
 	const trimmedBase = baseName.trim() || 'New MCP Server'
-	const existingNames = new Set(existing.map(server => server.name.toLowerCase()))
+	const existingNames = new Set(existing.map((server) => server.name.toLowerCase()))
 	if (!existingNames.has(trimmedBase.toLowerCase())) {
 		return trimmedBase
 	}
@@ -242,17 +242,15 @@ function settingsReducer(state: SettingsState, action: SettingsAction): Settings
 		case 'UPDATE_PROVIDER':
 			return {
 				...state,
-				providers: state.providers.map(provider =>
-					provider.id === action.payload.id
-						? { ...provider, ...action.payload.updates }
-						: provider
+				providers: state.providers.map((provider) =>
+					provider.id === action.payload.id ? { ...provider, ...action.payload.updates } : provider
 				)
 			}
 
 		case 'REMOVE_PROVIDER':
 			return {
 				...state,
-				providers: state.providers.filter(provider => provider.id !== action.payload.id)
+				providers: state.providers.filter((provider) => provider.id !== action.payload.id)
 			}
 
 		case 'UPDATE_MESSAGE_TAGS':
@@ -307,11 +305,10 @@ function settingsReducer(state: SettingsState, action: SettingsAction): Settings
 				transport: getDefaultTransport(displayMode, template),
 				dockerConfig: template.dockerConfig,
 				sseConfig: template.sseConfig,
-				retryPolicy:
-					template.retryPolicy ?? {
-						maxRetries: 3,
-						backoffMs: 1000
-					},
+				retryPolicy: template.retryPolicy ?? {
+					maxRetries: 3,
+					backoffMs: 1000
+				},
 				timeout: template.timeout ?? 30
 			}
 			return {
@@ -323,26 +320,22 @@ function settingsReducer(state: SettingsState, action: SettingsAction): Settings
 		case 'REMOVE_MCP_SERVER':
 			return {
 				...state,
-				mcpServers: state.mcpServers.filter(server => server.id !== action.payload.id)
+				mcpServers: state.mcpServers.filter((server) => server.id !== action.payload.id)
 			}
 
 		case 'UPDATE_MCP_SERVER':
 			return {
 				...state,
-				mcpServers: state.mcpServers.map(server =>
-					server.id === action.payload.id
-						? { ...server, ...action.payload.updates }
-						: server
+				mcpServers: state.mcpServers.map((server) =>
+					server.id === action.payload.id ? { ...server, ...action.payload.updates } : server
 				)
 			}
 
 		case 'TOGGLE_MCP_SERVER':
 			return {
 				...state,
-				mcpServers: state.mcpServers.map(server =>
-					server.id === action.payload.id
-						? { ...server, enabled: action.payload.enabled }
-						: server
+				mcpServers: state.mcpServers.map((server) =>
+					server.id === action.payload.id ? { ...server, enabled: action.payload.enabled } : server
 				)
 			}
 
@@ -364,17 +357,13 @@ function settingsReducer(state: SettingsState, action: SettingsAction): Settings
 		case 'ENABLE_ALL_REACT_FEATURES':
 			return {
 				...state,
-				reactFeatures: Object.fromEntries(
-					Object.keys(state.reactFeatures).map(key => [key, true])
-				) as ReactFeatures
+				reactFeatures: Object.fromEntries(Object.keys(state.reactFeatures).map((key) => [key, true])) as ReactFeatures
 			}
 
 		case 'DISABLE_ALL_REACT_FEATURES':
 			return {
 				...state,
-				reactFeatures: Object.fromEntries(
-					Object.keys(state.reactFeatures).map(key => [key, false])
-				) as ReactFeatures
+				reactFeatures: Object.fromEntries(Object.keys(state.reactFeatures).map((key) => [key, false])) as ReactFeatures
 			}
 
 		case 'UPDATE_ADVANCED_SETTINGS':
@@ -445,50 +434,49 @@ export function SettingsProvider({ children, initialState, onStateChange }: Sett
 	}, [state, onStateChange])
 
 	// Memoize actions to prevent unnecessary re-renders
-	const actions = useMemo(() => ({
-		addProvider: (vendor: string) => dispatch({ type: 'ADD_PROVIDER', payload: { vendor } }),
-		updateProvider: (id: string, updates: Partial<Provider>) =>
-			dispatch({ type: 'UPDATE_PROVIDER', payload: { id, updates } }),
-		removeProvider: (id: string) => dispatch({ type: 'REMOVE_PROVIDER', payload: { id } }),
-		updateMessageTags: (tags: Partial<MessageTagsData>) =>
-			dispatch({ type: 'UPDATE_MESSAGE_TAGS', payload: tags }),
-		updateSystemMessage: (systemMessage: SystemMessage) =>
-			dispatch({ type: 'UPDATE_SYSTEM_MESSAGE', payload: systemMessage }),
-		updateBasicSettings: (settings: Partial<BasicSettings>) =>
-			dispatch({ type: 'UPDATE_BASIC_SETTINGS', payload: settings }),
-		toggleSection: (section: keyof SettingsUIState, open: boolean) =>
-			dispatch({ type: 'TOGGLE_SECTION', payload: { section, open } }),
-		addMCPServer: (template?: MCPServerTemplate) =>
-			dispatch({ type: 'ADD_MCP_SERVER', payload: { template } }),
-		removeMCPServer: (id: string) => dispatch({ type: 'REMOVE_MCP_SERVER', payload: { id } }),
-		updateMCPServer: (id: string, updates: Partial<MCPServerConfig>) =>
-			dispatch({ type: 'UPDATE_MCP_SERVER', payload: { id, updates } }),
-		toggleMCPServer: (id: string, enabled: boolean) =>
-			dispatch({ type: 'TOGGLE_MCP_SERVER', payload: { id, enabled } }),
-		updateGlobalLimits: (limits: Partial<GlobalLimits>) =>
-			dispatch({ type: 'UPDATE_GLOBAL_LIMITS', payload: limits }),
-		toggleReactFeature: (feature: keyof ReactFeatures, enabled: boolean) =>
-			dispatch({ type: 'TOGGLE_REACT_FEATURE', payload: { feature, enabled } }),
-		enableAllReactFeatures: () => dispatch({ type: 'ENABLE_ALL_REACT_FEATURES' }),
-		disableAllReactFeatures: () => dispatch({ type: 'DISABLE_ALL_REACT_FEATURES' }),
-		updateAdvancedSettings: (settings: Partial<AdvancedSettings>) =>
-			dispatch({ type: 'UPDATE_ADVANCED_SETTINGS', payload: settings }),
-		batchUpdate: (updates: Partial<SettingsState>) =>
-			dispatch({ type: 'BATCH_UPDATE', payload: updates })
-	}), [])
+	const actions = useMemo(
+		() => ({
+			addProvider: (vendor: string) => dispatch({ type: 'ADD_PROVIDER', payload: { vendor } }),
+			updateProvider: (id: string, updates: Partial<Provider>) =>
+				dispatch({ type: 'UPDATE_PROVIDER', payload: { id, updates } }),
+			removeProvider: (id: string) => dispatch({ type: 'REMOVE_PROVIDER', payload: { id } }),
+			updateMessageTags: (tags: Partial<MessageTagsData>) => dispatch({ type: 'UPDATE_MESSAGE_TAGS', payload: tags }),
+			updateSystemMessage: (systemMessage: SystemMessage) =>
+				dispatch({ type: 'UPDATE_SYSTEM_MESSAGE', payload: systemMessage }),
+			updateBasicSettings: (settings: Partial<BasicSettings>) =>
+				dispatch({ type: 'UPDATE_BASIC_SETTINGS', payload: settings }),
+			toggleSection: (section: keyof SettingsUIState, open: boolean) =>
+				dispatch({ type: 'TOGGLE_SECTION', payload: { section, open } }),
+			addMCPServer: (template?: MCPServerTemplate) => dispatch({ type: 'ADD_MCP_SERVER', payload: { template } }),
+			removeMCPServer: (id: string) => dispatch({ type: 'REMOVE_MCP_SERVER', payload: { id } }),
+			updateMCPServer: (id: string, updates: Partial<MCPServerConfig>) =>
+				dispatch({ type: 'UPDATE_MCP_SERVER', payload: { id, updates } }),
+			toggleMCPServer: (id: string, enabled: boolean) =>
+				dispatch({ type: 'TOGGLE_MCP_SERVER', payload: { id, enabled } }),
+			updateGlobalLimits: (limits: Partial<GlobalLimits>) =>
+				dispatch({ type: 'UPDATE_GLOBAL_LIMITS', payload: limits }),
+			toggleReactFeature: (feature: keyof ReactFeatures, enabled: boolean) =>
+				dispatch({ type: 'TOGGLE_REACT_FEATURE', payload: { feature, enabled } }),
+			enableAllReactFeatures: () => dispatch({ type: 'ENABLE_ALL_REACT_FEATURES' }),
+			disableAllReactFeatures: () => dispatch({ type: 'DISABLE_ALL_REACT_FEATURES' }),
+			updateAdvancedSettings: (settings: Partial<AdvancedSettings>) =>
+				dispatch({ type: 'UPDATE_ADVANCED_SETTINGS', payload: settings }),
+			batchUpdate: (updates: Partial<SettingsState>) => dispatch({ type: 'BATCH_UPDATE', payload: updates })
+		}),
+		[]
+	)
 
 	// Memoize context value
-	const contextValue = useMemo(() => ({
-		state,
-		dispatch,
-		actions
-	}), [state, actions])
-
-	return (
-		<SettingsContext.Provider value={contextValue}>
-			{children}
-		</SettingsContext.Provider>
+	const contextValue = useMemo(
+		() => ({
+			state,
+			dispatch,
+			actions
+		}),
+		[state, actions]
 	)
+
+	return <SettingsContext.Provider value={contextValue}>{children}</SettingsContext.Provider>
 }
 
 // Hook to use settings context

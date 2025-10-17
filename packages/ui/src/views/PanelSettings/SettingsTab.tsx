@@ -17,7 +17,7 @@ import {
 	useSystemMessage,
 	useUIState
 } from '../../providers/settings/SettingsProvider'
-import { t } from '../../utilities/i18n'
+import { t } from '../../utils/i18n'
 import styles from './SettingsTab.module.css'
 
 type SettingsTabProps = {

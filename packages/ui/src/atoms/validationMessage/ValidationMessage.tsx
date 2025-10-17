@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { t } from '../../utilities/i18n'
+import { t } from '../../utils/i18n'
 import styles from './ValidationMessage.module.css'
 
 // Type aliases for better readability
@@ -18,7 +18,6 @@ type ValidationMessageEvents = {
 }
 
 export type ValidationMessageProps = ValidationMessageData & ValidationMessageUI & ValidationMessageEvents
-
 
 export const ValidationMessage: React.FC<ValidationMessageProps> = ({
 	message,
@@ -71,16 +70,9 @@ export const ValidationMessage: React.FC<ValidationMessageProps> = ({
 		}
 	}
 
-	const messageClasses = clsx(
-		styles.validationMessage,
-		styles[type],
-		styles[size]
-	)
+	const messageClasses = clsx(styles.validationMessage, styles[type], styles[size])
 
-	const iconClasses = clsx(
-		styles.icon,
-		styles[`${type}Icon`]
-	)
+	const iconClasses = clsx(styles.icon, styles[`${type}Icon`])
 
 	return (
 		<div className={messageClasses} role="alert" aria-live="polite">
@@ -93,12 +85,7 @@ export const ValidationMessage: React.FC<ValidationMessageProps> = ({
 				</span>
 			</div>
 			{dismissible && onDismiss && (
-				<button
-					type="button"
-					className={styles.dismissButton}
-					onClick={handleDismiss}
-					aria-label={getDismissLabel()}
-				>
+				<button type="button" className={styles.dismissButton} onClick={handleDismiss} aria-label={getDismissLabel()}>
 					×
 				</button>
 			)}

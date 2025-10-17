@@ -38,7 +38,7 @@ export const AdvancedSection = ({
 		}
 	})
 
-	const delayInSeconds = ((settings.answerDelayInMilliseconds ?? 2000) / 1000)
+	const delayInSeconds = (settings.answerDelayInMilliseconds ?? 2000) / 1000
 
 	// Handle setting changes and notify parent
 	const updateSetting = <K extends keyof SectionSettings>(key: K, value: SectionSettings[K]) => {
@@ -56,7 +56,7 @@ export const AdvancedSection = ({
 		delayTitle: 'Delay before answer (Seconds)',
 		delayDescription:
 			'If you encounter errors with missing user messages when executing assistant commands on selected text, it may be due to the need for more time to parse the messages. Please slightly increase the delay time.',
-		resetButtonText: 'Reset',
+		resetButtonText: '↩️',
 		replaceTagTitle: 'Replace tag Command',
 		replaceTagDescription: 'Replace the names of the two most frequently occurring speakers with tag format.',
 		exportToJsonlTitle: 'Export to JSONL Command',
@@ -77,8 +77,7 @@ export const AdvancedSection = ({
 		step: 0.5,
 		value: delayInSeconds,
 		showValue: true as const,
-		valueFormatter: (value: number) => `${value}s`,
-		className: styles.delaySlider
+		valueFormatter: (value: number) => `${value}s`
 	}
 
 	// Event handlers using internal state management
@@ -114,9 +113,12 @@ export const AdvancedSection = ({
 		<CollapsibleSection
 			title={strings.title}
 			defaultOpen={defaultOpen}
-			onToggle={onToggleSection || (() => {
-				// Optional callback - no action needed by default
-			})}
+			onToggle={
+				onToggleSection ||
+				(() => {
+					// Optional callback - no action needed by default
+				})
+			}
 			className={styles.advancedSection}
 		>
 			<SettingRow name={strings.internalLinksTitle} description={strings.internalLinksDescription}>
@@ -128,7 +130,11 @@ export const AdvancedSection = ({
 					<Button variant="default" size="sm" onClick={handleResetDelay}>
 						{strings.resetButtonText}
 					</Button>
-					<Slider {...sliderProps} onChange={(e) => handleDelayChange(Math.round(parseFloat(e.target.value) * 1000))} />
+					<Slider
+						className={styles.delaySlider}
+						onChange={(e) => handleDelayChange(Math.round(parseFloat(e.target.value) * 1000))}
+						{...sliderProps}
+					/>
 					<div className={styles.delayValueDisplay}>{delayInSeconds}s</div>
 				</div>
 			</SettingRow>

@@ -1,11 +1,10 @@
 import clsx from 'clsx'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Button, CollapsibleSection, Input, SettingRow, Toggle } from '../../atoms'
-import { MCPServerCard } from '../MCPServerCard'
+import { t } from '../../utils/i18n'
+import type { ValidationResult } from '../../utils/validation.v2'
+import { MCPServerCard } from '../CardMcpServer'
 import styles from './MCPServersSection.module.css'
-
-import type { ValidationResult } from '../../utilities/validation'
-import { t } from '../../utilities/i18n'
 
 export type MCPServerConfig = {
 	id: string
@@ -79,13 +78,12 @@ type Toast = {
 }
 
 type QuickAddOption = {
-	id: string
-	label: string
-	description: string
+	id: 'exa' | 'filesystem'
+	buttonLabelKey: string
+	toastMessageKey: string
+	toastTone?: ToastTone
 	template: Partial<MCPServerConfig>
 }
-
-type Platform = 'windows' | 'unix'
 
 const TOAST_TIMEOUT_MS = 4500
 
@@ -115,8 +113,7 @@ export function MCPServersSection({
 	const [toasts, setToasts] = useState<Toast[]>([])
 	const toastTimersRef = useRef<Record<string, number>>({})
 
-	const platform = useMemo(() => detectPlatform(), [])
-	const quickAddOptions = useMemo(() => createQuickAddOptions(platform), [platform])
+	const quickAddOptions = useMemo(createQuickAddOptions, [])
 
 	// Track name validation issues (duplicate or invalid names)
 	const nameErrors = useMemo(() => {
@@ -151,10 +148,10 @@ export function MCPServersSection({
 
 	// Ensure runtime state exists for all servers and prune removed servers
 	useEffect(() => {
-		setRuntimeState(prev => {
+		setRuntimeState((prev) => {
 			const next: Record<string, MCPServerRuntimeState> = {}
 			let changed = false
-			const ids = new Set(servers.map(server => server.id))
+			const ids = new Set(servers.map((server) => server.id))
 
 			for (const server of servers) {
 				if (prev[server.id]) {
@@ -178,10 +175,10 @@ export function MCPServersSection({
 
 	// Auto-expand newly created servers and remove stale expanded state entries
 	useEffect(() => {
-		setExpandedServers(prev => {
+		setExpandedServers((prev) => {
 			const next: Record<string, boolean> = { ...prev }
 			let changed = false
-			const ids = new Set(servers.map(server => server.id))
+			const ids = new Set(servers.map((server) => server.id))
 
 			for (const server of servers) {
 				if (!(server.id in next)) {
@@ -205,7 +202,7 @@ export function MCPServersSection({
 	useEffect(() => {
 		return () => {
 			if (typeof window !== 'undefined') {
-				Object.values(toastTimersRef.current).forEach(timerId => {
+				Object.values(toastTimersRef.current).forEach((timerId) => {
 					window.clearTimeout(timerId)
 				})
 			}
@@ -214,11 +211,11 @@ export function MCPServersSection({
 
 	const addToast = useCallback((tone: ToastTone, message: string) => {
 		const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`
-		setToasts(prev => [...prev, { id, message, tone }])
+		setToasts((prev) => [...prev, { id, message, tone }])
 
 		if (typeof window !== 'undefined') {
 			const timeoutId = window.setTimeout(() => {
-				setToasts(prev => prev.filter(toast => toast.id !== id))
+				setToasts((prev) => prev.filter((toast) => toast.id !== id))
 				window.clearTimeout(timeoutId)
 				delete toastTimersRef.current[id]
 			}, TOAST_TIMEOUT_MS)
@@ -227,7 +224,7 @@ export function MCPServersSection({
 	}, [])
 
 	const dismissToast = useCallback((id: string) => {
-		setToasts(prev => prev.filter(toast => toast.id !== id))
+		setToasts((prev) => prev.filter((toast) => toast.id !== id))
 		if (typeof window !== 'undefined') {
 			const timer = toastTimersRef.current[id]
 			if (timer) {
@@ -239,7 +236,7 @@ export function MCPServersSection({
 
 	const handleTestConnection = useCallback(
 		async (serverId: string) => {
-			setRuntimeState(prev => {
+			setRuntimeState((prev) => {
 				const current = prev[serverId] ?? { ...DEFAULT_RUNTIME_STATE }
 				return {
 					...prev,
@@ -252,7 +249,7 @@ export function MCPServersSection({
 
 			try {
 				const result = await onTestConnection(serverId)
-				setRuntimeState(prev => {
+				setRuntimeState((prev) => {
 					const current = prev[serverId] ?? { ...DEFAULT_RUNTIME_STATE }
 					return {
 						...prev,
@@ -270,7 +267,7 @@ export function MCPServersSection({
 				addToast(result.success ? 'success' : 'error', result.message)
 			} catch (error) {
 				const fallback = error instanceof Error ? error.message : t('mcpServersSection.testError')
-				setRuntimeState(prev => {
+				setRuntimeState((prev) => {
 					const current = prev[serverId] ?? { ...DEFAULT_RUNTIME_STATE }
 					return {
 						...prev,
@@ -322,7 +319,7 @@ export function MCPServersSection({
 	const handleQuickAdd = useCallback(
 		(option: QuickAddOption) => {
 			onAddServer(option.template)
-			addToast('success', t('mcpServersSection.toastQuickAddSuccess', { name: option.label }))
+			addToast(option.toastTone ?? 'info', t(option.toastMessageKey))
 		},
 		[onAddServer, addToast]
 	)
@@ -333,7 +330,7 @@ export function MCPServersSection({
 	}, [onAddServer, addToast])
 
 	const handleToggleCard = useCallback((serverId: string, open: boolean) => {
-		setExpandedServers(prev => {
+		setExpandedServers((prev) => {
 			if (prev[serverId] === open) {
 				return prev
 			}
@@ -341,9 +338,12 @@ export function MCPServersSection({
 		})
 	}, [])
 
-	const notifyFromCard = useCallback((tone: ToastTone, message: string) => {
-		addToast(tone, message)
-	}, [addToast])
+	const notifyFromCard = useCallback(
+		(tone: ToastTone, message: string) => {
+			addToast(tone, message)
+		},
+		[addToast]
+	)
 
 	return (
 		<CollapsibleSection title={t('mcpServersSection.title')} open={expanded} onToggle={onToggleSection}>
@@ -389,10 +389,7 @@ export function MCPServersSection({
 					/>
 				</SettingRow>
 
-				<SettingRow
-					name={t('mcpServersSection.sessionLimit')}
-					description={t('mcpServersSection.sessionLimitDesc')}
-				>
+				<SettingRow name={t('mcpServersSection.sessionLimit')} description={t('mcpServersSection.sessionLimitDesc')}>
 					<Input
 						type="number"
 						value={globalLimits.sessionLimitPerDocument}
@@ -437,21 +434,14 @@ export function MCPServersSection({
 				>
 					<Toggle
 						checked={globalLimits.parallelExecutionEnabled}
-						onChange={(e) =>
-							onUpdateGlobalLimits({ parallelExecutionEnabled: e.target.checked })
-						}
+						onChange={(e) => onUpdateGlobalLimits({ parallelExecutionEnabled: e.target.checked })}
 					/>
 				</SettingRow>
 
-				<SettingRow
-					name={t('mcpServersSection.llmUtility')}
-					description={t('mcpServersSection.llmUtilityDesc')}
-				>
+				<SettingRow name={t('mcpServersSection.llmUtility')} description={t('mcpServersSection.llmUtilityDesc')}>
 					<Toggle
 						checked={globalLimits.llmUtilityEnabled}
-						onChange={(e) =>
-							onUpdateGlobalLimits({ llmUtilityEnabled: e.target.checked })
-						}
+						onChange={(e) => onUpdateGlobalLimits({ llmUtilityEnabled: e.target.checked })}
 					/>
 				</SettingRow>
 
@@ -478,36 +468,6 @@ export function MCPServersSection({
 				</SettingRow>
 			</div>
 
-			<div className={styles.quickAddSection}>
-				<div className={styles.quickAddHeader}>
-					<h3>{t('mcpServersSection.quickAdd.title')}</h3>
-					<p>{t('mcpServersSection.quickAdd.description')}</p>
-				</div>
-				<div className={styles.quickAddList}>
-					{quickAddOptions.map((option) => (
-						<div key={option.id} className={styles.quickAddCard}>
-							<div>
-								<div className={styles.quickAddLabel}>{option.label}</div>
-								<p className={styles.quickAddDescription}>{option.description}</p>
-							</div>
-							<Button size="sm" variant="primary" onClick={() => handleQuickAdd(option)}>
-								{t('mcpServersSection.quickAdd.add')}
-							</Button>
-						</div>
-					))}
-				</div>
-			</div>
-
-			<div className={styles.addCustomSection}>
-				<div>
-					<h3>{t('mcpServersSection.addCustom.title')}</h3>
-					<p>{t('mcpServersSection.addCustom.description')}</p>
-				</div>
-				<Button variant="default" onClick={handleAddCustomServer}>
-					{t('mcpServersSection.addCustom.cta')}
-				</Button>
-			</div>
-
 			<div className={styles.serverListContainer}>
 				{servers.length === 0 ? (
 					<div className={styles.noServers}>{t('mcpServersSection.noServers')}</div>
@@ -531,6 +491,28 @@ export function MCPServersSection({
 					</div>
 				)}
 			</div>
+
+			<SettingRow
+				name={t('mcpServersSection.quickAdd.title')}
+				description={t('mcpServersSection.quickAdd.description')}
+				layoutRatio={[1, 1]}
+			>
+				<div className={styles.quickAddButtons}>
+					{quickAddOptions.map((option) => (
+						<Button key={option.id} onClick={() => handleQuickAdd(option)}>
+							{t(option.buttonLabelKey)}
+						</Button>
+					))}
+				</div>
+			</SettingRow>
+
+			<SettingRow
+				name={t('mcpServersSection.addCustom.title')}
+				description={t('mcpServersSection.addCustom.description')}
+				layoutRatio={[2, 1]}
+			>
+				<Button onClick={handleAddCustomServer}>{t('mcpServersSection.addCustom.cta')}</Button>
+			</SettingRow>
 		</CollapsibleSection>
 	)
 }
@@ -539,31 +521,16 @@ function clamp(value: number, min: number, max: number): number {
 	return Math.min(Math.max(value, min), max)
 }
 
-function detectPlatform(): Platform {
-	if (typeof navigator === 'undefined') {
-		return 'unix'
-	}
-	const platform = navigator.userAgent || navigator.platform || ''
-	return /win/i.test(platform) ? 'windows' : 'unix'
-}
-
-function createQuickAddOptions(platform: Platform): QuickAddOption[] {
-	const filesystemCommand =
-		platform === 'windows'
-			? 'powershell -Command "npx --yes @modelcontextprotocol/server-filesystem {{vaultPath}}"'
-			: 'npx --yes @modelcontextprotocol/server-filesystem "{{vaultPath}}"'
-
-	const memoryCommand =
-		platform === 'windows'
-			? 'powershell -Command "npx --yes @modelcontextprotocol/server-memory"'
-			: 'npx --yes @modelcontextprotocol/server-memory'
-
-	const claudeJson = JSON.stringify(
+function createQuickAddOptions(): QuickAddOption[] {
+	const exaConfig = JSON.stringify(
 		{
 			mcpServers: {
-				'claude-desktop': {
-					command: 'claude-desktop',
-					args: []
+				exa: {
+					command: 'npx',
+					args: ['-y', 'exa-mcp-server'],
+					env: {
+						EXA_API_KEY: '{env:EXA_API_KEY}'
+					}
 				}
 			}
 		},
@@ -573,55 +540,31 @@ function createQuickAddOptions(platform: Platform): QuickAddOption[] {
 
 	return [
 		{
+			id: 'exa',
+			buttonLabelKey: 'mcpServersSection.quickAdd.exa.button',
+			toastMessageKey: 'mcpServersSection.quickAdd.exa.toast',
+			toastTone: 'info',
+			template: {
+				name: 'exa',
+				displayMode: 'command',
+				configInput: exaConfig,
+				enabled: false,
+				failureCount: 0,
+				autoDisabled: false
+			}
+		},
+		{
 			id: 'filesystem',
-			label: t('mcpServersSection.quickAdd.filesystem.label'),
-			description: t('mcpServersSection.quickAdd.filesystem.description'),
+			buttonLabelKey: 'mcpServersSection.quickAdd.filesystem.button',
+			toastMessageKey: 'mcpServersSection.quickAdd.filesystem.toast',
+			toastTone: 'info',
 			template: {
-				name: t('mcpServersSection.quickAdd.filesystem.name'),
+				name: 'filesystem',
 				displayMode: 'command',
-				configInput: filesystemCommand,
-				deploymentType: 'managed',
-				transport: 'stdio',
-				enabled: true
-			}
-		},
-		{
-			id: 'exa-search',
-			label: t('mcpServersSection.quickAdd.exa.label'),
-			description: t('mcpServersSection.quickAdd.exa.description'),
-			template: {
-				name: t('mcpServersSection.quickAdd.exa.name'),
-				displayMode: 'url',
-				configInput: 'https://api.exa.ai/mcp',
-				deploymentType: 'external',
-				transport: 'sse',
-				enabled: true
-			}
-		},
-		{
-			id: 'memory-server',
-			label: t('mcpServersSection.quickAdd.memory.label'),
-			description: t('mcpServersSection.quickAdd.memory.description'),
-			template: {
-				name: t('mcpServersSection.quickAdd.memory.name'),
-				displayMode: 'command',
-				configInput: memoryCommand,
-				deploymentType: 'managed',
-				transport: 'stdio',
-				enabled: true
-			}
-		},
-		{
-			id: 'claude-desktop',
-			label: t('mcpServersSection.quickAdd.claude.label'),
-			description: t('mcpServersSection.quickAdd.claude.description'),
-			template: {
-				name: t('mcpServersSection.quickAdd.claude.name'),
-				displayMode: 'json',
-				configInput: claudeJson,
-				deploymentType: 'external',
-				transport: 'sse',
-				enabled: false
+				configInput: 'npx -y @modelcontextprotocol/server-filesystem /path/to/files',
+				enabled: false,
+				failureCount: 0,
+				autoDisabled: false
 			}
 		}
 	]

@@ -1,6 +1,10 @@
+
 .settingRow {
+  --setting-info-grow: 1;
+  --setting-control-grow: 1;
+
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--size-4-3);
   padding: var(--size-4-2) 0;
   border-bottom: 1px solid var(--background-modifier-border);
@@ -10,9 +14,9 @@
   border-bottom: none;
 }
 
-/* Vertical layout - top/bottom instead of left/right */
 .settingRow.vertical {
   flex-direction: column;
+  align-items: stretch;
   gap: var(--size-2-1);
 }
 .settingRow.vertical > div {
@@ -20,12 +24,13 @@
 }
 
 .settingInfo {
-  flex: 1;
+  flex: var(--setting-info-grow) 1 0;
   display: flex;
   flex-direction: column;
   gap: var(--size-2-1);
   min-width: 0; /* Allows text truncation */
   flex-grow: 1;
+  align-self: stretch;
 }
 
 .settingName {
@@ -42,13 +47,13 @@
 }
 
 .settingControl {
-  flex-shrink: 0;
+  flex: var(--setting-control-grow) 1 0;
   display: flex;
   align-items: center;
   gap: var(--size-2-2);
   flex-wrap: wrap;
   min-width: 0; /* Allows proper wrapping */
-  flex-grow: 0;
+  justify-content: flex-end;
 }
 
 .settingControl input {
@@ -59,6 +64,7 @@
 /* Vertical layout specific styles */
 .settingRow.vertical .settingControl {
   align-self: flex-start;
+  justify-content: flex-start;
   margin-top: var(--size-2-1);
 }
 
@@ -79,4 +85,19 @@
   flex-direction: column;
   gap: 12px;
   align-items: flex-start;
+}
+
+@media (max-width: 640px) {
+  .settingRow:not(.vertical) {
+    flex-direction: column;
+  }
+
+  .settingRow:not(.vertical) > div {
+    width: 100%;
+  }
+
+  .settingRow:not(.vertical) .settingControl {
+    align-self: flex-start;
+    margin-top: var(--size-2-1);
+  }
 }

@@ -63,56 +63,10 @@
   color: var(--text-normal);
 }
 
-.quickAddSection {
+.quickAddButtons {
   display: flex;
-  flex-direction: column;
-  gap: var(--size-3-1);
-  padding: var(--size-4-1);
-  border-radius: var(--radius-m);
-  border: 1px solid var(--background-modifier-border);
-  background: var(--background-secondary);
-  margin-bottom: var(--size-4-3);
-}
-
-.quickAddHeader h3 {
-  margin: 0;
-  font-size: var(--font-ui-large);
-}
-
-.quickAddHeader p {
-  margin: var(--size-1-2) 0 0;
-  color: var(--text-muted);
-  font-size: var(--font-ui-smaller);
-}
-
-.quickAddList {
-  display: grid;
-  gap: var(--size-3-1);
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-}
-
-.quickAddCard {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  flex-wrap: wrap;
   gap: var(--size-2-2);
-  padding: var(--size-3-2);
-  border-radius: var(--radius-m);
-  border: 1px solid var(--background-modifier-border);
-  background-color: var(--background-primary);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-}
-
-.quickAddLabel {
-  font-weight: var(--font-medium);
-  color: var(--text-normal);
-}
-
-.quickAddDescription {
-  margin: var(--size-1-2) 0 0;
-  color: var(--text-muted);
-  font-size: var(--font-ui-smaller);
-  line-height: 1.4;
 }
 
 .addCustomSection {
@@ -153,10 +107,6 @@
 }
 
 @media (max-width: 640px) {
-  .quickAddSection {
-    padding: var(--size-3-2);
-  }
-
   .addCustomSection {
     flex-direction: column;
     align-items: flex-start;

@@ -1,5 +1,5 @@
-import { useEffect, useRef, useCallback, useState } from 'react'
-import { validateFormat, type ValidationResult } from '../utilities/validation'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { type ValidationResult, validateFormat } from '../utils/validation.v2'
 
 // Type definitions for the hook
 type UseValidationProps = {
@@ -44,54 +44,57 @@ export function useValidation({
 	const [isValidating, setIsValidating] = useState(false)
 
 	// Validation function with debouncing
-	const validateWithDebounce = useCallback((newValue: string, newFormat: 'url' | 'command' | 'json') => {
-		// Clear existing timeout
-		if (timeoutRef.current !== null) {
-			clearTimeout(timeoutRef.current)
-		}
-
-		// Check if we have a cached result for this value
-		if (lastValidatedValueRef.current === newValue && lastValidationRef.current) {
-			setCurrentValidation(lastValidationRef.current)
-			onValidationChange?.(lastValidationRef.current)
-			return
-		}
-
-		setIsValidating(true)
-
-		// Set up debounced validation
-		timeoutRef.current = window.setTimeout(() => {
-			try {
-				const validationResult = validateFormat(newValue, newFormat)
-
-				// Update cache
-				lastValidationRef.current = validationResult
-				lastValidatedValueRef.current = newValue
-
-				// Update state
-				setCurrentValidation(validationResult)
-				onValidationChange?.(validationResult)
-			} catch (error) {
-				console.error('Validation error:', error)
-
-				const errorResult: ValidationResult = {
-					isValid: false,
-					errors: ['Validation failed'],
-					warnings: [],
-					formatCompatibility: {
-						canShowAsUrl: false,
-						canShowAsCommand: false,
-						canShowAsJson: false
-					}
-				}
-
-				setCurrentValidation(errorResult)
-				onValidationChange?.(errorResult)
-			} finally {
-				setIsValidating(false)
+	const validateWithDebounce = useCallback(
+		(newValue: string, newFormat: 'url' | 'command' | 'json') => {
+			// Clear existing timeout
+			if (timeoutRef.current !== null) {
+				clearTimeout(timeoutRef.current)
 			}
-		}, debounceMs)
-	}, [onValidationChange, debounceMs])
+
+			// Check if we have a cached result for this value
+			if (lastValidatedValueRef.current === newValue && lastValidationRef.current) {
+				setCurrentValidation(lastValidationRef.current)
+				onValidationChange?.(lastValidationRef.current)
+				return
+			}
+
+			setIsValidating(true)
+
+			// Set up debounced validation
+			timeoutRef.current = window.setTimeout(() => {
+				try {
+					const validationResult = validateFormat(newValue, newFormat)
+
+					// Update cache
+					lastValidationRef.current = validationResult
+					lastValidatedValueRef.current = newValue
+
+					// Update state
+					setCurrentValidation(validationResult)
+					onValidationChange?.(validationResult)
+				} catch (error) {
+					console.error('Validation error:', error)
+
+					const errorResult: ValidationResult = {
+						isValid: false,
+						errors: ['Validation failed'],
+						warnings: [],
+						formatCompatibility: {
+							canShowAsUrl: false,
+							canShowAsCommand: false,
+							canShowAsJson: false
+						}
+					}
+
+					setCurrentValidation(errorResult)
+					onValidationChange?.(errorResult)
+				} finally {
+					setIsValidating(false)
+				}
+			}, debounceMs)
+		},
+		[onValidationChange, debounceMs]
+	)
 
 	// Effect to trigger validation when value or format changes
 	useEffect(() => {
@@ -108,23 +111,26 @@ export function useValidation({
 	}, [])
 
 	// Immediate validation for critical cases (e.g., when value becomes empty)
-	const validateImmediate = useCallback((newValue: string, newFormat: 'url' | 'command' | 'json') => {
-		if (timeoutRef.current !== null) {
-			clearTimeout(timeoutRef.current)
-		}
+	const _validateImmediate = useCallback(
+		(newValue: string, newFormat: 'url' | 'command' | 'json') => {
+			if (timeoutRef.current !== null) {
+				clearTimeout(timeoutRef.current)
+			}
 
-		try {
-			const validationResult = validateFormat(newValue, newFormat)
+			try {
+				const validationResult = validateFormat(newValue, newFormat)
 
-			lastValidationRef.current = validationResult
-			lastValidatedValueRef.current = newValue
+				lastValidationRef.current = validationResult
+				lastValidatedValueRef.current = newValue
 
-			setCurrentValidation(validationResult)
-			onValidationChange?.(validationResult)
-		} catch (error) {
-			console.error('Immediate validation error:', error)
-		}
-	}, [onValidationChange])
+				setCurrentValidation(validationResult)
+				onValidationChange?.(validationResult)
+			} catch (error) {
+				console.error('Immediate validation error:', error)
+			}
+		},
+		[onValidationChange]
+	)
 
 	return {
 		...currentValidation,

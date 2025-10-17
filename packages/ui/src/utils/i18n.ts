@@ -97,7 +97,8 @@ const translations = {
 		'mcpServersSection.concurrentExecutions': 'Concurrent Executions',
 		'mcpServersSection.concurrentExecutionsDesc': 'Maximum number of simultaneous tool executions across all servers',
 		'mcpServersSection.sessionLimit': 'Session Limit per Document',
-		'mcpServersSection.sessionLimitDesc': 'Maximum tool executions per document (prevents infinite loops, -1 for unlimited)',
+		'mcpServersSection.sessionLimitDesc':
+			'Maximum tool executions per document (prevents infinite loops, -1 for unlimited)',
 		'mcpServersSection.defaultTimeout': 'Default Timeout (ms)',
 		'mcpServersSection.defaultTimeoutDesc': 'Default timeout for individual tool executions (milliseconds)',
 		'mcpServersSection.parallelExecution': 'Parallel Execution',
@@ -105,39 +106,63 @@ const translations = {
 		'mcpServersSection.llmUtility': 'LLM Utility Integration',
 		'mcpServersSection.llmUtilityDesc': 'Allow LLM providers to access MCP tools directly',
 		'mcpServersSection.maxParallelTools': 'Max Parallel Tools',
-		'mcpServersSection.maxParallelToolsDesc': 'Maximum number of tools that can run in parallel (when parallel execution is enabled)',
+		'mcpServersSection.maxParallelToolsDesc':
+			'Maximum number of tools that can run in parallel (when parallel execution is enabled)',
 		'mcpServersSection.toastDismiss': 'Dismiss notification',
 		'mcpServersSection.toastServerRemoved': 'Removed {{name}}',
 		'mcpServersSection.toastServerEnabled': '{{name}} enabled',
 		'mcpServersSection.toastServerDisabled': '{{name}} disabled',
-		'mcpServersSection.toastQuickAddSuccess': '{{name}} added to your servers',
 		'mcpServersSection.toastBlankServerAdded': 'Created a new custom MCP server',
 		'mcpServersSection.testError': 'Test failed. Please review configuration.',
-		'mcpServersSection.quickAdd.title': 'Quick Add',
-		'mcpServersSection.quickAdd.description': 'Start with a suggested configuration for popular MCP providers.',
-		'mcpServersSection.quickAdd.add': 'Add server',
-		'mcpServersSection.quickAdd.filesystem.label': 'Filesystem access',
-		'mcpServersSection.quickAdd.filesystem.description': 'Expose a local directory to MCP clients. Update the path before enabling.',
-		'mcpServersSection.quickAdd.filesystem.name': 'Filesystem Access',
-		'mcpServersSection.quickAdd.exa.label': 'Exa Search',
-		'mcpServersSection.quickAdd.exa.description': 'Connect to the Exa search MCP endpoint.',
-		'mcpServersSection.quickAdd.exa.name': 'Exa Search',
-		'mcpServersSection.quickAdd.memory.label': 'Memory server',
-		'mcpServersSection.quickAdd.memory.description': 'Use the in-memory MCP server for local experimentation.',
-		'mcpServersSection.quickAdd.memory.name': 'Memory Server',
-		'mcpServersSection.quickAdd.claude.label': 'Claude Desktop',
-		'mcpServersSection.quickAdd.claude.description': 'Generate a Claude Desktop compatible JSON snippet for quick imports.',
-		'mcpServersSection.quickAdd.claude.name': 'Claude Desktop JSON',
+		'mcpServersSection.quickAdd.title': 'Quick Add Popular Servers',
+		'mcpServersSection.quickAdd.description': 'One-click add pre-configured MCP servers.',
+		'mcpServersSection.quickAdd.exa.button': '+ Exa Search',
+		'mcpServersSection.quickAdd.exa.toast': 'Exa Search MCP server added. Set EXA_API_KEY before enabling.',
+		'mcpServersSection.quickAdd.filesystem.button': '+ Filesystem Server',
+		'mcpServersSection.quickAdd.filesystem.toast': 'Filesystem MCP server added. Update the path before enabling.',
 		'mcpServersSection.addCustom.title': 'Add Custom Server',
-		'mcpServersSection.addCustom.description': 'Start from a blank configuration and supply your own connection details.',
+		'mcpServersSection.addCustom.description':
+			'Start from a blank configuration and supply your own connection details.',
 		'mcpServersSection.addCustom.cta': 'Add custom server',
 
 		// Settings Tab
 		'settingsTab.basicSettings': 'Basic Settings',
 		'settingsTab.confirmRegenerate': 'Confirm before regeneration',
-		'settingsTab.confirmRegenerateDesc': 'Confirm before replacing existing assistant responses when using assistant commands',
+		'settingsTab.confirmRegenerateDesc':
+			'Confirm before replacing existing assistant responses when using assistant commands',
 		'settingsTab.internalLinks': 'Internal links',
-		'settingsTab.internalLinksDesc': 'Internal links in user and system messages will be replaced with their referenced content. When disabled, only the original text of the links will be used.'
+		'settingsTab.internalLinksDesc':
+			'Internal links in user and system messages will be replaced with their referenced content. When disabled, only the original text of the links will be used.',
+
+		// Message Tags Section
+		'messageTags.title': 'Message tags',
+		'messageTags.newChatTagsLabel': '🆕 New chat tags',
+		'messageTags.newChatTagsDescription':
+			'Keywords for tags in the text box are separated by spaces. Default: #NewChat',
+		'messageTags.userTagsLabel': '👤 User message tags',
+		'messageTags.userTagsDescription': 'Keywords for tags in the text box are separated by spaces. Default: #User',
+		'messageTags.systemTagsLabel': '⚙️ System message tags',
+		'messageTags.systemTagsDescription': 'Keywords for tags in the text box are separated by spaces. Default: #System',
+		'messageTags.resetButton': 'Reset',
+
+		// Provider Section
+		'providerSection.title': 'AI Assistants',
+		'providerSection.sectionTitle': 'Assistant',
+		'providerSection.addProvider': 'Add AI Provider',
+		'providerSection.emptyState': 'Please add at least one AI assistant to start using the plugin.',
+		'providerSection.assistantMessageTag': '✨ Assistant message tag',
+		'providerSection.assistantMessageTagDesc': 'Tag used to trigger AI text generation',
+		'providerSection.model': 'Model',
+		'providerSection.modelPlaceholder': 'Select the model to use',
+		'providerSection.apiKey': 'API key',
+		'providerSection.apiKeyPlaceholder': 'API key (required)',
+		'providerSection.controlsTitle': 'Controls',
+		'providerSection.controlsDescription': 'Test connection or remove this provider',
+		'providerSection.select': 'Select',
+		'providerSection.supportedFeatures': 'Supported features',
+		'providerSection.disable': 'Disable',
+		'providerSection.test': 'Test',
+		'providerSection.remove': 'Delete'
 	}
 }
 
@@ -202,10 +227,7 @@ export function getAvailableLanguages(): (keyof typeof translations)[] {
  * @param _language - Language code
  * @param _newTranslations - Translations to add/update
  */
-export function addTranslations(
-	_language: keyof typeof translations,
-	_newTranslations: Partial<Translations>
-): void {
+export function addTranslations(_language: keyof typeof translations, _newTranslations: Partial<Translations>): void {
 	console.warn('Adding translations dynamically is not supported in this i18n implementation')
 }
 
@@ -215,10 +237,7 @@ export function addTranslations(
  * @param language - Optional language code (defaults to current)
  * @returns True if translation exists
  */
-export function hasTranslation(
-	key: TranslationKey,
-	language?: keyof typeof translations
-): boolean {
+export function hasTranslation(key: TranslationKey, language?: keyof typeof translations): boolean {
 	const lang = language || currentLanguage
 	return !!(translations[lang]?.[key] || translations.en[key])
 }

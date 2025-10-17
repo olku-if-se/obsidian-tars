@@ -44,6 +44,10 @@ including toggles, inputs, sliders, and button combinations.
     vertical: {
       description: 'Use vertical layout (top/bottom) instead of horizontal (left/right)',
       control: 'boolean'
+    },
+    layoutRatio: {
+      description: 'Controls the relative space between info (left) and control (right) columns as [info, control] flex grow values',
+      control: 'object'
     }
   }
 } satisfies Meta<typeof SettingRow>
@@ -215,5 +219,63 @@ export const VerticalLayout: Story = {
         />
       </div>
     )
+  }
+}
+
+export const MobileViewport: Story = {
+  args: {
+    name: 'Mobile preview',
+    description: 'On narrow screens the row automatically stacks info and controls.',
+    children: (
+      <>
+        <Toggle checked={true} onChange={() => {
+        // Intentionally empty for storybook example
+      }} />
+        <Input
+          placeholder="tap to edit"
+          value="Example value"
+          onChange={() => {
+        // Intentionally empty for storybook example
+      }}
+        />
+      </>
+    )
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile'
+    },
+    layout: {
+      constrainWidth: true
+    }
+  }
+}
+
+export const DesktopWideRatio: Story = {
+  args: {
+    name: 'Desktop wide ratio',
+    description: 'Control column receives extra space for complex inputs.',
+    layoutRatio: [1, 2],
+    children: (
+      <div className="complex-controls">
+        <Input
+          placeholder="Long input ..."
+          value="https://api.example.com/v1/endpoint"
+          onChange={() => {
+        // Intentionally empty for storybook example
+      }}
+        />
+        <Button variant="primary" size="sm">Apply</Button>
+        <Button variant="default" size="sm">Reset</Button>
+      </div>
+    )
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'desktop'
+    },
+    layout: {
+      constrainWidth: true
+    }
   }
 }

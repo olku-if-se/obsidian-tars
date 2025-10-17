@@ -172,6 +172,32 @@ body {
 	transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+/* Storybook Docs integration ------------------------------------------------ */
+body.sbdocs,
+.sbdocs,
+.sbdocs-content,
+.sbdocs-wrapper,
+.docs-story {
+	background-color: var(--background-primary) !important;
+	color: var(--text-normal) !important;
+}
+
+.sbdocs a {
+	color: var(--text-accent);
+}
+
+.sbdocs a:hover {
+	color: var(--text-accent-hover);
+}
+
+.sbdocs hr,
+.sbdocs code,
+.sbdocs pre {
+	background-color: var(--background-secondary);
+	border-color: var(--background-modifier-border);
+	color: var(--text-normal);
+}
+
 /* Utility classes */
 .sr-only {
 	position: absolute;

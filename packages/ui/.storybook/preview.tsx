@@ -32,42 +32,43 @@ const preview: Preview = {
 				height: '400px'
 			}
 		},
-		layout: {
-			// Default layout behavior for responsive stories
-			constrainWidth: true,
-			center: true,
-			// Add viewports to show responsive behavior
+		viewport: {
+			defaultViewport: 'desktop',
 			viewports: {
 				mobile: {
 					name: 'Mobile',
 					styles: {
 						width: '375px',
-						height: '667px',
-					},
+						height: '667px'
+					}
 				},
 				tablet: {
 					name: 'Tablet',
 					styles: {
 						width: '768px',
-						height: '1024px',
-					},
+						height: '1024px'
+					}
 				},
 				desktop: {
 					name: 'Desktop',
 					styles: {
 						width: '1024px',
-						height: '768px',
-					},
+						height: '768px'
+					}
 				},
 				wide: {
 					name: 'Wide',
 					styles: {
 						width: '1440px',
-						height: '900px',
-					},
-				},
-			},
+						height: '900px'
+					}
+				}
+			}
 		},
+		layout: {
+			constrainWidth: true,
+			center: true
+		}
 	},
 
 	globalTypes: {

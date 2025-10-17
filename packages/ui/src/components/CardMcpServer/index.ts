@@ -5,5 +5,4 @@
  * Follows atomic design principles as a Component that composes multiple Atoms.
  */
 
-export { MCPServerCard } from './MCPServerCard'
-export type { MCPServerCardProps } from './MCPServerCard'
+export * from './MCPServerCard'

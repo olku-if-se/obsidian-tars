@@ -70,8 +70,8 @@
 
 /* Sizes */
 .sm {
-	padding: var(--size-2-1) var(--size-4-1);
-	font-size: var(--font-ui-small);
+	padding: var(--size-1-1) var(--size-1-1);
+	font-size: var(--font-ui-medium);
 	min-height: 24px;
 }
 

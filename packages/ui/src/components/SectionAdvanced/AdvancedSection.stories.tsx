@@ -15,6 +15,7 @@ type Story = StoryObj<typeof meta>
 
 export const DefaultConfiguration: Story = {
 	args: {
+		defaultOpen: true,
 		onSettingsChange: (settings) => console.log('Settings changed:', settings)
 	}
 }

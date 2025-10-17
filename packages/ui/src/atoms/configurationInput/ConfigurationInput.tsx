@@ -1,13 +1,13 @@
 import { forwardRef, useId } from 'react'
-import { TextArea } from '../textarea/TextArea'
-import { Input } from '../input/Input'
-import { Button } from '../button/Button'
-import { ValidationMessage } from '../validationMessage/ValidationMessage'
-import { useValidation } from '../../hooks/useValidation'
-import { useFormatConversion } from '../../hooks/useFormatConversion'
 import { useDebouncedCallbackWithCleanup } from '../../hooks/useDebouncedCallback'
-import type { ValidationResult } from '../../utilities/validation'
-import { t } from '../../utilities/i18n'
+import { useFormatConversion } from '../../hooks/useFormatConversion'
+import { useValidation } from '../../hooks/useValidation'
+import { t } from '../../utils/i18n'
+import type { ValidationResult } from '../../utils/validation.v2'
+import { Button } from '../button/Button'
+import { Input } from '../input/Input'
+import { TextArea } from '../textarea/TextArea'
+import { ValidationMessage } from '../validationMessage/ValidationMessage'
 import styles from './ConfigurationInput.module.css'
 
 // Type aliases following React rules
@@ -31,7 +31,6 @@ type ConfigurationInputEvents = {
 }
 
 export type ConfigurationInputProps = ConfigurationInputData & ConfigurationInputUI & ConfigurationInputEvents
-
 
 export const ConfigurationInput = forwardRef<HTMLDivElement, ConfigurationInputProps>(
 	(
@@ -154,18 +153,10 @@ export const ConfigurationInput = forwardRef<HTMLDivElement, ConfigurationInputP
 					{(validation.errors.length > 0 || validation.warnings.length > 0) && (
 						<div className={styles.validationArea}>
 							{validation.errors.map((error) => (
-								<ValidationMessage
-									key={`error-${error.slice(0, 20)}`}
-									message={error}
-									type="error"
-								/>
+								<ValidationMessage key={`error-${error.slice(0, 20)}`} message={error} type="error" />
 							))}
 							{validation.warnings.map((warning) => (
-								<ValidationMessage
-									key={`warning-${warning.slice(0, 20)}`}
-									message={warning}
-									type="warning"
-								/>
+								<ValidationMessage key={`warning-${warning.slice(0, 20)}`} message={warning} type="warning" />
 							))}
 						</div>
 					)}

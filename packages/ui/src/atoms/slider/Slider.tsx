@@ -52,13 +52,12 @@ export const Slider = forwardRef<HTMLInputElement, SliderProps>(
 		// Calculate percentage for CSS custom property
 		const percentage = max > min ? ((value - min) / (max - min)) * 100 : 0
 
-		const sliderClasses = clsx(styles.slider, className)
 		const trackFillStyles = {
 			'--slider-percentage': `${percentage}%`
 		} as React.CSSProperties
 
 		return (
-			<div className={sliderClasses}>
+			<div className={clsx(styles.slider, className)}>
 				{label && (
 					<div className={styles.header}>
 						<label className={styles.label} htmlFor={sliderId}>
@@ -71,7 +70,7 @@ export const Slider = forwardRef<HTMLInputElement, SliderProps>(
 					<input
 						ref={ref}
 						id={sliderId}
-						type='range'
+						type="range"
 						className={styles.input}
 						min={min}
 						max={max}
@@ -81,10 +80,7 @@ export const Slider = forwardRef<HTMLInputElement, SliderProps>(
 						{...props}
 					/>
 					<div className={styles.trackBackground}>
-						<div
-							className={styles.trackFill}
-							style={trackFillStyles}
-						/>
+						<div className={styles.trackFill} style={trackFillStyles} />
 					</div>
 				</div>
 				{description && <div className={styles.description}>{description}</div>}

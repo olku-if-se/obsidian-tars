@@ -11,8 +11,8 @@ import {
 } from '../../atoms'
 import { useDebouncedCallbackWithCleanup } from '../../hooks/useDebouncedCallback'
 import { useFormatConversion } from '../../hooks/useFormatConversion'
-import type { MCPServerConfig, MCPServerRuntimeState } from '../MCPServersSection/MCPServersSection'
-import { t } from '../../utilities/i18n'
+import { t } from '../../utils/i18n'
+import type { MCPServerConfig, MCPServerRuntimeState } from '../SectionMcpServers/MCPServersSection'
 import styles from './MCPServerCard.module.css'
 
 type AlertTone = 'success' | 'error' | 'info' | 'warning'
@@ -90,7 +90,7 @@ export function MCPServerCard({
 			}
 
 			try {
-				if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
+				if (navigator?.clipboard?.writeText) {
 					await navigator.clipboard.writeText(value)
 				} else if (typeof document !== 'undefined') {
 					const textarea = document.createElement('textarea')
@@ -197,11 +197,7 @@ export function MCPServerCard({
 					<div className={styles.previewContainer}>
 						<div className={styles.previewLabel}>{t('mcpServerCard.previewCommandLabel')}</div>
 						<code className={styles.previewValue}>{previewCommand}</code>
-						<Button
-							variant="default"
-							size="sm"
-							onClick={() => handleCopy(previewCommand, 'mcpServerCard.copySuccess')}
-						>
+						<Button variant="default" size="sm" onClick={() => handleCopy(previewCommand, 'mcpServerCard.copySuccess')}>
 							{t('mcpServerCard.copyPreview')}
 						</Button>
 					</div>

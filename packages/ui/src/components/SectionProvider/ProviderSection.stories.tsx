@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ProviderSection } from './ProviderSection'
+import type { Provider } from './ProviderSection.types'
 
 const meta = {
 	title: 'Settings/ProviderSection',
@@ -18,7 +19,7 @@ export const EmptyState: Story = {
 		providers: [],
 		availableVendors: ['Claude', 'OpenAI', 'DeepSeek', 'Gemini'],
 		onAddProvider: (vendor: string) => console.log('add-provider', vendor),
-		onUpdateProvider: (id: string, updates: any) => console.log('update-provider', id, updates),
+	onUpdateProvider: (id: string, updates: Partial<Provider>) => console.log('update-provider', id, updates),
 		onRemoveProvider: (id: string) => console.log('remove-provider', id)
 	}
 }
@@ -37,7 +38,7 @@ export const SingleProvider: Story = {
 		],
 		availableVendors: ['OpenAI', 'DeepSeek', 'Gemini'],
 		onAddProvider: (vendor: string) => console.log('add-provider', vendor),
-		onUpdateProvider: (id: string, updates: any) => console.log('update-provider', id, updates),
+	onUpdateProvider: (id: string, updates: Partial<Provider>) => console.log('update-provider', id, updates),
 		onRemoveProvider: (id: string) => console.log('remove-provider', id)
 	}
 }
@@ -64,7 +65,7 @@ export const MultipleProviders: Story = {
 		],
 		availableVendors: ['DeepSeek', 'Gemini'],
 		onAddProvider: (vendor: string) => console.log('add-provider', vendor),
-		onUpdateProvider: (id: string, updates: any) => console.log('update-provider', id, updates),
+	onUpdateProvider: (id: string, updates: Partial<Provider>) => console.log('update-provider', id, updates),
 		onRemoveProvider: (id: string) => console.log('remove-provider', id)
 	}
 }
@@ -81,7 +82,7 @@ export const MinimalConfiguration: Story = {
 		],
 		availableVendors: ['OpenAI', 'DeepSeek'],
 		onAddProvider: (vendor: string) => console.log('add-provider', vendor),
-		onUpdateProvider: (id: string, updates: any) => console.log('update-provider', id, updates),
+	onUpdateProvider: (id: string, updates: Partial<Provider>) => console.log('update-provider', id, updates),
 		onRemoveProvider: (id: string) => console.log('remove-provider', id)
 	}
 }
@@ -116,7 +117,7 @@ export const FullConfiguration: Story = {
 		],
 		availableVendors: ['Gemini', 'Local LLM'],
 		onAddProvider: (vendor: string) => console.log('add-provider', vendor),
-		onUpdateProvider: (id: string, updates: any) => console.log('update-provider', id, updates),
+	onUpdateProvider: (id: string, updates: Partial<Provider>) => console.log('update-provider', id, updates),
 		onRemoveProvider: (id: string) => console.log('remove-provider', id)
 	}
 }
@@ -143,7 +144,7 @@ export const CustomTags: Story = {
 		],
 		availableVendors: ['DeepSeek'],
 		onAddProvider: (vendor: string) => console.log('add-provider', vendor),
-		onUpdateProvider: (id: string, updates: any) => console.log('update-provider', id, updates),
+	onUpdateProvider: (id: string, updates: Partial<Provider>) => console.log('update-provider', id, updates),
 		onRemoveProvider: (id: string) => console.log('remove-provider', id)
 	}
 }

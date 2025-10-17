@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { validateFormat } from '../utilities/validation'
+import { validateFormat } from '../utils/validation.v2'
 
 // Type definitions for format conversion
 type Format = 'url' | 'command' | 'json'
@@ -21,11 +21,7 @@ export function useFormatConversion() {
 	 * @param toFormat - Target format
 	 * @returns Conversion result with value and warnings
 	 */
-	const convertFormat = useCallback((
-		value: string,
-		fromFormat: Format,
-		toFormat: Format
-	): ConversionResult => {
+	const convertFormat = useCallback((value: string, fromFormat: Format, toFormat: Format): ConversionResult => {
 		const warnings: string[] = []
 
 		// Early return if formats are the same
@@ -90,10 +86,7 @@ export function useFormatConversion() {
 	 * @param currentFormat - Current format of the value
 	 * @returns Array of formats that can represent the value
 	 */
-	const getAvailableFormats = useCallback((
-		value: string,
-		currentFormat: Format
-	): Format[] => {
+	const getAvailableFormats = useCallback((value: string, currentFormat: Format): Format[] => {
 		try {
 			const validation = validateFormat(value, currentFormat)
 			const available: Format[] = [currentFormat]
@@ -125,7 +118,7 @@ export function useFormatConversion() {
 // Helper functions for format conversions
 function convertFromUrl(url: string, toFormat: Format, warnings: string[]): ConversionResult {
 	try {
-		const parsedUrl = new URL(url)
+		const _parsedUrl = new URL(url)
 
 		if (toFormat === 'command') {
 			// Convert URL to curl command
@@ -152,14 +145,17 @@ function convertFromUrl(url: string, toFormat: Format, warnings: string[]): Conv
 		// Should never reach here if we have proper format validation
 		warnings.push(`Unsupported target format: ${toFormat}`)
 		return { value: '', warnings }
-	} catch (error) {
+	} catch (_error) {
 		warnings.push('Invalid URL format for conversion')
 		return { value: '', warnings }
 	}
 }
 
 function convertFromCommand(command: string, toFormat: Format, warnings: string[]): ConversionResult {
-	const parts = command.trim().split(/\s+/).filter(p => p.length > 0)
+	const parts = command
+		.trim()
+		.split(/\s+/)
+		.filter((p) => p.length > 0)
 	const [baseCommand, ...args] = parts
 
 	if (!baseCommand) {
@@ -170,9 +166,8 @@ function convertFromCommand(command: string, toFormat: Format, warnings: string[
 	if (toFormat === 'url') {
 		// Try to extract URL from curl command
 		if (baseCommand === 'curl') {
-			const urlIndex = args.findIndex(arg =>
-				arg.startsWith('http://') || arg.startsWith('https://') ||
-				(!arg.startsWith('-') && !arg.includes('='))
+			const urlIndex = args.findIndex(
+				(arg) => arg.startsWith('http://') || arg.startsWith('https://') || (!arg.startsWith('-') && !arg.includes('='))
 			)
 
 			if (urlIndex !== -1) {
@@ -224,9 +219,8 @@ function convertFromJson(jsonString: string, toFormat: Format, warnings: string[
 					if (typeof serverConfig === 'object' && serverConfig !== null) {
 						const config = serverConfig as Record<string, unknown>
 						if (config.command === 'curl' && Array.isArray(config.args)) {
-							const urlArg = config.args.find((arg: unknown) =>
-								typeof arg === 'string' &&
-								(arg.startsWith('http://') || arg.startsWith('https://'))
+							const urlArg = config.args.find(
+								(arg: unknown) => typeof arg === 'string' && (arg.startsWith('http://') || arg.startsWith('https://'))
 							)
 							if (urlArg) {
 								extractedUrl = urlArg
@@ -238,9 +232,8 @@ function convertFromJson(jsonString: string, toFormat: Format, warnings: string[
 			}
 			// Direct format
 			else if ('command' in obj && obj.command === 'curl' && Array.isArray(obj.args)) {
-				const urlArg = obj.args.find((arg: unknown) =>
-					typeof arg === 'string' &&
-					(arg.startsWith('http://') || arg.startsWith('https://'))
+				const urlArg = obj.args.find(
+					(arg: unknown) => typeof arg === 'string' && (arg.startsWith('http://') || arg.startsWith('https://'))
 				)
 				if (urlArg) {
 					extractedUrl = urlArg
@@ -266,18 +259,14 @@ function convertFromJson(jsonString: string, toFormat: Format, warnings: string[
 
 				if (firstServer && typeof firstServer === 'object' && firstServer.command) {
 					const cmd = firstServer.command as string
-					const args = Array.isArray(firstServer.args)
-						? firstServer.args.join(' ')
-						: ''
+					const args = Array.isArray(firstServer.args) ? firstServer.args.join(' ') : ''
 					command = `${cmd} ${args}`.trim()
 				}
 			}
 			// Direct format
 			else if ('command' in obj && typeof obj.command === 'string') {
 				const cmd = obj.command
-				const args = Array.isArray(obj.args)
-					? obj.args.join(' ')
-					: ''
+				const args = Array.isArray(obj.args) ? obj.args.join(' ') : ''
 				command = `${cmd} ${args}`.trim()
 			}
 
@@ -293,7 +282,7 @@ function convertFromJson(jsonString: string, toFormat: Format, warnings: string[
 		// Should never reach here if we have proper format validation
 		warnings.push(`Unsupported target format: ${toFormat}`)
 		return { value: '', warnings }
-	} catch (error) {
+	} catch (_error) {
 		warnings.push('Invalid JSON format for conversion')
 		return { value: '', warnings }
 	}

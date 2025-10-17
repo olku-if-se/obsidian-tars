@@ -1,6 +1,6 @@
-import { useState, useMemo } from 'react'
-import { Button, Input, Select, Section, SettingRow } from '../../atoms'
-import { type MCPServerTemplate, allTemplates, templateCategories } from '../../utilities/templateData'
+import { useMemo, useState } from 'react'
+import { Button, Input, Section, Select, SettingRow } from '../../atoms'
+import { allTemplates, type MCPServerTemplate } from '../../utils/templateData'
 import styles from './TemplateSelector.module.css'
 
 // Type aliases following React rules (bundled props for >5 props)
@@ -64,7 +64,9 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 	const [selectedDifficulty, setSelectedDifficulty] = useState<string>('all')
 	const [expandedTemplate, setExpandedTemplate] = useState<string | null>(null)
 	const [selectedConfigIndex, setSelectedConfigIndex] = useState(0)
-	const [internalSelectedTemplate, setInternalSelectedTemplate] = useState<MCPServerTemplate | undefined>(selectedTemplate)
+	const [internalSelectedTemplate, setInternalSelectedTemplate] = useState<MCPServerTemplate | undefined>(
+		selectedTemplate
+	)
 
 	// Filter templates based on search and filters
 	const filteredTemplates = useMemo(() => {
@@ -73,22 +75,23 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 		// Filter by search query
 		if (searchQuery.trim()) {
 			const query = searchQuery.toLowerCase()
-			filtered = filtered.filter(template =>
-				template.name.toLowerCase().includes(query) ||
-				template.description.toLowerCase().includes(query) ||
-				template.tags.some(tag => tag.toLowerCase().includes(query)) ||
-				template.useCases.some(useCase => useCase.toLowerCase().includes(query))
+			filtered = filtered.filter(
+				(template) =>
+					template.name.toLowerCase().includes(query) ||
+					template.description.toLowerCase().includes(query) ||
+					template.tags.some((tag) => tag.toLowerCase().includes(query)) ||
+					template.useCases.some((useCase) => useCase.toLowerCase().includes(query))
 			)
 		}
 
 		// Filter by category
 		if (selectedCategory !== 'all') {
-			filtered = filtered.filter(template => template.category === selectedCategory)
+			filtered = filtered.filter((template) => template.category === selectedCategory)
 		}
 
 		// Filter by difficulty
 		if (selectedDifficulty !== 'all') {
-			filtered = filtered.filter(template => template.difficulty === selectedDifficulty)
+			filtered = filtered.filter((template) => template.difficulty === selectedDifficulty)
 		}
 
 		// Limit visible results
@@ -97,7 +100,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 
 	// Get unique categories from templates
 	const availableCategories = useMemo(() => {
-		const categories = [...new Set(templates.map(template => template.category))]
+		const categories = [...new Set(templates.map((template) => template.category))]
 		return categories.sort()
 	}, [templates])
 
@@ -145,9 +148,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 	if (templates.length === 0) {
 		return (
 			<Section title={strings.title}>
-				<div className={styles.noTemplates}>
-					{strings.noTemplates}
-				</div>
+				<div className={styles.noTemplates}>{strings.noTemplates}</div>
 			</Section>
 		)
 	}
@@ -163,7 +164,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 							onChange={(e) => setSelectedCategory(e.target.value)}
 							options={[
 								{ value: 'all', label: strings.allCategories },
-								...availableCategories.map(category => ({
+								...availableCategories.map((category) => ({
 									value: category,
 									label: category
 								}))
@@ -199,25 +200,18 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 
 			{/* Template list */}
 			{filteredTemplates.length === 0 ? (
-				<div className={styles.noTemplates}>
-					{strings.noMatchingTemplates}
-				</div>
+				<div className={styles.noTemplates}>{strings.noMatchingTemplates}</div>
 			) : (
 				<div className={styles.templateList}>
-					{filteredTemplates.map(template => (
+					{filteredTemplates.map((template) => (
 						<div
 							key={template.id}
 							className={`${styles.templateCard} ${
 								internalSelectedTemplate?.id === template.id ? styles.selected : ''
-							} ${
-								expandedTemplate === template.id ? styles.expanded : ''
-							}`}
+							} ${expandedTemplate === template.id ? styles.expanded : ''}`}
 						>
 							{/* Template header */}
-							<div
-								className={styles.templateHeader}
-								onClick={() => handleTemplateClick(template)}
-							>
+							<div className={styles.templateHeader} onClick={() => handleTemplateClick(template)}>
 								<div className={styles.templateInfo}>
 									<h3 className={styles.templateName}>{template.name}</h3>
 									<p className={styles.templateDescription}>{template.description}</p>
@@ -264,7 +258,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 									<div className={styles.section}>
 										<h4>{strings.tags}</h4>
 										<div className={styles.tags}>
-											{template.tags.map(tag => (
+											{template.tags.map((tag) => (
 												<span key={tag} className={styles.tag}>
 													{tag}
 												</span>
@@ -289,9 +283,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 									<div className={styles.section}>
 										<h4>{strings.configuration}</h4>
 										<div className={styles.configuration}>
-											<code>
-												{template.configurations[selectedConfigIndex].command}
-											</code>
+											<code>{template.configurations[selectedConfigIndex].command}</code>
 										</div>
 									</div>
 
