@@ -110,6 +110,19 @@ export function MCPServerCard({
 		[notify]
 	)
 
+	const validationState = server.validationState || {
+		isValid: true,
+		errors: [],
+		warnings: [],
+		formatCompatibility: {
+			canShowAsUrl: true,
+			canShowAsCommand: true,
+			canShowAsJson: true
+		}
+	}
+	const validationErrors = validationState.errors
+	const validationWarnings = validationState.warnings
+
 	const statusInfo = useMemo(() => deriveStatusInfo(server, runtimeState, nameError), [server, runtimeState, nameError])
 
 	const previewCommand = useMemo(() => {
@@ -123,9 +136,6 @@ export function MCPServerCard({
 		const conversion = convertFormat(trimmed, 'url', 'command')
 		return conversion.value || null
 	}, [server.displayMode, server.configInput, convertFormat])
-
-	const validationErrors = server.validationState.errors
-	const validationWarnings = server.validationState.warnings
 
 	const aggregatedErrors = validationErrors.join('\n')
 	const aggregatedWarnings = validationWarnings.join('\n')
@@ -149,7 +159,7 @@ export function MCPServerCard({
 						variant="default"
 						size="sm"
 						onClick={onTest}
-						disabled={runtimeState.testLoading || !server.enabled || !server.validationState.isValid || !!nameError}
+						disabled={runtimeState.testLoading || !server.enabled || !validationState.isValid || !!nameError}
 					>
 						{runtimeState.testLoading ? t('mcpServerCard.testing') : t('mcpServerCard.test')}
 					</Button>

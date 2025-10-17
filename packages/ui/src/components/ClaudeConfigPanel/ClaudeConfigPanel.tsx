@@ -83,7 +83,6 @@ export const ClaudeConfigPanel = ({ options, onChange, disabled = false }: Claud
 					<ValidationMessage
 						type="error"
 						message={budgetTokensError}
-						className={styles.validationMessage}
 					/>
 				)}
 			</SettingRow>
@@ -108,7 +107,6 @@ export const ClaudeConfigPanel = ({ options, onChange, disabled = false }: Claud
 					<ValidationMessage
 						type="error"
 						message={maxTokensError}
-						className={styles.validationMessage}
 					/>
 				)}
 			</SettingRow>

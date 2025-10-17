@@ -167,7 +167,6 @@ export const OllamaConfigPanel = ({ options, onChange, disabled = false }: Ollam
 					<ValidationMessage
 						type="error"
 						message={baseURLError}
-						className={styles.validationMessage}
 					/>
 				)}
 			</SettingRow>
@@ -201,7 +200,7 @@ export const OllamaConfigPanel = ({ options, onChange, disabled = false }: Ollam
 			<SettingRow name="Stream">
 				<Toggle
 					checked={options.stream !== false}
-					onChange={handleStreamChange}
+					onChange={(e) => handleStreamChange(e.target.checked)}
 					disabled={disabled}
 				/>
 				<span className={styles.toggleLabel}>Enable streaming responses</span>
@@ -258,7 +257,6 @@ export const OllamaConfigPanel = ({ options, onChange, disabled = false }: Ollam
 					<ValidationMessage
 						type="error"
 						message={temperatureError}
-						className={styles.validationMessage}
 					/>
 				)}
 			</SettingRow>
@@ -284,7 +282,6 @@ export const OllamaConfigPanel = ({ options, onChange, disabled = false }: Ollam
 					<ValidationMessage
 						type="error"
 						message={topPError}
-						className={styles.validationMessage}
 					/>
 				)}
 			</SettingRow>

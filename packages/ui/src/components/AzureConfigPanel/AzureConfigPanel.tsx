@@ -71,14 +71,12 @@ export const AzureConfigPanel = ({ options, onChange, disabled = false }: AzureC
 					<ValidationMessage
 						type="error"
 						message={endpointValidation.errors[0]}
-						className={styles.validationMessage}
 					/>
 				)}
 				{endpointValidation.warnings.length > 0 && (
 					<ValidationMessage
 						type="warning"
 						message={endpointValidation.warnings[0]}
-						className={styles.validationMessage}
 					/>
 				)}
 			</SettingRow>
@@ -100,7 +98,6 @@ export const AzureConfigPanel = ({ options, onChange, disabled = false }: AzureC
 					<ValidationMessage
 						type="error"
 						message={apiVersionError}
-						className={styles.validationMessage}
 					/>
 				)}
 			</SettingRow>

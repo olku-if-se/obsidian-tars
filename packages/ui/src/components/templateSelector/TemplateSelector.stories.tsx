@@ -1,15 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
+import { allTemplates } from '../../utils/templateData'
 import { TemplateSelector } from './TemplateSelector'
-import { allTemplates } from '../../utilities/templateData'
 
 const meta = {
 	title: 'Components/TemplateSelector',
 	component: TemplateSelector,
 	parameters: {
-		layout: 'centered',
+		layout: 'centered'
 	},
-	tags: ['autodocs'],
+	tags: ['autodocs']
 } satisfies Meta<typeof TemplateSelector>
 
 export default meta
@@ -22,8 +22,8 @@ export const Default: Story = {
 			console.log('Selected template:', template.name)
 			console.log('Configuration:', configuration)
 		},
-		onCancel: () => console.log('Cancelled'),
-	},
+		onCancel: () => console.log('Cancelled')
+	}
 }
 
 export const WithSearch: Story = {
@@ -33,8 +33,8 @@ export const WithSearch: Story = {
 		onTemplateSelect: (template, configuration) => {
 			console.log('Selected template:', template.name)
 			console.log('Configuration:', configuration)
-		},
-	},
+		}
+	}
 }
 
 export const WithoutCategories: Story = {
@@ -44,8 +44,8 @@ export const WithoutCategories: Story = {
 		onTemplateSelect: (template, configuration) => {
 			console.log('Selected template:', template.name)
 			console.log('Configuration:', configuration)
-		},
-	},
+		}
+	}
 }
 
 export const WithoutDifficulty: Story = {
@@ -55,8 +55,8 @@ export const WithoutDifficulty: Story = {
 		onTemplateSelect: (template, configuration) => {
 			console.log('Selected template:', template.name)
 			console.log('Configuration:', configuration)
-		},
-	},
+		}
+	}
 }
 
 export const LimitedVisible: Story = {
@@ -66,8 +66,8 @@ export const LimitedVisible: Story = {
 		onTemplateSelect: (template, configuration) => {
 			console.log('Selected template:', template.name)
 			console.log('Configuration:', configuration)
-		},
-	},
+		}
+	}
 }
 
 export const NoCancel: Story = {
@@ -76,8 +76,8 @@ export const NoCancel: Story = {
 		onTemplateSelect: (template, configuration) => {
 			console.log('Selected template:', template.name)
 			console.log('Configuration:', configuration)
-		},
-	},
+		}
+	}
 }
 
 export const EmptyTemplates: Story = {
@@ -87,43 +87,43 @@ export const EmptyTemplates: Story = {
 			console.log('Selected template:', template.name)
 			console.log('Configuration:', configuration)
 		},
-		onCancel: () => console.log('Cancelled'),
-	},
+		onCancel: () => console.log('Cancelled')
+	}
 }
 
 export const BeginnerTemplates: Story = {
 	args: {
-		templates: allTemplates.filter(t => t.difficulty === 'beginner'),
+		templates: allTemplates.filter((t) => t.difficulty === 'beginner'),
 		onTemplateSelect: (template, configuration) => {
 			console.log('Selected template:', template.name)
 			console.log('Configuration:', configuration)
-		},
-	},
+		}
+	}
 }
 
 export const AdvancedTemplates: Story = {
 	args: {
-		templates: allTemplates.filter(t => t.difficulty === 'advanced'),
+		templates: allTemplates.filter((t) => t.difficulty === 'advanced'),
 		onTemplateSelect: (template, configuration) => {
 			console.log('Selected template:', template.name)
 			console.log('Configuration:', configuration)
-		},
-	},
+		}
+	}
 }
 
 export const FileSystemTemplates: Story = {
 	args: {
-		templates: allTemplates.filter(t => t.category === 'File System'),
+		templates: allTemplates.filter((t) => t.category === 'File System'),
 		onTemplateSelect: (template, configuration) => {
 			console.log('Selected template:', template.name)
 			console.log('Configuration:', configuration)
-		},
-	},
+		}
+	}
 }
 
 export const Interactive: Story = {
 	render: () => {
-		const [selectedTemplate, setSelectedTemplate] = useState<typeof allTemplates[0] | null>(null)
+		const [selectedTemplate, setSelectedTemplate] = useState<(typeof allTemplates)[0] | null>(null)
 
 		return (
 			<div style={{ width: '800px', minHeight: '600px' }}>
@@ -144,10 +144,12 @@ export const Interactive: Story = {
 						<h4>Selected Template:</h4>
 						<strong>{selectedTemplate.name}</strong>
 						<p>{selectedTemplate.description}</p>
-						<small>Category: {selectedTemplate.category} | Difficulty: {selectedTemplate.difficulty}</small>
+						<small>
+							Category: {selectedTemplate.category} | Difficulty: {selectedTemplate.difficulty}
+						</small>
 					</div>
 				)}
 			</div>
 		)
-	},
+	}
 }

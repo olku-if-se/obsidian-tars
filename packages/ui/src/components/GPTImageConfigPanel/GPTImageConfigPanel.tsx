@@ -88,12 +88,13 @@ export const GPTImageConfigPanel = ({ options, onChange, disabled = false }: GPT
 					onChange={(e) => handleSizeChange(e.target.value)}
 					disabled={disabled}
 					className={styles.select}
-				>
-					<option value="auto">Auto</option>
-					<option value="1024x1024">1024x1024</option>
-					<option value="1536x1024">1536x1024 (landscape)</option>
-					<option value="1024x1536">1024x1536 (portrait)</option>
-				</Select>
+					options={[
+						{ value: 'auto', label: 'Auto' },
+						{ value: '1024x1024', label: '1024x1024' },
+						{ value: '1536x1024', label: '1536x1024 (landscape)' },
+						{ value: '1024x1536', label: '1024x1536 (portrait)' }
+					]}
+				/>
 			</SettingRow>
 
 			<SettingRow name="Output format">
@@ -102,11 +103,12 @@ export const GPTImageConfigPanel = ({ options, onChange, disabled = false }: GPT
 					onChange={(e) => handleFormatChange(e.target.value)}
 					disabled={disabled}
 					className={styles.select}
-				>
-					<option value="png">PNG</option>
-					<option value="jpeg">JPEG</option>
-					<option value="webp">WEBP</option>
-				</Select>
+					options={[
+						{ value: 'png', label: 'PNG' },
+						{ value: 'jpeg', label: 'JPEG' },
+						{ value: 'webp', label: 'WEBP' }
+					]}
+				/>
 			</SettingRow>
 
 			<SettingRow
@@ -118,12 +120,13 @@ export const GPTImageConfigPanel = ({ options, onChange, disabled = false }: GPT
 					onChange={(e) => handleQualityChange(e.target.value)}
 					disabled={disabled}
 					className={styles.select}
-				>
-					<option value="auto">Auto</option>
-					<option value="high">High</option>
-					<option value="medium">Medium</option>
-					<option value="low">Low</option>
-				</Select>
+					options={[
+						{ value: 'auto', label: 'Auto' },
+						{ value: 'high', label: 'High' },
+						{ value: 'medium', label: 'Medium' },
+						{ value: 'low', label: 'Low' }
+					]}
+				/>
 			</SettingRow>
 
 			<SettingRow
@@ -135,11 +138,12 @@ export const GPTImageConfigPanel = ({ options, onChange, disabled = false }: GPT
 					onChange={(e) => handleBackgroundChange(e.target.value)}
 					disabled={disabled}
 					className={styles.select}
-				>
-					<option value="auto">Auto</option>
-					<option value="transparent">Transparent</option>
-					<option value="opaque">Opaque</option>
-				</Select>
+					options={[
+						{ value: 'auto', label: 'Auto' },
+						{ value: 'transparent', label: 'Transparent' },
+						{ value: 'opaque', label: 'Opaque' }
+					]}
+				/>
 			</SettingRow>
 
 			{(options.output_format === 'webp' || options.output_format === 'jpeg') && (

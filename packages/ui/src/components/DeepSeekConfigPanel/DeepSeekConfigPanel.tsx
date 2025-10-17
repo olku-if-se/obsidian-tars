@@ -118,7 +118,6 @@ export const DeepSeekConfigPanel = ({ options, onChange, disabled = false }: Dee
 					<ValidationMessage
 						type="error"
 						message={baseURLError}
-						className={styles.validationMessage}
 					/>
 				)}
 			</SettingRow>
@@ -129,10 +128,11 @@ export const DeepSeekConfigPanel = ({ options, onChange, disabled = false }: Dee
 					onChange={(e) => handleModelChange(e.target.value)}
 					disabled={disabled}
 					className={styles.modelSelect}
-				>
-					<option value="deepseek-chat">DeepSeek Chat</option>
-					<option value="deepseek-reasoner">DeepSeek Reasoner</option>
-				</Select>
+					options={[
+						{ value: 'deepseek-chat', label: 'DeepSeek Chat' },
+						{ value: 'deepseek-reasoner', label: 'DeepSeek Reasoner' }
+					]}
+				/>
 			</SettingRow>
 
 			{isReasonerModel && (
@@ -145,11 +145,12 @@ export const DeepSeekConfigPanel = ({ options, onChange, disabled = false }: Dee
 						onChange={(e) => handleReasoningEffortChange(e.target.value)}
 						disabled={disabled}
 						className={styles.reasoningSelect}
-					>
-						<option value="low">Low (faster)</option>
-						<option value="medium">Medium (balanced)</option>
-						<option value="high">High (deeper reasoning)</option>
-					</Select>
+						options={[
+							{ value: 'low', label: 'Low (faster)' },
+							{ value: 'medium', label: 'Medium (balanced)' },
+							{ value: 'high', label: 'High (deeper reasoning)' }
+						]}
+					/>
 				</SettingRow>
 			)}
 
@@ -190,7 +191,6 @@ export const DeepSeekConfigPanel = ({ options, onChange, disabled = false }: Dee
 					<ValidationMessage
 						type="error"
 						message={temperatureError}
-						className={styles.validationMessage}
 					/>
 				)}
 			</SettingRow>
@@ -216,7 +216,6 @@ export const DeepSeekConfigPanel = ({ options, onChange, disabled = false }: Dee
 					<ValidationMessage
 						type="error"
 						message={topPError}
-						className={styles.validationMessage}
 					/>
 				)}
 			</SettingRow>

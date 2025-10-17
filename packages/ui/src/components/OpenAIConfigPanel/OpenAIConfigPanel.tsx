@@ -123,14 +123,12 @@ export const OpenAIConfigPanel = ({ options, onChange, disabled = false }: OpenA
 					<ValidationMessage
 						type="error"
 						message={baseURLValidation.errors[0]}
-						className={styles.validationMessage}
 					/>
 				)}
 				{baseURLValidation.warnings.length > 0 && (
 					<ValidationMessage
 						type="warning"
 						message={baseURLValidation.warnings[0]}
-						className={styles.validationMessage}
 					/>
 				)}
 			</SettingRow>
@@ -198,7 +196,6 @@ export const OpenAIConfigPanel = ({ options, onChange, disabled = false }: OpenA
 					<ValidationMessage
 						type="error"
 						message={temperatureError}
-						className={styles.validationMessage}
 					/>
 				)}
 			</SettingRow>
@@ -224,7 +221,6 @@ export const OpenAIConfigPanel = ({ options, onChange, disabled = false }: OpenA
 					<ValidationMessage
 						type="error"
 						message={topPError}
-						className={styles.validationMessage}
 					/>
 				)}
 			</SettingRow>
@@ -250,7 +246,6 @@ export const OpenAIConfigPanel = ({ options, onChange, disabled = false }: OpenA
 					<ValidationMessage
 						type="error"
 						message={frequencyPenaltyError}
-						className={styles.validationMessage}
 					/>
 				)}
 			</SettingRow>
@@ -276,7 +271,6 @@ export const OpenAIConfigPanel = ({ options, onChange, disabled = false }: OpenA
 					<ValidationMessage
 						type="error"
 						message={presencePenaltyError}
-						className={styles.validationMessage}
 					/>
 				)}
 			</SettingRow>

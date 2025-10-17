@@ -41,7 +41,7 @@ const MODEL_FETCH_CONFIGS = {
 } as const
 
 // Static model lists for vendors that don't support dynamic fetching
-const STATIC_MODELS = {
+const STATIC_MODELS: Record<string, string[]> = {
 	'Ollama': [
 		'llama3.2:3b',
 		'llama3.2:1b',
@@ -74,7 +74,7 @@ const STATIC_MODELS = {
 		'gpt-4',
 		'gpt-3.5-turbo'
 	]
-} as const
+}
 
 type VendorName = keyof typeof MODEL_FETCH_CONFIGS | keyof typeof STATIC_MODELS
 
@@ -96,7 +96,7 @@ export const ModelSelector = ({
 
 	// Check if vendor supports dynamic model fetching
 	const supportsDynamicFetching = vendor in MODEL_FETCH_CONFIGS
-	const staticModels = STATIC_MODELS[vendor as keyof typeof STATIC_MODELS] || []
+	const staticModels = STATIC_MODELS[vendor] || []
 
 	useEffect(() => {
 		loadModels()
@@ -199,13 +199,8 @@ export const ModelSelector = ({
 				onChange={(e) => handleModelSelect(e.target.value)}
 				disabled={disabled || isLoading}
 				className={styles.modelSelect}
-			>
-				{options.map(option => (
-					<option key={option.value} value={option.value}>
-						{option.label}
-					</option>
-				))}
-			</Select>
+				options={options}
+			/>
 		)
 	}
 
@@ -245,7 +240,6 @@ export const ModelSelector = ({
 				<ValidationMessage
 					type="error"
 					message={error}
-					className={styles.errorMessage}
 				/>
 			)}
 
@@ -265,7 +259,6 @@ export const ModelSelector = ({
 				<ValidationMessage
 					type="info"
 					message="Using custom model. Ensure the model name is correct and supported by the vendor."
-					className={styles.customModelInfo}
 				/>
 			)}
 		</div>

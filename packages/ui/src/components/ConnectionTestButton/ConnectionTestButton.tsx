@@ -7,7 +7,7 @@ export interface ConnectionTestButtonProps {
 	onTest: () => Promise<ConnectionResult>
 	disabled?: boolean
 	size?: 'sm' | 'md' | 'lg'
-	variant?: 'primary' | 'secondary' | 'default'
+	variant?: 'primary' | 'danger' | 'default'
 	className?: string
 }
 
@@ -65,7 +65,7 @@ export const ConnectionTestButton = ({
 	}
 
 	const getResultMessage = () => {
-		if (!lastResult) return null
+		if (!lastResult) return ''
 
 		let message = lastResult.message
 		if (lastResult.latency !== undefined) {
@@ -79,8 +79,8 @@ export const ConnectionTestButton = ({
 	}
 
 	const getResultType = () => {
-		if (!lastResult) return undefined
-		return lastResult.success ? 'success' : 'error'
+		if (!lastResult) return 'info'
+		return lastResult.success ? 'info' : 'error'
 	}
 
 	return (
@@ -108,7 +108,6 @@ export const ConnectionTestButton = ({
 					<ValidationMessage
 						type={getResultType()}
 						message={getResultMessage()}
-						className={styles.resultMessage}
 					/>
 				</div>
 			)}

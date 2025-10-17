@@ -319,7 +319,7 @@ export function MCPServersSection({
 	const handleQuickAdd = useCallback(
 		(option: QuickAddOption) => {
 			onAddServer(option.template)
-			addToast(option.toastTone ?? 'info', t(option.toastMessageKey))
+			addToast(option.toastTone ?? 'info', option.toastMessageKey as any)
 		},
 		[onAddServer, addToast]
 	)
@@ -500,7 +500,7 @@ export function MCPServersSection({
 				<div className={styles.quickAddButtons}>
 					{quickAddOptions.map((option) => (
 						<Button key={option.id} onClick={() => handleQuickAdd(option)}>
-							{t(option.buttonLabelKey)}
+							{t(option.buttonLabelKey as any)}
 						</Button>
 					))}
 				</div>
