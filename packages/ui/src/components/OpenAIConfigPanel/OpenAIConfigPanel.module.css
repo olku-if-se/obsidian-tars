@@ -1,0 +1,96 @@
+.openAIConfigPanel {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-md);
+}
+
+.baseURLInput,
+.organizationInput,
+.projectInput {
+	width: 100%;
+	min-width: 300px;
+}
+
+.numberInput {
+	width: 120px;
+	min-width: 100px;
+}
+
+.baseURLInput.error,
+.numberInput.error {
+	border-color: var(--color-error);
+}
+
+.validationMessage {
+	margin-top: var(--spacing-xs);
+}
+
+.infoBox {
+	background-color: var(--color-background-secondary);
+	border: 1px solid var(--color-border);
+	border-radius: var(--border-radius-md);
+	padding: var(--spacing-md);
+	margin-top: var(--spacing-md);
+}
+
+.infoBox h4 {
+	margin: 0 0 var(--spacing-sm) 0;
+	color: var(--color-text-primary);
+	font-size: var(--font-size-base);
+	font-weight: 600;
+}
+
+.infoBox ul {
+	margin: 0;
+	padding-left: var(--spacing-lg);
+	color: var(--color-text-secondary);
+}
+
+.infoBox li {
+	margin-bottom: var(--spacing-xs);
+	line-height: 1.4;
+}
+
+.infoBox strong {
+	color: var(--color-text-primary);
+}
+
+.exampleBox {
+	background-color: var(--color-background-primary);
+	border: 1px solid var(--color-border);
+	border-radius: var(--border-radius-md);
+	padding: var(--spacing-md);
+	margin-top: var(--spacing-md);
+}
+
+.exampleBox h5 {
+	margin: 0 0 var(--spacing-sm) 0;
+	color: var(--color-text-primary);
+	font-size: var(--font-size-sm);
+	font-weight: 600;
+}
+
+.exampleBox ul {
+	margin: 0;
+	padding-left: var(--spacing-lg);
+	color: var(--color-text-secondary);
+}
+
+.exampleBox li {
+	margin-bottom: var(--spacing-xs);
+	line-height: 1.4;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+	.baseURLInput,
+	.organizationInput,
+	.projectInput {
+		min-width: 100%;
+	}
+
+	.numberInput {
+		width: 100px;
+		min-width: 80px;
+	}
+}

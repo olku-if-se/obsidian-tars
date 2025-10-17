@@ -4,7 +4,13 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
 	resolve: {
 		alias: {
-			src: path.resolve(__dirname, './src')
+			src: path.resolve(__dirname, './src'),
+			'@tars/providers': path.resolve(__dirname, '../providers/dist/index.js'),
+			'@tars/logger': path.resolve(__dirname, '../logger/dist/index.js'),
+			'@tars/mcp-hosting': path.resolve(__dirname, '../mcp-hosting/dist/index.js'),
+			'@tars/streams': path.resolve(__dirname, '../streams/dist/index.js'),
+			'@tars/ui': path.resolve(__dirname, '../ui/dist/index.js'),
+			'obsidian': path.resolve(__dirname, 'tests/mocks/obsidian.js')
 		}
 	},
 	test: {

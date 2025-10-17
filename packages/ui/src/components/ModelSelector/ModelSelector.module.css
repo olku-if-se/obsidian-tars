@@ -1,0 +1,76 @@
+.modelSelector {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-sm);
+}
+
+.modelInputContainer {
+	display: flex;
+	gap: var(--spacing-xs);
+	align-items: center;
+}
+
+.modelSelect {
+	flex: 1;
+	min-width: 200px;
+}
+
+.customModelInput {
+	flex: 1;
+	min-width: 200px;
+}
+
+.actionButtons {
+	display: flex;
+	gap: var(--spacing-xs);
+}
+
+.errorMessage {
+	margin-top: var(--spacing-xs);
+}
+
+.loadingMessage {
+	color: var(--color-text-muted);
+	font-size: var(--font-size-sm);
+	font-style: italic;
+}
+
+.noModelsMessage {
+	color: var(--color-text-muted);
+	font-size: var(--font-size-sm);
+	padding: var(--spacing-xs);
+	background-color: var(--color-background-secondary);
+	border-radius: var(--border-radius-md);
+	text-align: center;
+}
+
+.customModelInfo {
+	margin-top: var(--spacing-xs);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+	.modelInputContainer {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.actionButtons {
+		justify-content: flex-end;
+		margin-top: var(--spacing-xs);
+	}
+}
+
+/* Animation for loading state */
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.modelSelector button:disabled {
+	animation: spin 1s linear infinite;
+}

@@ -1,0 +1,36 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CollapsibleSection > matches snapshot 1`] = `
+<DocumentFragment>
+  <details
+    class="_collapsible_9f9079"
+    data-state="open"
+    open=""
+  >
+    <summary
+      class="_summary_9f9079"
+    >
+      <span
+        class="_summaryText_9f9079"
+      >
+        Test Section
+      </span>
+      <span
+        aria-hidden="true"
+        class="_arrow_9f9079 _arrowOpen_9f9079"
+        data-open="true"
+      >
+        ▼
+      </span>
+    </summary>
+    <div
+      class="_content_9f9079"
+      data-hidden="false"
+    >
+      <p>
+        Content
+      </p>
+    </div>
+  </details>
+</DocumentFragment>
+`;

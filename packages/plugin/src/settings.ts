@@ -1,6 +1,7 @@
 import type { MCPServerConfig } from '@tars/mcp-hosting'
 import type { PromptTemplate } from './prompt'
 import type { ProviderSettings, Vendor } from '@tars/providers'
+import type { FeatureFlags } from './featureFlags'
 import {
 	azureVendor,
 	claudeVendor,
@@ -68,6 +69,8 @@ export interface PluginSettings {
 		systemMessageExpanded?: boolean
 		advancedExpanded?: boolean
 	}
+	// React UI feature flags
+	features?: FeatureFlags
 }
 
 export const DEFAULT_SETTINGS: PluginSettings = {
@@ -112,6 +115,13 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 		mcpServersExpanded: false,
 		systemMessageExpanded: false,
 		advancedExpanded: false
+	},
+	// React UI feature flags
+	features: {
+		reactSettingsTab: true,
+		reactStatusBar: true,
+		reactModals: true,
+		reactMcpUI: true
 	}
 }
 

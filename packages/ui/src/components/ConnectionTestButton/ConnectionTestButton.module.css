@@ -1,0 +1,81 @@
+.connectionTestButton {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-xs);
+	align-items: flex-start;
+}
+
+.testButton {
+	transition: all 0.2s ease;
+}
+
+.testButton.testing {
+	opacity: 0.7;
+	cursor: wait;
+}
+
+.testButton.success {
+	border-color: var(--color-success);
+	background-color: var(--color-success-bg);
+}
+
+.testButton.error {
+	border-color: var(--color-error);
+	background-color: var(--color-error-bg);
+}
+
+.resultContainer {
+	margin-top: var(--spacing-xs);
+	max-width: 300px;
+	opacity: 0;
+	animation: fadeIn 0.3s ease forwards;
+}
+
+.successResult {
+	border-left: 3px solid var(--color-success);
+}
+
+.errorResult {
+	border-left: 3px solid var(--color-error);
+}
+
+.resultMessage {
+	margin: 0;
+	font-size: var(--font-size-sm);
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-5px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Loading spinner for test button */
+.testButton.testing::after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 12px;
+	height: 12px;
+	margin: -6px 0 0 -6px;
+	border: 2px solid transparent;
+	border-top: 2px solid currentColor;
+	border-radius: 50%;
+	animation: spin 1s linear infinite;
+	opacity: 0.6;
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}

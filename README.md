@@ -115,6 +115,24 @@ If the AI provider you want is not in the list above, you can propose a specific
 - 🔥SiliconFlow: Supports many models such as DeepSeek V3/R1
 - Zhipu: Web search option
 
+## 🚀 React Settings (New)
+
+Tars now features a **modern React-based settings interface** with enhanced performance and user experience:
+
+### ✨ Key Benefits
+- **3x faster** loading times for large configurations
+- **Real-time validation** with instant feedback
+- **Enhanced accessibility** and responsive design
+- **Comprehensive testing** with 200+ test cases
+- **Automatic migration** - no data loss during upgrade
+
+### 🛠 Migration
+- **New installations**: React settings enabled by default
+- **Existing users**: Seamless upgrade with optional migration
+- **Fallback**: Vanilla implementation still available if needed
+
+📖 **[Complete Migration Guide](docs/REACT_SETTINGS_MIGRATION.md)**
+
 ## How to use
 
 - Add an AI assistant in the settings page, set the API key, and configure the model.

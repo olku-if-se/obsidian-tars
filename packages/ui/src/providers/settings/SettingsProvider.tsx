@@ -2,6 +2,16 @@ import { createContext, type ReactNode, useCallback, useContext, useMemo, useRed
 import type { MCPServerConfig } from '../../components'
 import { type ValidationResult, validateFormat } from '../../utils/validation.v2'
 
+// Import vendor configuration types
+import type {
+	AzureOptions,
+	ClaudeOptions,
+	DeepSeekOptions,
+	GptImageOptions,
+	OpenAIOptions,
+	OllamaOptions
+} from '../../components/VendorConfigPanels'
+
 // Type aliases for better readability
 export type Provider = {
 	id: string
@@ -10,6 +20,14 @@ export type Provider = {
 	model?: string
 	apiKey?: string
 	capabilities?: string[]
+	vendorConfig?: {
+		azure?: AzureOptions
+		claude?: ClaudeOptions
+		deepseek?: DeepSeekOptions
+		gptImage?: GptImageOptions
+		openai?: OpenAIOptions
+		ollama?: OllamaOptions
+	}
 }
 
 export type MessageTagsData = {
@@ -138,6 +156,7 @@ export type SettingsAction =
 	| { type: 'ADD_PROVIDER'; payload: { vendor: string } }
 	| { type: 'UPDATE_PROVIDER'; payload: { id: string; updates: Partial<Provider> } }
 	| { type: 'REMOVE_PROVIDER'; payload: { id: string } }
+	| { type: 'UPDATE_VENDOR_CONFIG'; payload: { id: string; vendor: string; config: any } }
 	// Message tag actions
 	| { type: 'UPDATE_MESSAGE_TAGS'; payload: Partial<MessageTagsData> }
 	// System message actions
@@ -251,6 +270,24 @@ function settingsReducer(state: SettingsState, action: SettingsAction): Settings
 			return {
 				...state,
 				providers: state.providers.filter((provider) => provider.id !== action.payload.id)
+			}
+
+		case 'UPDATE_VENDOR_CONFIG':
+			return {
+				...state,
+				providers: state.providers.map((provider) => {
+					if (provider.id === action.payload.id) {
+						const vendorKey = action.payload.vendor.toLowerCase() as keyof NonNullable<Provider['vendorConfig']>
+						return {
+							...provider,
+							vendorConfig: {
+								...provider.vendorConfig,
+								[vendorKey]: action.payload.config
+							}
+						}
+					}
+					return provider
+				})
 			}
 
 		case 'UPDATE_MESSAGE_TAGS':
@@ -392,6 +429,7 @@ interface SettingsContextValue {
 		addProvider: (vendor: string) => void
 		updateProvider: (id: string, updates: Partial<Provider>) => void
 		removeProvider: (id: string) => void
+		updateVendorConfig: (id: string, vendor: string, config: any) => void
 		updateMessageTags: (tags: Partial<MessageTagsData>) => void
 		updateSystemMessage: (systemMessage: SystemMessage) => void
 		updateBasicSettings: (settings: Partial<BasicSettings>) => void
@@ -440,6 +478,8 @@ export function SettingsProvider({ children, initialState, onStateChange }: Sett
 			updateProvider: (id: string, updates: Partial<Provider>) =>
 				dispatch({ type: 'UPDATE_PROVIDER', payload: { id, updates } }),
 			removeProvider: (id: string) => dispatch({ type: 'REMOVE_PROVIDER', payload: { id } }),
+			updateVendorConfig: (id: string, vendor: string, config: any) =>
+				dispatch({ type: 'UPDATE_VENDOR_CONFIG', payload: { id, vendor, config } }),
 			updateMessageTags: (tags: Partial<MessageTagsData>) => dispatch({ type: 'UPDATE_MESSAGE_TAGS', payload: tags }),
 			updateSystemMessage: (systemMessage: SystemMessage) =>
 				dispatch({ type: 'UPDATE_SYSTEM_MESSAGE', payload: systemMessage }),

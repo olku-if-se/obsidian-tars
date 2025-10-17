@@ -26,6 +26,7 @@ import { HEALTH_CHECK_INTERVAL } from './mcp/index'
 import { getTitleFromCmdId, loadTemplateFileCommand, promptTemplateCmd, templateToCmdId } from './prompt/command'
 import { DEFAULT_SETTINGS, type PluginSettings } from './settings'
 import { TarsSettingTab } from './settingTab'
+import { ReactSettingsTab } from './reactSettingsTab'
 import { StatusBarManager, type StatusBarController } from './statusBarManager'
 import { StatusBarReactManager } from './statusBarReact'
 import { getMaxTriggerLineLength, TagEditorSuggest, type TagEntry } from './suggest'
@@ -401,7 +402,7 @@ export default class TarsPlugin extends Plugin {
 		if (this.settings.enableReplaceTag) this.addCommand(replaceCmd(this.app))
 		if (this.settings.enableExportToJSONL) this.addCommand(exportCmd(this.app, this.settings))
 
-		this.addSettingTab(new TarsSettingTab(this.app, this))
+		this.addSettingTab(this.createSettingsTab())
 	}
 
 	async onunload() {
@@ -550,6 +551,20 @@ export default class TarsPlugin extends Plugin {
 
 		// Update React status bar manager if settings changed
 		this.statusBarManager.updateSettings(this.settings)
+	}
+
+	/**
+	 * Create appropriate settings tab based on feature flags
+	 */
+	private createSettingsTab(): TarsSettingTab | ReactSettingsTab {
+		// Check if React settings tab is enabled
+		if (this.settings.features?.reactSettingsTab) {
+			logger.info('Using React-based settings tab')
+			return new ReactSettingsTab(this.app, this)
+		} else {
+			logger.info('Using classic settings tab')
+			return new TarsSettingTab(this.app, this)
+		}
 	}
 
 	async updateMCPStatus() {

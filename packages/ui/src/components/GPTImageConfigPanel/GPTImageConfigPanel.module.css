@@ -1,0 +1,81 @@
+.gptImageConfigPanel {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-md);
+}
+
+.slider {
+	width: 100%;
+	max-width: 300px;
+}
+
+.select {
+	min-width: 150px;
+}
+
+.infoBox {
+	background-color: var(--color-background-secondary);
+	border: 1px solid var(--color-border);
+	border-radius: var(--border-radius-md);
+	padding: var(--spacing-md);
+	margin-top: var(--spacing-md);
+}
+
+.infoBox h4 {
+	margin: 0 0 var(--spacing-sm) 0;
+	color: var(--color-text-primary);
+	font-size: var(--font-size-base);
+	font-weight: 600;
+}
+
+.infoBox ul {
+	margin: 0;
+	padding-left: var(--spacing-lg);
+	color: var(--color-text-secondary);
+}
+
+.infoBox li {
+	margin-bottom: var(--spacing-xs);
+	line-height: 1.4;
+}
+
+.infoBox strong {
+	color: var(--color-text-primary);
+}
+
+.exampleBox {
+	background-color: var(--color-background-primary);
+	border: 1px solid var(--color-border);
+	border-radius: var(--border-radius-md);
+	padding: var(--spacing-md);
+	margin-top: var(--spacing-md);
+}
+
+.exampleBox h5 {
+	margin: 0 0 var(--spacing-sm) 0;
+	color: var(--color-text-primary);
+	font-size: var(--font-size-sm);
+	font-weight: 600;
+}
+
+.exampleBox code {
+	background-color: var(--color-background-secondary);
+	border: 1px solid var(--color-border);
+	border-radius: var(--border-radius-sm);
+	padding: var(--spacing-xs) var(--spacing-sm);
+	font-family: var(--font-family-monospace);
+	font-size: var(--font-size-sm);
+	color: var(--color-text-primary);
+	display: block;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+	.slider {
+		max-width: 100%;
+	}
+
+	.select {
+		min-width: 120px;
+	}
+}

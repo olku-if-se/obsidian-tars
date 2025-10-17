@@ -1,0 +1,33 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Button > matches snapshot for different variants 1`] = `
+<DocumentFragment>
+  <div>
+    <button
+      class="_button_a9d9e1 _default_a9d9e1 _md_a9d9e1"
+    >
+      Default
+    </button>
+    <button
+      class="_button_a9d9e1 _primary_a9d9e1 _md_a9d9e1"
+    >
+      Primary
+    </button>
+    <button
+      class="_button_a9d9e1 _danger_a9d9e1 _md_a9d9e1"
+    >
+      Danger
+    </button>
+    <button
+      class="_button_a9d9e1 _default_a9d9e1 _sm_a9d9e1"
+    >
+      Small
+    </button>
+    <button
+      class="_button_a9d9e1 _default_a9d9e1 _lg_a9d9e1"
+    >
+      Large
+    </button>
+  </div>
+</DocumentFragment>
+`;

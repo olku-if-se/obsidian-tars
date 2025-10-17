@@ -1,0 +1,100 @@
+import { t } from 'src/lang/helper';
+import { createLogger } from '@tars/logger';
+export const getPromptTemplatesFromFile = async (app, promptFilePath) => {
+    const promptFile = app.vault.getFileByPath(promptFilePath);
+    if (!promptFile) {
+        throw new Error(`No prompt file found. ${promptFilePath}`);
+    }
+    const appMeta = app.metadataCache;
+    const fileMeta = appMeta.getFileCache(promptFile);
+    if (!fileMeta) {
+        throw new Error(t('Waiting for metadata to be ready. Please try again.'));
+    }
+    logger.debug('sections fetched', { count: fileMeta.sections?.length ?? 0 });
+    const sections = fileMeta.sections;
+    if (!sections) {
+        throw new Error(`No sections found. ${promptFilePath}`);
+    }
+    const headings = fileMeta.headings;
+    if (!headings) {
+        throw new Error(`No headings found. ${promptFilePath}`);
+    }
+    const fileText = await app.vault.cachedRead(promptFile);
+    // Group sections using reduce
+    const sectionGroups = sections
+        .reduce((acc, section) => {
+        if (section.type === 'thematicBreak') {
+            // Start a new group when encountering a thematic break
+            return [...acc, []];
+        }
+        // Add current section to the last group
+        const lastGroupIndex = acc.length - 1;
+        acc[lastGroupIndex] = [...acc[lastGroupIndex], section];
+        return acc;
+    }, [[]] // Start with an empty group
+    )
+        .filter((group) => group.length > 0); // Remove empty groups
+    logger.debug('section groups computed', { groupCount: sectionGroups.length });
+    const slides = sectionGroups.slice(1); // Remove the intro slide
+    logger.debug('slides prepared', { count: slides.length });
+    const promptTemplates = [];
+    const reporter = [];
+    for (const s of slides) {
+        try {
+            const template = toPromptTemplate(s, headings, fileText);
+            if (promptTemplates.some((t) => t.title === template.title)) {
+                throw new Error(`${t('Duplicate title:')} ${template.title}`);
+            }
+            promptTemplates.push(template);
+        }
+        catch (error) {
+            reporter.push(error.message);
+        }
+    }
+    logger.debug('prompt templates extracted', { count: promptTemplates.length });
+    if (reporter.length > 0) {
+        logger.warn('prompt template parsing issues', { errors: reporter });
+    }
+    return { promptTemplates, reporter };
+};
+const toPromptTemplate = (slide, headings, fileText) => {
+    if (slide.length < 2) {
+        throw new Error(`Line ${slide[0].position.start.line + 1}, ${t('Expected at least 2 sections, heading and content')}`);
+    }
+    if (slide[0].type !== 'heading') {
+        throw new Error(`Line ${slide[0].position.start.line + 1} - ${slide[0].position.end.line + 1}, ${t('Expected heading')}`);
+    }
+    const heading = headings.find((heading) => heading.position.start.line === slide[0].position.start.line);
+    if (!heading) {
+        throw new Error(`Line ${slide[0].position.start.line + 1}, ${t('Expected heading')}`);
+    }
+    const title = heading.heading.trim();
+    if (!title) {
+        throw new Error(`Line ${heading.position.start.line + 1}, ${t('Expected heading')}`);
+    }
+    const startOffset = slide[1].position.start.offset;
+    const endOffset = slide[slide.length - 1].position.end.offset;
+    const content = fileText.slice(startOffset, endOffset);
+    const trimmedContent = content.trim();
+    return {
+        title,
+        template: trimmedContent
+    };
+};
+export const findChangedTemplates = (oldTemplates, newTemplates) => {
+    const result = [];
+    const oldTemplateMap = new Map();
+    oldTemplates.forEach((template) => {
+        oldTemplateMap.set(template.title, template.template);
+    });
+    newTemplates.forEach((newTemplate) => {
+        const oldTemplate = oldTemplateMap.get(newTemplate.title);
+        // If the title exists in the old templates but the content is different
+        if (oldTemplate !== undefined && oldTemplate !== newTemplate.template) {
+            result.push(newTemplate);
+        }
+    });
+    return result;
+};
+const logger = createLogger('prompt:template');
+//# sourceMappingURL=template.js.map

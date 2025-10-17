@@ -21,18 +21,42 @@ import {
 import { availableVendors, DEFAULT_SETTINGS } from './settings'
 import { MCPServerSettings } from './settings/MCPServerSettings'
 
+/**
+ * @deprecated TarsSettingTab has been replaced by ReactSettingsTab for improved user experience.
+ * The vanilla DOM implementation is kept for compatibility but will be removed in a future version.
+ *
+ * Migration:
+ * - New installations automatically use ReactSettingsTab (default)
+ * - Existing users can switch via "React Settings Tab" toggle in Advanced Settings
+ * - All features are now available in the React implementation with better performance and UX
+ *
+ * @see ReactSettingsTab for the modern React-based implementation
+ */
 export class TarsSettingTab extends PluginSettingTab {
 	plugin: TarsPlugin
 
 	constructor(app: App, plugin: TarsPlugin) {
 		super(app, plugin)
 		this.plugin = plugin
+
+		// Show deprecation warning in development mode
+		if (process.env.NODE_ENV === 'development') {
+			console.warn('TarsSettingTab is deprecated. Please migrate to ReactSettingsTab.')
+		}
 	}
 
 	hide(): void {
 		this.plugin.buildTagCommands()
 	}
 
+	/**
+	 * Renders the legacy vanilla DOM settings interface.
+	 *
+	 * @deprecated This method renders the vanilla DOM implementation.
+	 * New users should use ReactSettingsTab which provides better performance, UX, and maintainability.
+	 *
+	 * @param expandLastProvider Whether to expand the last provider configuration section
+	 */
 	display(expandLastProvider = false): void {
 		const { containerEl } = this
 		containerEl.empty()
@@ -481,6 +505,16 @@ export class TarsSettingTab extends PluginSettingTab {
 		mcpSettings.render(mcpSectionContent)
 	}
 
+	/**
+	 * Creates provider configuration UI using vanilla DOM.
+	 *
+	 * @deprecated This method uses vanilla DOM manipulation.
+	 * ReactSettingsTab provides component-based architecture with better state management.
+	 *
+	 * @param index Provider index in the settings array
+	 * @param settings Provider configuration object
+	 * @param isOpen Whether the provider details section should be expanded
+	 */
 	createProviderSetting = (index: number, settings: ProviderSettings, isOpen: boolean = false) => {
 		const vendor = availableVendors.find((v) => v.name === settings.vendor)
 		if (!vendor) throw new Error(`No vendor found ${settings.vendor}`)
