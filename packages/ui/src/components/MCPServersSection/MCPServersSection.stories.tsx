@@ -45,7 +45,7 @@ const externalServerBase: Pick<MCPServerConfig, 'configInput' | 'displayMode' | 
 
 // Mock handlers
 const mockHandlers = {
-  onAddServer: () => console.log('Add server clicked'),
+  onAddServer: (template?: Partial<MCPServerConfig>) => console.log('Add server clicked', template),
   onRemoveServer: (id: string) => console.log('Remove server:', id),
   onUpdateServer: (id: string, updates: any) => console.log('Update server:', id, updates),
   onToggleServer: (id: string, enabled: boolean) => console.log('Toggle server:', id, enabled),
@@ -58,11 +58,11 @@ export const Empty: Story = {
   args: {
     servers: [],
     globalLimits: {
-      concurrentExecutions: 5,
-      sessionLimitPerDocument: 50,
+      concurrentExecutions: 3,
+      sessionLimitPerDocument: 25,
       defaultTimeout: 30000,
       parallelExecutionEnabled: false,
-      llmUtilityEnabled: false,
+      llmUtilityEnabled: true,
       maxParallelTools: 3
     },
     expanded: true,
@@ -105,11 +105,10 @@ export const WithServers: Story = {
       sessionLimitPerDocument: 25,
       defaultTimeout: 45000,
       parallelExecutionEnabled: false,
-      llmUtilityEnabled: false,
+      llmUtilityEnabled: true,
       maxParallelTools: 3
     },
     expanded: true,
-    selectedServerId: 'filesystem',
     ...mockHandlers
   }
 }
@@ -178,13 +177,6 @@ export const ManyServers: Story = {
     },
     expanded: true,
     ...mockHandlers
-  }
-}
-
-export const SelectedServer: Story = {
-  args: {
-    ...WithServers.args,
-    selectedServerId: 'web-search'
   }
 }
 

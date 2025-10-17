@@ -1,28 +1,16 @@
 .serverCard {
-  border: var(--border-width) solid var(--background-modifier-border);
+  border: 1px solid var(--background-modifier-border);
   border-radius: var(--radius-m);
   background-color: var(--background-primary);
+  padding: var(--size-4-1);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  margin-bottom: var(--size-4-2);
-  padding: var(--size-4-2);
 }
 
-.serverCard:hover {
-  border-color: var(--interactive-accent);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+.serverCard.success {
+  border-color: var(--color-green);
+  background-color: var(--background-modifier-success-soft);
 }
 
-.serverCard.selected {
-  border-color: var(--interactive-accent);
-  box-shadow: 0 0 0 1px var(--interactive-accent);
-}
-
-.serverCard.loading {
-  opacity: 0.7;
-  pointer-events: none;
-}
-
-/* Status-based styling */
 .serverCard.error {
   border-color: var(--color-red);
   background-color: var(--background-modifier-error-soft);
@@ -33,12 +21,52 @@
   background-color: var(--background-modifier-warning-soft);
 }
 
-.serverCard.success {
-  border-color: var(--color-green);
-  background-color: var(--background-modifier-success-soft);
+.serverCard.info {
+  border-color: var(--interactive-accent);
 }
 
-/* Controls container for row 1 */
+.summaryHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-2-2);
+}
+
+.summaryName {
+  font-weight: var(--font-medium);
+  font-size: var(--font-ui-large);
+  color: var(--text-normal);
+}
+
+.statusBadge {
+  padding: var(--size-1-2) var(--size-2-1);
+  border-radius: var(--radius-s);
+  font-size: var(--font-ui-smaller);
+  font-weight: var(--font-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.statusBadge.success {
+  background-color: var(--background-success);
+  color: var(--text-success);
+}
+
+.statusBadge.error {
+  background-color: var(--background-error);
+  color: var(--text-error);
+}
+
+.statusBadge.warning {
+  background-color: var(--background-warning);
+  color: var(--text-warning);
+}
+
+.statusBadge.info {
+  background-color: var(--background-info);
+  color: var(--text-info);
+}
+
 .controlsContainer {
   display: flex;
   align-items: center;
@@ -48,39 +76,32 @@
 
 .controlsContainer.loading {
   opacity: 0.6;
+  pointer-events: none;
 }
 
-/* Server name input */
+.controlsContainer.loading {
+  opacity: 0.6;
+}
+
+.nameField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-1-2);
+  width: 100%;
+}
+
+.validationMessage {
+  max-width: 100%;
+}
+
 .serverNameInput {
   width: 100%;
-  padding: var(--size-2-1);
-  border: 1px solid var(--background-modifier-border);
-  border-radius: var(--radius-s);
-  background-color: var(--background-primary);
-  color: var(--text-normal);
-  font-size: var(--font-ui-small);
-  font-family: var(--font-interface);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.serverNameInput:focus {
-  outline: none;
-  border-color: var(--interactive-accent);
-  box-shadow: 0 0 0 1px var(--interactive-accent);
-}
-
-.serverNameInput:disabled {
-  background-color: var(--background-secondary);
-  color: var(--text-muted);
-  cursor: not-allowed;
-}
-
-/* Status container for row 4 */
 .statusContainer {
   display: flex;
   flex-direction: column;
-  gap: var(--size-2-1);
-  min-height: var(--size-4-3);
+  gap: var(--size-2-2);
 }
 
 .statusMessage {
@@ -88,7 +109,7 @@
   border-radius: var(--radius-s);
   font-size: var(--font-ui-small);
   font-weight: var(--font-medium);
-  border: 1px solid;
+  border: 1px solid var(--background-modifier-border);
 }
 
 .statusMessage.success {
@@ -115,63 +136,73 @@
   border-color: var(--color-blue);
 }
 
-.statusMessage.loading {
-  background-color: var(--background-modifier-hover);
-  color: var(--text-muted);
-  border-color: var(--background-modifier-border);
-  position: relative;
-}
-
-.statusMessage.loading::after {
-  content: '';
-  position: absolute;
-  right: var(--size-2-2);
-  top: 50%;
-  transform: translateY(-50%);
-  width: 12px;
-  height: 12px;
-  border: 2px solid var(--text-muted);
-  border-top-color: transparent;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: translateY(-50%) rotate(360deg); }
-}
-
 .statusDetail {
   display: flex;
-  gap: var(--size-2-1);
   align-items: center;
+  gap: var(--size-2-1);
   font-size: var(--font-ui-smaller);
+  flex-wrap: wrap;
 }
 
 .statusLabel {
   font-weight: var(--font-medium);
   color: var(--text-muted);
-  min-width: 60px;
-  flex-shrink: 0;
 }
 
 .statusValue {
-  color: var(--text-normal);
   font-family: var(--font-monospace);
   background-color: var(--background-secondary);
-  padding: var(--size-1-1) var(--size-2-1);
   border-radius: var(--radius-s);
   border: 1px solid var(--background-modifier-border);
-  word-break: break-all;
-  font-size: var(--font-ui-smaller);
+  padding: var(--size-1-1) var(--size-2-1);
+  color: var(--text-normal);
+  word-break: break-word;
 }
 
-/* Validation error and warning displays */
-.validationErrors,
-.validationWarnings {
+.previewContainer {
+  display: grid;
+  gap: var(--size-2-1);
+  margin-top: var(--size-2-2);
+  background-color: var(--background-secondary);
+  border-radius: var(--radius-s);
+  border: 1px solid var(--background-modifier-border);
+  padding: var(--size-3-1);
+}
+
+.previewLabel {
+  font-size: var(--font-ui-smaller);
+  color: var(--text-muted);
+}
+
+.previewValue {
+  font-family: var(--font-monospace);
+  font-size: var(--font-ui-smaller);
+  background: var(--background-primary);
+  padding: var(--size-1-2) var(--size-2-1);
+  border-radius: var(--radius-s);
+  border: 1px dashed var(--background-modifier-border);
+  overflow-x: auto;
+}
+
+.validationSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-1-2);
+}
+
+.validationHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-2-1);
+  font-size: var(--font-ui-smaller);
+  color: var(--text-muted);
+}
+
+.validationList {
   display: flex;
   flex-direction: column;
   gap: var(--size-1-1);
-  margin-top: var(--size-1-1);
 }
 
 .errorMessage,
@@ -195,98 +226,19 @@
   border-left-color: var(--color-orange);
 }
 
-/* Dark theme adjustments */
-[data-theme="dark"] .serverCard {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+.previewContainer button,
+.validationHeader button {
+  align-self: flex-start;
 }
 
-[data-theme="dark"] .serverCard:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-
-[data-theme="dark"] .serverCard.selected {
-  box-shadow: 0 0 0 1px var(--interactive-accent), 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-  .controlsContainer {
+@media (max-width: 640px) {
+  .summaryHeader {
     flex-direction: column;
-    align-items: stretch;
+    align-items: flex-start;
     gap: var(--size-1-2);
   }
 
-  .controlsContainer > * {
-    width: 100%;
+  .previewContainer {
+    grid-template-columns: 1fr;
   }
-
-  .statusDetail {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--size-1-1);
-  }
-
-  .statusLabel {
-    min-width: auto;
-  }
-
-  .serverCard {
-    margin-bottom: var(--size-4-1);
-  }
-}
-
-/* Dark theme adjustments */
-[data-theme="dark"] .serverCard {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-[data-theme="dark"] .serverCard:hover {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-
-[data-theme="dark"] .serverCard.selected {
-  box-shadow: 0 0 0 1px var(--interactive-accent), 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-  .serverHeader {
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--size-2-2);
-  }
-
-  .serverControls {
-    justify-content: flex-end;
-    flex-wrap: wrap;
-    gap: var(--size-2-1);
-  }
-
-  .serverName {
-    font-size: var(--font-ui-medium);
-  }
-
-  .serverCard {
-    padding: var(--size-4-1);
-  }
-}
-
-/* Focus states for accessibility */
-.serverCard:focus-within {
-  outline: 2px solid var(--interactive-accent);
-  outline-offset: 2px;
-}
-
-/* Animation for loading state */
-@keyframes pulse {
-  0%, 100% {
-    opacity: 0.7;
-  }
-  50% {
-    opacity: 0.4;
-  }
-}
-
-.serverCard.loading {
-  animation: pulse 1.5s ease-in-out infinite;
 }

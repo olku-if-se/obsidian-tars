@@ -1,5 +1,6 @@
 import { createContext, type ReactNode, useContext, useReducer, useCallback, useMemo } from 'react'
 import type { MCPServerConfig } from '../../components'
+import { validateFormat, type ValidationResult } from '../../utilities/validation'
 
 // Type aliases for better readability
 export type Provider = {
@@ -56,6 +57,58 @@ export type AdvancedSettings = {
 	enableTagSuggest: boolean
 }
 
+type MCPDisplayMode = MCPServerConfig['displayMode']
+type MCPServerTemplate = Partial<MCPServerConfig>
+
+function createEmptyValidationState(format: MCPDisplayMode): ValidationResult {
+	return {
+		isValid: false,
+		errors: [],
+		warnings: [],
+		formatCompatibility: {
+			canShowAsUrl: format === 'url',
+			canShowAsCommand: format === 'command',
+			canShowAsJson: format === 'json'
+		}
+	}
+}
+
+function inferDisplayMode(configInput?: string, fallback: MCPDisplayMode = 'command'): MCPDisplayMode {
+	const value = configInput?.trim()
+	if (!value) {
+		return fallback
+	}
+	if (value.startsWith('http://') || value.startsWith('https://')) {
+		return 'url'
+	}
+	if (value.startsWith('{') || value.startsWith('[')) {
+		return 'json'
+	}
+	return 'command'
+}
+
+function getDefaultTransport(displayMode: MCPDisplayMode, template: MCPServerTemplate): MCPServerConfig['transport'] {
+	if (template.transport) {
+		return template.transport
+	}
+	return displayMode === 'url' ? 'sse' : 'stdio'
+}
+
+function generateUniqueServerName(baseName: string, existing: MCPServerConfig[]): string {
+	const trimmedBase = baseName.trim() || 'New MCP Server'
+	const existingNames = new Set(existing.map(server => server.name.toLowerCase()))
+	if (!existingNames.has(trimmedBase.toLowerCase())) {
+		return trimmedBase
+	}
+
+	let suffix = 2
+	while (existingNames.has(`${trimmedBase} ${suffix}`.toLowerCase())) {
+		suffix += 1
+	}
+
+	return `${trimmedBase} ${suffix}`
+}
+
 // UI State for collapsible sections
 export type SettingsUIState = {
 	systemMessageExpanded: boolean
@@ -94,7 +147,7 @@ export type SettingsAction =
 	// UI state actions
 	| { type: 'TOGGLE_SECTION'; payload: { section: keyof SettingsUIState; open: boolean } }
 	// MCP server actions
-	| { type: 'ADD_MCP_SERVER' }
+	| { type: 'ADD_MCP_SERVER'; payload?: { template?: MCPServerTemplate } }
 	| { type: 'REMOVE_MCP_SERVER'; payload: { id: string } }
 	| { type: 'UPDATE_MCP_SERVER'; payload: { id: string; updates: Partial<MCPServerConfig> } }
 	| { type: 'TOGGLE_MCP_SERVER'; payload: { id: string; enabled: boolean } }
@@ -148,11 +201,11 @@ const getDefaultState = (): SettingsState => ({
 		reactMcpUI: false
 	},
 	globalLimits: {
-		concurrentExecutions: 5,
-		sessionLimitPerDocument: 50,
+		concurrentExecutions: 3,
+		sessionLimitPerDocument: 25,
 		defaultTimeout: 30000,
 		parallelExecutionEnabled: false,
-		llmUtilityEnabled: false,
+		llmUtilityEnabled: true,
 		maxParallelTools: 3
 	},
 	uiState: {
@@ -230,17 +283,36 @@ function settingsReducer(state: SettingsState, action: SettingsAction): Settings
 			}
 
 		case 'ADD_MCP_SERVER': {
+			const template = action.payload?.template ?? {}
+			const inferredDisplayMode = inferDisplayMode(template.configInput, template.displayMode ?? 'url')
+			const displayMode = template.displayMode ?? inferredDisplayMode
+			const configInput = template.configInput ? template.configInput.trim() : ''
+			const baseValidation = template.validationState
+				? { ...template.validationState }
+				: configInput
+					? validateFormat(configInput, displayMode)
+					: createEmptyValidationState(displayMode)
+			const name = generateUniqueServerName(template.name ?? 'New MCP Server', state.mcpServers)
+
 			const newServer: MCPServerConfig = {
-				id: `mcp-server-${Date.now()}`,
-				name: 'New MCP Server',
-				enabled: false,
-				configInput: '',
-				displayMode: 'json',
-				validationState: { isValid: false, errors: [], warnings: [], formatCompatibility: { canShowAsUrl: false, canShowAsCommand: false, canShowAsJson: false } },
-				failureCount: 0,
-				autoDisabled: false,
-				deploymentType: 'managed',
-				transport: 'stdio'
+				id: template.id ?? `mcp-server-${Date.now()}`,
+				name,
+				enabled: template.enabled ?? false,
+				configInput,
+				displayMode,
+				validationState: baseValidation,
+				failureCount: template.failureCount ?? 0,
+				autoDisabled: template.autoDisabled ?? false,
+				deploymentType: template.deploymentType ?? 'managed',
+				transport: getDefaultTransport(displayMode, template),
+				dockerConfig: template.dockerConfig,
+				sseConfig: template.sseConfig,
+				retryPolicy:
+					template.retryPolicy ?? {
+						maxRetries: 3,
+						backoffMs: 1000
+					},
+				timeout: template.timeout ?? 30
 			}
 			return {
 				...state,
@@ -335,7 +407,7 @@ interface SettingsContextValue {
 		updateSystemMessage: (systemMessage: SystemMessage) => void
 		updateBasicSettings: (settings: Partial<BasicSettings>) => void
 		toggleSection: (section: keyof SettingsUIState, open: boolean) => void
-		addMCPServer: () => void
+		addMCPServer: (template?: MCPServerTemplate) => void
 		removeMCPServer: (id: string) => void
 		updateMCPServer: (id: string, updates: Partial<MCPServerConfig>) => void
 		toggleMCPServer: (id: string, enabled: boolean) => void
@@ -386,7 +458,8 @@ export function SettingsProvider({ children, initialState, onStateChange }: Sett
 			dispatch({ type: 'UPDATE_BASIC_SETTINGS', payload: settings }),
 		toggleSection: (section: keyof SettingsUIState, open: boolean) =>
 			dispatch({ type: 'TOGGLE_SECTION', payload: { section, open } }),
-		addMCPServer: () => dispatch({ type: 'ADD_MCP_SERVER' }),
+		addMCPServer: (template?: MCPServerTemplate) =>
+			dispatch({ type: 'ADD_MCP_SERVER', payload: { template } }),
 		removeMCPServer: (id: string) => dispatch({ type: 'REMOVE_MCP_SERVER', payload: { id } }),
 		updateMCPServer: (id: string, updates: Partial<MCPServerConfig>) =>
 			dispatch({ type: 'UPDATE_MCP_SERVER', payload: { id, updates } }),

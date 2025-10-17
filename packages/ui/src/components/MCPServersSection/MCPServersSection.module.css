@@ -1,62 +1,164 @@
-.mcpServersSection {
+.toastContainer {
   display: flex;
   flex-direction: column;
-  gap: var(--size-4-2);
-}
-
-.globalSettings {
+  gap: var(--size-2-3);
   margin-bottom: var(--size-4-2);
 }
 
-.globalSettings :global(.settingRow) {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--size-4-3);
-}
-
-.globalSettings :global(.settingInfo) {
-  flex: 0 0 70%;
-  min-width: 0;
-}
-
-.globalSettings :global(.settingControl) {
+.toast {
   display: flex;
   align-items: center;
-  flex: 0 0 30%;
-  justify-content: flex-start;
-}
-
-.globalSettings :global(.input) {
-  width: 100%;
-  max-width: 100%;
-}
-
-.globalSettings :global(.toggle) {
-  justify-content: flex-start;
-}
-
-.globalSettings :global(.toggle .switch) {
-  width: 44px;
-  height: 24px;
-}
-
-.addServerContainer {
-  display: flex;
-  justify-content: flex-start;
-  margin: var(--size-4-2) 0;
-}
-
-.noServers {
-  text-align: center;
-  color: var(--text-muted);
-  padding: var(--size-4-2);
-  border: var(--border-width) dashed var(--background-modifier-border);
+  justify-content: space-between;
+  padding: var(--size-2-2) var(--size-3-1);
   border-radius: var(--radius-m);
-  margin: var(--size-4-2) 0;
+  border: 1px solid var(--background-modifier-border);
+  background-color: var(--background-secondary);
+  color: var(--text-normal);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.toast.success {
+  border-color: var(--color-green);
+  background-color: var(--background-modifier-success-soft);
+  color: var(--text-success);
+}
+
+.toast.error {
+  border-color: var(--color-red);
+  background-color: var(--background-modifier-error-soft);
+  color: var(--text-error);
+}
+
+.toast.info {
+  border-color: var(--interactive-accent);
+  background-color: var(--background-modifier-hover);
+  color: var(--interactive-accent);
+}
+
+.toast.warning {
+  border-color: var(--color-orange);
+  background-color: var(--background-modifier-warning-soft);
+  color: var(--text-warning);
+}
+
+.toastDismiss {
+  background: none;
+  border: none;
+  color: currentColor;
+  font-size: var(--font-ui-large);
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.globalSettings {
+  display: grid;
+  gap: var(--size-3-1);
+  margin-bottom: var(--size-4-3);
+}
+
+.sectionHeading {
+  font-size: var(--font-ui-large);
+  margin: 0;
+  color: var(--text-normal);
+}
+
+.quickAddSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-3-1);
+  padding: var(--size-4-1);
+  border-radius: var(--radius-m);
+  border: 1px solid var(--background-modifier-border);
+  background: var(--background-secondary);
+  margin-bottom: var(--size-4-3);
+}
+
+.quickAddHeader h3 {
+  margin: 0;
+  font-size: var(--font-ui-large);
+}
+
+.quickAddHeader p {
+  margin: var(--size-1-2) 0 0;
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+}
+
+.quickAddList {
+  display: grid;
+  gap: var(--size-3-1);
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.quickAddCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--size-2-2);
+  padding: var(--size-3-2);
+  border-radius: var(--radius-m);
+  border: 1px solid var(--background-modifier-border);
+  background-color: var(--background-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.quickAddLabel {
+  font-weight: var(--font-medium);
+  color: var(--text-normal);
+}
+
+.quickAddDescription {
+  margin: var(--size-1-2) 0 0;
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  line-height: 1.4;
+}
+
+.addCustomSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--size-3-1);
+  padding: var(--size-4-1);
+  border-radius: var(--radius-m);
+  border: 1px dashed var(--background-modifier-border);
+  background: var(--background-primary);
+  margin-bottom: var(--size-4-3);
+}
+
+.addCustomSection p {
+  margin: var(--size-1-2) 0 0;
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+}
+
+.serverListContainer {
+  margin-bottom: var(--size-4-2);
 }
 
 .serverList {
   display: flex;
   flex-direction: column;
   gap: var(--size-4-2);
+}
+
+.noServers {
+  text-align: center;
+  color: var(--text-muted);
+  padding: var(--size-4-2);
+  border: 1px dashed var(--background-modifier-border);
+  border-radius: var(--radius-m);
+  background: var(--background-secondary);
+}
+
+@media (max-width: 640px) {
+  .quickAddSection {
+    padding: var(--size-3-2);
+  }
+
+  .addCustomSection {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }

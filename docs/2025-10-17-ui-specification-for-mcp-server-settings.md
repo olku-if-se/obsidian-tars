@@ -71,12 +71,12 @@ interface LoadingState {
 ```
 MCP Settings Container (root)
 ├── Global Settings Section
-│   ├── Timeout Setting (number input, 30000ms default)
-│   ├── Concurrent Limit Setting (number input, 3 default)
-│   ├── Session Limit Setting (number input, 25 default, -1 unlimited)
-│   ├── Parallel Execution Toggle (boolean, false default)
-│   ├── Utility Section Toggle (boolean, true default)
-│   └── Max Parallel Tools Setting (number input, 3 default, conditional)
+│   ├── Global Timeout (text input, placeholder 30000, persists when >0)
+│   ├── Concurrent Limit (text input, placeholder 3, persists when >0)
+│   ├── Session Limit (text input, placeholder 25, accepts -1)
+│   ├── Parallel Execution Toggle (boolean, default disabled)
+│   ├── Insert LLM Utility Section Toggle (boolean, default enabled)
+│   └── Max Parallel Tools (text input, placeholder 3, enabled independent of toggle state)
 ├── Server List Section
 │   ├── Empty State Message (when no servers configured)
 │   └── Server Section (collapsible, per server)
@@ -93,8 +93,8 @@ MCP Settings Container (root)
 │       │       ├── Error Display (conditional, with copy button)
 │       │       └── Format Information (conditional)
 ├── Quick Add Section
-│   ├── Section Header & Description
-│   └── Quick Add Buttons (horizontal row: Exa Search, Filesystem Server, etc.)
+│   ├── Section Header & Description (“Quick Add Popular Servers” with helper copy)
+│   └── Quick Add Buttons (fixed set: “+ Exa Search”, “+ Filesystem Server”)
 └── Add Custom Server Section
     └── Add Custom Server Button
 ```
@@ -113,6 +113,21 @@ MCP Settings Container (root)
 - Horizontal button groups with flex layout and wrapping
 - Collapsible sections using HTML5 `<details>`/`<summary>` elements
 
+### 3.3 Server Section Breakdown
+
+Each server entry is rendered inside an HTML `<details>` element with a clickable summary that mirrors the Obsidian plugin implementation in `packages/plugin/src/settings/MCPServerSettings.ts`:
+
+- **Summary Row:** `${server.name} (✓ Enabled | ✗ Disabled | ✗ Error)` text with a status-specific class (`mcp-status-enabled`, `mcp-status-disabled`, `mcp-status-error`).
+- **Controls Row:** `Enable/Disable`, `Test`, and `Delete` buttons. The `Enable/Disable` button flips its label and tooltip to match the new state. `Test` transitions to “Testing…” with a disabled state while validation + `mcp-use` checks run, and restores afterwards. `Delete` is styled as destructive and re-renders the list.
+- **Name Field:** Obsidian `Setting` with `Server name` label. Inline validation enforces uniqueness and injects an error div (`⚠️ Server name must be unique`) while also toggling the input border to `var(--text-error)`.
+- **Configuration Block:**
+  - **Remote URL input** (simple mode) with preview pane that converts URLs into the generated command via `remoteUrlToCommand`.
+  - **Command / JSON textarea** pre-populated with MCP examples. Textarea updates save instantly and back-propagate into the URL preview when applicable.
+  - **Feedback area** that can show validation errors (with clipboard button) and format detection info (e.g. “✓ Detected: COMMAND format | Server: filesystem”).
+  - **Format toggle button** labelled with the next available display mode (`Show as URL`, `Show as JSON`, etc.) which cycles through supported conversions using `detectConversionCapability` and `convertConfigTo`.
+
+The layout must preserve the three-column grouping from the plugin: simple URL input on top, textarea beneath, and metadata / preview below, all full-width within the section.
+
 ---
 
 ## 4. Interaction Patterns
@@ -121,20 +136,29 @@ MCP Settings Container (root)
 
 **Server Management:**
 - **Enable/Disable**: Toggle server state with immediate MCP manager reinitialization
-- **Test Connection**: Async operation with loading state, detailed feedback, and error handling
-- **Delete Server**: Warning-styled button with immediate removal and settings refresh
-- **Server Naming**: Real-time uniqueness validation with visual error states
+- **Test Connection**: Async operation with loading state, detailed feedback, and error handling. Button text switches to “Testing…” and a Notice displays success/failure with tool counts pulled from `mcp-use`.
+- **Delete Server**: Warning-styled button with immediate removal and settings refresh. Triggers full settings re-render.
+- **Server Naming**: Real-time uniqueness validation with visual error states and inline warning copy (`⚠️ Server name must be unique`).
+
+**Quick Add Buttons:**
+- **Exa Search**: Adds a disabled server pre-populated with `npx -y exa-mcp-server` JSON config, warns users to set `EXA_API_KEY`, and re-renders the list.
+- **Filesystem Server**: Adds a disabled server with the command `npx -y @modelcontextprotocol/server-filesystem /path/to/files` and prompts the user to edit the path before enabling.
+- **Notices**: Each quick add fires an Obsidian `Notice` confirming the action and supplying follow-up instructions.
+
+**Add Custom MCP Server:**
+- Single button labelled “Add Custom MCP Server” that appends a blank record (`displayMode: 'command'`, `enabled: false`) and forces a full settings re-render.
 
 **Configuration Input:**
-- **Multi-format Support**: Seamless switching between URL, Command, and JSON formats
-- **Real-time Validation**: Immediate parsing feedback with error/warning messages
-- **Format Conversion**: Smart conversion with data preservation warnings when necessary
-- **Preview Generation**: Live command preview for URL inputs
+- **Multi-format Support**: Seamless switching between URL, Command, and JSON formats using the “Configuration format” cycle button. Only show the toggle when multiple formats are available.
+- **Real-time Validation**: Immediate parsing feedback via `parseConfigInput` with errors rendered in a bordered panel and copy-to-clipboard affordance.
+- **Format Conversion**: Smart conversion with data preservation warnings handled in code (`convertConfigTo`). Preview and input fields stay synchronized when formats change.
+- **Preview Generation**: Live command preview for URL inputs using `remoteUrlToCommand`. Preview text updates on every keystroke and shows helper copy when the URL is invalid.
 
 **Global Settings:**
 - **Immediate Persistence**: All changes saved instantly with toast confirmation
 - **Input Validation**: Range validation for numeric inputs, visual feedback on errors
 - **Conditional Display**: Show/hide related settings based on toggle states
+- **Utility Toggle**: “Insert LLM utility section” defaults to enabled and persists independently of parallel execution.
 
 ### 4.2 Advanced Interactions
 
@@ -149,6 +173,7 @@ MCP Settings Container (root)
 - **Toast Notifications**: Non-intrusive feedback for all operations
 - **Error Copy Function**: Clipboard access for debugging error messages
 - **Graceful Degradation**: System remains functional even with individual server failures
+- **Testing Notices**: Use Obsidian `Notice` to surface in-progress and result feedback (success, failure with hints for Docker / env vars).
 
 ---
 
@@ -161,7 +186,7 @@ interface MCPServerConfig {
   id: string                    // Unique identifier (timestamp-based)
   name: string                  // User-friendly display name (must be unique)
   configInput: string           // Configuration in URL/Command/JSON format
-  displayMode: 'simple' | 'command'  // Preferred UI format
+  displayMode: 'simple' | 'command'  // Persisted format (simple = URL view, command = textarea view)
   enabled: boolean              // Server activation state
   failureCount: number          // Health tracking for auto-disable
   autoDisabled: boolean         // Automatic disable state from errors
@@ -183,16 +208,21 @@ interface GlobalMCPSettings {
 - **Pattern**: `https://mcp.example.com` or `http://localhost:3000`
 - **Conversion**: Auto-converts to `mcp-remote` command with appropriate arguments
 - **Validation**: Protocol validation, reachability testing, format parsing
+- **Preview**: Command preview below the field updates live and explains when URLs are invalid
 
 **Command Format:**
 - **Pattern**: Shell commands like `npx -y @modelcontextprotocol/server-memory`
 - **Platform Support**: Automatic template adjustment for Windows vs Unix systems
 - **Validation**: Command structure validation, package availability checking
+- **Sync**: Keeps the URL field in sync via `remoteUrlToCommand` when conversion is lossless
 
 **JSON Format:**
 - **Pattern**: Claude Desktop compatible JSON structure
 - **Structure**: `{"mcpServers": {"serverName": {"command": "...", "args": [...], "env": {...}}}}`
 - **Validation**: JSON parsing, schema validation, required field checking
+- **Conversion**: Reuses the conversion helpers to populate the command textarea when possible
+
+> **Note:** The UI cycles through `url → command → json` for display, but only `'simple' | 'command'` persist back to the plugin settings. Ensure conversions keep `configInput` consistent with the selected display.
 
 ### 5.3 Validation Rules
 

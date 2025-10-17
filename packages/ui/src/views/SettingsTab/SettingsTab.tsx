@@ -17,24 +17,14 @@ import {
 	useSystemMessage,
 	useUIState
 } from '../../providers/settings/SettingsProvider'
+import { t } from '../../utilities/i18n'
 import styles from './SettingsTab.module.css'
 
-// i18n strings object
-const strings = {
-	basicSettings: 'Basic Settings',
-	confirmRegenerate: 'Confirm before regeneration',
-	confirmRegenerateDesc: 'Confirm before replacing existing assistant responses when using assistant commands',
-	internalLinks: 'Internal links',
-	internalLinksDesc:
-		'Internal links in user and system messages will be replaced with their referenced content. When disabled, only the original text of the links will be used.'
-} as const
-
-// Props for external MCP connection testing
-interface SettingsTabProps {
+type SettingsTabProps = {
 	onTestMCPConnection?: (id: string) => Promise<{ success: boolean; message: string; latency?: number }>
 }
 
-export const SettingsTab: React.FC<SettingsTabProps> = ({ onTestMCPConnection }) => {
+export function SettingsTab({ onTestMCPConnection }: SettingsTabProps): JSX.Element {
 	// Use custom hooks to access different parts of the settings state
 	const { providers, availableVendors, addProvider, updateProvider, removeProvider } = useProviders()
 	const { tags, defaultTags, updateTags } = useMessageTags()
@@ -108,15 +98,15 @@ export const SettingsTab: React.FC<SettingsTabProps> = ({ onTestMCPConnection })
 			/>
 
 			{/* Basic Settings Section */}
-			<Section title={strings.basicSettings}>
-				<SettingRow name={strings.confirmRegenerate} description={strings.confirmRegenerateDesc}>
+			<Section title={t('settingsTab.basicSettings')}>
+				<SettingRow name={t('settingsTab.confirmRegenerate')} description={t('settingsTab.confirmRegenerateDesc')}>
 					<Toggle
 						checked={basicSettings.confirmRegenerate}
 						onChange={(e) => eventHandlers.basicSettings('confirmRegenerate', e.target.checked)}
 					/>
 				</SettingRow>
 
-				<SettingRow name={strings.internalLinks} description={strings.internalLinksDesc}>
+				<SettingRow name={t('settingsTab.internalLinks')} description={t('settingsTab.internalLinksDesc')}>
 					<Toggle
 						checked={basicSettings.enableInternalLink}
 						onChange={(e) => eventHandlers.basicSettings('enableInternalLink', e.target.checked)}
