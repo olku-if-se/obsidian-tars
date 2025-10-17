@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Button, Input, Toggle } from '../../index'
+import { Button, Input, Toggle } from '~/atoms'
 import { Section } from './Section'
 
 const meta = {
@@ -53,7 +53,12 @@ export const Basic: Story = {
 					<div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>
 						Receive notifications when new messages arrive
 					</div>
-					<Toggle checked={true} onChange={() => {}} />
+					<Toggle
+						checked={true}
+						onChange={() => {
+							/* Demo placeholder */
+						}}
+					/>
 				</div>
 
 				<div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -61,7 +66,12 @@ export const Basic: Story = {
 					<div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>
 						Automatically save your work every 5 minutes
 					</div>
-					<Toggle checked={false} onChange={() => {}} />
+					<Toggle
+						checked={false}
+						onChange={() => {
+							/* Demo placeholder */
+						}}
+					/>
 				</div>
 			</div>
 		)
@@ -79,13 +89,24 @@ export const WithInputs: Story = {
 					<div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>
 						Your unique username for the platform
 					</div>
-					<Input value='john_doe' onChange={() => {}} />
+					<Input
+						value="john_doe"
+						onChange={() => {
+							/* Demo placeholder */
+						}}
+					/>
 				</div>
 
 				<div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
 					<div style={{ fontWeight: '500' }}>Email</div>
 					<div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>Contact email for notifications</div>
-					<Input type='email' value='john@example.com' onChange={() => {}} />
+					<Input
+						type="email"
+						value="john@example.com"
+						onChange={() => {
+							/* Demo placeholder */
+						}}
+					/>
 				</div>
 			</div>
 		)
@@ -101,7 +122,12 @@ export const MixedContent: Story = {
 				<div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
 					<div style={{ fontWeight: '500' }}>Profile visibility</div>
 					<div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>Control who can see your profile</div>
-					<Toggle checked={true} onChange={() => {}} />
+					<Toggle
+						checked={true}
+						onChange={() => {
+							/* Demo placeholder */
+						}}
+					/>
 				</div>
 
 				<div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -110,8 +136,15 @@ export const MixedContent: Story = {
 						Your API key for third-party integrations
 					</div>
 					<div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-						<Input type='password' value='sk-test123...' onChange={() => {}} style={{ flex: 1 }} />
-						<Button variant='default' size='sm'>
+						<Input
+							type="password"
+							value="sk-test123..."
+							onChange={() => {
+								/* Demo placeholder */
+							}}
+							style={{ flex: 1 }}
+						/>
+						<Button variant="default" size="sm">
 							Regenerate
 						</Button>
 					</div>
@@ -122,7 +155,7 @@ export const MixedContent: Story = {
 					<div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>
 						Download all your data in JSON format
 					</div>
-					<Button variant='primary'>Export Data</Button>
+					<Button variant="primary">Export Data</Button>
 				</div>
 			</div>
 		)
@@ -157,12 +190,17 @@ export const ManyItems: Story = {
 		children: (
 			<div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
 				{Array.from({ length: 6 }, (_, i) => (
-					<div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+					<div key={`setting-${i + 1}`} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
 						<div style={{ fontWeight: '500' }}>Setting {i + 1}</div>
 						<div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>
 							Description for setting {i + 1}. This explains what the setting does and how it affects your experience.
 						</div>
-						<Toggle checked={i % 2 === 0} onChange={() => {}} />
+						<Toggle
+							checked={i % 2 === 0}
+							onChange={() => {
+								/* Demo placeholder */
+							}}
+						/>
 					</div>
 				))}
 			</div>
@@ -179,18 +217,31 @@ export const FormLayout: Story = {
 				<div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
 					<div style={{ fontWeight: '500' }}>Server URL</div>
 					<div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>The URL of your server instance</div>
-					<Input placeholder='https://api.example.com' value='https://api.example.com' onChange={() => {}} />
+					<Input
+						placeholder="https://api.example.com"
+						value="https://api.example.com"
+						onChange={() => {
+							/* Demo placeholder */
+						}}
+					/>
 				</div>
 
 				<div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
 					<div style={{ fontWeight: '500' }}>Port</div>
 					<div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>Server port number (default: 443)</div>
-					<Input type='number' placeholder='443' value='443' onChange={() => {}} />
+					<Input
+						type="number"
+						placeholder="443"
+						value="443"
+						onChange={() => {
+							/* Demo placeholder */
+						}}
+					/>
 				</div>
 
 				<div style={{ display: 'flex', gap: '12px', marginTop: '12px' }}>
-					<Button variant='primary'>Test Connection</Button>
-					<Button variant='default'>Save</Button>
+					<Button variant="primary">Test Connection</Button>
+					<Button variant="default">Save</Button>
 				</div>
 			</form>
 		)

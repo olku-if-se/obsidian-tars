@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import type { Provider } from '../types'
 import { ProviderCard } from './ProviderCard'
-import type { Provider } from '../ProviderSection/ProviderSection.types'
 
 const baseProvider: Provider = {
 	id: 'provider-1',

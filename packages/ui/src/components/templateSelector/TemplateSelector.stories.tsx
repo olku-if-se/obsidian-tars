@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { useState } from 'react'
-import { allTemplates } from '../../utils/templateData'
+import { allTemplates } from '~/utils/templateData'
 import { TemplateSelector } from './TemplateSelector'
 
 const meta = {

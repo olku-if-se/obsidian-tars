@@ -407,7 +407,7 @@ export const UseCases: Story = {
 				<h3>Model Selector Use Cases</h3>
 				{useCases.map((useCase, index) => (
 					<div
-						key={index}
+						key={`use-case-${useCase.title.toLowerCase().replace(/\s+/g, '-')}`}
 						style={{
 							padding: '16px',
 							border: '1px solid #e0e0e0',

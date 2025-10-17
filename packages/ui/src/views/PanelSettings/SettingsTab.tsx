@@ -7,6 +7,7 @@ import {
 	ReactFeaturesSection,
 	SystemMessageSection
 } from '~/components'
+import { t } from '~/locales/i18n'
 import {
 	useAdvancedSettings,
 	useBasicSettings,
@@ -17,7 +18,6 @@ import {
 	useSystemMessage,
 	useUIState
 } from '~/providers'
-import { t } from '~/locales/i18n'
 import styles from './SettingsTab.module.css'
 
 type SettingsTabProps = {

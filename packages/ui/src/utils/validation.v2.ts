@@ -109,7 +109,7 @@ export const validateUrlFormat = (url: string): ValidationResult => {
 				canShowAsJson
 			}
 		}
-	} catch (error) {
+	} catch (_error) {
 		errors.push('Invalid URL format')
 		return {
 			isValid: false,

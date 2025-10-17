@@ -1,0 +1,42 @@
+.providerContent {
+	display: flex;
+	flex-direction: column;
+	/* gap: var(--size-4-2); */
+}
+
+.settingControl {
+	/* display: flex;
+	gap: var(--size-2-2);
+	align-items: center; */
+	width: 100% !important;
+}
+
+.settingControl input {
+	width: 100% !important;
+	max-width: none;
+}
+
+.settingModelsRow {
+	display: flex;
+	gap: var(--size-2-2);
+	align-items: center;
+	width: 100% !important;
+}
+
+.settingModels {
+	width: 100% !important;
+}
+
+.settingModels input {
+	width: 100% !important;
+	max-width: none;
+}
+
+.settingApiKey {
+	width: 100% !important;
+}
+
+.settingApiKey input {
+	width: 100% !important;
+	max-width: none;
+}

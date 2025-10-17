@@ -1,7 +1,7 @@
 // Export UI components
 
-export * from './CardAiProvider'
 export * from './CardMcpServer'
+export * from './providers'
 export * from './SectionAdvanced'
 export * from './SectionFeatures'
 export * from './SectionMcpServers'

@@ -3,6 +3,8 @@ export type Provider = {
 	name: string
 	tag: string
 	model?: string
+	baseUrl?: string
 	apiKey?: string
+	override?: string
 	capabilities?: string[]
 }

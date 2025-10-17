@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Button, Input, Section, Select, SettingRow } from '~/atoms'
-import { allTemplates, type MCPServerTemplate } from '../../utils/templateData'
+import { allTemplates, type MCPServerTemplate } from '~/utils/templateData'
 import styles from './TemplateSelector.module.css'
 
 // Type aliases following React rules (bundled props for >5 props)
@@ -158,7 +158,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 			{/* Search and filters */}
 			<div className={styles.filters}>
 				{showCategories && (
-					<SettingRow name={strings.category} description=''>
+					<SettingRow name={strings.category} description="">
 						<Select
 							value={selectedCategory}
 							onChange={(e) => setSelectedCategory(e.target.value)}
@@ -174,7 +174,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 				)}
 
 				{showDifficulty && (
-					<SettingRow name={strings.difficulty} description=''>
+					<SettingRow name={strings.difficulty} description="">
 						<Select
 							value={selectedDifficulty}
 							onChange={(e) => setSelectedDifficulty(e.target.value)}
@@ -188,9 +188,9 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 					</SettingRow>
 				)}
 
-				<SettingRow name={strings.search} description=''>
+				<SettingRow name={strings.search} description="">
 					<Input
-						type='text'
+						type="text"
 						value={searchQuery}
 						onChange={(e) => setSearchQuery(e.target.value)}
 						placeholder={searchPlaceholder}
@@ -226,8 +226,8 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 								</div>
 								<div className={styles.templateActions}>
 									<Button
-										variant='default'
-										size='sm'
+										variant="default"
+										size="sm"
 										onClick={(e) => {
 											e.stopPropagation()
 											setExpandedTemplate(expandedTemplate === template.id ? null : template.id)
@@ -303,7 +303,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 
 									<div className={styles.templateActions}>
 										<Button
-											variant='primary'
+											variant="primary"
 											onClick={() => {
 												setInternalSelectedTemplate(template)
 												handleSelectTemplate()
@@ -322,7 +322,7 @@ export const TemplateSelector: React.FC<TemplateSelectorProps> = ({
 			{/* Action buttons */}
 			{onCancel && (
 				<div className={styles.actions}>
-					<Button variant='default' onClick={onCancel}>
+					<Button variant="default" onClick={onCancel}>
 						{strings.cancel}
 					</Button>
 				</div>

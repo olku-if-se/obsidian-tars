@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { SettingsProvider } from '../../providers/settings/SettingsProvider'
+import { SettingsProvider } from '~/providers/settings/SettingsProvider'
 import { SettingsTab } from './SettingsTab'
 
 const meta = {
@@ -12,7 +12,7 @@ const meta = {
 	decorators: [
 		(Story, context) => {
 			// Extract initial state from story args
-			const { initialState, onTestMCPConnection, ...rest } = context.args
+			const { initialState, onTestMCPConnection } = context.args
 
 			return (
 				<SettingsProvider
@@ -30,7 +30,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 // Mock handler for external MCP connection testing
-const mockTestConnection = async (id: string) => ({
+const mockTestConnection = async (_id: string) => ({
 	success: true,
 	message: 'Connected successfully',
 	latency: 150

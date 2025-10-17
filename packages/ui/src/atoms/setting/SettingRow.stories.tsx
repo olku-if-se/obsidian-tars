@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { Button, Input, Slider, Toggle } from '../../index'
+import { Button, Input, Slider, Toggle } from '~/atoms'
 import { SettingRow } from './SettingRow'
 
 const meta = {
@@ -79,9 +79,9 @@ export const WithInput: Story = {
 		description: 'Enter your API key for authentication',
 		children: (
 			<Input
-				type='password'
-				placeholder='sk-...'
-				value='sk-test123'
+				type="password"
+				placeholder="sk-..."
+				value="sk-test123"
 				onChange={() => {
 					// Intentionally empty for storybook example
 				}}
@@ -118,17 +118,17 @@ export const WithButtons: Story = {
 		description: 'Choose the AI model to use for responses',
 		children: (
 			<>
-				<Button variant='default' size='sm'>
+				<Button variant="default" size="sm">
 					Reset
 				</Button>
 				<Input
-					value='gpt-4'
+					value="gpt-4"
 					onChange={() => {
 						// Intentionally empty for storybook example
 					}}
-					placeholder='Select model'
+					placeholder="Select model"
 				/>
-				<Button variant='primary' size='sm'>
+				<Button variant="primary" size="sm">
 					Browse
 				</Button>
 			</>
@@ -141,7 +141,7 @@ export const WithButtonOnly: Story = {
 	args: {
 		name: 'Test connection',
 		description: 'Verify your API credentials and connectivity',
-		children: <Button variant='primary'>Test Connection</Button>
+		children: <Button variant="primary">Test Connection</Button>
 	}
 }
 
@@ -166,7 +166,7 @@ export const ComplexControls: Story = {
 		name: 'Advanced configuration',
 		description: 'Configure advanced settings with multiple options',
 		children: (
-			<div className='complex-controls'>
+			<div className="complex-controls">
 				<Toggle
 					checked={true}
 					onChange={() => {
@@ -174,15 +174,15 @@ export const ComplexControls: Story = {
 					}}
 				/>
 				<Input
-					value='80'
+					value="80"
 					onChange={() => {
 						// Intentionally empty for storybook example
 					}}
 				/>
-				<Button variant='default' size='sm'>
+				<Button variant="default" size="sm">
 					Auto
 				</Button>
-				<Button variant='primary' size='sm'>
+				<Button variant="primary" size="sm">
 					Apply
 				</Button>
 			</div>
@@ -204,7 +204,7 @@ export const Disabled: Story = {
 						// Intentionally empty for storybook example
 					}}
 				/>
-				<Button variant='primary' disabled>
+				<Button variant="primary" disabled>
 					Upgrade
 				</Button>
 			</>
@@ -237,7 +237,7 @@ export const VerticalLayout: Story = {
 			'Configure the default system message that will be used when no system message is provided in the conversation.',
 		vertical: true,
 		children: (
-			<div className='vertical-controls'>
+			<div className="vertical-controls">
 				<Toggle
 					checked={true}
 					onChange={() => {
@@ -245,7 +245,7 @@ export const VerticalLayout: Story = {
 					}}
 				/>
 				<Input
-					value='You are a helpful assistant.'
+					value="You are a helpful assistant."
 					onChange={() => {
 						// Intentionally empty for storybook example
 					}}
@@ -268,8 +268,8 @@ export const MobileViewport: Story = {
 					}}
 				/>
 				<Input
-					placeholder='tap to edit'
-					value='Example value'
+					placeholder="tap to edit"
+					value="Example value"
 					onChange={() => {
 						// Intentionally empty for storybook example
 					}}
@@ -293,18 +293,18 @@ export const DesktopWideRatio: Story = {
 		description: 'Control column receives extra space for complex inputs.',
 		layoutRatio: [1, 2],
 		children: (
-			<div className='complex-controls'>
+			<div className="complex-controls">
 				<Input
-					placeholder='Long input ...'
-					value='https://api.example.com/v1/endpoint'
+					placeholder="Long input ..."
+					value="https://api.example.com/v1/endpoint"
 					onChange={() => {
 						// Intentionally empty for storybook example
 					}}
 				/>
-				<Button variant='primary' size='sm'>
+				<Button variant="primary" size="sm">
 					Apply
 				</Button>
-				<Button variant='default' size='sm'>
+				<Button variant="default" size="sm">
 					Reset
 				</Button>
 			</div>

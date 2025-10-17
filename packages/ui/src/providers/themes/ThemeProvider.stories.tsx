@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
-import { Button } from '../../atoms/button/Button'
+import { Button } from '~/atoms/button/Button'
 import { ThemeProvider, useSemanticColors, useThemeContext, useThemeValue } from './ThemeProvider'
 import type { ThemeName } from './theme'
 
@@ -71,9 +71,9 @@ const ThemeDemo = () => {
 			<div style={{ marginBottom: '24px' }}>
 				<h3 style={{ color: semanticColors.h3, marginBottom: '12px' }}>Interactive Elements</h3>
 				<div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '12px' }}>
-					<Button variant='primary'>Primary Button</Button>
-					<Button variant='default'>Default Button</Button>
-					<Button variant='danger'>Danger Button</Button>
+					<Button variant="primary">Primary Button</Button>
+					<Button variant="default">Default Button</Button>
+					<Button variant="danger">Danger Button</Button>
 				</div>
 				<p style={{ color: semanticColors.textMuted, fontSize: '14px' }}>
 					Hover over buttons to see interactive states
@@ -231,7 +231,7 @@ export const ComponentIntegration: Story = {
 				<h2>Component Integration Example</h2>
 				<p>This shows how ThemeProvider integrates with other components.</p>
 				<div style={{ marginTop: '16px' }}>
-					<Button variant='primary'>Themed Button</Button>
+					<Button variant="primary">Themed Button</Button>
 				</div>
 			</div>
 		)

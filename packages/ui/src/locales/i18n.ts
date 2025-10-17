@@ -155,14 +155,21 @@ const translations = {
 		'providerSection.model': 'Model',
 		'providerSection.modelPlaceholder': 'Select the model to use',
 		'providerSection.apiKey': 'API key',
+		'providerSection.apiKeyDescription': 'API key (required), Obtain key from: {{url}}',
 		'providerSection.apiKeyPlaceholder': 'API key (required)',
 		'providerSection.controlsTitle': 'Controls',
-		'providerSection.controlsDescription': 'Test connection or remove this provider',
+		'providerSection.controlsDescription': 'Enable/Disable, Test or Delete this provider',
 		'providerSection.select': 'Select',
 		'providerSection.supportedFeatures': 'Supported features',
 		'providerSection.disable': 'Disable',
 		'providerSection.test': 'Test',
-		'providerSection.remove': 'Delete'
+		'providerSection.remove': 'Delete',
+		'providerSection.baseUrl': 'Base URL',
+		'providerSection.baseUrlDescription': 'Default: {{baseUrl}}',
+		'providerSection.baseUrlPlaceholder': 'Base URL (required)',
+		'providerSection.override': 'Override input parameters',
+		'providerSection.overrideDescription': `Developer feature, in JSON format. Allows to override the initialization parameters, like model: { "model": "gpt-4o" }`,
+		'providerSection.overridePlaceholder': `{ "model": "gpt-4o" }`
 	}
 }
 

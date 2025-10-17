@@ -69,7 +69,9 @@ export const validateEventHandler = (handler: unknown): boolean => {
 
 // Children validation
 export const validateChildren = (children: React.ReactNode): boolean => {
-	if (children === null || children === undefined) return true
+	if (children === null || children === undefined) {
+		return true
+	}
 
 	// Check for dangerous content
 	const childrenString = React.Children.toArray(children).join('')

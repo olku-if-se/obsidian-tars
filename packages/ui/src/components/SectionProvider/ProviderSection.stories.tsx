@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import type { Provider } from '../providers/types'
 import { ProviderSection } from './ProviderSection'
-import type { Provider } from './ProviderSection.types'
 
 const meta = {
 	title: 'Settings/ProviderSection',

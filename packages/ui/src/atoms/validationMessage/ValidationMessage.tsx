@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { t } from '../../locales/i18n'
+import { t } from '~/locales/i18n'
 import styles from './ValidationMessage.module.css'
 
 // Type aliases for better readability
@@ -75,9 +75,9 @@ export const ValidationMessage: React.FC<ValidationMessageProps> = ({
 	const iconClasses = clsx(styles.icon, styles[`${type}Icon`])
 
 	return (
-		<div className={messageClasses} role='alert' aria-live='polite'>
+		<div className={messageClasses} role="alert" aria-live="polite">
 			<div className={styles.content}>
-				<span className={iconClasses} aria-hidden='true'>
+				<span className={iconClasses} aria-hidden="true">
 					{getIcon()}
 				</span>
 				<span className={styles.text}>
@@ -85,7 +85,7 @@ export const ValidationMessage: React.FC<ValidationMessageProps> = ({
 				</span>
 			</div>
 			{dismissible && onDismiss && (
-				<button type='button' className={styles.dismissButton} onClick={handleDismiss} aria-label={getDismissLabel()}>
+				<button type="button" className={styles.dismissButton} onClick={handleDismiss} aria-label={getDismissLabel()}>
 					×
 				</button>
 			)}

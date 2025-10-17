@@ -13,7 +13,7 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Error: Story = {
+export const ErrorMessage: Story = {
 	args: {
 		message: 'This field is required and cannot be empty',
 		type: 'error'

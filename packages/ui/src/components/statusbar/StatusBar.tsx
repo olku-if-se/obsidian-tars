@@ -1,8 +1,7 @@
-import React from 'react'
-import { useCallback, useEffect, useMemo } from 'react'
-import type { BridgeComponentProps } from '../../bridge/ReactBridge'
-import type { ErrorInfo, MCPStatusInfo } from '../../types/types'
-import type { GenerationStats } from '../../views'
+import React, { useCallback, useEffect, useMemo } from 'react'
+import type { BridgeComponentProps } from '~/bridge/ReactBridge'
+import type { ErrorInfo, MCPStatusInfo } from '~/types'
+import type { GenerationStats } from '~/views'
 
 export type StatusBarType = 'idle' | 'generating' | 'success' | 'error'
 
@@ -105,7 +104,7 @@ const StatusBar = ({ state, onStateChange, onClick, onOpenModal }: StatusBarProp
 
 	return (
 		<button
-			type='button'
+			type="button"
 			className={`${styles.statusBar} ${statusIndicator.className}`}
 			onClick={handleClick}
 			title={state.content.tooltip}

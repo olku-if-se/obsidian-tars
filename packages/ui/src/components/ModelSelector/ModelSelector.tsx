@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Button, Select, Input, ValidationMessage } from '~/atoms'
 import styles from './ModelSelector.module.css'
 
@@ -86,11 +86,7 @@ export const ModelSelector = ({
 	const supportsDynamicFetching = vendor in MODEL_FETCH_CONFIGS
 	const staticModels = STATIC_MODELS[vendor] || []
 
-	useEffect(() => {
-		loadModels()
-	}, [vendor, apiKey])
-
-	const loadModels = async () => {
+	const loadModels = useCallback(async () => {
 		if (!supportsDynamicFetching) {
 			// Use static models for vendors that don't support dynamic fetching
 			setAvailableModels(staticModels)
@@ -133,7 +129,11 @@ export const ModelSelector = ({
 		} finally {
 			setIsLoading(false)
 		}
-	}
+	}, [vendor, apiKey, supportsDynamicFetching, staticModels])
+
+	useEffect(() => {
+		loadModels()
+	}, [vendor, apiKey, loadModels])
 
 	const handleModelSelect = (model: string) => {
 		if (model === '__custom__') {

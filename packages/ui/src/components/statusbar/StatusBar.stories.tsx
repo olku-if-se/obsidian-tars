@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import type { ErrorInfo, MCPStatusInfo } from '../../types'
+import type { ErrorInfo, MCPStatusInfo } from '~/types'
 import type { StatusBarState } from './StatusBar'
 import { StatusBar } from './StatusBar'
 
