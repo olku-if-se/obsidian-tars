@@ -87,8 +87,8 @@ describe('CollapsibleSection', () => {
 	it('handles async onToggle without errors', async () => {
 		const handleToggle = vi.fn().mockResolvedValue(undefined)
 		const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {
-        // Intentionally empty for test
-      })
+			// Intentionally empty for test
+		})
 
 		render(
 			<CollapsibleSection title='Test Section' onToggle={handleToggle}>
@@ -112,8 +112,8 @@ describe('CollapsibleSection', () => {
 		const originalEnv = process.env.NODE_ENV
 		process.env.NODE_ENV = 'development'
 		const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {
-        // Intentionally empty for test
-      })
+			// Intentionally empty for test
+		})
 
 		const { rerender } = render(
 			<CollapsibleSection title='Test Section'>
@@ -128,9 +128,7 @@ describe('CollapsibleSection', () => {
 			</CollapsibleSection>
 		)
 
-		expect(consoleSpy).toHaveBeenCalledWith(
-			expect.stringContaining('changing from uncontrolled to controlled')
-		)
+		expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('changing from uncontrolled to controlled'))
 
 		consoleSpy.mockRestore()
 		process.env.NODE_ENV = originalEnv

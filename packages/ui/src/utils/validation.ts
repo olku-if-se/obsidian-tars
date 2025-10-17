@@ -53,8 +53,7 @@ export const validateProps = <T extends Record<string, any>>(
 		const value = props[prop]
 		if (value !== undefined && validator && !validator(value)) {
 			console.warn(
-				`Invalid prop "${prop}" supplied to ${componentName}. ` +
-				`Received: ${typeof value} (${JSON.stringify(value)})`
+				`Invalid prop "${prop}" supplied to ${componentName}. ` + `Received: ${typeof value} (${JSON.stringify(value)})`
 			)
 			isValid = false
 		}
@@ -77,8 +76,7 @@ export const validateChildren = (children: React.ReactNode): boolean => {
 
 	// Basic security check
 	if (typeof childrenString === 'string') {
-		return !childrenString.includes('<script') &&
-			   !childrenString.includes('javascript:')
+		return !childrenString.includes('<script') && !childrenString.includes('javascript:')
 	}
 
 	return true

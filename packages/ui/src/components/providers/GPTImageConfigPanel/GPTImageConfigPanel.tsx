@@ -1,4 +1,4 @@
-import { Slider, Select, SettingRow } from '../../atoms'
+import { Select, SettingRow, Slider } from '~/atoms'
 import styles from './GPTImageConfigPanel.module.css'
 
 export interface GptImageOptions {
@@ -48,10 +48,7 @@ export const GPTImageConfigPanel = ({ options, onChange, disabled = false }: GPT
 
 	return (
 		<div className={styles.gptImageConfigPanel}>
-			<SettingRow
-				name="Image Display Width"
-				description="Example: 400px width would output as ![[image.jpg|400]]"
-			>
+			<SettingRow name='Image Display Width' description='Example: 400px width would output as ![[image.jpg|400]]'>
 				<Slider
 					min={200}
 					max={800}
@@ -65,10 +62,7 @@ export const GPTImageConfigPanel = ({ options, onChange, disabled = false }: GPT
 				/>
 			</SettingRow>
 
-			<SettingRow
-				name="Number of images"
-				description="Number of images to generate (1-5)"
-			>
+			<SettingRow name='Number of images' description='Number of images to generate (1-5)'>
 				<Slider
 					min={1}
 					max={5}
@@ -82,7 +76,7 @@ export const GPTImageConfigPanel = ({ options, onChange, disabled = false }: GPT
 				/>
 			</SettingRow>
 
-			<SettingRow name="Image size">
+			<SettingRow name='Image size'>
 				<Select
 					value={options.size || 'auto'}
 					onChange={(e) => handleSizeChange(e.target.value)}
@@ -97,7 +91,7 @@ export const GPTImageConfigPanel = ({ options, onChange, disabled = false }: GPT
 				/>
 			</SettingRow>
 
-			<SettingRow name="Output format">
+			<SettingRow name='Output format'>
 				<Select
 					value={options.output_format || 'png'}
 					onChange={(e) => handleFormatChange(e.target.value)}
@@ -111,10 +105,7 @@ export const GPTImageConfigPanel = ({ options, onChange, disabled = false }: GPT
 				/>
 			</SettingRow>
 
-			<SettingRow
-				name="Quality"
-				description="Quality level for generated images. default: Auto"
-			>
+			<SettingRow name='Quality' description='Quality level for generated images. default: Auto'>
 				<Select
 					value={options.quality || 'auto'}
 					onChange={(e) => handleQualityChange(e.target.value)}
@@ -129,10 +120,7 @@ export const GPTImageConfigPanel = ({ options, onChange, disabled = false }: GPT
 				/>
 			</SettingRow>
 
-			<SettingRow
-				name="Background"
-				description="Background of the generated image. default: Auto"
-			>
+			<SettingRow name='Background' description='Background of the generated image. default: Auto'>
 				<Select
 					value={options.background || 'auto'}
 					onChange={(e) => handleBackgroundChange(e.target.value)}
@@ -148,8 +136,8 @@ export const GPTImageConfigPanel = ({ options, onChange, disabled = false }: GPT
 
 			{(options.output_format === 'webp' || options.output_format === 'jpeg') && (
 				<SettingRow
-					name="Output compression"
-					description="Compression level of the output image, 10% - 100%. Only for webp or jpeg output format"
+					name='Output compression'
+					description='Compression level of the output image, 10% - 100%. Only for webp or jpeg output format'
 				>
 					<Slider
 						min={10}
@@ -188,9 +176,7 @@ export const GPTImageConfigPanel = ({ options, onChange, disabled = false }: GPT
 
 			<div className={styles.exampleBox}>
 				<h5>📝 Example Output</h5>
-				<code>
-					![[generated-image.jpg|{options.displayWidth || 400}]]
-				</code>
+				<code>![[generated-image.jpg|{options.displayWidth || 400}]]</code>
 			</div>
 		</div>
 	)

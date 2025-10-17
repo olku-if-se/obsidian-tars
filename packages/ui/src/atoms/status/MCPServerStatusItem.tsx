@@ -1,8 +1,8 @@
 import type React from 'react'
-import type { MCPServerInfo } from '../../utils/utilities'
-import { formatRetryInfo, getServerStatusIcon, getServerStatusText } from '../../utils/utilities'
-import { InfoSectionList } from '../ilist/InfoSectionList'
+import { formatRetryInfo, getServerStatusIcon, getServerStatusText } from '~/utils/utilities'
+import { InfoSectionList } from '~/atoms'
 import styles from './MCPServerStatusItem.module.css'
+import type { MCPServerInfo } from '~/types'
 
 /**
  * Atomic Element: MCP Server Status Item

@@ -1,16 +1,15 @@
 import { createContext, type ReactNode, useCallback, useContext, useMemo, useReducer } from 'react'
-import type { MCPServerConfig } from '../../components'
-import { type ValidationResult, validateFormat } from '../../utils/validation.v2'
-
+import type { MCPServerConfig } from '~/components'
 // Import vendor configuration types
 import type {
 	AzureOptions,
 	ClaudeOptions,
 	DeepSeekOptions,
 	GptImageOptions,
-	OpenAIOptions,
-	OllamaOptions
-} from '../../components/VendorConfigPanels'
+	OllamaOptions,
+	OpenAIOptions
+} from '~/components/providers'
+import { type ValidationResult, validateFormat } from '~/utils/validation.v2'
 
 // Type aliases for better readability
 export type Provider = {

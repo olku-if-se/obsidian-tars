@@ -1,7 +1,7 @@
 import type React from 'react'
-import { MCPServerStatusItem, MCPStatusSummary } from '../../atoms'
-import type { BridgeComponentProps } from '../../bridge/ReactBridge'
-import type { MCPStatusInfo } from '../../types'
+import { MCPServerStatusItem, MCPStatusSummary } from '~/atoms'
+import type { BridgeComponentProps } from '~/bridge/ReactBridge'
+import type { MCPStatusInfo } from '~/types'
 import styles from './MCPServerStatusTab.module.css'
 
 export interface MCPServerStatusTabProps extends BridgeComponentProps {
@@ -35,25 +35,19 @@ export const MCPServerStatusTab: React.FC<MCPServerStatusTabProps> = ({ mcpStatu
 						<div className={styles.cacheStats}>
 							<div className={styles.cacheStat}>
 								<span className={styles.cacheStatLabel}>Hit Rate:</span>
-								<span className={styles.cacheStatValue}>
-									{mcpStatus.cacheStats.hitRate.toFixed(1)}%
-								</span>
+								<span className={styles.cacheStatValue}>{mcpStatus.cacheStats.hitRate.toFixed(1)}%</span>
 								<span className={styles.cacheStatDetail}>
 									({mcpStatus.cacheStats.hits} hits, {mcpStatus.cacheStats.misses} misses)
 								</span>
 							</div>
 							<div className={styles.cacheStat}>
 								<span className={styles.cacheStatLabel}>Cache Size:</span>
-								<span className={styles.cacheStatValue}>
-									{mcpStatus.cacheStats.size} entries
-								</span>
+								<span className={styles.cacheStatValue}>{mcpStatus.cacheStats.size} entries</span>
 							</div>
 							{mcpStatus.cacheStats.oldestEntryAge !== null && (
 								<div className={styles.cacheStat}>
 									<span className={styles.cacheStatLabel}>Oldest Entry:</span>
-									<span className={styles.cacheStatValue}>
-										{formatCacheAge(mcpStatus.cacheStats.oldestEntryAge)}
-									</span>
+									<span className={styles.cacheStatValue}>{formatCacheAge(mcpStatus.cacheStats.oldestEntryAge)}</span>
 								</div>
 							)}
 						</div>

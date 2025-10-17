@@ -24,9 +24,7 @@ export const LabelValue: React.FC<LabelValueProps> = ({ label, value, className,
 
 	return (
 		<div className={containerClasses}>
-			<span className={labelClasses}>
-				{label}
-			</span>
+			<span className={labelClasses}>{label}</span>
 			<span className={valueClasses}>{value}</span>
 		</div>
 	)
@@ -65,12 +63,7 @@ export const LabelValueList: React.FC<LabelValueListProps> = ({
 	return (
 		<>
 			{rows.map((row, index) => (
-				<LabelValue
-					key={`${row.label}-${index}`}
-					label={row.label}
-					value={row.value}
-					{...listProps}
-				/>
+				<LabelValue key={`${row.label}-${index}`} label={row.label} value={row.value} {...listProps} />
 			))}
 		</>
 	)

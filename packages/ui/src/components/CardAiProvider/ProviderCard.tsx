@@ -1,5 +1,5 @@
-import { Button, CollapsibleSection, Input, SettingRow } from '../../atoms'
-import { t } from '../../utils/i18n'
+import { Button, CollapsibleSection, Input, SettingRow } from '~/atoms'
+import { t } from '../../locales/i18n'
 import styles from './ProviderCard.module.css'
 import type { Provider } from './types'
 
@@ -58,13 +58,13 @@ export function ProviderCard({
 							onChange={(e) => onUpdateProvider(provider.id, { model: e.target.value })}
 							placeholder={strings.modelPlaceholder}
 						/>
-						<Button variant="default">{strings.select}</Button>
+						<Button variant='default'>{strings.select}</Button>
 					</div>
 				</SettingRow>
 
 				<SettingRow name={strings.apiKey}>
 					<Input
-						type="password"
+						type='password'
 						value={provider.apiKey || ''}
 						onChange={(e) => onUpdateProvider(provider.id, { apiKey: e.target.value })}
 						placeholder={strings.apiKeyPlaceholder}
@@ -72,9 +72,9 @@ export function ProviderCard({
 				</SettingRow>
 
 				<SettingRow name={strings.controlsTitle} description={strings.controlsDescription}>
-					<Button variant="primary">{strings.disableButton}</Button>
-					<Button variant="primary">{strings.testButton}</Button>
-					<Button variant="danger" onClick={() => onRemoveProvider(provider.id)}>
+					<Button variant='primary'>{strings.disableButton}</Button>
+					<Button variant='primary'>{strings.testButton}</Button>
+					<Button variant='danger' onClick={() => onRemoveProvider(provider.id)}>
 						{strings.removeButton}
 					</Button>
 				</SettingRow>

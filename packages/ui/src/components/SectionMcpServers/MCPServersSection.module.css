@@ -1,114 +1,114 @@
 .toastContainer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-2-3);
-  margin-bottom: var(--size-4-2);
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-2-3);
+	margin-bottom: var(--size-4-2);
 }
 
 .toast {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--size-2-2) var(--size-3-1);
-  border-radius: var(--radius-m);
-  border: 1px solid var(--background-modifier-border);
-  background-color: var(--background-secondary);
-  color: var(--text-normal);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: var(--size-2-2) var(--size-3-1);
+	border-radius: var(--radius-m);
+	border: 1px solid var(--background-modifier-border);
+	background-color: var(--background-secondary);
+	color: var(--text-normal);
+	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .toast.success {
-  border-color: var(--color-green);
-  background-color: var(--background-modifier-success-soft);
-  color: var(--text-success);
+	border-color: var(--color-green);
+	background-color: var(--background-modifier-success-soft);
+	color: var(--text-success);
 }
 
 .toast.error {
-  border-color: var(--color-red);
-  background-color: var(--background-modifier-error-soft);
-  color: var(--text-error);
+	border-color: var(--color-red);
+	background-color: var(--background-modifier-error-soft);
+	color: var(--text-error);
 }
 
 .toast.info {
-  border-color: var(--interactive-accent);
-  background-color: var(--background-modifier-hover);
-  color: var(--interactive-accent);
+	border-color: var(--interactive-accent);
+	background-color: var(--background-modifier-hover);
+	color: var(--interactive-accent);
 }
 
 .toast.warning {
-  border-color: var(--color-orange);
-  background-color: var(--background-modifier-warning-soft);
-  color: var(--text-warning);
+	border-color: var(--color-orange);
+	background-color: var(--background-modifier-warning-soft);
+	color: var(--text-warning);
 }
 
 .toastDismiss {
-  background: none;
-  border: none;
-  color: currentColor;
-  font-size: var(--font-ui-large);
-  cursor: pointer;
-  padding: 0;
-  line-height: 1;
+	background: none;
+	border: none;
+	color: currentColor;
+	font-size: var(--font-ui-large);
+	cursor: pointer;
+	padding: 0;
+	line-height: 1;
 }
 
 .globalSettings {
-  display: grid;
-  gap: var(--size-3-1);
-  margin-bottom: var(--size-4-3);
+	display: grid;
+	gap: var(--size-3-1);
+	margin-bottom: var(--size-4-3);
 }
 
 .sectionHeading {
-  font-size: var(--font-ui-large);
-  margin: 0;
-  color: var(--text-normal);
+	font-size: var(--font-ui-large);
+	margin: 0;
+	color: var(--text-normal);
 }
 
 .quickAddButtons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--size-2-2);
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--size-2-2);
 }
 
 .addCustomSection {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--size-3-1);
-  padding: var(--size-4-1);
-  border-radius: var(--radius-m);
-  border: 1px dashed var(--background-modifier-border);
-  background: var(--background-primary);
-  margin-bottom: var(--size-4-3);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--size-3-1);
+	padding: var(--size-4-1);
+	border-radius: var(--radius-m);
+	border: 1px dashed var(--background-modifier-border);
+	background: var(--background-primary);
+	margin-bottom: var(--size-4-3);
 }
 
 .addCustomSection p {
-  margin: var(--size-1-2) 0 0;
-  color: var(--text-muted);
-  font-size: var(--font-ui-smaller);
+	margin: var(--size-1-2) 0 0;
+	color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
 }
 
 .serverListContainer {
-  margin-bottom: var(--size-4-2);
+	margin-bottom: var(--size-4-2);
 }
 
 .serverList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-4-2);
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-2);
 }
 
 .noServers {
-  text-align: center;
-  color: var(--text-muted);
-  padding: var(--size-4-2);
-  border: 1px dashed var(--background-modifier-border);
-  border-radius: var(--radius-m);
-  background: var(--background-secondary);
+	text-align: center;
+	color: var(--text-muted);
+	padding: var(--size-4-2);
+	border: 1px dashed var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	background: var(--background-secondary);
 }
 
 @media (max-width: 640px) {
-  .addCustomSection {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+	.addCustomSection {
+		flex-direction: column;
+		align-items: flex-start;
+	}
 }

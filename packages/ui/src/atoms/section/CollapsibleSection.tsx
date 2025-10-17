@@ -3,8 +3,7 @@ import type React from 'react'
 import { forwardRef, useCallback, useState, useEffect } from 'react'
 import styles from './CollapsibleSection.module.css'
 
-interface CollapsibleSectionProps
-  extends Omit<React.ComponentPropsWithoutRef<'details'>, 'title' | 'onToggle'> {
+interface CollapsibleSectionProps extends Omit<React.ComponentPropsWithoutRef<'details'>, 'title' | 'onToggle'> {
 	// Required data props
 	title: React.ReactNode
 	// Optional data props
@@ -28,7 +27,7 @@ export const CollapsibleSection = forwardRef<HTMLDetailsElement, CollapsibleSect
 			if (process.env.NODE_ENV === 'development' && isControlled && uncontrolledOpen !== open) {
 				console.warn(
 					'CollapsibleSection is changing from uncontrolled to controlled. ' +
-					'This is discouraged in React 19 for better predictability.'
+						'This is discouraged in React 19 for better predictability.'
 				)
 			}
 		}, [isControlled, open, uncontrolledOpen])
@@ -72,11 +71,7 @@ export const CollapsibleSection = forwardRef<HTMLDetailsElement, CollapsibleSect
 			>
 				<summary className={styles.summary}>
 					<span className={styles.summaryText}>{title}</span>
-					<span
-						className={clsx(styles.arrow, isOpen && styles.arrowOpen)}
-						aria-hidden="true"
-						data-open={isOpen}
-					>
+					<span className={clsx(styles.arrow, isOpen && styles.arrowOpen)} aria-hidden='true' data-open={isOpen}>
 						▼
 					</span>
 				</summary>

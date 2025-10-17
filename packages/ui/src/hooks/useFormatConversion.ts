@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { validateFormat } from '../utils/validation.v2'
+import { validateFormat } from '~/utils/validation.v2'
 
 // Type definitions for format conversion
 type Format = 'url' | 'command' | 'json'

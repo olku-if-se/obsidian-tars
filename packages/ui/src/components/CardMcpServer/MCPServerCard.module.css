@@ -1,244 +1,246 @@
 .serverCard {
-  border: 1px solid var(--background-modifier-border);
-  border-radius: var(--radius-m);
-  background-color: var(--background-primary);
-  padding: var(--size-4-1);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	background-color: var(--background-primary);
+	padding: var(--size-4-1);
+	transition:
+		border-color 0.2s ease,
+		box-shadow 0.2s ease;
 }
 
 .serverCard.success {
-  border-color: var(--color-green);
-  background-color: var(--background-modifier-success-soft);
+	border-color: var(--color-green);
+	background-color: var(--background-modifier-success-soft);
 }
 
 .serverCard.error {
-  border-color: var(--color-red);
-  background-color: var(--background-modifier-error-soft);
+	border-color: var(--color-red);
+	background-color: var(--background-modifier-error-soft);
 }
 
 .serverCard.warning {
-  border-color: var(--color-orange);
-  background-color: var(--background-modifier-warning-soft);
+	border-color: var(--color-orange);
+	background-color: var(--background-modifier-warning-soft);
 }
 
 .serverCard.info {
-  border-color: var(--interactive-accent);
+	border-color: var(--interactive-accent);
 }
 
 .summaryHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--size-2-2);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--size-2-2);
 }
 
 .summaryName {
-  font-weight: var(--font-medium);
-  font-size: var(--font-ui-large);
-  color: var(--text-normal);
+	font-weight: var(--font-medium);
+	font-size: var(--font-ui-large);
+	color: var(--text-normal);
 }
 
 .statusBadge {
-  padding: var(--size-1-2) var(--size-2-1);
-  border-radius: var(--radius-s);
-  font-size: var(--font-ui-smaller);
-  font-weight: var(--font-medium);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+	padding: var(--size-1-2) var(--size-2-1);
+	border-radius: var(--radius-s);
+	font-size: var(--font-ui-smaller);
+	font-weight: var(--font-medium);
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
 }
 
 .statusBadge.success {
-  background-color: var(--background-success);
-  color: var(--text-success);
+	background-color: var(--background-success);
+	color: var(--text-success);
 }
 
 .statusBadge.error {
-  background-color: var(--background-error);
-  color: var(--text-error);
+	background-color: var(--background-error);
+	color: var(--text-error);
 }
 
 .statusBadge.warning {
-  background-color: var(--background-warning);
-  color: var(--text-warning);
+	background-color: var(--background-warning);
+	color: var(--text-warning);
 }
 
 .statusBadge.info {
-  background-color: var(--background-info);
-  color: var(--text-info);
+	background-color: var(--background-info);
+	color: var(--text-info);
 }
 
 .controlsContainer {
-  display: flex;
-  align-items: center;
-  gap: var(--size-2-2);
-  flex-wrap: wrap;
+	display: flex;
+	align-items: center;
+	gap: var(--size-2-2);
+	flex-wrap: wrap;
 }
 
 .controlsContainer.loading {
-  opacity: 0.6;
-  pointer-events: none;
+	opacity: 0.6;
+	pointer-events: none;
 }
 
 .controlsContainer.loading {
-  opacity: 0.6;
+	opacity: 0.6;
 }
 
 .nameField {
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-1-2);
-  width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-1-2);
+	width: 100%;
 }
 
 .validationMessage {
-  max-width: 100%;
+	max-width: 100%;
 }
 
 .serverNameInput {
-  width: 100%;
+	width: 100%;
 }
 
 .statusContainer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-2-2);
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-2-2);
 }
 
 .statusMessage {
-  padding: var(--size-1-2) var(--size-2-2);
-  border-radius: var(--radius-s);
-  font-size: var(--font-ui-small);
-  font-weight: var(--font-medium);
-  border: 1px solid var(--background-modifier-border);
+	padding: var(--size-1-2) var(--size-2-2);
+	border-radius: var(--radius-s);
+	font-size: var(--font-ui-small);
+	font-weight: var(--font-medium);
+	border: 1px solid var(--background-modifier-border);
 }
 
 .statusMessage.success {
-  background-color: var(--background-success);
-  color: var(--text-success);
-  border-color: var(--color-success);
+	background-color: var(--background-success);
+	color: var(--text-success);
+	border-color: var(--color-success);
 }
 
 .statusMessage.error {
-  background-color: var(--background-error);
-  color: var(--text-error);
-  border-color: var(--color-error);
+	background-color: var(--background-error);
+	color: var(--text-error);
+	border-color: var(--color-error);
 }
 
 .statusMessage.warning {
-  background-color: var(--background-warning);
-  color: var(--text-warning);
-  border-color: var(--color-orange);
+	background-color: var(--background-warning);
+	color: var(--text-warning);
+	border-color: var(--color-orange);
 }
 
 .statusMessage.info {
-  background-color: var(--background-info);
-  color: var(--text-info);
-  border-color: var(--color-blue);
+	background-color: var(--background-info);
+	color: var(--text-info);
+	border-color: var(--color-blue);
 }
 
 .statusDetail {
-  display: flex;
-  align-items: center;
-  gap: var(--size-2-1);
-  font-size: var(--font-ui-smaller);
-  flex-wrap: wrap;
+	display: flex;
+	align-items: center;
+	gap: var(--size-2-1);
+	font-size: var(--font-ui-smaller);
+	flex-wrap: wrap;
 }
 
 .statusLabel {
-  font-weight: var(--font-medium);
-  color: var(--text-muted);
+	font-weight: var(--font-medium);
+	color: var(--text-muted);
 }
 
 .statusValue {
-  font-family: var(--font-monospace);
-  background-color: var(--background-secondary);
-  border-radius: var(--radius-s);
-  border: 1px solid var(--background-modifier-border);
-  padding: var(--size-1-1) var(--size-2-1);
-  color: var(--text-normal);
-  word-break: break-word;
+	font-family: var(--font-monospace);
+	background-color: var(--background-secondary);
+	border-radius: var(--radius-s);
+	border: 1px solid var(--background-modifier-border);
+	padding: var(--size-1-1) var(--size-2-1);
+	color: var(--text-normal);
+	word-break: break-word;
 }
 
 .previewContainer {
-  display: grid;
-  gap: var(--size-2-1);
-  margin-top: var(--size-2-2);
-  background-color: var(--background-secondary);
-  border-radius: var(--radius-s);
-  border: 1px solid var(--background-modifier-border);
-  padding: var(--size-3-1);
+	display: grid;
+	gap: var(--size-2-1);
+	margin-top: var(--size-2-2);
+	background-color: var(--background-secondary);
+	border-radius: var(--radius-s);
+	border: 1px solid var(--background-modifier-border);
+	padding: var(--size-3-1);
 }
 
 .previewLabel {
-  font-size: var(--font-ui-smaller);
-  color: var(--text-muted);
+	font-size: var(--font-ui-smaller);
+	color: var(--text-muted);
 }
 
 .previewValue {
-  font-family: var(--font-monospace);
-  font-size: var(--font-ui-smaller);
-  background: var(--background-primary);
-  padding: var(--size-1-2) var(--size-2-1);
-  border-radius: var(--radius-s);
-  border: 1px dashed var(--background-modifier-border);
-  overflow-x: auto;
+	font-family: var(--font-monospace);
+	font-size: var(--font-ui-smaller);
+	background: var(--background-primary);
+	padding: var(--size-1-2) var(--size-2-1);
+	border-radius: var(--radius-s);
+	border: 1px dashed var(--background-modifier-border);
+	overflow-x: auto;
 }
 
 .validationSection {
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-1-2);
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-1-2);
 }
 
 .validationHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--size-2-1);
-  font-size: var(--font-ui-smaller);
-  color: var(--text-muted);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--size-2-1);
+	font-size: var(--font-ui-smaller);
+	color: var(--text-muted);
 }
 
 .validationList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-1-1);
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-1-1);
 }
 
 .errorMessage,
 .warningMessage {
-  padding: var(--size-1-1) var(--size-2-1);
-  border-radius: var(--radius-s);
-  font-size: var(--font-ui-smaller);
-  line-height: 1.4;
-  border-left: 3px solid;
+	padding: var(--size-1-1) var(--size-2-1);
+	border-radius: var(--radius-s);
+	font-size: var(--font-ui-smaller);
+	line-height: 1.4;
+	border-left: 3px solid;
 }
 
 .errorMessage {
-  background-color: var(--background-modifier-error-soft);
-  color: var(--text-error);
-  border-left-color: var(--color-red);
+	background-color: var(--background-modifier-error-soft);
+	color: var(--text-error);
+	border-left-color: var(--color-red);
 }
 
 .warningMessage {
-  background-color: var(--background-modifier-warning-soft);
-  color: var(--text-warning);
-  border-left-color: var(--color-orange);
+	background-color: var(--background-modifier-warning-soft);
+	color: var(--text-warning);
+	border-left-color: var(--color-orange);
 }
 
 .previewContainer button,
 .validationHeader button {
-  align-self: flex-start;
+	align-self: flex-start;
 }
 
 @media (max-width: 640px) {
-  .summaryHeader {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--size-1-2);
-  }
+	.summaryHeader {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--size-1-2);
+	}
 
-  .previewContainer {
-    grid-template-columns: 1fr;
-  }
+	.previewContainer {
+		grid-template-columns: 1fr;
+	}
 }

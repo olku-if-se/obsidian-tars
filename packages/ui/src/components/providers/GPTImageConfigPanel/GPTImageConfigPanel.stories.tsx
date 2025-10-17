@@ -3,12 +3,12 @@ import { useState } from 'react'
 import { GPTImageConfigPanel, type GptImageOptions } from './GPTImageConfigPanel'
 
 const meta = {
-	title: 'Components/GPTImageConfigPanel',
+	title: 'Providers/GPTImageConfigPanel',
 	component: GPTImageConfigPanel,
 	parameters: {
-		layout: 'padded',
+		layout: 'padded'
 	},
-	tags: ['autodocs'],
+	tags: ['autodocs']
 } satisfies Meta<typeof GPTImageConfigPanel>
 
 export default meta
@@ -18,8 +18,8 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
 	args: {
 		options: {},
-		onChange: (updates) => console.log('GPT Image config changed:', updates),
-	},
+		onChange: (updates) => console.log('GPT Image config changed:', updates)
+	}
 }
 
 // With default configuration
@@ -31,10 +31,10 @@ export const WithDefaults: Story = {
 			size: 'auto',
 			output_format: 'png',
 			quality: 'auto',
-			background: 'auto',
+			background: 'auto'
 		},
-		onChange: (updates) => console.log('GPT Image config changed:', updates),
-	},
+		onChange: (updates) => console.log('GPT Image config changed:', updates)
+	}
 }
 
 // High quality configuration
@@ -46,10 +46,10 @@ export const HighQuality: Story = {
 			size: '1024x1024',
 			output_format: 'png',
 			quality: 'high',
-			background: 'transparent',
+			background: 'transparent'
 		},
-		onChange: (updates) => console.log('GPT Image config changed:', updates),
-	},
+		onChange: (updates) => console.log('GPT Image config changed:', updates)
+	}
 }
 
 // Multiple images configuration
@@ -62,10 +62,10 @@ export const MultipleImages: Story = {
 			output_format: 'jpeg',
 			quality: 'medium',
 			background: 'opaque',
-			output_compression: 70,
+			output_compression: 70
 		},
-		onChange: (updates) => console.log('GPT Image config changed:', updates),
-	},
+		onChange: (updates) => console.log('GPT Image config changed:', updates)
+	}
 }
 
 // Landscape configuration
@@ -78,10 +78,10 @@ export const Landscape: Story = {
 			output_format: 'webp',
 			quality: 'high',
 			background: 'opaque',
-			output_compression: 85,
+			output_compression: 85
 		},
-		onChange: (updates) => console.log('GPT Image config changed:', updates),
-	},
+		onChange: (updates) => console.log('GPT Image config changed:', updates)
+	}
 }
 
 // Portrait configuration
@@ -93,10 +93,10 @@ export const Portrait: Story = {
 			size: '1024x1536',
 			output_format: 'png',
 			quality: 'auto',
-			background: 'transparent',
+			background: 'transparent'
 		},
-		onChange: (updates) => console.log('GPT Image config changed:', updates),
-	},
+		onChange: (updates) => console.log('GPT Image config changed:', updates)
+	}
 }
 
 // Small images for thumbnails
@@ -109,10 +109,10 @@ export const Thumbnails: Story = {
 			output_format: 'jpeg',
 			quality: 'medium',
 			background: 'opaque',
-			output_compression: 60,
+			output_compression: 60
 		},
-		onChange: (updates) => console.log('GPT Image config changed:', updates),
-	},
+		onChange: (updates) => console.log('GPT Image config changed:', updates)
+	}
 }
 
 // Optimized for web (WEBP format)
@@ -125,10 +125,10 @@ export const WebOptimized: Story = {
 			output_format: 'webp',
 			quality: 'medium',
 			background: 'auto',
-			output_compression: 75,
+			output_compression: 75
 		},
-		onChange: (updates) => console.log('GPT Image config changed:', updates),
-	},
+		onChange: (updates) => console.log('GPT Image config changed:', updates)
+	}
 }
 
 // Disabled state
@@ -139,11 +139,11 @@ export const Disabled: Story = {
 			n: 1,
 			size: 'auto',
 			output_format: 'png',
-			quality: 'high',
+			quality: 'high'
 		},
 		onChange: (updates) => console.log('GPT Image config changed:', updates),
-		disabled: true,
-	},
+		disabled: true
+	}
 }
 
 // Interactive story with state management
@@ -155,7 +155,7 @@ export const Interactive: Story = {
 			size: 'auto',
 			output_format: 'png',
 			quality: 'auto',
-			background: 'auto',
+			background: 'auto'
 		})
 
 		const handleChange = (updates: Partial<GptImageOptions>) => {
@@ -170,10 +170,7 @@ export const Interactive: Story = {
 
 		return (
 			<div style={{ maxWidth: '700px' }}>
-				<GPTImageConfigPanel
-					options={imageOptions}
-					onChange={handleChange}
-				/>
+				<GPTImageConfigPanel options={imageOptions} onChange={handleChange} />
 				<div
 					style={{
 						marginTop: '24px',
@@ -181,7 +178,7 @@ export const Interactive: Story = {
 						backgroundColor: '#f5f5f5',
 						borderRadius: '4px',
 						fontFamily: 'monospace',
-						fontSize: '14px',
+						fontSize: '14px'
 					}}
 				>
 					<h4>Current Configuration:</h4>
@@ -202,15 +199,13 @@ export const Interactive: Story = {
 							<li>Format: {imageOptions.output_format || 'png'}</li>
 							<li>Quality: {imageOptions.quality || 'auto'}</li>
 							<li>Background: {imageOptions.background || 'auto'}</li>
-							{imageOptions.output_compression && (
-								<li>Compression: {imageOptions.output_compression}%</li>
-							)}
+							{imageOptions.output_compression && <li>Compression: {imageOptions.output_compression}%</li>}
 						</ul>
 					</div>
 				</div>
 			</div>
 		)
-	},
+	}
 }
 
 // Format comparison story
@@ -225,8 +220,8 @@ export const FormatComparison: Story = {
 				config: {
 					output_format: 'png' as const,
 					quality: 'high' as const,
-					background: 'transparent' as const,
-				},
+					background: 'transparent' as const
+				}
 			},
 			jpeg: {
 				name: 'JPEG',
@@ -235,8 +230,8 @@ export const FormatComparison: Story = {
 					output_format: 'jpeg' as const,
 					quality: 'medium' as const,
 					background: 'opaque' as const,
-					output_compression: 80,
-				},
+					output_compression: 80
+				}
 			},
 			webp: {
 				name: 'WEBP',
@@ -245,9 +240,9 @@ export const FormatComparison: Story = {
 					output_format: 'webp' as const,
 					quality: 'high' as const,
 					background: 'auto' as const,
-					output_compression: 85,
-				},
-			},
+					output_compression: 85
+				}
+			}
 		}
 
 		const currentConfig = formatConfigs[selectedFormat].config
@@ -267,54 +262,60 @@ export const FormatComparison: Story = {
 									color: selectedFormat === format ? 'white' : 'black',
 									border: '1px solid #dee2e6',
 									borderRadius: '4px',
-									cursor: 'pointer',
+									cursor: 'pointer'
 								}}
 							>
 								{info.name}
 							</button>
 						))}
 					</div>
-					<p style={{ margin: 0, color: '#666', fontSize: '14px' }}>
-						{formatConfigs[selectedFormat].description}
-					</p>
+					<p style={{ margin: 0, color: '#666', fontSize: '14px' }}>{formatConfigs[selectedFormat].description}</p>
 				</div>
 
-				<GPTImageConfigPanel
-					options={currentConfig}
-					onChange={(updates) => console.log('Config changed:', updates)}
-				/>
+				<GPTImageConfigPanel options={currentConfig} onChange={(updates) => console.log('Config changed:', updates)} />
 
 				<div
 					style={{
 						marginTop: '24px',
 						padding: '16px',
 						backgroundColor: '#e9ecef',
-						borderRadius: '4px',
+						borderRadius: '4px'
 					}}
 				>
 					<h4>Format Characteristics:</h4>
 					<ul>
-						<li><strong>File Extension:</strong> .{selectedFormat}</li>
-						<li><strong>Best For:</strong> {
-							selectedFormat === 'png' ? 'Graphics, logos, images with transparency' :
-							selectedFormat === 'jpeg' ? 'Photographs, complex images' :
-							'Web use, optimal balance of quality and size'
-						}</li>
-						<li><strong>Transparency:</strong> {
-							selectedFormat === 'png' ? 'Yes' :
-							selectedFormat === 'jpeg' ? 'No' :
-							'Conditional (depends on background setting)'
-						}</li>
-						<li><strong>Compression:</strong> {
-							selectedFormat === 'png' ? 'Lossless' :
-							selectedFormat === 'jpeg' ? 'Lossy' :
-							'Lossy (more efficient than JPEG)'
-						}</li>
+						<li>
+							<strong>File Extension:</strong> .{selectedFormat}
+						</li>
+						<li>
+							<strong>Best For:</strong>{' '}
+							{selectedFormat === 'png'
+								? 'Graphics, logos, images with transparency'
+								: selectedFormat === 'jpeg'
+									? 'Photographs, complex images'
+									: 'Web use, optimal balance of quality and size'}
+						</li>
+						<li>
+							<strong>Transparency:</strong>{' '}
+							{selectedFormat === 'png'
+								? 'Yes'
+								: selectedFormat === 'jpeg'
+									? 'No'
+									: 'Conditional (depends on background setting)'}
+						</li>
+						<li>
+							<strong>Compression:</strong>{' '}
+							{selectedFormat === 'png'
+								? 'Lossless'
+								: selectedFormat === 'jpeg'
+									? 'Lossy'
+									: 'Lossy (more efficient than JPEG)'}
+						</li>
 					</ul>
 				</div>
 			</div>
 		)
-	},
+	}
 }
 
 // Preset configurations for different use cases
@@ -331,8 +332,8 @@ export const UseCasePresets: Story = {
 					output_format: 'webp' as const,
 					quality: 'high' as const,
 					background: 'opaque' as const,
-					output_compression: 80,
-				},
+					output_compression: 80
+				}
 			},
 			'social-media': {
 				name: 'Social Media',
@@ -344,10 +345,10 @@ export const UseCasePresets: Story = {
 					output_format: 'jpeg' as const,
 					quality: 'medium' as const,
 					background: 'opaque' as const,
-					output_compression: 70,
-				},
+					output_compression: 70
+				}
 			},
-			'documentation': {
+			documentation: {
 				name: 'Documentation',
 				description: 'High-quality images with transparency support',
 				config: {
@@ -356,10 +357,10 @@ export const UseCasePresets: Story = {
 					size: 'auto' as const,
 					output_format: 'png' as const,
 					quality: 'high' as const,
-					background: 'transparent' as const,
-				},
+					background: 'transparent' as const
+				}
 			},
-			'thumbnails': {
+			thumbnails: {
 				name: 'Thumbnails',
 				description: 'Small images for previews and galleries',
 				config: {
@@ -369,9 +370,9 @@ export const UseCasePresets: Story = {
 					output_format: 'webp' as const,
 					quality: 'medium' as const,
 					background: 'auto' as const,
-					output_compression: 60,
-				},
-			},
+					output_compression: 60
+				}
+			}
 		}
 
 		return (
@@ -384,15 +385,11 @@ export const UseCasePresets: Story = {
 							padding: '16px',
 							border: '1px solid #e0e0e0',
 							borderRadius: '8px',
-							backgroundColor: '#fafafa',
+							backgroundColor: '#fafafa'
 						}}
 					>
-						<h4 style={{ marginTop: 0, marginBottom: '8px' }}>
-							{preset.name}
-						</h4>
-						<p style={{ margin: '0 0 16px 0', color: '#666', fontSize: '14px' }}>
-							{preset.description}
-						</p>
+						<h4 style={{ marginTop: 0, marginBottom: '8px' }}>{preset.name}</h4>
+						<p style={{ margin: '0 0 16px 0', color: '#666', fontSize: '14px' }}>{preset.description}</p>
 						<GPTImageConfigPanel
 							options={preset.config}
 							onChange={(updates) => console.log(`${preset.name} changed:`, updates)}
@@ -401,5 +398,5 @@ export const UseCasePresets: Story = {
 				))}
 			</div>
 		)
-	},
+	}
 }

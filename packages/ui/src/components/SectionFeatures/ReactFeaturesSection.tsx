@@ -1,4 +1,4 @@
-import { Button, CollapsibleSection, Section, SettingRow, Toggle } from '../../atoms'
+import { Button, CollapsibleSection, Section, SettingRow, Toggle } from '~/atoms'
 import styles from './ReactFeaturesSection.module.css'
 
 // Type aliases for better readability (exported for use in other components)
@@ -72,7 +72,7 @@ export const ReactFeaturesSection: React.FC<ReactFeaturesSectionProps> = ({
 
 			<div className={styles.description}>{strings.description}</div>
 
-			<Section title="Feature Toggles">
+			<Section title='Feature Toggles'>
 				<SettingRow name={strings.settingsTab} description={strings.settingsTabDesc}>
 					<Toggle
 						checked={features.reactSettingsTab}
@@ -99,12 +99,12 @@ export const ReactFeaturesSection: React.FC<ReactFeaturesSectionProps> = ({
 				</SettingRow>
 			</Section>
 
-			<Section title="Quick Actions">
+			<Section title='Quick Actions'>
 				<div className={styles.actionButtons}>
-					<Button variant="primary" onClick={onEnableAll} disabled={allEnabled}>
+					<Button variant='primary' onClick={onEnableAll} disabled={allEnabled}>
 						{strings.enableAll}
 					</Button>
-					<Button variant="default" onClick={onDisableAll} disabled={!anyEnabled}>
+					<Button variant='default' onClick={onDisableAll} disabled={!anyEnabled}>
 						{strings.disableAll}
 					</Button>
 				</div>

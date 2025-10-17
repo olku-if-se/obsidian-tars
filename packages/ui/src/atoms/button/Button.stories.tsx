@@ -7,7 +7,7 @@ const meta = {
 	parameters: {
 		layout: {
 			constrainWidth: true,
-			center: true,
+			center: true
 		},
 		// Add viewport parameter for responsive testing
 		viewport: {
@@ -16,25 +16,25 @@ const meta = {
 					name: 'Mobile',
 					styles: {
 						width: '375px',
-						height: '667px',
-					},
+						height: '667px'
+					}
 				},
 				tablet: {
 					name: 'Tablet',
 					styles: {
 						width: '768px',
-						height: '1024px',
-					},
+						height: '1024px'
+					}
 				},
 				desktop: {
 					name: 'Desktop',
 					styles: {
 						width: '1024px',
-						height: '768px',
-					},
-				},
-			},
-		},
+						height: '768px'
+					}
+				}
+			}
+		}
 	},
 	tags: ['autodocs']
 } satisfies Meta<typeof Button>
@@ -94,15 +94,15 @@ export const WithIcon: Story = {
 export const ResponsiveButtonGroup: Story = {
 	render: () => (
 		<div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-			<Button variant="primary">Primary</Button>
-			<Button variant="secondary">Secondary</Button>
-			<Button variant="danger">Danger</Button>
+			<Button variant='primary'>Primary</Button>
+			<Button variant='secondary'>Secondary</Button>
+			<Button variant='danger'>Danger</Button>
 		</div>
 	),
 	parameters: {
 		layout: {
 			constrainWidth: true,
-			center: true,
+			center: true
 		}
 	}
 }
@@ -110,14 +110,14 @@ export const ResponsiveButtonGroup: Story = {
 export const ResponsiveFullWidth: Story = {
 	render: () => (
 		<div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%' }}>
-			<Button variant="primary" style={{ width: '100%' }}>
+			<Button variant='primary' style={{ width: '100%' }}>
 				Full Width Button
 			</Button>
 			<div style={{ display: 'flex', gap: '0.5rem', width: '100%' }}>
-				<Button variant="secondary" style={{ flex: 1 }}>
+				<Button variant='secondary' style={{ flex: 1 }}>
 					First Half
 				</Button>
-				<Button variant="secondary" style={{ flex: 1 }}>
+				<Button variant='secondary' style={{ flex: 1 }}>
 					Second Half
 				</Button>
 			</div>
@@ -126,7 +126,7 @@ export const ResponsiveFullWidth: Story = {
 	parameters: {
 		layout: {
 			constrainWidth: true,
-			center: true,
+			center: true
 		}
 	}
 }

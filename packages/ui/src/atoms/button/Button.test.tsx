@@ -1,5 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import { describe, expect, it, vi, beforeEach } from 'vitest'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
 import { Button } from './Button'
 
 describe('Button', () => {
@@ -50,7 +50,11 @@ describe('Button', () => {
 
 	// New tests for React 19 compliance
 	it('renders as different element when "as" prop is provided', () => {
-		render(<Button as='a' href='https://example.com'>Link Button</Button>)
+		render(
+			<Button as='a' href='https://example.com'>
+				Link Button
+			</Button>
+		)
 		const link = screen.getByRole('link')
 		expect(link).toBeInTheDocument()
 		expect(link).toHaveAttribute('href', 'https://example.com')
@@ -60,14 +64,12 @@ describe('Button', () => {
 		const originalEnv = process.env.NODE_ENV
 		process.env.NODE_ENV = 'development'
 		const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {
-        // Intentionally empty for test
-      })
+			// Intentionally empty for test
+		})
 
 		// @ts-expect-error - intentionally testing invalid prop
 		render(<Button variant='invalid'>Invalid</Button>)
-		expect(consoleSpy).toHaveBeenCalledWith(
-			expect.stringContaining('Invalid variant "invalid"')
-		)
+		expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Invalid variant "invalid"'))
 
 		consoleSpy.mockRestore()
 		process.env.NODE_ENV = originalEnv
@@ -77,14 +79,12 @@ describe('Button', () => {
 		const originalEnv = process.env.NODE_ENV
 		process.env.NODE_ENV = 'development'
 		const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {
-        // Intentionally empty for test
-      })
+			// Intentionally empty for test
+		})
 
 		// @ts-expect-error - intentionally testing invalid prop
 		render(<Button size='invalid'>Invalid</Button>)
-		expect(consoleSpy).toHaveBeenCalledWith(
-			expect.stringContaining('Invalid size "invalid"')
-		)
+		expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Invalid size "invalid"'))
 
 		consoleSpy.mockRestore()
 		process.env.NODE_ENV = originalEnv

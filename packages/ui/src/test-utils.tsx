@@ -8,20 +8,18 @@ const AllTheProviders = ({ children }: { children: React.ReactNode }) => {
 }
 
 // Custom render function with providers
-const customRender = <T = {}>(
-	ui: ReactElement,
-	options?: Omit<RenderOptions, 'wrapper'> & T
-): RenderResult => render(ui, { wrapper: AllTheProviders, ...options })
+const customRender = <T = {}>(ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'> & T): RenderResult =>
+	render(ui, { wrapper: AllTheProviders, ...options })
 
 // Re-export everything from testing-library
 export * from '@testing-library/react'
 export { customRender as render }
 
 // Test utilities
-export const createMockProps = <T extends Record<string, any>>(
-	defaults: T,
-	overrides: Partial<T> = {}
-): T => ({ ...defaults, ...overrides })
+export const createMockProps = <T extends Record<string, any>>(defaults: T, overrides: Partial<T> = {}): T => ({
+	...defaults,
+	...overrides
+})
 
 // Accessibility testing helper
 export const checkAccessibility = (container: HTMLElement) => {

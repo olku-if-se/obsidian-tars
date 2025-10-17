@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
-import type { ErrorLogEntry } from '../../types/types'
-import { getErrorTypeIcon } from '../../utils/utilities'
+import type { ErrorLogEntry } from '~/types'
+import { getErrorTypeIcon } from '~/utils/utilities'
 import styles from './ErrorDetailView.module.css'
 
 // Constants for user-facing text (will be replaced with i18n)

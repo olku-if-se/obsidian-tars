@@ -1,255 +1,255 @@
 .settingsTab {
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-4-4);
-  padding: var(--size-4-3);
-  max-width: 800px;
-  margin: 0 auto;
-  font-family: var(--font-interface);
-  color: var(--text-normal);
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-4);
+	padding: var(--size-4-3);
+	max-width: 800px;
+	margin: 0 auto;
+	font-family: var(--font-interface);
+	color: var(--text-normal);
 }
 
 .settingRow {
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-2-1);
-  padding: var(--size-4-2) 0;
-  border-bottom: 1px solid var(--border-color);
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-2-1);
+	padding: var(--size-4-2) 0;
+	border-bottom: 1px solid var(--border-color);
 }
 
 .settingRow:last-child {
-  border-bottom: none;
+	border-bottom: none;
 }
 
 .settingInfo {
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-2-1);
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-2-1);
 }
 
 .settingName {
-  font-size: var(--font-ui-medium);
-  font-weight: var(--font-medium);
-  color: var(--text);
+	font-size: var(--font-ui-medium);
+	font-weight: var(--font-medium);
+	color: var(--text);
 }
 
 .settingDesc {
-  font-size: var(--font-ui-small);
-  line-height: 1.4;
-  color: var(--text-muted);
+	font-size: var(--font-ui-small);
+	line-height: 1.4;
+	color: var(--text-muted);
 }
 
 .settingControl {
-  display: flex;
-  align-items: center;
-  gap: var(--size-2-2);
-  flex-wrap: wrap;
+	display: flex;
+	align-items: center;
+	gap: var(--size-2-2);
+	flex-wrap: wrap;
 }
 
 .section {
-  margin-bottom: var(--size-4-4);
+	margin-bottom: var(--size-4-4);
 }
 
 .sectionTitle {
-  font-size: var(--font-ui-larger);
-  font-weight: var(--font-semibold);
-  color: var(--text-normal);
-  margin-bottom: var(--size-2-2);
-  border-bottom: 1px solid var(--background-modifier-border);
-  padding-bottom: var(--size-2-2);
+	font-size: var(--font-ui-larger);
+	font-weight: var(--font-semibold);
+	color: var(--text-normal);
+	margin-bottom: var(--size-2-2);
+	border-bottom: 1px solid var(--background-modifier-border);
+	padding-bottom: var(--size-2-2);
 }
 
 .sectionDescription {
-  color: var(--text-muted);
-  margin-bottom: var(--size-4-2);
-  font-size: var(--font-ui-small);
-  line-height: 1.4;
+	color: var(--text-muted);
+	margin-bottom: var(--size-4-2);
+	font-size: var(--font-ui-small);
+	line-height: 1.4;
 }
 
 .addProviderSection {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--size-4-2);
-  background-color: var(--background-secondary);
-  border-radius: var(--radius-m);
-  margin-bottom: var(--size-4-2);
-  border: 1px solid var(--background-modifier-border);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: var(--size-4-2);
+	background-color: var(--background-secondary);
+	border-radius: var(--radius-m);
+	margin-bottom: var(--size-4-2);
+	border: 1px solid var(--background-modifier-border);
 }
 
 .emptyState {
-  text-align: center;
-  padding: var(--size-4-4);
-  color: var(--text-muted);
-  font-style: italic;
-  background-color: var(--background-secondary);
-  border-radius: var(--radius-m);
-  border: 1px dashed var(--background-modifier-border);
+	text-align: center;
+	padding: var(--size-4-4);
+	color: var(--text-muted);
+	font-style: italic;
+	background-color: var(--background-secondary);
+	border-radius: var(--radius-m);
+	border: 1px dashed var(--background-modifier-border);
 }
 
 .collapsible {
-  margin-bottom: var(--size-4-2);
-  border: 1px solid var(--background-modifier-border);
-  border-radius: var(--radius-m);
-  background-color: var(--background-primary);
+	margin-bottom: var(--size-4-2);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	background-color: var(--background-primary);
 }
 
 .collapsibleSummary {
-  padding: var(--size-4-2);
-  font-weight: var(--font-semibold);
-  font-size: var(--font-ui-medium);
-  color: var(--text-normal);
-  cursor: pointer;
-  border-radius: var(--radius-m);
-  background-color: var(--background-secondary);
-  border-bottom: 1px solid var(--background-modifier-border);
-  transition: background-color 0.2s ease;
+	padding: var(--size-4-2);
+	font-weight: var(--font-semibold);
+	font-size: var(--font-ui-medium);
+	color: var(--text-normal);
+	cursor: pointer;
+	border-radius: var(--radius-m);
+	background-color: var(--background-secondary);
+	border-bottom: 1px solid var(--background-modifier-border);
+	transition: background-color 0.2s ease;
 }
 
 .collapsibleSummary:hover {
-  background-color: var(--background-modifier-hover);
+	background-color: var(--background-modifier-hover);
 }
 
 .collapsibleContent {
-  padding: var(--size-4-2);
+	padding: var(--size-4-2);
 }
 
 .providerSettings {
-  margin-bottom: var(--size-4-2);
-  border: 1px solid var(--background-modifier-border);
-  border-radius: var(--radius-m);
-  background-color: var(--background-primary);
-  transition: border-color 0.2s ease;
+	margin-bottom: var(--size-4-2);
+	border: 1px solid var(--background-modifier-border);
+	border-radius: var(--radius-m);
+	background-color: var(--background-primary);
+	transition: border-color 0.2s ease;
 }
 
 .providerSettings:hover {
-  border-color: var(--interactive-accent);
+	border-color: var(--interactive-accent);
 }
 
 .providerSettings.expanded {
-  border-color: var(--interactive-accent);
-  box-shadow: 0 0 0 1px var(--interactive-accent);
+	border-color: var(--interactive-accent);
+	box-shadow: 0 0 0 1px var(--interactive-accent);
 }
 
 .providerSummary {
-  padding: var(--size-4-2);
-  font-weight: var(--font-semibold);
-  font-size: var(--font-ui-medium);
-  color: var(--text-normal);
-  cursor: pointer;
-  background-color: var(--background-secondary);
-  border-bottom: 1px solid var(--background-modifier-border);
-  transition: background-color 0.2s ease;
+	padding: var(--size-4-2);
+	font-weight: var(--font-semibold);
+	font-size: var(--font-ui-medium);
+	color: var(--text-normal);
+	cursor: pointer;
+	background-color: var(--background-secondary);
+	border-bottom: 1px solid var(--background-modifier-border);
+	transition: background-color 0.2s ease;
 }
 
 .providerSummary:hover {
-  background-color: var(--background-modifier-hover);
+	background-color: var(--background-modifier-hover);
 }
 
 .providerContent {
-  padding: var(--size-4-2);
+	padding: var(--size-4-2);
 }
 
 .providerHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--size-4-2);
-  padding-bottom: var(--size-2-2);
-  border-bottom: 1px solid var(--background-modifier-border);
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: var(--size-4-2);
+	padding-bottom: var(--size-2-2);
+	border-bottom: 1px solid var(--background-modifier-border);
 }
 
 .providerHeader h3 {
-  margin: 0;
-  font-size: var(--font-ui-large);
-  font-weight: var(--font-semibold);
-  color: var(--text-normal);
+	margin: 0;
+	font-size: var(--font-ui-large);
+	font-weight: var(--font-semibold);
+	color: var(--text-normal);
 }
 
 .providerActions {
-  display: flex;
-  gap: var(--size-2-2);
+	display: flex;
+	gap: var(--size-2-2);
 }
 
 .providerFields {
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-4-2);
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-2);
 }
 
 .tagInputs {
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-4-2);
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-2);
 }
 
 .tagInput {
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-2-1);
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-2-1);
 }
 
 .tagInputHeader {
-  display: flex;
-  align-items: flex-end;
-  gap: var(--size-2-2);
+	display: flex;
+	align-items: flex-end;
+	gap: var(--size-2-2);
 }
 
 .systemMessageSection {
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-4-2);
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-2);
 }
 
 .advancedSection {
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-4-2);
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-2);
 }
 
 .mcpSection {
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-4-2);
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-2);
 }
 
 /* Dark theme adjustments */
 [data-theme="dark"] .collapsibleSummary {
-  background-color: var(--background-secondary);
+	background-color: var(--background-secondary);
 }
 
 [data-theme="dark"] .providerSummary {
-  background-color: var(--background-secondary);
+	background-color: var(--background-secondary);
 }
 
 [data-theme="dark"] .addProviderSection {
-  background-color: var(--background-secondary);
+	background-color: var(--background-secondary);
 }
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
-  .settingsTab {
-    padding: var(--size-4-2);
-  }
+	.settingsTab {
+		padding: var(--size-4-2);
+	}
 
-  .addProviderSection {
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--size-2-2);
-  }
+	.addProviderSection {
+		flex-direction: column;
+		align-items: stretch;
+		gap: var(--size-2-2);
+	}
 
-  .providerHeader {
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--size-2-2);
-  }
+	.providerHeader {
+		flex-direction: column;
+		align-items: stretch;
+		gap: var(--size-2-2);
+	}
 
-  .providerActions {
-    justify-content: center;
-  }
+	.providerActions {
+		justify-content: center;
+	}
 
-  .tagInputHeader {
-    flex-direction: column;
-    align-items: stretch;
-  }
+	.tagInputHeader {
+		flex-direction: column;
+		align-items: stretch;
+	}
 }

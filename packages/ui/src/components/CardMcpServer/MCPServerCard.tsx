@@ -1,17 +1,9 @@
 import clsx from 'clsx'
 import { useCallback, useMemo } from 'react'
-import {
-	Button,
-	CollapsibleSection,
-	ConfigurationInput,
-	Input,
-	SettingRow,
-	Toggle,
-	ValidationMessage
-} from '../../atoms'
+import { Button, CollapsibleSection, ConfigurationInput, Input, SettingRow, Toggle, ValidationMessage } from '~/atoms'
 import { useDebouncedCallbackWithCleanup } from '../../hooks/useDebouncedCallback'
 import { useFormatConversion } from '../../hooks/useFormatConversion'
-import { t } from '../../utils/i18n'
+import { t } from '../../locales/i18n'
 import type { MCPServerConfig, MCPServerRuntimeState } from '../SectionMcpServers/MCPServersSection'
 import styles from './MCPServerCard.module.css'
 
@@ -152,18 +144,18 @@ export function MCPServerCard({
 			onToggle={onToggleOpen}
 			className={clsx(styles.serverCard, styles[statusInfo.badgeTone])}
 		>
-			<SettingRow name={t('mcpServerCard.controls')} description="">
+			<SettingRow name={t('mcpServerCard.controls')} description=''>
 				<div className={clsx(styles.controlsContainer, runtimeState.testLoading && styles.loading)}>
 					<Toggle checked={server.enabled} onChange={handleToggle} disabled={runtimeState.testLoading} />
 					<Button
-						variant="default"
-						size="sm"
+						variant='default'
+						size='sm'
 						onClick={onTest}
 						disabled={runtimeState.testLoading || !server.enabled || !validationState.isValid || !!nameError}
 					>
 						{runtimeState.testLoading ? t('mcpServerCard.testing') : t('mcpServerCard.test')}
 					</Button>
-					<Button variant="danger" size="sm" onClick={onRemove} disabled={runtimeState.testLoading}>
+					<Button variant='danger' size='sm' onClick={onRemove} disabled={runtimeState.testLoading}>
 						{t('mcpServerCard.delete')}
 					</Button>
 				</div>
@@ -172,16 +164,16 @@ export function MCPServerCard({
 			<SettingRow name={t('mcpServerCard.serverName')} description={t('mcpServerCard.serverNameDesc')}>
 				<div className={styles.nameField}>
 					<Input
-						type="text"
+						type='text'
 						value={server.name}
 						onChange={handleServerNameChange}
-						placeholder="my-mcp-server"
+						placeholder='my-mcp-server'
 						className={styles.serverNameInput}
 						disabled={runtimeState.testLoading}
 					/>
 					{nameError && (
 						<div className={styles.validationMessage}>
-							<ValidationMessage message={nameError} type="error" size="sm" />
+							<ValidationMessage message={nameError} type='error' size='sm' />
 						</div>
 					)}
 				</div>
@@ -207,14 +199,14 @@ export function MCPServerCard({
 					<div className={styles.previewContainer}>
 						<div className={styles.previewLabel}>{t('mcpServerCard.previewCommandLabel')}</div>
 						<code className={styles.previewValue}>{previewCommand}</code>
-						<Button variant="default" size="sm" onClick={() => handleCopy(previewCommand, 'mcpServerCard.copySuccess')}>
+						<Button variant='default' size='sm' onClick={() => handleCopy(previewCommand, 'mcpServerCard.copySuccess')}>
 							{t('mcpServerCard.copyPreview')}
 						</Button>
 					</div>
 				)}
 			</SettingRow>
 
-			<SettingRow name={t('mcpServerCard.status')} description="" vertical={true}>
+			<SettingRow name={t('mcpServerCard.status')} description='' vertical={true}>
 				<div className={styles.statusContainer}>
 					<div className={clsx(styles.statusMessage, styles[statusInfo.badgeTone])}>{statusInfo.text}</div>
 
@@ -249,8 +241,8 @@ export function MCPServerCard({
 							<div className={styles.validationHeader}>
 								<span>{t('mcpServerCard.validationErrorsLabel')}</span>
 								<Button
-									variant="default"
-									size="sm"
+									variant='default'
+									size='sm'
 									onClick={() => handleCopy(aggregatedErrors, 'mcpServerCard.copySuccess')}
 								>
 									{t('mcpServerCard.copyErrors')}
@@ -271,8 +263,8 @@ export function MCPServerCard({
 							<div className={styles.validationHeader}>
 								<span>{t('mcpServerCard.validationWarningsLabel')}</span>
 								<Button
-									variant="default"
-									size="sm"
+									variant='default'
+									size='sm'
 									onClick={() => handleCopy(aggregatedWarnings, 'mcpServerCard.copySuccess')}
 								>
 									{t('mcpServerCard.copyWarnings')}

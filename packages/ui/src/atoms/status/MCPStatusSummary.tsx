@@ -1,7 +1,7 @@
 import type React from 'react'
-import type { MCPStatusInfo } from '../../types'
-import { formatSessionStatus } from '../../utils/utilities'
-import { ParagraphList } from '../paragraph/ParagraphList'
+import type { MCPStatusInfo } from '~/types'
+import { formatSessionStatus } from '~/utils/utilities'
+import { ParagraphList } from '~/atoms'
 import styles from './MCPStatusSummary.module.css'
 
 /**

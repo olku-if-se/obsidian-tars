@@ -1,13 +1,13 @@
 import { forwardRef, useId } from 'react'
-import { useDebouncedCallbackWithCleanup } from '../../hooks/useDebouncedCallback'
-import { useFormatConversion } from '../../hooks/useFormatConversion'
-import { useValidation } from '../../hooks/useValidation'
-import { t } from '../../utils/i18n'
-import type { ValidationResult } from '../../utils/validation.v2'
-import { Button } from '../button/Button'
-import { Input } from '../input/Input'
-import { TextArea } from '../textarea/TextArea'
-import { ValidationMessage } from '../validationMessage/ValidationMessage'
+import { useDebouncedCallbackWithCleanup } from '~/hooks/useDebouncedCallback'
+import { useFormatConversion } from '~/hooks/useFormatConversion'
+import { useValidation } from '~/hooks/useValidation'
+import { t } from '~/locales/i18n'
+import type { ValidationResult } from '~/utils/validation.v2'
+import { Button } from '~/atoms'
+import { Input } from '~/atoms'
+import { TextArea } from '~/atoms'
+import { ValidationMessage } from '~/atoms'
 import styles from './ConfigurationInput.module.css'
 
 // Type aliases following React rules
@@ -138,8 +138,8 @@ export const ConfigurationInput = forwardRef<HTMLDivElement, ConfigurationInputP
 					{showFormatToggle && (
 						<div className={styles.formatControl}>
 							<Button
-								variant="default"
-								size="sm"
+								variant='default'
+								size='sm'
 								onClick={handleFormatToggle}
 								disabled={disabled}
 								className={styles.formatButton}
@@ -153,10 +153,10 @@ export const ConfigurationInput = forwardRef<HTMLDivElement, ConfigurationInputP
 					{(validation.errors.length > 0 || validation.warnings.length > 0) && (
 						<div className={styles.validationArea}>
 							{validation.errors.map((error) => (
-								<ValidationMessage key={`error-${error.slice(0, 20)}`} message={error} type="error" />
+								<ValidationMessage key={`error-${error.slice(0, 20)}`} message={error} type='error' />
 							))}
 							{validation.warnings.map((warning) => (
-								<ValidationMessage key={`warning-${warning.slice(0, 20)}`} message={warning} type="warning" />
+								<ValidationMessage key={`warning-${warning.slice(0, 20)}`} message={warning} type='warning' />
 							))}
 						</div>
 					)}

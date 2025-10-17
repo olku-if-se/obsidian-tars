@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, CollapsibleSection, SettingRow, Slider, Toggle } from '../../atoms'
+import { Button, CollapsibleSection, SettingRow, Slider, Toggle } from '~/atoms'
 import styles from './AdvancedSection.module.css'
 
 export interface SectionSettings {
@@ -127,7 +127,7 @@ export const AdvancedSection = ({
 
 			<SettingRow name={strings.delayTitle} description={strings.delayDescription}>
 				<div className={styles.delayControls}>
-					<Button variant="default" size="sm" onClick={handleResetDelay}>
+					<Button variant='default' size='sm' onClick={handleResetDelay}>
 						{strings.resetButtonText}
 					</Button>
 					<Slider

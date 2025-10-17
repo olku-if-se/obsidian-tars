@@ -9,7 +9,7 @@ const meta: Meta<typeof StatusBar> = {
 	parameters: {
 		layout: {
 			constrainWidth: true,
-			center: true,
+			center: true
 		},
 		docs: {
 			description: {
@@ -220,52 +220,52 @@ export const Interactive: Story = {
 // Responsive layout story showing StatusBar in different contexts
 export const ResponsiveStatusBar: Story = {
 	render: () => (
-		<div style={{
-			display: 'flex',
-			flexDirection: 'column',
-			gap: '1rem',
-			width: '100%',
-			padding: '1rem',
-			border: '1px solid var(--color-accent-2)',
-			borderRadius: '8px'
-		}}>
-			<div style={{
+		<div
+			style={{
 				display: 'flex',
-				justifyContent: 'space-between',
-				alignItems: 'center',
-				padding: '0.5rem',
-				backgroundColor: 'var(--color-background-secondary)'
-			}}>
+				flexDirection: 'column',
+				gap: '1rem',
+				width: '100%',
+				padding: '1rem',
+				border: '1px solid var(--color-accent-2)',
+				borderRadius: '8px'
+			}}
+		>
+			<div
+				style={{
+					display: 'flex',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+					padding: '0.5rem',
+					backgroundColor: 'var(--color-background-secondary)'
+				}}
+			>
 				<span>Header Content</span>
-				<StatusBar
-					app={mockApp}
-					state={idleState}
-					onClick={() => console.log('Status clicked')}
-				/>
+				<StatusBar app={mockApp} state={idleState} onClick={() => console.log('Status clicked')} />
 			</div>
 
-			<div style={{
-				display: 'flex',
-				justifyContent: 'space-between',
-				alignItems: 'center',
-				padding: '0.5rem',
-				backgroundColor: 'var(--color-background-secondary)'
-			}}>
+			<div
+				style={{
+					display: 'flex',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+					padding: '0.5rem',
+					backgroundColor: 'var(--color-background-secondary)'
+				}}
+			>
 				<span>Generating State</span>
-				<StatusBar
-					app={mockApp}
-					state={generatingState}
-					onClick={() => console.log('Status clicked')}
-				/>
+				<StatusBar app={mockApp} state={generatingState} onClick={() => console.log('Status clicked')} />
 			</div>
 
-			<div style={{
-				display: 'flex',
-				justifyContent: 'space-between',
-				alignItems: 'center',
-				padding: '0.5rem',
-				backgroundColor: 'var(--color-background-secondary)'
-			}}>
+			<div
+				style={{
+					display: 'flex',
+					justifyContent: 'space-between',
+					alignItems: 'center',
+					padding: '0.5rem',
+					backgroundColor: 'var(--color-background-secondary)'
+				}}
+			>
 				<span>Error State</span>
 				<StatusBar
 					app={mockApp}
@@ -279,11 +279,12 @@ export const ResponsiveStatusBar: Story = {
 	parameters: {
 		layout: {
 			constrainWidth: true,
-			center: true,
+			center: true
 		},
 		docs: {
 			description: {
-				story: 'StatusBar shown in responsive layout contexts, demonstrating how it adapts to different container widths.'
+				story:
+					'StatusBar shown in responsive layout contexts, demonstrating how it adapts to different container widths.'
 			}
 		}
 	}

@@ -1,14 +1,17 @@
-.openAIConfigPanel {
+.deepSeekConfigPanel {
 	display: flex;
 	flex-direction: column;
 	gap: var(--spacing-md);
 }
 
-.baseURLInput,
-.organizationInput,
-.projectInput {
+.baseURLInput {
 	width: 100%;
 	min-width: 300px;
+}
+
+.modelSelect,
+.reasoningSelect {
+	min-width: 180px;
 }
 
 .numberInput {
@@ -55,6 +58,32 @@
 	color: var(--color-text-primary);
 }
 
+.reasoningBox {
+	background-color: var(--color-accent-secondary);
+	border: 1px solid var(--color-accent);
+	border-radius: var(--border-radius-md);
+	padding: var(--spacing-md);
+	margin-top: var(--spacing-md);
+}
+
+.reasoningBox h5 {
+	margin: 0 0 var(--spacing-sm) 0;
+	color: var(--color-accent-primary);
+	font-size: var(--font-size-sm);
+	font-weight: 600;
+}
+
+.reasoningBox ul {
+	margin: 0;
+	padding-left: var(--spacing-lg);
+	color: var(--color-accent-secondary);
+}
+
+.reasoningBox li {
+	margin-bottom: var(--spacing-xs);
+	line-height: 1.4;
+}
+
 .exampleBox {
 	background-color: var(--color-background-primary);
 	border: 1px solid var(--color-border);
@@ -64,33 +93,62 @@
 }
 
 .exampleBox h5 {
-	margin: 0 0 var(--spacing-sm) 0;
+	margin: 0 0 var(--spacing-md) 0;
 	color: var(--color-text-primary);
 	font-size: var(--font-size-sm);
 	font-weight: 600;
 }
 
-.exampleBox ul {
+.useCaseGrid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: var(--spacing-md);
+}
+
+.useCase {
+	background-color: var(--color-background-secondary);
+	border: 1px solid var(--color-border);
+	border-radius: var(--border-radius-sm);
+	padding: var(--spacing-sm);
+}
+
+.useCase h6 {
+	margin: 0 0 var(--spacing-xs) 0;
+	color: var(--color-text-primary);
+	font-size: var(--font-size-sm);
+	font-weight: 600;
+}
+
+.useCase ul {
 	margin: 0;
-	padding-left: var(--spacing-lg);
+	padding-left: var(--spacing-md);
 	color: var(--color-text-secondary);
 }
 
-.exampleBox li {
+.useCase li {
 	margin-bottom: var(--spacing-xs);
-	line-height: 1.4;
+	line-height: 1.3;
+	font-size: var(--font-size-xs);
 }
 
 /* Responsive design */
 @media (max-width: 768px) {
-	.baseURLInput,
-	.organizationInput,
-	.projectInput {
+	.baseURLInput {
 		min-width: 100%;
+	}
+
+	.modelSelect,
+	.reasoningSelect {
+		min-width: 140px;
 	}
 
 	.numberInput {
 		width: 100px;
 		min-width: 80px;
+	}
+
+	.useCaseGrid {
+		grid-template-columns: 1fr;
+		gap: var(--spacing-sm);
 	}
 }

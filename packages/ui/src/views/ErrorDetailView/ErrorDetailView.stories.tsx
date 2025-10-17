@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import type { ErrorInfo, ErrorLogEntry } from '../StatusModal/MCPStatusModal'
+import type { ErrorInfo, ErrorLogEntry } from '../../types'
 import { ErrorDetailView } from './ErrorDetailView'
 
 const meta: Meta<typeof ErrorDetailView> = {

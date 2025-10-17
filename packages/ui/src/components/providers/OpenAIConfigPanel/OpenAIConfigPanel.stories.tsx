@@ -3,12 +3,12 @@ import { useState } from 'react'
 import { OpenAIConfigPanel, type OpenAIOptions } from './OpenAIConfigPanel'
 
 const meta = {
-	title: 'Components/OpenAIConfigPanel',
+	title: 'Providers/OpenAIConfigPanel',
 	component: OpenAIConfigPanel,
 	parameters: {
-		layout: 'padded',
+		layout: 'padded'
 	},
-	tags: ['autodocs'],
+	tags: ['autodocs']
 } satisfies Meta<typeof OpenAIConfigPanel>
 
 export default meta
@@ -18,8 +18,8 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
 	args: {
 		options: {},
-		onChange: (updates) => console.log('OpenAI config changed:', updates),
-	},
+		onChange: (updates) => console.log('OpenAI config changed:', updates)
+	}
 }
 
 // Basic configuration
@@ -28,10 +28,10 @@ export const BasicConfig: Story = {
 		options: {
 			maxTokens: 4096,
 			temperature: 1.0,
-			topP: 1.0,
+			topP: 1.0
 		},
-		onChange: (updates) => console.log('OpenAI config changed:', updates),
-	},
+		onChange: (updates) => console.log('OpenAI config changed:', updates)
+	}
 }
 
 // Complete configuration
@@ -45,10 +45,10 @@ export const CompleteConfig: Story = {
 			temperature: 0.7,
 			topP: 0.9,
 			frequencyPenalty: 0.2,
-			presencePenalty: 0.1,
+			presencePenalty: 0.1
 		},
-		onChange: (updates) => console.log('OpenAI config changed:', updates),
-	},
+		onChange: (updates) => console.log('OpenAI config changed:', updates)
+	}
 }
 
 // Custom base URL (for compatible services)
@@ -56,10 +56,10 @@ export const CustomBaseURL: Story = {
 	args: {
 		options: {
 			baseURL: 'https://api.anthropic.com/v1',
-			temperature: 0.8,
+			temperature: 0.8
 		},
-		onChange: (updates) => console.log('OpenAI config changed:', updates),
-	},
+		onChange: (updates) => console.log('OpenAI config changed:', updates)
+	}
 }
 
 // With organization and project
@@ -68,10 +68,10 @@ export const WithOrganizationAndProject: Story = {
 		options: {
 			organization: 'org-1234567890',
 			project: 'proj_abcdef123456',
-			maxTokens: 4096,
+			maxTokens: 4096
 		},
-		onChange: (updates) => console.log('OpenAI config changed:', updates),
-	},
+		onChange: (updates) => console.log('OpenAI config changed:', updates)
+	}
 }
 
 // With validation errors
@@ -82,10 +82,10 @@ export const WithValidationErrors: Story = {
 			temperature: 3.0, // Above max 2.0
 			topP: 1.5, // Above max 1.0
 			frequencyPenalty: 3.0, // Above max 2.0
-			presencePenalty: -3.0, // Below min -2.0
+			presencePenalty: -3.0 // Below min -2.0
 		},
-		onChange: (updates) => console.log('OpenAI config changed:', updates),
-	},
+		onChange: (updates) => console.log('OpenAI config changed:', updates)
+	}
 }
 
 // Creative writing configuration
@@ -96,10 +96,10 @@ export const CreativeWriting: Story = {
 			temperature: 1.3,
 			topP: 0.95,
 			frequencyPenalty: 0.5,
-			presencePenalty: 0.3,
+			presencePenalty: 0.3
 		},
-		onChange: (updates) => console.log('OpenAI config changed:', updates),
-	},
+		onChange: (updates) => console.log('OpenAI config changed:', updates)
+	}
 }
 
 // Code generation configuration
@@ -110,10 +110,10 @@ export const CodeGeneration: Story = {
 			temperature: 0.1,
 			topP: 0.2,
 			frequencyPenalty: 0.0,
-			presencePenalty: 0.0,
+			presencePenalty: 0.0
 		},
-		onChange: (updates) => console.log('OpenAI config changed:', updates),
-	},
+		onChange: (updates) => console.log('OpenAI config changed:', updates)
+	}
 }
 
 // Analysis configuration
@@ -124,10 +124,10 @@ export const Analysis: Story = {
 			temperature: 0.5,
 			topP: 0.8,
 			frequencyPenalty: 0.1,
-			presencePenalty: 0.1,
+			presencePenalty: 0.1
 		},
-		onChange: (updates) => console.log('OpenAI config changed:', updates),
-	},
+		onChange: (updates) => console.log('OpenAI config changed:', updates)
+	}
 }
 
 // Disabled state
@@ -137,11 +137,11 @@ export const Disabled: Story = {
 			baseURL: 'https://api.openai.com/v1',
 			organization: 'org-1234567890',
 			maxTokens: 4096,
-			temperature: 1.0,
+			temperature: 1.0
 		},
 		onChange: (updates) => console.log('OpenAI config changed:', updates),
-		disabled: true,
-	},
+		disabled: true
+	}
 }
 
 // Interactive story with state management
@@ -150,7 +150,7 @@ export const Interactive: Story = {
 		const [openaiOptions, setOpenaiOptions] = useState<OpenAIOptions>({
 			maxTokens: 4096,
 			temperature: 1.0,
-			topP: 1.0,
+			topP: 1.0
 		})
 
 		const handleChange = (updates: Partial<OpenAIOptions>) => {
@@ -159,10 +159,7 @@ export const Interactive: Story = {
 
 		return (
 			<div style={{ maxWidth: '700px' }}>
-				<OpenAIConfigPanel
-					options={openaiOptions}
-					onChange={handleChange}
-				/>
+				<OpenAIConfigPanel options={openaiOptions} onChange={handleChange} />
 				<div
 					style={{
 						marginTop: '24px',
@@ -170,7 +167,7 @@ export const Interactive: Story = {
 						backgroundColor: '#f5f5f5',
 						borderRadius: '4px',
 						fontFamily: 'monospace',
-						fontSize: '14px',
+						fontSize: '14px'
 					}}
 				>
 					<h4>Current Configuration:</h4>
@@ -178,7 +175,7 @@ export const Interactive: Story = {
 				</div>
 			</div>
 		)
-	},
+	}
 }
 
 // Use case presets story
@@ -195,8 +192,8 @@ export const UseCasePresets: Story = {
 					temperature: 0.8,
 					topP: 0.9,
 					frequencyPenalty: 0.1,
-					presencePenalty: 0.1,
-				} as OpenAIOptions,
+					presencePenalty: 0.1
+				} as OpenAIOptions
 			},
 			creative: {
 				name: 'Creative Writing',
@@ -206,8 +203,8 @@ export const UseCasePresets: Story = {
 					temperature: 1.3,
 					topP: 0.95,
 					frequencyPenalty: 0.5,
-					presencePenalty: 0.3,
-				} as OpenAIOptions,
+					presencePenalty: 0.3
+				} as OpenAIOptions
 			},
 			technical: {
 				name: 'Technical/Code',
@@ -217,8 +214,8 @@ export const UseCasePresets: Story = {
 					temperature: 0.1,
 					topP: 0.2,
 					frequencyPenalty: 0.0,
-					presencePenalty: 0.0,
-				} as OpenAIOptions,
+					presencePenalty: 0.0
+				} as OpenAIOptions
 			},
 			analysis: {
 				name: 'Data Analysis',
@@ -228,9 +225,9 @@ export const UseCasePresets: Story = {
 					temperature: 0.5,
 					topP: 0.8,
 					frequencyPenalty: 0.1,
-					presencePenalty: 0.1,
-				} as OpenAIOptions,
-			},
+					presencePenalty: 0.1
+				} as OpenAIOptions
+			}
 		}
 
 		const currentConfig = presets[selectedPreset as keyof typeof presets].config
@@ -248,7 +245,7 @@ export const UseCasePresets: Story = {
 							border: '1px solid #ddd',
 							borderRadius: '4px',
 							minWidth: '200px',
-							marginBottom: '8px',
+							marginBottom: '8px'
 						}}
 					>
 						{Object.entries(presets).map(([key, preset]) => (
@@ -262,31 +259,38 @@ export const UseCasePresets: Story = {
 					</p>
 				</div>
 
-				<OpenAIConfigPanel
-					options={currentConfig}
-					onChange={(updates) => console.log('Config changed:', updates)}
-				/>
+				<OpenAIConfigPanel options={currentConfig} onChange={(updates) => console.log('Config changed:', updates)} />
 
 				<div
 					style={{
 						marginTop: '24px',
 						padding: '16px',
 						backgroundColor: '#e9ecef',
-						borderRadius: '4px',
+						borderRadius: '4px'
 					}}
 				>
 					<h4>Preset Configuration:</h4>
 					<ul>
-						<li><strong>Max Tokens:</strong> {currentConfig.maxTokens}</li>
-						<li><strong>Temperature:</strong> {currentConfig.temperature}</li>
-						<li><strong>Top P:</strong> {currentConfig.topP}</li>
-						<li><strong>Frequency Penalty:</strong> {currentConfig.frequencyPenalty}</li>
-						<li><strong>Presence Penalty:</strong> {currentConfig.presencePenalty}</li>
+						<li>
+							<strong>Max Tokens:</strong> {currentConfig.maxTokens}
+						</li>
+						<li>
+							<strong>Temperature:</strong> {currentConfig.temperature}
+						</li>
+						<li>
+							<strong>Top P:</strong> {currentConfig.topP}
+						</li>
+						<li>
+							<strong>Frequency Penalty:</strong> {currentConfig.frequencyPenalty}
+						</li>
+						<li>
+							<strong>Presence Penalty:</strong> {currentConfig.presencePenalty}
+						</li>
 					</ul>
 				</div>
 			</div>
 		)
-	},
+	}
 }
 
 // API compatibility demo
@@ -298,29 +302,29 @@ export const APICompatibility: Story = {
 			openai: {
 				name: 'OpenAI Official',
 				config: {
-					baseURL: 'https://api.openai.com/v1',
-				} as OpenAIOptions,
+					baseURL: 'https://api.openai.com/v1'
+				} as OpenAIOptions
 			},
 			azure: {
 				name: 'Azure OpenAI',
 				config: {
-					baseURL: 'https://your-resource.openai.azure.com/openai/deployments/your-deployment',
-				} as OpenAIOptions,
+					baseURL: 'https://your-resource.openai.azure.com/openai/deployments/your-deployment'
+				} as OpenAIOptions
 			},
 			together: {
 				name: 'Together AI',
 				config: {
 					baseURL: 'https://api.together.xyz/v1',
-					temperature: 0.7,
-				} as OpenAIOptions,
+					temperature: 0.7
+				} as OpenAIOptions
 			},
 			anyscale: {
 				name: 'Anyscale',
 				config: {
 					baseURL: 'https://api.endpoints.anyscale.com/v1',
-					temperature: 0.8,
-				} as OpenAIOptions,
-			},
+					temperature: 0.8
+				} as OpenAIOptions
+			}
 		}
 
 		const currentConfig = services[selectedService as keyof typeof services].config
@@ -340,7 +344,7 @@ export const APICompatibility: Story = {
 									color: selectedService === key ? 'white' : 'black',
 									border: '1px solid #dee2e6',
 									borderRadius: '4px',
-									cursor: 'pointer',
+									cursor: 'pointer'
 								}}
 							>
 								{service.name}
@@ -349,30 +353,31 @@ export const APICompatibility: Story = {
 					</div>
 				</div>
 
-				<OpenAIConfigPanel
-					options={currentConfig}
-					onChange={(updates) => console.log('Config changed:', updates)}
-				/>
+				<OpenAIConfigPanel options={currentConfig} onChange={(updates) => console.log('Config changed:', updates)} />
 
 				<div
 					style={{
 						marginTop: '24px',
 						padding: '16px',
 						backgroundColor: '#e9ecef',
-						borderRadius: '4px',
+						borderRadius: '4px'
 					}}
 				>
 					<h4>Service Information:</h4>
-					<p><strong>Service:</strong> {services[selectedService as keyof typeof services].name}</p>
-					<p><strong>Base URL:</strong> {currentConfig.baseURL}</p>
 					<p>
-						<strong>Compatibility:</strong> Compatible with OpenAI API format.
-						Adjust parameters based on the specific service's capabilities.
+						<strong>Service:</strong> {services[selectedService as keyof typeof services].name}
+					</p>
+					<p>
+						<strong>Base URL:</strong> {currentConfig.baseURL}
+					</p>
+					<p>
+						<strong>Compatibility:</strong> Compatible with OpenAI API format. Adjust parameters based on the specific
+						service's capabilities.
 					</p>
 				</div>
 			</div>
 		)
-	},
+	}
 }
 
 // Token optimization story
@@ -384,33 +389,33 @@ export const TokenOptimization: Story = {
 				description: 'Short, fast responses for quick interactions',
 				config: {
 					maxTokens: 256,
-					temperature: 0.8,
-				} as OpenAIOptions,
+					temperature: 0.8
+				} as OpenAIOptions
 			},
 			{
 				title: 'Standard Responses',
 				description: 'Balanced length for most use cases',
 				config: {
 					maxTokens: 1024,
-					temperature: 0.7,
-				} as OpenAIOptions,
+					temperature: 0.7
+				} as OpenAIOptions
 			},
 			{
 				title: 'Detailed Responses',
 				description: 'Longer, more comprehensive responses',
 				config: {
 					maxTokens: 4096,
-					temperature: 0.6,
-				} as OpenAIOptions,
+					temperature: 0.6
+				} as OpenAIOptions
 			},
 			{
 				title: 'Maximum Context',
 				description: 'Use full model context window',
 				config: {
 					maxTokens: 128000,
-					temperature: 0.5,
-				} as OpenAIOptions,
-			},
+					temperature: 0.5
+				} as OpenAIOptions
+			}
 		]
 
 		return (
@@ -423,15 +428,11 @@ export const TokenOptimization: Story = {
 							padding: '16px',
 							border: '1px solid #e0e0e0',
 							borderRadius: '8px',
-							backgroundColor: '#fafafa',
+							backgroundColor: '#fafafa'
 						}}
 					>
-						<h4 style={{ marginTop: 0, marginBottom: '8px' }}>
-							{strategy.title}
-						</h4>
-						<p style={{ margin: '0 0 16px 0', color: '#666', fontSize: '14px' }}>
-							{strategy.description}
-						</p>
+						<h4 style={{ marginTop: 0, marginBottom: '8px' }}>{strategy.title}</h4>
+						<p style={{ margin: '0 0 16px 0', color: '#666', fontSize: '14px' }}>{strategy.description}</p>
 						<OpenAIConfigPanel
 							options={strategy.config}
 							onChange={(updates) => console.log(`${strategy.title} changed:`, updates)}
@@ -440,15 +441,15 @@ export const TokenOptimization: Story = {
 				))}
 			</div>
 		)
-	},
+	}
 }
 
 // Minimal configuration
 export const MinimalConfig: Story = {
 	args: {
 		options: {
-			temperature: 1.0,
+			temperature: 1.0
 		},
-		onChange: (updates) => console.log('OpenAI config changed:', updates),
-	},
+		onChange: (updates) => console.log('OpenAI config changed:', updates)
+	}
 }

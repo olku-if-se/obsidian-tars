@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, ValidationMessage } from '../../atoms'
+import { Button, ValidationMessage } from '~/atoms'
 import type { ConnectionResult } from '../ModelSelector/ModelSelector'
 import styles from './ConnectionTestButton.module.css'
 
@@ -90,25 +90,16 @@ export const ConnectionTestButton = ({
 				disabled={disabled || isTesting}
 				size={size}
 				variant={variant}
-				className={`${styles.testButton} ${
-					isTesting ? styles.testing : ''
-				} ${
+				className={`${styles.testButton} ${isTesting ? styles.testing : ''} ${
 					lastResult?.success ? styles.success : ''
-				} ${
-					lastResult && !lastResult.success ? styles.error : ''
-				}`}
+				} ${lastResult && !lastResult.success ? styles.error : ''}`}
 			>
 				{getButtonText()}
 			</Button>
 
 			{showResult && lastResult && (
-				<div className={`${styles.resultContainer} ${
-					lastResult.success ? styles.successResult : styles.errorResult
-				}`}>
-					<ValidationMessage
-						type={getResultType()}
-						message={getResultMessage()}
-					/>
+				<div className={`${styles.resultContainer} ${lastResult.success ? styles.successResult : styles.errorResult}`}>
+					<ValidationMessage type={getResultType()} message={getResultMessage()} />
 				</div>
 			)}
 		</div>

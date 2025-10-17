@@ -15,11 +15,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
 		const textareaId = `textarea-${Math.random().toString(36).substr(2, 9)}`
 
 		const wrapperClasses = clsx(styles.textArea, className)
-		const textareaClasses = clsx(
-			styles.input,
-			error && styles.error,
-			!resizable && styles.notResizable
-		)
+		const textareaClasses = clsx(styles.input, error && styles.error, !resizable && styles.notResizable)
 
 		return (
 			<div className={wrapperClasses}>
@@ -28,12 +24,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
 						{label}
 					</label>
 				)}
-				<textarea
-					ref={ref}
-					id={textareaId}
-					className={textareaClasses}
-					{...props}
-				/>
+				<textarea ref={ref} id={textareaId} className={textareaClasses} {...props} />
 				{description && !error && <div className={styles.description}>{description}</div>}
 				{error && <div className={styles.errorMessage}>{error}</div>}
 			</div>

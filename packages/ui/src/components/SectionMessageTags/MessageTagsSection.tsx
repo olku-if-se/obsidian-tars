@@ -1,5 +1,5 @@
-import { Button, Input, Section, SettingRow } from '../../atoms'
-import { t } from '../../utils/i18n'
+import { Button, Input, Section, SettingRow } from '~/atoms'
+import { t } from '../../locales/i18n'
 import styles from './MessageTagsSection.module.css'
 
 type MessageTagsData = {
@@ -53,7 +53,7 @@ export const MessageTagsSection = ({ tags, onTagsChange, defaultTags }: MessageT
 			<div className={styles.tagGroup}>
 				<SettingRow name={strings.newChatTagsLabel} description={strings.newChatTagsDescription}>
 					<div className={styles.tagControl}>
-						<Button size="sm" onClick={() => handleReset('newChatTags')}>
+						<Button size='sm' onClick={() => handleReset('newChatTags')}>
 							{strings.resetButton}
 						</Button>
 						<Input
@@ -67,7 +67,7 @@ export const MessageTagsSection = ({ tags, onTagsChange, defaultTags }: MessageT
 
 				<SettingRow name={strings.userTagsLabel} description={strings.userTagsDescription}>
 					<div className={styles.tagControl}>
-						<Button size="sm" onClick={() => handleReset('userTags')}>
+						<Button size='sm' onClick={() => handleReset('userTags')}>
 							{strings.resetButton}
 						</Button>
 						<Input
@@ -81,7 +81,7 @@ export const MessageTagsSection = ({ tags, onTagsChange, defaultTags }: MessageT
 
 				<SettingRow name={strings.systemTagsLabel} description={strings.systemTagsDescription}>
 					<div className={styles.tagControl}>
-						<Button size="sm" onClick={() => handleReset('systemTags')}>
+						<Button size='sm' onClick={() => handleReset('systemTags')}>
 							{strings.resetButton}
 						</Button>
 						<Input

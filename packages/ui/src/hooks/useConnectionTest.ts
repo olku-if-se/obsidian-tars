@@ -146,14 +146,17 @@ export function useConnectionTest(options: ConnectionTestOptions = {}): UseConne
 			}, timeoutMs)
 
 			// Simulate successful connection 70% of the time for demo
-			setTimeout(() => {
-				clearTimeout(timeout)
-				if (Math.random() > 0.3) {
-					resolve(true)
-				} else {
-					reject(new Error('Failed to start stdio process'))
-				}
-			}, Math.min(timeoutMs * 0.6, 3000)) // Simulate work taking up to 60% of timeout
+			setTimeout(
+				() => {
+					clearTimeout(timeout)
+					if (Math.random() > 0.3) {
+						resolve(true)
+					} else {
+						reject(new Error('Failed to start stdio process'))
+					}
+				},
+				Math.min(timeoutMs * 0.6, 3000)
+			) // Simulate work taking up to 60% of timeout
 		})
 
 		// Check for abort signal again
@@ -220,14 +223,17 @@ export function useConnectionTest(options: ConnectionTestOptions = {}): UseConne
 			}, timeoutMs)
 
 			// Simulate successful connection 80% of the time for demo
-			setTimeout(() => {
-				clearTimeout(timeout)
-				if (Math.random() > 0.2) {
-					resolve(true)
-				} else {
-					reject(new Error('HTTP connection failed'))
-				}
-			}, Math.min(timeoutMs * 0.4, 2000)) // SSE connections are typically faster
+			setTimeout(
+				() => {
+					clearTimeout(timeout)
+					if (Math.random() > 0.2) {
+						resolve(true)
+					} else {
+						reject(new Error('HTTP connection failed'))
+					}
+				},
+				Math.min(timeoutMs * 0.4, 2000)
+			) // SSE connections are typically faster
 		})
 
 		// Check for abort signal again
@@ -274,9 +280,10 @@ export function useConnectionTest(options: ConnectionTestOptions = {}): UseConne
 			const timeoutPromise = createTimeout(timeoutMs)
 
 			// Create test promise
-			const testPromise = transport === 'stdio'
-				? testStdioConnection(config, timeoutMs, abortController.signal)
-				: testSSEConnection(config, timeoutMs, abortController.signal)
+			const testPromise =
+				transport === 'stdio'
+					? testStdioConnection(config, timeoutMs, abortController.signal)
+					: testSSEConnection(config, timeoutMs, abortController.signal)
 
 			// Race between test and timeout
 			const result = await Promise.race([testPromise, timeoutPromise])
@@ -292,7 +299,11 @@ export function useConnectionTest(options: ConnectionTestOptions = {}): UseConne
 				errorType = 'timeout'
 			} else if (errorMessage.includes('connection') || errorMessage.includes('HTTP')) {
 				errorType = 'connection'
-			} else if (errorMessage.includes('validation') || errorMessage.includes('Missing') || errorMessage.includes('Invalid')) {
+			} else if (
+				errorMessage.includes('validation') ||
+				errorMessage.includes('Missing') ||
+				errorMessage.includes('Invalid')
+			) {
 				errorType = 'validation'
 			}
 
@@ -314,7 +325,7 @@ export function useConnectionTest(options: ConnectionTestOptions = {}): UseConne
 
 				// Wait before retry
 				const retryDelay = retryDelays[Math.min(currentAttempt, retryDelays.length - 1)]
-				await new Promise(resolve => setTimeout(resolve, retryDelay))
+				await new Promise((resolve) => setTimeout(resolve, retryDelay))
 
 				// Recursive retry
 				return testConnectionWithRetry(config, transport, currentAttempt + 1)
@@ -328,34 +339,34 @@ export function useConnectionTest(options: ConnectionTestOptions = {}): UseConne
 	/**
 	 * Main connection test function
 	 */
-	const testConnection = useCallback(async (
-		config: any,
-		transport: 'stdio' | 'sse'
-	): Promise<ConnectionTestResult> => {
-		// Reset state
-		resetTest()
-		setState('testing')
-		setAttempt(1)
+	const testConnection = useCallback(
+		async (config: any, transport: 'stdio' | 'sse'): Promise<ConnectionTestResult> => {
+			// Reset state
+			resetTest()
+			setState('testing')
+			setAttempt(1)
 
-		try {
-			const result = await testConnectionWithRetry(config, transport, 0)
-			setResult(result)
-			onComplete?.(result)
-			return result
-		} catch (error) {
-			const errorResult: ConnectionTestResult = {
-				success: false,
-				message: error instanceof Error ? error.message : 'Unknown error occurred',
-				errorType: 'unknown',
-				step: 'unknown'
+			try {
+				const result = await testConnectionWithRetry(config, transport, 0)
+				setResult(result)
+				onComplete?.(result)
+				return result
+			} catch (error) {
+				const errorResult: ConnectionTestResult = {
+					success: false,
+					message: error instanceof Error ? error.message : 'Unknown error occurred',
+					errorType: 'unknown',
+					step: 'unknown'
+				}
+
+				setState('error')
+				setResult(errorResult)
+				onComplete?.(errorResult)
+				return errorResult
 			}
-
-			setState('error')
-			setResult(errorResult)
-			onComplete?.(errorResult)
-			return errorResult
-		}
-	}, [resetTest, onComplete, testConnectionWithRetry, maxRetries, retryDelays, onProgress])
+		},
+		[resetTest, onComplete, testConnectionWithRetry, maxRetries, retryDelays, onProgress]
+	)
 
 	/**
 	 * Cleanup on unmount

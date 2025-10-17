@@ -1,9 +1,9 @@
 .systemMessageSection {
-  /* Section-specific styling can be added here if needed */
+	/* Section-specific styling can be added here if needed */
 }
 
 .textArea {
-  width: 100%;
-  min-width: 300px;
-  resize: vertical;
+	width: 100%;
+	min-width: 300px;
+	resize: vertical;
 }

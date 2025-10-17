@@ -1,5 +1,5 @@
-import { Input, SettingRow, ValidationMessage } from '../../atoms'
-import { useURLValidation } from '../../hooks/useSettingsValidation'
+import { Input, SettingRow, ValidationMessage } from '~/atoms'
+import { useURLValidation } from '~/hooks/useSettingsValidation'
 import styles from './OpenAIConfigPanel.module.css'
 
 export interface OpenAIOptions {
@@ -106,173 +106,113 @@ export const OpenAIConfigPanel = ({ options, onChange, disabled = false }: OpenA
 
 	return (
 		<div className={styles.openAIConfigPanel}>
-			<SettingRow
-				name="Base URL"
-				description="Custom API endpoint (leave empty for default)"
-			>
+			<SettingRow name='Base URL' description='Custom API endpoint (leave empty for default)'>
 				<Input
 					value={options.baseURL || ''}
 					onChange={(e) => handleBaseURLChange(e.target.value)}
-					placeholder="https://api.openai.com/v1"
+					placeholder='https://api.openai.com/v1'
 					disabled={disabled}
-					className={`${styles.baseURLInput} ${
-						!baseURLValidation.isValid ? styles.error : ''
-					}`}
+					className={`${styles.baseURLInput} ${baseURLValidation.isValid ? '' : styles.error}`}
 				/>
 				{!baseURLValidation.isValid && baseURLValidation.errors.length > 0 && (
-					<ValidationMessage
-						type="error"
-						message={baseURLValidation.errors[0]}
-					/>
+					<ValidationMessage type='error' message={baseURLValidation.errors[0]} />
 				)}
 				{baseURLValidation.warnings.length > 0 && (
-					<ValidationMessage
-						type="warning"
-						message={baseURLValidation.warnings[0]}
-					/>
+					<ValidationMessage type='warning' message={baseURLValidation.warnings[0]} />
 				)}
 			</SettingRow>
 
-			<SettingRow
-				name="Organization ID"
-				description="OpenAI organization ID (optional)"
-			>
+			<SettingRow name='Organization ID' description='OpenAI organization ID (optional)'>
 				<Input
 					value={options.organization || ''}
 					onChange={(e) => handleOrganizationChange(e.target.value)}
-					placeholder="org-xxxxxxxx"
+					placeholder='org-xxxxxxxx'
 					disabled={disabled}
 					className={styles.organizationInput}
 				/>
 			</SettingRow>
 
-			<SettingRow
-				name="Project ID"
-				description="OpenAI project ID (optional)"
-			>
+			<SettingRow name='Project ID' description='OpenAI project ID (optional)'>
 				<Input
 					value={options.project || ''}
 					onChange={(e) => handleProjectChange(e.target.value)}
-					placeholder="proj_xxxxxxxxx"
+					placeholder='proj_xxxxxxxxx'
 					disabled={disabled}
 					className={styles.projectInput}
 				/>
 			</SettingRow>
 
-			<SettingRow
-				name="Max Tokens"
-				description="Maximum tokens in response (1-128000)"
-			>
+			<SettingRow name='Max Tokens' description='Maximum tokens in response (1-128000)'>
 				<Input
-					type="number"
+					type='number'
 					value={options.maxTokens?.toString() || ''}
 					onChange={(e) => handleMaxTokensChange(e.target.value)}
-					placeholder="4096"
-					min="1"
-					max="128000"
+					placeholder='4096'
+					min='1'
+					max='128000'
 					disabled={disabled}
 					className={styles.numberInput}
 				/>
 			</SettingRow>
 
-			<SettingRow
-				name="Temperature"
-				description="Controls randomness (0.0-2.0)"
-			>
+			<SettingRow name='Temperature' description='Controls randomness (0.0-2.0)'>
 				<Input
-					type="number"
+					type='number'
 					value={options.temperature?.toString() || ''}
 					onChange={(e) => handleTemperatureChange(e.target.value)}
-					placeholder="1.0"
-					min="0"
-					max="2"
-					step="0.1"
+					placeholder='1.0'
+					min='0'
+					max='2'
+					step='0.1'
 					disabled={disabled}
-					className={`${styles.numberInput} ${
-						temperatureError ? styles.error : ''
-					}`}
+					className={`${styles.numberInput} ${temperatureError ? styles.error : ''}`}
 				/>
-				{temperatureError && (
-					<ValidationMessage
-						type="error"
-						message={temperatureError}
-					/>
-				)}
+				{temperatureError && <ValidationMessage type='error' message={temperatureError} />}
 			</SettingRow>
 
-			<SettingRow
-				name="Top P"
-				description="Controls diversity via nucleus sampling (0.0-1.0)"
-			>
+			<SettingRow name='Top P' description='Controls diversity via nucleus sampling (0.0-1.0)'>
 				<Input
-					type="number"
+					type='number'
 					value={options.topP?.toString() || ''}
 					onChange={(e) => handleTopPChange(e.target.value)}
-					placeholder="1.0"
-					min="0"
-					max="1"
-					step="0.1"
+					placeholder='1.0'
+					min='0'
+					max='1'
+					step='0.1'
 					disabled={disabled}
-					className={`${styles.numberInput} ${
-						topPError ? styles.error : ''
-					}`}
+					className={`${styles.numberInput} ${topPError ? styles.error : ''}`}
 				/>
-				{topPError && (
-					<ValidationMessage
-						type="error"
-						message={topPError}
-					/>
-				)}
+				{topPError && <ValidationMessage type='error' message={topPError} />}
 			</SettingRow>
 
-			<SettingRow
-				name="Frequency Penalty"
-				description="Reduces repetition (−2.0 to 2.0)"
-			>
+			<SettingRow name='Frequency Penalty' description='Reduces repetition (−2.0 to 2.0)'>
 				<Input
-					type="number"
+					type='number'
 					value={options.frequencyPenalty?.toString() || ''}
 					onChange={(e) => handleFrequencyPenaltyChange(e.target.value)}
-					placeholder="0.0"
-					min="-2"
-					max="2"
-					step="0.1"
+					placeholder='0.0'
+					min='-2'
+					max='2'
+					step='0.1'
 					disabled={disabled}
-					className={`${styles.numberInput} ${
-						frequencyPenaltyError ? styles.error : ''
-					}`}
+					className={`${styles.numberInput} ${frequencyPenaltyError ? styles.error : ''}`}
 				/>
-				{frequencyPenaltyError && (
-					<ValidationMessage
-						type="error"
-						message={frequencyPenaltyError}
-					/>
-				)}
+				{frequencyPenaltyError && <ValidationMessage type='error' message={frequencyPenaltyError} />}
 			</SettingRow>
 
-			<SettingRow
-				name="Presence Penalty"
-				description="Encourages new topics (−2.0 to 2.0)"
-			>
+			<SettingRow name='Presence Penalty' description='Encourages new topics (−2.0 to 2.0)'>
 				<Input
-					type="number"
+					type='number'
 					value={options.presencePenalty?.toString() || ''}
 					onChange={(e) => handlePresencePenaltyChange(e.target.value)}
-					placeholder="0.0"
-					min="-2"
-					max="2"
-					step="0.1"
+					placeholder='0.0'
+					min='-2'
+					max='2'
+					step='0.1'
 					disabled={disabled}
-					className={`${styles.numberInput} ${
-						presencePenaltyError ? styles.error : ''
-					}`}
+					className={`${styles.numberInput} ${presencePenaltyError ? styles.error : ''}`}
 				/>
-				{presencePenaltyError && (
-					<ValidationMessage
-						type="error"
-						message={presencePenaltyError}
-					/>
-				)}
+				{presencePenaltyError && <ValidationMessage type='error' message={presencePenaltyError} />}
 			</SettingRow>
 
 			<div className={styles.infoBox}>
@@ -299,10 +239,18 @@ export const OpenAIConfigPanel = ({ options, onChange, disabled = false }: OpenA
 			<div className={styles.exampleBox}>
 				<h5>📋 Parameter Guidelines</h5>
 				<ul>
-					<li><strong>Creative writing:</strong> Temperature 1.2-1.5</li>
-					<li><strong>Code generation:</strong> Temperature 0.0-0.3</li>
-					<li><strong>Analysis:</strong> Temperature 0.5-0.8</li>
-					<li><strong>Chat:</strong> Temperature 0.7-1.0</li>
+					<li>
+						<strong>Creative writing:</strong> Temperature 1.2-1.5
+					</li>
+					<li>
+						<strong>Code generation:</strong> Temperature 0.0-0.3
+					</li>
+					<li>
+						<strong>Analysis:</strong> Temperature 0.5-0.8
+					</li>
+					<li>
+						<strong>Chat:</strong> Temperature 0.7-1.0
+					</li>
 				</ul>
 			</div>
 		</div>

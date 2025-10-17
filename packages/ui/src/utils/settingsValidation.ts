@@ -21,11 +21,14 @@ export class URLValidator {
 	/**
 	 * Validate a URL with optional protocol requirements
 	 */
-	static isValid(url: string, options: {
-		requireProtocol?: boolean
-		allowedProtocols?: string[]
-		allowEmpty?: boolean
-	} = {}): ValidationResult {
+	static isValid(
+		url: string,
+		options: {
+			requireProtocol?: boolean
+			allowedProtocols?: string[]
+			allowEmpty?: boolean
+		} = {}
+	): ValidationResult {
 		const { requireProtocol = true, allowedProtocols = ['http', 'https'], allowEmpty = false } = options
 
 		const errors: string[] = []
@@ -45,13 +48,13 @@ export class URLValidator {
 		// Check protocol
 		if (requireProtocol) {
 			const hasProtocol = /^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(trimmedUrl)
-			if (!hasProtocol) {
-				errors.push('URL must include protocol (e.g., https://)')
-			} else {
+			if (hasProtocol) {
 				const protocol = trimmedUrl.split(':')[0].toLowerCase()
 				if (!allowedProtocols.includes(protocol)) {
 					errors.push(`Protocol must be one of: ${allowedProtocols.join(', ')}`)
 				}
+			} else {
+				errors.push('URL must include protocol (e.g., https://)')
 			}
 		}
 
@@ -76,7 +79,6 @@ export class URLValidator {
 			if (urlObj.hostname.includes('example.com')) {
 				warnings.push('Using example.com - this is likely a placeholder')
 			}
-
 		} catch (error) {
 			errors.push('Invalid URL format')
 		}
@@ -92,7 +94,7 @@ export class URLValidator {
 	 * Validate OpenAI-style API base URLs
 	 */
 	static validateAPIBaseURL(url: string): ValidationResult {
-		const result = this.isValid(url, {
+		const result = URLValidator.isValid(url, {
 			requireProtocol: true,
 			allowedProtocols: ['https', 'http'],
 			allowEmpty: true
@@ -120,7 +122,7 @@ export class URLValidator {
 	 * Validate Azure OpenAI endpoint URLs
 	 */
 	static validateAzureEndpoint(url: string): ValidationResult {
-		const result = this.isValid(url, {
+		const result = URLValidator.isValid(url, {
 			requireProtocol: true,
 			allowedProtocols: ['https'],
 			allowEmpty: false
@@ -150,11 +152,14 @@ export class JSONValidator {
 	/**
 	 * Validate JSON string with optional schema validation
 	 */
-	static isValid(jsonString: string, options: {
-		allowEmpty?: boolean
-		schema?: any
-		maxSize?: number
-	} = {}): ValidationResult {
+	static isValid(
+		jsonString: string,
+		options: {
+			allowEmpty?: boolean
+			schema?: any
+			maxSize?: number
+		} = {}
+	): ValidationResult {
 		const { allowEmpty = true, schema, maxSize = 1024 * 1024 } = options // 1MB default
 
 		const errors: string[] = []
@@ -184,7 +189,7 @@ export class JSONValidator {
 
 		// Schema validation if provided
 		if (schema) {
-			const schemaErrors = this.validateAgainstSchema(parsed, schema)
+			const schemaErrors = JSONValidator.validateAgainstSchema(parsed, schema)
 			errors.push(...schemaErrors)
 		}
 
@@ -240,8 +245,8 @@ export class JSONValidator {
 		if (schema.properties && typeof data === 'object' && data !== null) {
 			for (const [propName, propSchema] of Object.entries(schema.properties)) {
 				if (propName in data) {
-					const propErrors = this.validateAgainstSchema(data[propName], propSchema)
-					errors.push(...propErrors.map(e => `${propName}: ${e}`))
+					const propErrors = JSONValidator.validateAgainstSchema(data[propName], propSchema)
+					errors.push(...propErrors.map((e) => `${propName}: ${e}`))
 				}
 			}
 		}
@@ -257,18 +262,16 @@ export class TagValidator {
 	/**
 	 * Validate Obsidian-style tags
 	 */
-	static validateTags(tags: string[], options: {
-		allowEmpty?: boolean
-		requireHashPrefix?: boolean
-		maxLength?: number
-		maxCount?: number
-	} = {}): TagValidationResult {
-		const {
-			allowEmpty = true,
-			requireHashPrefix = true,
-			maxLength = 100,
-			maxCount = 50
-		} = options
+	static validateTags(
+		tags: string[],
+		options: {
+			allowEmpty?: boolean
+			requireHashPrefix?: boolean
+			maxLength?: number
+			maxCount?: number
+		} = {}
+	): TagValidationResult {
+		const { allowEmpty = true, requireHashPrefix = true, maxLength = 100, maxCount = 50 } = options
 
 		const errors: string[] = []
 		const warnings: string[] = []
@@ -360,10 +363,13 @@ export class TagValidator {
 	/**
 	 * Validate a single tag
 	 */
-	static validateSingleTag(tag: string, options: {
-		requireHashPrefix?: boolean
-		maxLength?: number
-	} = {}): ValidationResult {
+	static validateSingleTag(
+		tag: string,
+		options: {
+			requireHashPrefix?: boolean
+			maxLength?: number
+		} = {}
+	): ValidationResult {
 		const { requireHashPrefix = true, maxLength = 100 } = options
 
 		const errors: string[] = []
@@ -428,7 +434,12 @@ export class TagValidator {
 
 		// Convert camelCase to kebab-case
 		if (trimmedTag.match(/^[A-Z][a-zA-Z0-9]*$/) || trimmedTag.match(/^[a-z]+[A-Z][a-zA-Z0-9]*$/)) {
-			suggestions.push(trimmedTag.replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^-/, '#'))
+			suggestions.push(
+				trimmedTag
+					.replace(/([A-Z])/g, '-$1')
+					.toLowerCase()
+					.replace(/^-/, '#')
+			)
 		}
 
 		return [...new Set(suggestions)] // Remove duplicates
@@ -656,21 +667,24 @@ export class SettingsValidator {
 		// Vendor-specific validation
 		if (provider.vendorConfig) {
 			switch (provider.name) {
-				case 'Claude':
+				case 'Claude': {
 					const claudeValidation = VendorValidator.validateClaudeConfig(provider.vendorConfig.claude || {})
 					errors.push(...claudeValidation.errors)
 					warnings.push(...claudeValidation.warnings)
 					break
-				case 'OpenAI':
+				}
+				case 'OpenAI': {
 					const openaiValidation = VendorValidator.validateOpenAIConfig(provider.vendorConfig.openai || {})
 					errors.push(...openaiValidation.errors)
 					warnings.push(...openaiValidation.warnings)
 					break
-				case 'Ollama':
+				}
+				case 'Ollama': {
 					const ollamaValidation = VendorValidator.validateOllamaConfig(provider.vendorConfig.ollama || {})
 					errors.push(...ollamaValidation.errors)
 					warnings.push(...ollamaValidation.warnings)
 					break
+				}
 			}
 		}
 

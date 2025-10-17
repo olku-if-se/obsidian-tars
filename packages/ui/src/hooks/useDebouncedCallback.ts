@@ -4,10 +4,7 @@ import { useCallback, useRef } from 'react'
  * Custom hook for creating debounced callback functions
  * Follows React hooks best practices with proper cleanup
  */
-export function useDebouncedCallback<T extends (...args: any[]) => void>(
-	callback: T,
-	delay: number
-): T {
+export function useDebouncedCallback<T extends (...args: any[]) => void>(callback: T, delay: number): T {
 	const timeoutRef = useRef<number | null>(null)
 
 	// Debounced function implementation
@@ -37,10 +34,7 @@ export function useDebouncedCallback<T extends (...args: any[]) => void>(
  * Custom hook for creating a debounced callback with cleanup
  * Enhanced version with proper effect cleanup
  */
-export function useDebouncedCallbackWithCleanup<T extends (...args: any[]) => void>(
-	callback: T,
-	delay: number
-): T {
+export function useDebouncedCallbackWithCleanup<T extends (...args: any[]) => void>(callback: T, delay: number): T {
 	const timeoutRef = useRef<number | null>(null)
 
 	const debouncedCallback = useCallback(

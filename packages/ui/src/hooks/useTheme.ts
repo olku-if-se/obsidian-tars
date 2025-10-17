@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { DEFAULT_THEME, getTheme, THEME_CONFIGS, type Theme, type ThemeName } from '../providers/themes/theme'
+import { DEFAULT_THEME, getTheme, THEME_CONFIGS, type Theme, type ThemeName } from '~/providers/themes/theme'
 
 export function useTheme(initialTheme?: ThemeName) {
 	const [currentTheme, setCurrentTheme] = useState<ThemeName>(initialTheme || DEFAULT_THEME)

@@ -1,5 +1,5 @@
-import { Button } from '../../atoms'
-import { t } from '../../utils/i18n'
+import { Button } from '~/atoms'
+import { t } from '../../locales/i18n'
 import { ProviderCard } from '../CardAiProvider/ProviderCard'
 import type { Provider } from '../CardAiProvider/types'
 import styles from './ProviderSection.module.css'
@@ -65,7 +65,7 @@ export const ProviderSection = ({
 			<div className={styles.sectionHeader}>
 				<h2>{strings.title}</h2>
 				<div className={styles.addProviderButton}>
-					<Button variant="primary" onClick={handleAddProvider}>
+					<Button variant='primary' onClick={handleAddProvider}>
 						{strings.addProvider}
 					</Button>
 				</div>

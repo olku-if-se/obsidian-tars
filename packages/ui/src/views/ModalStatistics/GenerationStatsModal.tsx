@@ -1,8 +1,8 @@
 import type React from 'react'
-import { Button, LabelValueList, Modal } from '../../atoms'
-import type { BridgeComponentProps } from '../../bridge/ReactBridge'
-import type { ErrorInfo, ErrorLogEntry } from '../../types/types'
-import { formatDuration } from '../../utils/utilities'
+import { Button, LabelValueList, Modal } from '~/atoms'
+import type { BridgeComponentProps } from '~/bridge/ReactBridge'
+import type { ErrorInfo, ErrorLogEntry } from '~/types'
+import { formatDuration } from '~/utils/utilities'
 
 export interface GenerationStats {
 	round: number
@@ -56,12 +56,7 @@ export const GenerationStatsModal: React.FC<GenerationStatsModalProps> = ({ stat
 	]
 
 	return (
-		<Modal
-			isOpen={true}
-			onClose={onClose}
-			title='AI Generation Details'
-			size='md'
-		>
+		<Modal isOpen={true} onClose={onClose} title='AI Generation Details' size='md'>
 			<div className={styles.generationStatsModal}>
 				{errorLog.length > 0 && (
 					<div className={styles.actionButtons}>

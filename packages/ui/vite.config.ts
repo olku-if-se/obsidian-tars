@@ -4,6 +4,12 @@ import { defineConfig } from 'vite'
 
 export default defineConfig({
 	plugins: [react()],
+	resolve: {
+		alias: {
+			'@': resolve(__dirname, './src'),
+			'~': resolve(__dirname, 'src')
+		}
+	},
 	css: {
 		modules: {
 			localsConvention: 'camelCaseOnly',
@@ -30,7 +36,7 @@ export default defineConfig({
 	},
 	// Add Storybook-specific configuration
 	optimizeDeps: {
-		include: ['@storybook/react', '@storybook/react-vite', '@mdx-js/react'],
+		include: ['@storybook/react', '@storybook/react-vite', '@mdx-js/react', 'clsx'],
 		force: true // Force optimization to prevent hanging
 	},
 	define: {

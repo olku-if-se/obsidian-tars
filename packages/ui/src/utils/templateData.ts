@@ -53,13 +53,15 @@ export const memoryServerTemplate: MCPServerTemplate = {
 	name: 'Memory Server',
 	category: 'Productivity',
 	description: 'Knowledge graph and memory management for persistent conversations',
-	longDescription: 'Creates a persistent memory system that maintains conversation context and builds a knowledge graph over time. Perfect for maintaining long-term context across sessions.',
+	longDescription:
+		'Creates a persistent memory system that maintains conversation context and builds a knowledge graph over time. Perfect for maintaining long-term context across sessions.',
 	configurations: [
 		{
 			name: 'Default Memory',
 			command: 'npx @modelcontextprotocol/server-memory',
 			requirements: ['Node.js', 'npm/npx'],
-			setupInstructions: 'Install Node.js and run the command to start a memory server that persists conversation context.'
+			setupInstructions:
+				'Install Node.js and run the command to start a memory server that persists conversation context.'
 		}
 	],
 	useCases: ['Persistent conversation context', 'Knowledge management', 'Session continuity'],
@@ -74,13 +76,15 @@ export const filesystemServerTemplate: MCPServerTemplate = {
 	name: 'Filesystem Access',
 	category: 'Productivity',
 	description: 'Read, write, and manage files on your local filesystem',
-	longDescription: 'Provides secure access to your local filesystem with configurable path restrictions. Perfect for document processing, file management, and local data operations.',
+	longDescription:
+		'Provides secure access to your local filesystem with configurable path restrictions. Perfect for document processing, file management, and local data operations.',
 	configurations: [
 		{
 			name: 'Full Filesystem Access',
 			command: 'npx @modelcontextprotocol/server-filesystem',
 			requirements: ['Node.js', 'npm/npx'],
-			setupInstructions: 'Run with appropriate permissions. Consider limiting access to specific directories for security.',
+			setupInstructions:
+				'Run with appropriate permissions. Consider limiting access to specific directories for security.',
 			envVars: {
 				FILESYSTEM_ROOT: {
 					description: 'Root directory for filesystem access',
@@ -103,7 +107,8 @@ export const exaSearchTemplate: MCPServerTemplate = {
 	name: 'Exa Web Search',
 	category: 'Productivity',
 	description: 'Web search capabilities using Exa search API',
-	longDescription: 'Integrates with Exa search API to provide comprehensive web search functionality. Perfect for research, fact-checking, and gathering current information.',
+	longDescription:
+		'Integrates with Exa search API to provide comprehensive web search functionality. Perfect for research, fact-checking, and gathering current information.',
 	configurations: [
 		{
 			name: 'Exa API Search',
@@ -134,7 +139,8 @@ export const githubServerTemplate: MCPServerTemplate = {
 	name: 'GitHub Repository Access',
 	category: 'Development',
 	description: 'Access and manage GitHub repositories',
-	longDescription: 'Provides comprehensive GitHub repository access including files, commits, issues, and pull requests. Perfect for code analysis and repository management.',
+	longDescription:
+		'Provides comprehensive GitHub repository access including files, commits, issues, and pull requests. Perfect for code analysis and repository management.',
 	configurations: [
 		{
 			name: 'GitHub API Access',
@@ -162,7 +168,8 @@ export const gitServerTemplate: MCPServerTemplate = {
 	name: 'Git Repository Operations',
 	category: 'Development',
 	description: 'Local git repository operations and analysis',
-	longDescription: 'Provides access to local git repositories for commit history, diff analysis, and repository inspection. Perfect for code review and version control tasks.',
+	longDescription:
+		'Provides access to local git repositories for commit history, diff analysis, and repository inspection. Perfect for code review and version control tasks.',
 	configurations: [
 		{
 			name: 'Local Git Access',
@@ -186,7 +193,8 @@ export const postgresServerTemplate: MCPServerTemplate = {
 	name: 'PostgreSQL Database',
 	category: 'Data & Analytics',
 	description: 'PostgreSQL database access and query execution',
-	longDescription: 'Provides secure access to PostgreSQL databases for query execution, schema inspection, and data analysis. Perfect for database management and data exploration.',
+	longDescription:
+		'Provides secure access to PostgreSQL databases for query execution, schema inspection, and data analysis. Perfect for database management and data exploration.',
 	configurations: [
 		{
 			name: 'PostgreSQL Connection',
@@ -214,7 +222,8 @@ export const sqliteServerTemplate: MCPServerTemplate = {
 	name: 'SQLite Database',
 	category: 'Data & Analytics',
 	description: 'SQLite database access and management',
-	longDescription: 'Provides access to SQLite databases for query execution and data manipulation. Perfect for local data storage and lightweight database applications.',
+	longDescription:
+		'Provides access to SQLite databases for query execution and data manipulation. Perfect for local data storage and lightweight database applications.',
 	configurations: [
 		{
 			name: 'SQLite Database Access',
@@ -245,7 +254,8 @@ export const ollamaServerTemplate: MCPServerTemplate = {
 	name: 'Ollama Local LLM',
 	category: 'AI & Machine Learning',
 	description: 'Local LLM access through Ollama',
-	longDescription: 'Provides access to locally running LLM models through Ollama. Perfect for private AI processing and local model experimentation.',
+	longDescription:
+		'Provides access to locally running LLM models through Ollama. Perfect for private AI processing and local model experimentation.',
 	configurations: [
 		{
 			name: 'Ollama Local Models',
@@ -277,7 +287,8 @@ export const dockerServerTemplate: MCPServerTemplate = {
 	name: 'Docker Container Management',
 	category: 'System & Utilities',
 	description: 'Docker container management and operations',
-	longDescription: 'Provides Docker container management capabilities including listing, starting, stopping, and inspecting containers. Perfect for development environment management.',
+	longDescription:
+		'Provides Docker container management capabilities including listing, starting, stopping, and inspecting containers. Perfect for development environment management.',
 	configurations: [
 		{
 			name: 'Docker Management',
@@ -298,7 +309,8 @@ export const systemInfoServerTemplate: MCPServerTemplate = {
 	name: 'System Information',
 	category: 'System & Utilities',
 	description: 'System monitoring and information gathering',
-	longDescription: 'Provides comprehensive system information including CPU, memory, disk usage, and process information. Perfect for system monitoring and diagnostics.',
+	longDescription:
+		'Provides comprehensive system information including CPU, memory, disk usage, and process information. Perfect for system monitoring and diagnostics.',
 	configurations: [
 		{
 			name: 'System Monitoring',
@@ -321,7 +333,8 @@ export const puppeteerServerTemplate: MCPServerTemplate = {
 	name: 'Web Automation',
 	category: 'System & Utilities',
 	description: 'Web page automation and scraping',
-	longDescription: 'Provides web automation capabilities using Puppeteer for scraping, testing, and browser automation. Perfect for data extraction and web testing.',
+	longDescription:
+		'Provides web automation capabilities using Puppeteer for scraping, testing, and browser automation. Perfect for data extraction and web testing.',
 	configurations: [
 		{
 			name: 'Browser Automation',
@@ -342,7 +355,8 @@ export const fetchServerTemplate: MCPServerTemplate = {
 	name: 'HTTP Fetch',
 	category: 'System & Utilities',
 	description: 'HTTP requests and API integration',
-	longDescription: 'Provides HTTP request capabilities for API integration and web service access. Perfect for REST API interactions and data fetching.',
+	longDescription:
+		'Provides HTTP request capabilities for API integration and web service access. Perfect for REST API interactions and data fetching.',
 	configurations: [
 		{
 			name: 'HTTP Client',
@@ -363,7 +377,8 @@ export const awsServerTemplate: MCPServerTemplate = {
 	name: 'AWS Services',
 	category: 'Development',
 	description: 'AWS service integration and management',
-	longDescription: 'Provides access to AWS services including S3, EC2, and Lambda. Perfect for cloud resource management and AWS automation.',
+	longDescription:
+		'Provides access to AWS services including S3, EC2, and Lambda. Perfect for cloud resource management and AWS automation.',
 	configurations: [
 		{
 			name: 'AWS API Access',
@@ -402,7 +417,8 @@ export const braveSearchTemplate: MCPServerTemplate = {
 	name: 'Brave Search API',
 	category: 'Productivity',
 	description: 'Web search using Brave Search API',
-	longDescription: 'Integrates with Brave Search API for comprehensive web search with privacy focus. Perfect for research and information gathering.',
+	longDescription:
+		'Integrates with Brave Search API for comprehensive web search with privacy focus. Perfect for research and information gathering.',
 	configurations: [
 		{
 			name: 'Brave Search',
@@ -430,7 +446,8 @@ export const puppeteerDocsTemplate: MCPServerTemplate = {
 	name: 'Documentation Web Automation',
 	category: 'System & Utilities',
 	description: 'Documentation extraction and processing',
-	longDescription: 'Specialized Puppeteer configuration for documentation extraction and processing from websites. Perfect for knowledge base creation.',
+	longDescription:
+		'Specialized Puppeteer configuration for documentation extraction and processing from websites. Perfect for knowledge base creation.',
 	configurations: [
 		{
 			name: 'Docs Processing',
@@ -487,28 +504,24 @@ export const templateCategories = [
 ]
 
 // All templates as a flat array for easy access
-export const allTemplates = templateCategories.flatMap(category => category.templates)
+export const allTemplates = templateCategories.flatMap((category) => category.templates)
 
 // Template lookup functions
-export function getTemplateById(id: string): MCPServerTemplate | undefined {
-	return allTemplates.find(template => template.id === id)
-}
+export const getTemplateById = (id: string): MCPServerTemplate | undefined =>
+	allTemplates.find((template) => template.id === id)
 
-export function getTemplatesByCategory(categoryId: string): MCPServerTemplate[] {
-	return allTemplates.filter(template => template.category === categoryId)
-}
+export const getTemplatesByCategory = (categoryId: string): MCPServerTemplate[] =>
+	allTemplates.filter((template) => template.category === categoryId)
 
-export function getTemplatesByTag(tag: string): MCPServerTemplate[] {
-	return allTemplates.filter(template => template.tags.includes(tag))
-}
+export const getTemplatesByTag = (tag: string): MCPServerTemplate[] =>
+	allTemplates.filter((template) => template.tags.includes(tag))
 
-export function getTemplatesByDifficulty(difficulty: 'beginner' | 'intermediate' | 'advanced'): MCPServerTemplate[] {
-	return allTemplates.filter(template => template.difficulty === difficulty)
-}
+export const getTemplatesByDifficulty = (difficulty: 'beginner' | 'intermediate' | 'advanced'): MCPServerTemplate[] =>
+	allTemplates.filter((template) => template.difficulty === difficulty)
 
 // Template validation
-export function validateTemplate(template: MCPServerTemplate): boolean {
-	return !!(
+export const validateTemplate = (template: MCPServerTemplate): boolean =>
+	!!(
 		template.id &&
 		template.name &&
 		template.category &&
@@ -516,7 +529,6 @@ export function validateTemplate(template: MCPServerTemplate): boolean {
 		template.configurations.length > 0 &&
 		template.requirements
 	)
-}
 
 // Export default template collection
 export default {

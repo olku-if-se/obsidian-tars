@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Button, Select, Input, ValidationMessage } from '../../atoms'
+import { Button, Select, Input, ValidationMessage } from '~/atoms'
 import styles from './ModelSelector.module.css'
 
 export interface ModelSelectorProps {
@@ -22,19 +22,19 @@ export interface ConnectionResult {
 
 // Model fetching configurations for different vendors
 const MODEL_FETCH_CONFIGS = {
-	'SiliconFlow': {
+	SiliconFlow: {
 		url: 'https://api.siliconflow.cn/v1/models?type=text&sub_type=chat',
 		requiresApiKey: true
 	},
-	'OpenRouter': {
+	OpenRouter: {
 		url: 'https://openrouter.ai/api/v1/models',
 		requiresApiKey: false
 	},
-	'Kimi': {
+	Kimi: {
 		url: 'https://api.moonshot.cn/v1/models',
 		requiresApiKey: true
 	},
-	'Grok': {
+	Grok: {
 		url: 'https://api.x.ai/v1/models',
 		requiresApiKey: true
 	}
@@ -42,7 +42,7 @@ const MODEL_FETCH_CONFIGS = {
 
 // Static model lists for vendors that don't support dynamic fetching
 const STATIC_MODELS: Record<string, string[]> = {
-	'Ollama': [
+	Ollama: [
 		'llama3.2:3b',
 		'llama3.2:1b',
 		'llama3.1:8b',
@@ -53,27 +53,15 @@ const STATIC_MODELS: Record<string, string[]> = {
 		'qwen:7b',
 		'phi3:mini'
 	],
-	'Claude': [
+	Claude: [
 		'claude-3-5-sonnet-20241022',
 		'claude-3-5-haiku-20241022',
 		'claude-3-opus-20240229',
 		'claude-3-sonnet-20240229',
 		'claude-3-haiku-20240307'
 	],
-	'OpenAI': [
-		'gpt-4o',
-		'gpt-4o-mini',
-		'gpt-4-turbo',
-		'gpt-4',
-		'gpt-3.5-turbo'
-	],
-	'Azure': [
-		'gpt-4o',
-		'gpt-4o-mini',
-		'gpt-4-turbo',
-		'gpt-4',
-		'gpt-3.5-turbo'
-	]
+	OpenAI: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo'],
+	Azure: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-4', 'gpt-3.5-turbo']
 }
 
 type VendorName = keyof typeof MODEL_FETCH_CONFIGS | keyof typeof STATIC_MODELS
@@ -180,7 +168,7 @@ export const ModelSelector = ({
 				<Input
 					value={customModel}
 					onChange={(e) => handleCustomModelChange(e.target.value)}
-					placeholder="Enter custom model name"
+					placeholder='Enter custom model name'
 					disabled={disabled}
 					className={styles.customModelInput}
 				/>
@@ -189,7 +177,7 @@ export const ModelSelector = ({
 
 		const options = [
 			{ value: '', label: placeholder },
-			...availableModels.map(model => ({ value: model, label: model })),
+			...availableModels.map((model) => ({ value: model, label: model })),
 			{ value: '__custom__', label: 'Custom model...' }
 		]
 
@@ -212,11 +200,11 @@ export const ModelSelector = ({
 				<div className={styles.actionButtons}>
 					{supportsDynamicFetching && (
 						<Button
-							variant="default"
-							size="sm"
+							variant='default'
+							size='sm'
 							onClick={handleRefreshModels}
 							disabled={disabled || isLoading}
-							title="Refresh model list"
+							title='Refresh model list'
 						>
 							{isLoading ? '⟳' : '🔄'}
 						</Button>
@@ -224,11 +212,11 @@ export const ModelSelector = ({
 
 					{onTestConnection && (
 						<Button
-							variant="default"
-							size="sm"
+							variant='default'
+							size='sm'
 							onClick={handleTestConnection}
 							disabled={disabled || !selectedModel}
-							title="Test connection"
+							title='Test connection'
 						>
 							🔗
 						</Button>
@@ -236,29 +224,18 @@ export const ModelSelector = ({
 				</div>
 			</div>
 
-			{error && (
-				<ValidationMessage
-					type="error"
-					message={error}
-				/>
-			)}
+			{error && <ValidationMessage type='error' message={error} />}
 
-			{isLoading && (
-				<div className={styles.loadingMessage}>
-					Loading models...
-				</div>
-			)}
+			{isLoading && <div className={styles.loadingMessage}>Loading models...</div>}
 
 			{!isLoading && availableModels.length === 0 && !error && (
-				<div className={styles.noModelsMessage}>
-					No models available. Check API key or connection.
-				</div>
+				<div className={styles.noModelsMessage}>No models available. Check API key or connection.</div>
 			)}
 
 			{isCustomModel && (
 				<ValidationMessage
-					type="info"
-					message="Using custom model. Ensure the model name is correct and supported by the vendor."
+					type='info'
+					message='Using custom model. Ensure the model name is correct and supported by the vendor.'
 				/>
 			)}
 		</div>

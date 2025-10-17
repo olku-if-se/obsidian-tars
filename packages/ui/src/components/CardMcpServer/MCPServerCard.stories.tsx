@@ -331,7 +331,7 @@ export const MultipleServers: Story = {
 					server={externalServerConfig}
 					isSelected={false}
 					testLoading={false}
-					statusMessage="Connected successfully"
+					statusMessage='Connected successfully'
 					{...externalHandlers}
 				/>
 				<MCPServerCard server={invalidJsonServerConfig} isSelected={false} testLoading={false} {...invalidHandlers} />

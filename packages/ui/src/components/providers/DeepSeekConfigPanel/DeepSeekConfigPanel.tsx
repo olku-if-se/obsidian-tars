@@ -1,4 +1,4 @@
-import { Input, SettingRow, ValidationMessage, Select } from '../../atoms'
+import { Input, Select, SettingRow, ValidationMessage } from '~/atoms'
 import styles from './DeepSeekConfigPanel.module.css'
 
 export interface DeepSeekOptions {
@@ -39,35 +39,35 @@ export const DeepSeekConfigPanel = ({ options, onChange, disabled = false }: Dee
 
 	const handleMaxTokensChange = (value: string) => {
 		const number = parseInt(value, 10)
-		if (!isNaN(number) && number > 0) {
+		if (!Number.isNaN(number) && number > 0) {
 			onChange({ maxTokens: number })
 		}
 	}
 
 	const handleTemperatureChange = (value: string) => {
 		const number = parseFloat(value)
-		if (!isNaN(number) && number >= 0 && number <= 2) {
+		if (!Number.isNaN(number) && number >= 0 && number <= 2) {
 			onChange({ temperature: number })
 		}
 	}
 
 	const handleTopPChange = (value: string) => {
 		const number = parseFloat(value)
-		if (!isNaN(number) && number >= 0 && number <= 1) {
+		if (!Number.isNaN(number) && number >= 0 && number <= 1) {
 			onChange({ topP: number })
 		}
 	}
 
 	const handleFrequencyPenaltyChange = (value: string) => {
 		const number = parseFloat(value)
-		if (!isNaN(number) && number >= -2 && number <= 2) {
+		if (!Number.isNaN(number) && number >= -2 && number <= 2) {
 			onChange({ frequencyPenalty: number })
 		}
 	}
 
 	const handlePresencePenaltyChange = (value: string) => {
 		const number = parseFloat(value)
-		if (!isNaN(number) && number >= -2 && number <= 2) {
+		if (!Number.isNaN(number) && number >= -2 && number <= 2) {
 			onChange({ presencePenalty: number })
 		}
 	}
@@ -101,28 +101,18 @@ export const DeepSeekConfigPanel = ({ options, onChange, disabled = false }: Dee
 
 	return (
 		<div className={styles.deepSeekConfigPanel}>
-			<SettingRow
-				name="Base URL"
-				description="Custom API endpoint (leave empty for default)"
-			>
+			<SettingRow name='Base URL' description='Custom API endpoint (leave empty for default)'>
 				<Input
 					value={options.baseURL || ''}
 					onChange={(e) => handleBaseURLChange(e.target.value)}
-					placeholder="https://api.deepseek.com"
+					placeholder='https://api.deepseek.com'
 					disabled={disabled}
-					className={`${styles.baseURLInput} ${
-						baseURLError ? styles.error : ''
-					}`}
+					className={`${styles.baseURLInput} ${baseURLError ? styles.error : ''}`}
 				/>
-				{baseURLError && (
-					<ValidationMessage
-						type="error"
-						message={baseURLError}
-					/>
-				)}
+				{baseURLError && <ValidationMessage type='error' message={baseURLError} />}
 			</SettingRow>
 
-			<SettingRow name="Model">
+			<SettingRow name='Model'>
 				<Select
 					value={options.model || 'deepseek-chat'}
 					onChange={(e) => handleModelChange(e.target.value)}
@@ -136,10 +126,7 @@ export const DeepSeekConfigPanel = ({ options, onChange, disabled = false }: Dee
 			</SettingRow>
 
 			{isReasonerModel && (
-				<SettingRow
-					name="Reasoning Effort"
-					description="Controls depth of reasoning process"
-				>
+				<SettingRow name='Reasoning Effort' description='Controls depth of reasoning process'>
 					<Select
 						value={options.reasoningEffort || 'medium'}
 						onChange={(e) => handleReasoningEffortChange(e.target.value)}
@@ -154,101 +141,72 @@ export const DeepSeekConfigPanel = ({ options, onChange, disabled = false }: Dee
 				</SettingRow>
 			)}
 
-			<SettingRow
-				name="Max Tokens"
-				description="Maximum tokens in response (1-8192)"
-			>
+			<SettingRow name='Max Tokens' description='Maximum tokens in response (1-8192)'>
 				<Input
-					type="number"
+					type='number'
 					value={options.maxTokens?.toString() || ''}
 					onChange={(e) => handleMaxTokensChange(e.target.value)}
-					placeholder="4096"
-					min="1"
-					max="8192"
+					placeholder='4096'
+					min='1'
+					max='8192'
 					disabled={disabled}
 					className={styles.numberInput}
 				/>
 			</SettingRow>
 
-			<SettingRow
-				name="Temperature"
-				description="Controls randomness (0.0-2.0)"
-			>
+			<SettingRow name='Temperature' description='Controls randomness (0.0-2.0)'>
 				<Input
-					type="number"
+					type='number'
 					value={options.temperature?.toString() || ''}
 					onChange={(e) => handleTemperatureChange(e.target.value)}
-					placeholder="1.0"
-					min="0"
-					max="2"
-					step="0.1"
+					placeholder='1.0'
+					min='0'
+					max='2'
+					step='0.1'
 					disabled={disabled}
-					className={`${styles.numberInput} ${
-						temperatureError ? styles.error : ''
-					}`}
+					className={`${styles.numberInput} ${temperatureError ? styles.error : ''}`}
 				/>
-				{temperatureError && (
-					<ValidationMessage
-						type="error"
-						message={temperatureError}
-					/>
-				)}
+				{temperatureError && <ValidationMessage type='error' message={temperatureError} />}
 			</SettingRow>
 
-			<SettingRow
-				name="Top P"
-				description="Controls diversity via nucleus sampling (0.0-1.0)"
-			>
+			<SettingRow name='Top P' description='Controls diversity via nucleus sampling (0.0-1.0)'>
 				<Input
-					type="number"
+					type='number'
 					value={options.topP?.toString() || ''}
 					onChange={(e) => handleTopPChange(e.target.value)}
-					placeholder="1.0"
-					min="0"
-					max="1"
-					step="0.1"
+					placeholder='1.0'
+					min='0'
+					max='1'
+					step='0.1'
 					disabled={disabled}
-					className={`${styles.numberInput} ${
-						topPError ? styles.error : ''
-					}`}
+					className={`${styles.numberInput} ${topPError ? styles.error : ''}`}
 				/>
-				{topPError && (
-					<ValidationMessage
-						type="error"
-						message={topPError}
-					/>
-				)}
+				{topPError && <ValidationMessage type='error' message={topPError} />}
 			</SettingRow>
 
-			<SettingRow
-				name="Frequency Penalty"
-				description="Reduces repetition (−2.0 to 2.0)"
-			>
+			<SettingRow name='Frequency Penalty' description='Reduces repetition (−2.0 to 2.0)'>
 				<Input
-					type="number"
+					type='number'
 					value={options.frequencyPenalty?.toString() || ''}
 					onChange={(e) => handleFrequencyPenaltyChange(e.target.value)}
-					placeholder="0.0"
-					min="-2"
-					max="2"
-					step="0.1"
+					placeholder='0.0'
+					min='-2'
+					max='2'
+					step='0.1'
 					disabled={disabled}
 					className={styles.numberInput}
 				/>
 			</SettingRow>
 
-			<SettingRow
-				name="Presence Penalty"
-				description="Encourages new topics (−2.0 to 2.0)"
-			>
+			<SettingRow name='Presence Penalty' description='Encourages new topics (−2.0 to 2.0)'>
 				<Input
-					type="number"
+					type='number'
 					value={options.presencePenalty?.toString() || ''}
 					onChange={(e) => handlePresencePenaltyChange(e.target.value)}
-					placeholder="0.0"
-					min="-2"
-					max="2"
-					step="0.1"
+					placeholder='0.0'
+					min='-2'
+					max='2'
+					step='0.1'
 					disabled={disabled}
 					className={styles.numberInput}
 				/>

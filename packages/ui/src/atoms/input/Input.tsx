@@ -13,18 +13,11 @@ type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> & {
 export const Input = forwardRef<HTMLInputElement, InputProps>(
 	({ label, error, size = 'md', className, id, ...props }, ref) => {
 		const generatedId = useId()
-	const inputId = id || generatedId
+		const inputId = id || generatedId
 
-		const wrapperClasses = clsx(
-			styles.inputWrapper,
-			styles[size],
-			className
-		)
+		const wrapperClasses = clsx(styles.inputWrapper, styles[size], className)
 
-		const inputClasses = clsx(
-			styles.input,
-			error && styles.error
-		)
+		const inputClasses = clsx(styles.input, error && styles.error)
 
 		return (
 			<div className={wrapperClasses}>
@@ -33,17 +26,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 						{label}
 					</label>
 				)}
-				<input
-					ref={ref}
-					id={inputId}
-					className={inputClasses}
-					{...props}
-				/>
-				{error && (
-					<div className={styles.errorText}>
-						{error}
-					</div>
-				)}
+				<input ref={ref} id={inputId} className={inputClasses} {...props} />
+				{error && <div className={styles.errorText}>{error}</div>}
 			</div>
 		)
 	}

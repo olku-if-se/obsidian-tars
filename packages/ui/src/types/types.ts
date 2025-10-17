@@ -1,4 +1,13 @@
-import type { MCPServerInfo } from '../utils/utilities'
+export interface MCPServerInfo {
+	id: string
+	name: string
+	enabled: boolean
+	isConnected: boolean
+	toolCount: number
+	isRetrying?: boolean
+	retryAttempt?: number
+	nextRetryAt?: number
+}
 
 // Local type definitions
 export interface MCPStatusInfo {

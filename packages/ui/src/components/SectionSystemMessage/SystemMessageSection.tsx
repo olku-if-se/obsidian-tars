@@ -1,4 +1,4 @@
-import { CollapsibleSection, SettingRow, TextArea, Toggle } from '../../atoms'
+import { CollapsibleSection, SettingRow, TextArea, Toggle } from '~/atoms'
 import styles from './SystemMessageSection.module.css'
 
 // Type alias for better readability

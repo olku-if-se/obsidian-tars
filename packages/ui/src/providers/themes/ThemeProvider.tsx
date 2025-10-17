@@ -1,5 +1,5 @@
 import { createContext, type ReactNode, useContext, useMemo } from 'react'
-import { useTheme } from '../../hooks/useTheme'
+import { useTheme } from '~/hooks'
 import type { Theme, ThemeName } from './theme'
 
 interface ThemeContextValue {

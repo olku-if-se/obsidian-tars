@@ -17,26 +17,32 @@ type ModalProps = {
 }
 
 export const Modal = forwardRef<HTMLDivElement, ModalProps>(
-	({
-		isOpen,
-		onClose,
-		title,
-		children,
-		size = 'md',
-		showCloseButton = true,
-		closeOnBackdropClick = true,
-		closeOnEscape = true,
-		className
-	}, _ref) => {
+	(
+		{
+			isOpen,
+			onClose,
+			title,
+			children,
+			size = 'md',
+			showCloseButton = true,
+			closeOnBackdropClick = true,
+			closeOnEscape = true,
+			className
+		},
+		_ref
+	) => {
 		const modalRef = useRef<HTMLDivElement>(null)
 		const previousFocusRef = useRef<HTMLElement | null>(null)
 		const titleId = useId()
 
-		const handleEscape = useCallback((event: KeyboardEvent) => {
-			if (event.key === 'Escape') {
-				onClose()
-			}
-		}, [onClose])
+		const handleEscape = useCallback(
+			(event: KeyboardEvent) => {
+				if (event.key === 'Escape') {
+					onClose()
+				}
+			},
+			[onClose]
+		)
 
 		useEffect(() => {
 			if (isOpen) {
@@ -71,11 +77,14 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
 			}
 		}, [isOpen, closeOnEscape, handleEscape])
 
-		const handleBackdropClick = useCallback((event: React.MouseEvent) => {
-			if (closeOnBackdropClick && event.target === event.currentTarget) {
-				onClose()
-			}
-		}, [closeOnBackdropClick, onClose])
+		const handleBackdropClick = useCallback(
+			(event: React.MouseEvent) => {
+				if (closeOnBackdropClick && event.target === event.currentTarget) {
+					onClose()
+				}
+			},
+			[closeOnBackdropClick, onClose]
+		)
 
 		if (!isOpen) {
 			return null

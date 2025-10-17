@@ -1,5 +1,5 @@
-import { Input, SettingRow, ValidationMessage } from '../../atoms'
-import { useURLValidation } from '../../hooks/useSettingsValidation'
+import { Input, SettingRow, ValidationMessage } from '~/atoms'
+import { useURLValidation } from '~/hooks/useSettingsValidation'
 import styles from './AzureConfigPanel.module.css'
 
 export interface AzureOptions {
@@ -54,52 +54,31 @@ export const AzureConfigPanel = ({ options, onChange, disabled = false }: AzureC
 
 	return (
 		<div className={styles.azureConfigPanel}>
-			<SettingRow
-				name="Endpoint"
-				description="e.g. https://docs-test-001.openai.azure.com/"
-			>
+			<SettingRow name='Endpoint' description='e.g. https://docs-test-001.openai.azure.com/'>
 				<Input
 					value={options.endpoint || ''}
 					onChange={(e) => handleEndpointChange(e.target.value)}
-					placeholder="https://your-resource.openai.azure.com/"
+					placeholder='https://your-resource.openai.azure.com/'
 					disabled={disabled}
-					className={`${styles.endpointInput} ${
-						!endpointValidation.isValid ? styles.error : ''
-					}`}
+					className={`${styles.endpointInput} ${endpointValidation.isValid ? '' : styles.error}`}
 				/>
 				{!endpointValidation.isValid && endpointValidation.errors.length > 0 && (
-					<ValidationMessage
-						type="error"
-						message={endpointValidation.errors[0]}
-					/>
+					<ValidationMessage type='error' message={endpointValidation.errors[0]} />
 				)}
 				{endpointValidation.warnings.length > 0 && (
-					<ValidationMessage
-						type="warning"
-						message={endpointValidation.warnings[0]}
-					/>
+					<ValidationMessage type='warning' message={endpointValidation.warnings[0]} />
 				)}
 			</SettingRow>
 
-			<SettingRow
-				name="API version"
-				description="e.g. 2024-xx-xx-preview"
-			>
+			<SettingRow name='API version' description='e.g. 2024-xx-xx-preview'>
 				<Input
 					value={options.apiVersion || ''}
 					onChange={(e) => handleApiVersionChange(e.target.value)}
-					placeholder="2024-02-01-preview"
+					placeholder='2024-02-01-preview'
 					disabled={disabled}
-					className={`${styles.apiVersionInput} ${
-						apiVersionError ? styles.error : ''
-					}`}
+					className={`${styles.apiVersionInput} ${apiVersionError ? styles.error : ''}`}
 				/>
-				{apiVersionError && (
-					<ValidationMessage
-						type="error"
-						message={apiVersionError}
-					/>
-				)}
+				{apiVersionError && <ValidationMessage type='error' message={apiVersionError} />}
 			</SettingRow>
 
 			<div className={styles.infoBox}>
@@ -108,15 +87,15 @@ export const AzureConfigPanel = ({ options, onChange, disabled = false }: AzureC
 					<li>
 						<strong>Endpoint:</strong> The base URL for your Azure OpenAI resource
 					</li>
-						<li>
-							<strong>API Version:</strong> The API version string for your deployment
-						</li>
-						<li>
-							<strong>Resource Name:</strong> Found in your Azure portal under "Keys and Endpoint"
-						</li>
-						<li>
-							<strong>Deployment Name:</strong> Specify the model deployment name if different from the model name
-						</li>
+					<li>
+						<strong>API Version:</strong> The API version string for your deployment
+					</li>
+					<li>
+						<strong>Resource Name:</strong> Found in your Azure portal under "Keys and Endpoint"
+					</li>
+					<li>
+						<strong>Deployment Name:</strong> Specify the model deployment name if different from the model name
+					</li>
 				</ul>
 			</div>
 

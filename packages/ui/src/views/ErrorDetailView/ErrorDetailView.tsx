@@ -1,7 +1,7 @@
 import React from 'react'
-import { Button } from '../../atoms'
-import { COMMON_STRINGS, ERROR_STRINGS } from '../../constants/strings'
-import type { ErrorInfo, ErrorLogEntry } from '../../types/types'
+import { Button } from '~/atoms'
+import { COMMON_STRINGS, ERROR_STRINGS } from '~/locales/strings'
+import type { ErrorInfo, ErrorLogEntry } from '~/types'
 import styles from './ErrorDetailView.module.css'
 import { ErrorLogItem } from './ErrorLogItem'
 
@@ -14,12 +14,7 @@ export interface ErrorDetailViewProps {
 	onRemoveLog: (id: string) => void
 }
 
-const ErrorDetailView = ({
-	currentError,
-	errorLog,
-	onClearLogs,
-	onRemoveLog
-}: ErrorDetailViewProps): JSX.Element => {
+const ErrorDetailView = ({ currentError, errorLog, onClearLogs, onRemoveLog }: ErrorDetailViewProps): JSX.Element => {
 	return (
 		<div className={styles.errorDetailModal}>
 			{currentError && (
@@ -27,7 +22,8 @@ const ErrorDetailView = ({
 					<h3>{COMMON_STRINGS.MESSAGE.ERROR}</h3>
 					<div className={styles.errorDetails}>
 						<p>
-							<strong>{ERROR_STRINGS.TYPES.VALIDATION}:</strong> {currentError.name || COMMON_STRINGS.MESSAGE.UNKNOWN_ERROR}
+							<strong>{ERROR_STRINGS.TYPES.VALIDATION}:</strong>{' '}
+							{currentError.name || COMMON_STRINGS.MESSAGE.UNKNOWN_ERROR}
 						</p>
 						<p>
 							<strong>{COMMON_STRINGS.FORM.INVALID}:</strong> {currentError.message}
@@ -47,7 +43,9 @@ const ErrorDetailView = ({
 
 			{errorLog.length > 0 && (
 				<details className={styles.errorLogDetails} open>
-					<summary>{ERROR_STRINGS.MESSAGES.INVALID_RESPONSE} ({errorLog.length})</summary>
+					<summary>
+						{ERROR_STRINGS.MESSAGES.INVALID_RESPONSE} ({errorLog.length})
+					</summary>
 					<div className={styles.errorLogContainer}>
 						{errorLog.length === 0 ? (
 							<div className={styles.emptyLog}>{COMMON_STRINGS.MESSAGE.NO_DATA}</div>

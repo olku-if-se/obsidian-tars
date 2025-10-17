@@ -11,19 +11,10 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 	({ variant = 'default', size = 'md', className, children, ...props }, ref) => {
-		const buttonClasses = clsx(
-			styles.button,
-			styles[variant],
-			styles[size],
-			className
-		)
+		const buttonClasses = clsx(styles.button, styles[variant], styles[size], className)
 
 		return (
-			<button
-				ref={ref}
-				className={buttonClasses}
-				{...props}
-			>
+			<button ref={ref} className={buttonClasses} {...props}>
 				{children}
 			</button>
 		)

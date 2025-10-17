@@ -66,14 +66,17 @@ const StatusBar = ({ state, onStateChange, onClick, onOpenModal }: StatusBarProp
 	}, [state.type])
 
 	// Memoize idle state to prevent object creation on every render
-	const idleState = useMemo(() => ({
-		type: 'idle' as const,
-		content: {
-			text: STRINGS.READY,
-			tooltip: STRINGS.READY_TOOLTIP
-		},
-		timestamp: new Date()
-	}), [])
+	const idleState = useMemo(
+		() => ({
+			type: 'idle' as const,
+			content: {
+				text: STRINGS.READY,
+				tooltip: STRINGS.READY_TOOLTIP
+			},
+			timestamp: new Date()
+		}),
+		[]
+	)
 
 	// Auto-clear timer effect
 	useEffect(() => {

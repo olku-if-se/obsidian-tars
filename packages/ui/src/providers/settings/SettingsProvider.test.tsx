@@ -3,9 +3,7 @@ import { describe, expect, it } from 'vitest'
 import type { ReactNode } from 'react'
 import { SettingsProvider, useMCPServers } from './SettingsProvider'
 
-const wrapper = ({ children }: { children: ReactNode }) => (
-	<SettingsProvider>{children}</SettingsProvider>
-)
+const wrapper = ({ children }: { children: ReactNode }) => <SettingsProvider>{children}</SettingsProvider>
 
 describe('SettingsProvider MCP server helpers', () => {
 	it('adds blank servers with default metadata', () => {

@@ -2,6 +2,7 @@
  * Utility functions for status bar components
  * These functions are kept separate to make them easily testable and reusable
  */
+import type { MCPServerInfo } from '~/types'
 
 // Error handling utilities
 export const getErrorTypeIcon = (type: string): string => {
@@ -64,17 +65,6 @@ export const formatSessionStatus = (sessions: number, limit: number, styles: Rec
 	}
 
 	return { text: `${icon} Document Sessions: ${text}`, className }
-}
-
-export interface MCPServerInfo {
-	id: string
-	name: string
-	enabled: boolean
-	isConnected: boolean
-	toolCount: number
-	isRetrying?: boolean
-	retryAttempt?: number
-	nextRetryAt?: number
 }
 
 export const formatRetryInfo = (server: MCPServerInfo): string => {

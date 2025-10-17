@@ -1,103 +1,102 @@
-
 .settingRow {
-  --setting-info-grow: 1;
-  --setting-control-grow: 1;
+	--setting-info-grow: 1;
+	--setting-control-grow: 1;
 
-  display: flex;
-  align-items: center;
-  gap: var(--size-4-3);
-  padding: var(--size-4-2) 0;
-  border-bottom: 1px solid var(--background-modifier-border);
+	display: flex;
+	align-items: center;
+	gap: var(--size-4-3);
+	padding: var(--size-4-2) 0;
+	border-bottom: 1px solid var(--background-modifier-border);
 }
 
 .settingRow:last-child {
-  border-bottom: none;
+	border-bottom: none;
 }
 
 .settingRow.vertical {
-  flex-direction: column;
-  align-items: stretch;
-  gap: var(--size-2-1);
+	flex-direction: column;
+	align-items: stretch;
+	gap: var(--size-2-1);
 }
 .settingRow.vertical > div {
-  width: 100%;
+	width: 100%;
 }
 
 .settingInfo {
-  flex: var(--setting-info-grow) 1 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-2-1);
-  min-width: 0; /* Allows text truncation */
-  flex-grow: 1;
-  align-self: stretch;
+	flex: var(--setting-info-grow) 1 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-2-1);
+	min-width: 0; /* Allows text truncation */
+	flex-grow: 1;
+	align-self: stretch;
 }
 
 .settingName {
-  font-size: var(--font-ui-medium);
-  font-weight: var(--font-medium);
-  color: var(--text-normal);
-  line-height: 1.3;
+	font-size: var(--font-ui-medium);
+	font-weight: var(--font-medium);
+	color: var(--text-normal);
+	line-height: 1.3;
 }
 
 .settingDescription {
-  font-size: var(--font-ui-small);
-  line-height: 1.4;
-  color: var(--text-muted);
+	font-size: var(--font-ui-small);
+	line-height: 1.4;
+	color: var(--text-muted);
 }
 
 .settingControl {
-  flex: var(--setting-control-grow) 1 0;
-  display: flex;
-  align-items: center;
-  gap: var(--size-2-2);
-  flex-wrap: wrap;
-  min-width: 0; /* Allows proper wrapping */
-  justify-content: flex-end;
+	flex: var(--setting-control-grow) 1 0;
+	display: flex;
+	align-items: center;
+	gap: var(--size-2-2);
+	flex-wrap: wrap;
+	min-width: 0; /* Allows proper wrapping */
+	justify-content: flex-end;
 }
 
 .settingControl input {
-  min-width: 100px;
-  max-width: 100px;
+	min-width: 100px;
+	max-width: 100px;
 }
 
 /* Vertical layout specific styles */
 .settingRow.vertical .settingControl {
-  align-self: flex-start;
-  justify-content: flex-start;
-  margin-top: var(--size-2-1);
+	align-self: flex-start;
+	justify-content: flex-start;
+	margin-top: var(--size-2-1);
 }
 
 /* Storybook example styles */
 .complex-controls {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
+	display: flex;
+	gap: 8px;
+	flex-wrap: wrap;
+	align-items: center;
 }
 
 .complex-controls input {
-  width: 80px;
+	width: 80px;
 }
 
 .vertical-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  align-items: flex-start;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	align-items: flex-start;
 }
 
 @media (max-width: 640px) {
-  .settingRow:not(.vertical) {
-    flex-direction: column;
-  }
+	.settingRow:not(.vertical) {
+		flex-direction: column;
+	}
 
-  .settingRow:not(.vertical) > div {
-    width: 100%;
-  }
+	.settingRow:not(.vertical) > div {
+		width: 100%;
+	}
 
-  .settingRow:not(.vertical) .settingControl {
-    align-self: flex-start;
-    margin-top: var(--size-2-1);
-  }
+	.settingRow:not(.vertical) .settingControl {
+		align-self: flex-start;
+		margin-top: var(--size-2-1);
+	}
 }

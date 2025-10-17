@@ -115,13 +115,18 @@ export const STATUS_STRINGS = {
 // Utility function to get placeholder text for i18n
 export const getPlaceholderText = (key: string, fallback?: string): string => {
 	// This will be replaced with actual i18n in the future
-	return fallback || key.split('.').pop()?.replace(/([A-Z])/g, ' $1').trim() || key
+	return (
+		fallback ||
+		key
+			.split('.')
+			.pop()
+			?.replace(/([A-Z])/g, ' $1')
+			.trim() ||
+		key
+	)
 }
 
 // Type-safe string getter
-export function getString<T extends Record<string, any>>(
-	obj: T,
-	path: string
-): string {
+export function getString<T extends Record<string, any>>(obj: T, path: string): string {
 	return path.split('.').reduce((acc: any, key) => acc?.[key], obj) || ''
 }

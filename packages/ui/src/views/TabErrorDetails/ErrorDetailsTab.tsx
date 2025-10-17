@@ -1,6 +1,6 @@
 import type React from 'react'
 import { useCallback } from 'react'
-import type { ErrorInfo, ErrorLogEntry } from '../../types'
+import type { ErrorInfo, ErrorLogEntry } from '~/types'
 import { ErrorDetailView } from '../ErrorDetailView/ErrorDetailView'
 
 export interface ErrorDetailsTabProps {

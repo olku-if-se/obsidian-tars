@@ -62,7 +62,9 @@ export function useDebouncedSave<T>(
 	// State management
 	const [isSaving, setIsSaving] = useState(false)
 	const [lastSaveTime, setLastSaveTime] = useState<number | null>(null)
-	const [saveHistory, setSaveHistory] = useState<Array<{ timestamp: number; type: SaveOperationType; success: boolean }>>([])
+	const [saveHistory, setSaveHistory] = useState<
+		Array<{ timestamp: number; type: SaveOperationType; success: boolean }>
+	>([])
 
 	// Refs for queue and timing management
 	const queueRef = useRef<SaveOperation[]>([])
@@ -79,7 +81,7 @@ export function useDebouncedSave<T>(
 			success
 		}
 
-		setSaveHistory(prev => {
+		setSaveHistory((prev) => {
 			const newHistory = [...prev, entry]
 			// Keep only last 100 entries
 			return newHistory.slice(-100)
@@ -112,7 +114,7 @@ export function useDebouncedSave<T>(
 
 				if (attempts <= retryAttempts) {
 					// Wait before retry with exponential backoff
-					await new Promise(resolve => setTimeout(resolve, retryDelay * 2 ** (attempts - 1)))
+					await new Promise((resolve) => setTimeout(resolve, retryDelay * 2 ** (attempts - 1)))
 				} else {
 					setIsSaving(false)
 					addToHistory(type, false)
@@ -195,38 +197,47 @@ export function useDebouncedSave<T>(
 	/**
 	 * Save data immediately
 	 */
-	const saveImmediate = useCallback(async (data: T): Promise<boolean> => {
-		try {
-			return await enqueueOperation('immediate', data)
-		} catch (error) {
-			console.error('Immediate save failed:', error)
-			return false
-		}
-	}, [enqueueOperation])
+	const saveImmediate = useCallback(
+		async (data: T): Promise<boolean> => {
+			try {
+				return await enqueueOperation('immediate', data)
+			} catch (error) {
+				console.error('Immediate save failed:', error)
+				return false
+			}
+		},
+		[enqueueOperation]
+	)
 
 	/**
 	 * Save data with debouncing
 	 */
-	const saveDebounced = useCallback(async (data: T): Promise<boolean> => {
-		try {
-			return await enqueueOperation('debounced', data)
-		} catch (error) {
-			console.error('Debounced save failed:', error)
-			return false
-		}
-	}, [enqueueOperation])
+	const saveDebounced = useCallback(
+		async (data: T): Promise<boolean> => {
+			try {
+				return await enqueueOperation('debounced', data)
+			} catch (error) {
+				console.error('Debounced save failed:', error)
+				return false
+			}
+		},
+		[enqueueOperation]
+	)
 
 	/**
 	 * Manual save (immediate processing)
 	 */
-	const saveManual = useCallback(async (data: T): Promise<boolean> => {
-		try {
-			return await enqueueOperation('manual', data)
-		} catch (error) {
-			console.error('Manual save failed:', error)
-			return false
-		}
-	}, [enqueueOperation])
+	const saveManual = useCallback(
+		async (data: T): Promise<boolean> => {
+			try {
+				return await enqueueOperation('manual', data)
+			} catch (error) {
+				console.error('Manual save failed:', error)
+				return false
+			}
+		},
+		[enqueueOperation]
+	)
 
 	/**
 	 * Flush all pending operations
@@ -253,7 +264,7 @@ export function useDebouncedSave<T>(
 	 */
 	const clearQueue = useCallback(() => {
 		// Reject all pending operations
-		queueRef.current.forEach(operation => {
+		queueRef.current.forEach((operation) => {
 			operation.reject(new Error('Operation cancelled'))
 		})
 
@@ -300,24 +311,28 @@ export function classifySaveOperation(
 ): SaveOperationType {
 	// Critical changes that should be saved immediately
 	const immediateChanges = [
-		'enable', 'disable', 'delete', 'remove',
-		'globalLimits', 'timeout', 'concurrentLimit',
-		'critical', 'security', 'auth'
+		'enable',
+		'disable',
+		'delete',
+		'remove',
+		'globalLimits',
+		'timeout',
+		'concurrentLimit',
+		'critical',
+		'security',
+		'auth'
 	]
 
 	// Manual changes that require explicit user action
-	const manualChanges = [
-		'bulkImport', 'bulkExport', 'reset', 'restore',
-		'migration', 'upgrade', 'advancedConfig'
-	]
+	const manualChanges = ['bulkImport', 'bulkExport', 'reset', 'restore', 'migration', 'upgrade', 'advancedConfig']
 
 	const changeTypeLower = changeType.toLowerCase()
 
-	if (immediateChanges.some(change => changeTypeLower.includes(change))) {
+	if (immediateChanges.some((change) => changeTypeLower.includes(change))) {
 		return 'immediate'
 	}
 
-	if (manualChanges.some(change => changeTypeLower.includes(change))) {
+	if (manualChanges.some((change) => changeTypeLower.includes(change))) {
 		return 'manual'
 	}
 

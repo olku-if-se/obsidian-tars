@@ -124,7 +124,7 @@ const preview: Preview = {
 							alignItems: 'flex-start',
 							minHeight: '100vh',
 							padding: '2rem',
-							background: 'var(--color-background)',
+							background: 'var(--color-background)'
 						}}
 					>
 						<div
@@ -134,7 +134,7 @@ const preview: Preview = {
 								maxWidth: shouldConstrainWidth ? '1200px' : 'none',
 								minWidth: shouldConstrainWidth ? '320px' : 'auto',
 								// Let components control their own height
-								minHeight: 'auto',
+								minHeight: 'auto'
 							}}
 						>
 							{children}

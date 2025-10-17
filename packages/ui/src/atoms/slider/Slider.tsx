@@ -70,7 +70,7 @@ export const Slider = forwardRef<HTMLInputElement, SliderProps>(
 					<input
 						ref={ref}
 						id={sliderId}
-						type="range"
+						type='range'
 						className={styles.input}
 						min={min}
 						max={max}

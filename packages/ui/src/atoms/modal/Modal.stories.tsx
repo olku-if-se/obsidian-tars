@@ -20,11 +20,11 @@ const meta = {
 	parameters: {
 		layout: {
 			constrainWidth: false, // Modals should use full viewport
-			center: true,
+			center: true
 		},
 		// Disable viewport for modals since they use portal rendering
 		viewport: {
-			disable: true,
+			disable: true
 		}
 	},
 	tags: ['autodocs'],

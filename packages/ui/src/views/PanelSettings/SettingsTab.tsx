@@ -1,4 +1,4 @@
-import { Section, SettingRow, Toggle } from '../../atoms'
+import { Section, SettingRow, Toggle } from '~/atoms'
 import {
 	AdvancedSection,
 	MCPServersSection,
@@ -6,7 +6,7 @@ import {
 	ProviderSection,
 	ReactFeaturesSection,
 	SystemMessageSection
-} from '../../components'
+} from '~/components'
 import {
 	useAdvancedSettings,
 	useBasicSettings,
@@ -16,8 +16,8 @@ import {
 	useReactFeatures,
 	useSystemMessage,
 	useUIState
-} from '../../providers/settings/SettingsProvider'
-import { t } from '../../utils/i18n'
+} from '~/providers'
+import { t } from '~/locales/i18n'
 import styles from './SettingsTab.module.css'
 
 type SettingsTabProps = {

@@ -1,10 +1,10 @@
 import type React from 'react'
 import { useCallback, useState } from 'react'
-import { Button, Modal, TabList } from '../../atoms'
-import type { BridgeComponentProps } from '../../bridge/ReactBridge'
-import type { ErrorInfo, ErrorLogEntry, MCPStatusInfo } from '../../types'
+import { Button, Modal, TabList } from '~/atoms'
+import type { BridgeComponentProps } from '~/bridge/ReactBridge'
+import type { ErrorInfo, ErrorLogEntry, MCPStatusInfo } from '~/types'
 import { ErrorDetailView } from '../ErrorDetailView/ErrorDetailView'
-import { MCPServerStatusTab } from '../TabMcpStatus'
+import { MCPServerStatusTab } from '~/views'
 import styles from './MCPStatusModal.module.css'
 
 export interface MCPStatusModalProps extends BridgeComponentProps {
@@ -85,7 +85,7 @@ export const MCPStatusModal: React.FC<MCPStatusModalProps> = ({
 	]
 
 	return (
-		<Modal isOpen={true} onClose={onClose} title="MCP Server Status" size="lg">
+		<Modal isOpen={true} onClose={onClose} title='MCP Server Status' size='lg'>
 			<div className={styles.mcpStatusModal}>
 				<div className={styles.tabHeader}>
 					<TabList
@@ -96,7 +96,7 @@ export const MCPStatusModal: React.FC<MCPStatusModalProps> = ({
 						}
 					/>
 					{onRefresh && activeTab === 'mcp' && (
-						<Button onClick={handleRefresh} disabled={isRefreshing} variant="primary" size="sm">
+						<Button onClick={handleRefresh} disabled={isRefreshing} variant='primary' size='sm'>
 							{isRefreshing ? 'Refreshing...' : '🔄 Refresh'}
 						</Button>
 					)}

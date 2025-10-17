@@ -3,12 +3,12 @@ import { useState } from 'react'
 import { ClaudeConfigPanel, type ClaudeOptions } from './ClaudeConfigPanel'
 
 const meta = {
-	title: 'Components/ClaudeConfigPanel',
+	title: 'Providers/ClaudeConfigPanel',
 	component: ClaudeConfigPanel,
 	parameters: {
-		layout: 'padded',
+		layout: 'padded'
 	},
-	tags: ['autodocs'],
+	tags: ['autodocs']
 } satisfies Meta<typeof ClaudeConfigPanel>
 
 export default meta
@@ -18,8 +18,8 @@ type Story = StoryObj<typeof meta>
 export const Default: Story = {
 	args: {
 		options: {},
-		onChange: (updates) => console.log('Claude config changed:', updates),
-	},
+		onChange: (updates) => console.log('Claude config changed:', updates)
+	}
 }
 
 // With thinking mode enabled
@@ -28,10 +28,10 @@ export const WithThinkingEnabled: Story = {
 		options: {
 			enableThinking: true,
 			budget_tokens: 1600,
-			max_tokens: 4096,
+			max_tokens: 4096
 		},
-		onChange: (updates) => console.log('Claude config changed:', updates),
-	},
+		onChange: (updates) => console.log('Claude config changed:', updates)
+	}
 }
 
 // With default values
@@ -40,10 +40,10 @@ export const WithDefaults: Story = {
 		options: {
 			enableThinking: false,
 			budget_tokens: 1600,
-			max_tokens: 4096,
+			max_tokens: 4096
 		},
-		onChange: (updates) => console.log('Claude config changed:', updates),
-	},
+		onChange: (updates) => console.log('Claude config changed:', updates)
+	}
 }
 
 // With high token limits
@@ -52,10 +52,10 @@ export const HighTokenLimits: Story = {
 		options: {
 			enableThinking: true,
 			budget_tokens: 5000,
-			max_tokens: 8192,
+			max_tokens: 8192
 		},
-		onChange: (updates) => console.log('Claude config changed:', updates),
-	},
+		onChange: (updates) => console.log('Claude config changed:', updates)
+	}
 }
 
 // With low token limits (showing validation)
@@ -64,10 +64,10 @@ export const LowTokenLimits: Story = {
 		options: {
 			enableThinking: true,
 			budget_tokens: 500, // Below minimum 1024
-			max_tokens: 100, // Below minimum 256
+			max_tokens: 100 // Below minimum 256
 		},
-		onChange: (updates) => console.log('Claude config changed:', updates),
-	},
+		onChange: (updates) => console.log('Claude config changed:', updates)
+	}
 }
 
 // Disabled state
@@ -76,11 +76,11 @@ export const Disabled: Story = {
 		options: {
 			enableThinking: true,
 			budget_tokens: 1600,
-			max_tokens: 4096,
+			max_tokens: 4096
 		},
 		onChange: (updates) => console.log('Claude config changed:', updates),
-		disabled: true,
-	},
+		disabled: true
+	}
 }
 
 // Interactive story with state management
@@ -89,7 +89,7 @@ export const Interactive: Story = {
 		const [claudeOptions, setClaudeOptions] = useState<ClaudeOptions>({
 			enableThinking: false,
 			budget_tokens: 1600,
-			max_tokens: 4096,
+			max_tokens: 4096
 		})
 
 		const handleChange = (updates: Partial<ClaudeOptions>) => {
@@ -98,10 +98,7 @@ export const Interactive: Story = {
 
 		return (
 			<div style={{ maxWidth: '600px' }}>
-				<ClaudeConfigPanel
-					options={claudeOptions}
-					onChange={handleChange}
-				/>
+				<ClaudeConfigPanel options={claudeOptions} onChange={handleChange} />
 				<div
 					style={{
 						marginTop: '24px',
@@ -109,7 +106,7 @@ export const Interactive: Story = {
 						backgroundColor: '#f5f5f5',
 						borderRadius: '4px',
 						fontFamily: 'monospace',
-						fontSize: '14px',
+						fontSize: '14px'
 					}}
 				>
 					<h4>Current Configuration:</h4>
@@ -117,7 +114,7 @@ export const Interactive: Story = {
 				</div>
 			</div>
 		)
-	},
+	}
 }
 
 // Story showing different configurations side by side
@@ -129,25 +126,25 @@ export const ConfigurationComparison: Story = {
 				options: {
 					enableThinking: false,
 					budget_tokens: 1600,
-					max_tokens: 4096,
-				} as ClaudeOptions,
+					max_tokens: 4096
+				} as ClaudeOptions
 			},
 			{
 				title: 'Thinking Mode Enabled',
 				options: {
 					enableThinking: true,
 					budget_tokens: 2000,
-					max_tokens: 6144,
-				} as ClaudeOptions,
+					max_tokens: 6144
+				} as ClaudeOptions
 			},
 			{
 				title: 'Power User Configuration',
 				options: {
 					enableThinking: true,
 					budget_tokens: 8000,
-					max_tokens: 12800,
-				} as ClaudeOptions,
-			},
+					max_tokens: 12800
+				} as ClaudeOptions
+			}
 		]
 
 		return (
@@ -160,41 +157,37 @@ export const ConfigurationComparison: Story = {
 							minWidth: '300px',
 							border: '1px solid #e0e0e0',
 							borderRadius: '8px',
-							padding: '16px',
+							padding: '16px'
 						}}
 					>
-						<h3 style={{ marginTop: 0, marginBottom: '16px' }}>
-							{config.title}
-						</h3>
+						<h3 style={{ marginTop: 0, marginBottom: '16px' }}>{config.title}</h3>
 						<ClaudeConfigPanel
 							options={config.options}
-							onChange={(updates) =>
-								console.log(`${config.title} changed:`, updates)
-							}
+							onChange={(updates) => console.log(`${config.title} changed:`, updates)}
 						/>
 					</div>
 				))}
 			</div>
 		)
-	},
+	}
 }
 
 // Empty configuration (only default values will be shown)
 export const EmptyConfig: Story = {
 	args: {
 		options: {},
-		onChange: (updates) => console.log('Claude config changed:', updates),
-	},
+		onChange: (updates) => console.log('Claude config changed:', updates)
+	}
 }
 
 // Only thinking mode configured
 export const ThinkingOnly: Story = {
 	args: {
 		options: {
-			enableThinking: true,
+			enableThinking: true
 		},
-		onChange: (updates) => console.log('Claude config changed:', updates),
-	},
+		onChange: (updates) => console.log('Claude config changed:', updates)
+	}
 }
 
 // Only token limits configured
@@ -202,8 +195,8 @@ export const TokenLimitsOnly: Story = {
 	args: {
 		options: {
 			budget_tokens: 2000,
-			max_tokens: 4096,
+			max_tokens: 4096
 		},
-		onChange: (updates) => console.log('Claude config changed:', updates),
-	},
+		onChange: (updates) => console.log('Claude config changed:', updates)
+	}
 }

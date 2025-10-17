@@ -17,12 +17,30 @@ export type ValidationResult = {
 
 // Dangerous commands blacklist for security
 const DANGEROUS_COMMANDS = [
-	'rm', 'rmdir', 'mv', 'cp', 'chmod', 'chown',
-	'sudo', 'su', 'doas', 'pkexec',
-	'systemctl', 'service', 'init',
-	'shutdown', 'reboot', 'halt', 'poweroff',
-	'fdisk', 'mkfs', 'mount', 'umount',
-	'iptables', 'ufw', 'firewall-cmd'
+	'rm',
+	'rmdir',
+	'mv',
+	'cp',
+	'chmod',
+	'chown',
+	'sudo',
+	'su',
+	'doas',
+	'pkexec',
+	'systemctl',
+	'service',
+	'init',
+	'shutdown',
+	'reboot',
+	'halt',
+	'poweroff',
+	'fdisk',
+	'mkfs',
+	'mount',
+	'umount',
+	'iptables',
+	'ufw',
+	'firewall-cmd'
 ] as const
 
 /**
@@ -30,7 +48,7 @@ const DANGEROUS_COMMANDS = [
  * @param url - URL string to validate
  * @returns Validation result with errors and compatibility info
  */
-export function validateUrlFormat(url: string): ValidationResult {
+export const validateUrlFormat = (url: string): ValidationResult => {
 	const errors: string[] = []
 	const warnings: string[] = []
 	const trimmed = url.trim()
@@ -111,7 +129,7 @@ export function validateUrlFormat(url: string): ValidationResult {
  * @param command - Command string to validate
  * @returns Validation result with errors and compatibility info
  */
-export function validateCommandFormat(command: string): ValidationResult {
+export const validateCommandFormat = (command: string): ValidationResult => {
 	const errors: string[] = []
 	const warnings: string[] = []
 	const trimmed = command.trim()
@@ -131,7 +149,7 @@ export function validateCommandFormat(command: string): ValidationResult {
 	}
 
 	// Parse command parts
-	const parts = trimmed.split(/\s+/).filter(p => p.length > 0)
+	const parts = trimmed.split(/\s+/).filter((p) => p.length > 0)
 	const [baseCommand, ...args] = parts
 
 	if (!baseCommand) {
@@ -149,7 +167,7 @@ export function validateCommandFormat(command: string): ValidationResult {
 	}
 
 	// Security validation
-	if (DANGEROUS_COMMANDS.includes(baseCommand as typeof DANGEROUS_COMMANDS[number])) {
+	if (DANGEROUS_COMMANDS.includes(baseCommand as (typeof DANGEROUS_COMMANDS)[number])) {
 		errors.push(`Dangerous command not allowed: ${baseCommand}`)
 	}
 
@@ -190,7 +208,7 @@ export function validateCommandFormat(command: string): ValidationResult {
  * @param jsonString - JSON string to validate
  * @returns Validation result with errors and compatibility info
  */
-export function validateJsonFormat(jsonString: string): ValidationResult {
+export const validateJsonFormat = (jsonString: string): ValidationResult => {
 	const errors: string[] = []
 	const warnings: string[] = []
 	const trimmed = jsonString.trim()
@@ -274,8 +292,7 @@ export function validateJsonFormat(jsonString: string): ValidationResult {
 		if (!parsed.command || typeof parsed.command !== 'string') {
 			errors.push('Server configuration must have a command field')
 		}
-	}
-	else {
+	} else {
 		errors.push('JSON must contain either mcpServers object or command field')
 	}
 
@@ -311,7 +328,7 @@ export function validateJsonFormat(jsonString: string): ValidationResult {
  * @param format - Format type
  * @returns Validation result
  */
-export function validateFormat(value: string, format: 'url' | 'command' | 'json'): ValidationResult {
+export const validateFormat = (value: string, format: 'url' | 'command' | 'json'): ValidationResult => {
 	switch (format) {
 		case 'url':
 			return validateUrlFormat(value)
@@ -320,14 +337,13 @@ export function validateFormat(value: string, format: 'url' | 'command' | 'json'
 		case 'json':
 			return validateJsonFormat(value)
 		default: {
-			const _exhaustiveCheck: never = format
-			throw new Error(`Unsupported format: ${_exhaustiveCheck}`)
+			throw new Error(`Unsupported format: ${format}`)
 		}
 	}
 }
 
 // Format conversion helper functions (simplified implementations)
-function convertUrlToCommand(url: string): string | null {
+export const convertUrlToCommand = (url: string): string | null => {
 	try {
 		const parsed = new URL(url)
 		if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
@@ -339,18 +355,22 @@ function convertUrlToCommand(url: string): string | null {
 	}
 }
 
-function convertUrlToJson(url: string): string | null {
+export const convertUrlToJson = (url: string): string | null => {
 	try {
 		const parsed = new URL(url)
 		if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
-			return JSON.stringify({
-				mcpServers: {
-					'remote-server': {
-						command: 'curl',
-						args: ['-X', 'GET', url]
+			return JSON.stringify(
+				{
+					mcpServers: {
+						'remote-server': {
+							command: 'curl',
+							args: ['-X', 'GET', url]
+						}
 					}
-				}
-			}, null, 2)
+				},
+				null,
+				2
+			)
 		}
 		return null
 	} catch {
@@ -358,7 +378,7 @@ function convertUrlToJson(url: string): string | null {
 	}
 }
 
-function convertCommandToUrl(command: string): string | null {
+export const convertCommandToUrl = (command: string): string | null => {
 	// Simple heuristic - if command contains curl with a URL
 	const curlMatch = command.match(/curl\s+(?:['"]?)(https?:\/\/[^'"\s]+)/)
 	if (curlMatch) {
@@ -367,19 +387,23 @@ function convertCommandToUrl(command: string): string | null {
 	return null
 }
 
-function convertCommandToJson(command: string): string | null {
+export const convertCommandToJson = (command: string): string | null => {
 	const parts = command.trim().split(/\s+/)
 	if (parts.length > 0) {
 		const [cmd, ...args] = parts
-		return JSON.stringify({
-			command: cmd,
-			args: args
-		}, null, 2)
+		return JSON.stringify(
+			{
+				command: cmd,
+				args: args
+			},
+			null,
+			2
+		)
 	}
 	return null
 }
 
-function convertJsonToCommand(jsonString: string): string | null {
+export const convertJsonToCommand = (jsonString: string): string | null => {
 	try {
 		const parsed = JSON.parse(jsonString)
 		if (typeof parsed === 'object' && parsed !== null) {
@@ -390,17 +414,13 @@ function convertJsonToCommand(jsonString: string): string | null {
 				const servers = obj.mcpServers as Record<string, unknown>
 				const firstServer = Object.values(servers)[0] as Record<string, unknown>
 				if (firstServer?.command && typeof firstServer.command === 'string') {
-					const args = Array.isArray(firstServer.args)
-						? firstServer.args.join(' ')
-						: ''
+					const args = Array.isArray(firstServer.args) ? firstServer.args.join(' ') : ''
 					return `${firstServer.command} ${args}`.trim()
 				}
 			}
 			// Direct format
 			else if ('command' in obj && typeof obj.command === 'string') {
-				const args = Array.isArray(obj.args)
-					? obj.args.join(' ')
-					: ''
+				const args = Array.isArray(obj.args) ? obj.args.join(' ') : ''
 				return `${obj.command} ${args}`.trim()
 			}
 		}
@@ -410,7 +430,7 @@ function convertJsonToCommand(jsonString: string): string | null {
 	}
 }
 
-function convertJsonToUrl(jsonString: string): string | null {
+export const convertJsonToUrl = (jsonString: string): string | null => {
 	try {
 		const parsed = JSON.parse(jsonString)
 		if (typeof parsed === 'object' && parsed !== null) {

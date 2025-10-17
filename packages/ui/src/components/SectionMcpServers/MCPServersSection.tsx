@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Button, CollapsibleSection, Input, SettingRow, Toggle } from '../../atoms'
-import { t } from '../../utils/i18n'
+import { Button, CollapsibleSection, Input, SettingRow, Toggle } from '~/atoms'
+import { t } from '../../locales/i18n'
 import type { ValidationResult } from '../../utils/validation.v2'
 import { MCPServerCard } from '../CardMcpServer'
 import styles from './MCPServersSection.module.css'
@@ -348,12 +348,12 @@ export function MCPServersSection({
 	return (
 		<CollapsibleSection title={t('mcpServersSection.title')} open={expanded} onToggle={onToggleSection}>
 			{toasts.length > 0 && (
-				<div className={styles.toastContainer} role="status" aria-live="polite">
+				<div className={styles.toastContainer} role='status' aria-live='polite'>
 					{toasts.map((toast) => (
 						<div key={toast.id} className={clsx(styles.toast, styles[toast.tone])}>
 							<span>{toast.message}</span>
 							<button
-								type="button"
+								type='button'
 								className={styles.toastDismiss}
 								onClick={() => dismissToast(toast.id)}
 								aria-label={t('mcpServersSection.toastDismiss')}
@@ -373,7 +373,7 @@ export function MCPServersSection({
 					description={t('mcpServersSection.concurrentExecutionsDesc')}
 				>
 					<Input
-						type="number"
+						type='number'
 						value={globalLimits.concurrentExecutions}
 						onChange={(e) => {
 							const parsed = Number.parseInt(e.target.value, 10)
@@ -384,14 +384,14 @@ export function MCPServersSection({
 							const clamped = clamp(parsed, 1, 10)
 							onUpdateGlobalLimits({ concurrentExecutions: clamped })
 						}}
-						min="1"
-						max="10"
+						min='1'
+						max='10'
 					/>
 				</SettingRow>
 
 				<SettingRow name={t('mcpServersSection.sessionLimit')} description={t('mcpServersSection.sessionLimitDesc')}>
 					<Input
-						type="number"
+						type='number'
 						value={globalLimits.sessionLimitPerDocument}
 						onChange={(e) => {
 							const parsed = Number.parseInt(e.target.value, 10)
@@ -402,8 +402,8 @@ export function MCPServersSection({
 							const clamped = parsed < -1 ? -1 : clamp(parsed, -1, 100)
 							onUpdateGlobalLimits({ sessionLimitPerDocument: clamped })
 						}}
-						min="-1"
-						max="100"
+						min='-1'
+						max='100'
 					/>
 				</SettingRow>
 
@@ -412,7 +412,7 @@ export function MCPServersSection({
 					description={t('mcpServersSection.defaultTimeoutDesc')}
 				>
 					<Input
-						type="number"
+						type='number'
 						value={globalLimits.defaultTimeout}
 						onChange={(e) => {
 							const parsed = Number.parseInt(e.target.value, 10)
@@ -423,8 +423,8 @@ export function MCPServersSection({
 							const clamped = clamp(parsed, 1000, 300000)
 							onUpdateGlobalLimits({ defaultTimeout: clamped })
 						}}
-						min="1000"
-						max="300000"
+						min='1000'
+						max='300000'
 					/>
 				</SettingRow>
 
@@ -450,7 +450,7 @@ export function MCPServersSection({
 					description={t('mcpServersSection.maxParallelToolsDesc')}
 				>
 					<Input
-						type="number"
+						type='number'
 						value={globalLimits.maxParallelTools}
 						onChange={(e) => {
 							const parsed = Number.parseInt(e.target.value, 10)
@@ -461,8 +461,8 @@ export function MCPServersSection({
 							const clamped = clamp(parsed, 1, 5)
 							onUpdateGlobalLimits({ maxParallelTools: clamped })
 						}}
-						min="1"
-						max="5"
+						min='1'
+						max='5'
 						disabled={!globalLimits.parallelExecutionEnabled}
 					/>
 				</SettingRow>

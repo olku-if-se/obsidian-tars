@@ -42,7 +42,8 @@ export const WithContent: Story = {
 		label: 'Default System Message',
 		description: 'This message will be automatically added to all conversations',
 		rows: 6,
-		value: 'You are a helpful assistant that provides accurate, concise, and well-structured responses. Always be clear and professional.'
+		value:
+			'You are a helpful assistant that provides accurate, concise, and well-structured responses. Always be clear and professional.'
 	}
 }
 
@@ -69,7 +70,8 @@ export const NonResizable: Story = {
 	args: {
 		label: 'Read-only Configuration',
 		description: 'Fixed size text area for configuration display',
-		value: 'This is a fixed-size text area that cannot be resized by the user. It maintains its dimensions regardless of content.',
+		value:
+			'This is a fixed-size text area that cannot be resized by the user. It maintains its dimensions regardless of content.',
 		rows: 3,
 		resizable: false
 	}
