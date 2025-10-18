@@ -40,7 +40,9 @@
 		},
 		"skipLibCheck": true,
 		"strictNullChecks": true,
-		"target": "ES6"
+		"target": "ES6",
+		"outDir": "./dist",
+		"noEmit": true
 	},
 	"exclude": [
 		"node_modules",

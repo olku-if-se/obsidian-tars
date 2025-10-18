@@ -6,15 +6,9 @@ import type TarsPlugin from './main'
 import { SelectModelModal, SelectVendorModal } from './modal'
 import type { BaseOptions, Optional, ProviderSettings, Vendor } from '@tars/providers'
 import {
+	allVendors,
 	type ClaudeOptions,
-	claudeVendor,
 	type GptImageOptions,
-	gptImageVendor,
-	grokVendor,
-	kimiVendor,
-	ollamaVendor,
-	openRouterVendor,
-	siliconFlowVendor,
 	getCapabilityEmoji,
 	testProviderConnection
 } from '@tars/providers'
@@ -581,7 +575,7 @@ export class TarsSettingTab extends PluginSettingTab {
 		// Test connection button
 		this.addTestConnectionSection(details, vendor, settings.options)
 
-		if (vendor.name !== ollamaVendor.name) {
+		if (vendor.name !== 'Ollama') {
 			this.addAPIkeySection(
 				details,
 				settings.options,
@@ -604,11 +598,11 @@ export class TarsSettingTab extends PluginSettingTab {
 				)
 		}
 
-		if (vendor.name === claudeVendor.name) {
+		if (vendor.name === 'Claude') {
 			this.addClaudeSections(details, settings.options as ClaudeOptions)
 		}
 
-		if (vendor.name === gptImageVendor.name) {
+		if (vendor.name === 'GPT Image') {
 			this.addGptImageSections(details, settings.options as GptImageOptions)
 		}
 
@@ -1093,19 +1087,19 @@ const fetchModels = async (url: string, apiKey?: string): Promise<string[]> => {
 
 // Model fetching configurations for different vendors
 const MODEL_FETCH_CONFIGS = {
-	[siliconFlowVendor.name]: {
+	'SiliconFlow': {
 		url: 'https://api.siliconflow.cn/v1/models?type=text&sub_type=chat',
 		requiresApiKey: true
 	},
-	[openRouterVendor.name]: {
+	'OpenRouter': {
 		url: 'https://openrouter.ai/api/v1/models',
 		requiresApiKey: false
 	},
-	[kimiVendor.name]: {
+	'Kimi': {
 		url: 'https://api.moonshot.cn/v1/models',
 		requiresApiKey: true
 	},
-	[grokVendor.name]: {
+	'Grok': {
 		url: 'https://api.x.ai/v1/models',
 		requiresApiKey: true
 	}

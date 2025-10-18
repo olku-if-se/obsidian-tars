@@ -7,7 +7,7 @@
 	"scripts": {
 		"build": "tsup",
 		"dev": "tsup --watch",
-		"test": "vitest run || echo 'No tests found - this is expected for providers package'",
+		"test": "vitest run",
 		"test:watch": "vitest --watch",
 		"test:coverage": "vitest run --coverage",
 		"lint": "biome lint .",
@@ -39,7 +39,8 @@
 		"axios": "^1.8.3",
 		"zod": "^3.23.8",
 		"nanoid": "^5.0.7",
-		"jose": "^6.1.0"
+		"jose": "^6.1.0",
+		"async-mutex": "^0.5.0"
 	},
 	"peerDependencies": {
 		"obsidian": "^1.0.0"

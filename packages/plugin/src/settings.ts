@@ -3,21 +3,9 @@ import type { PromptTemplate } from './prompt'
 import type { ProviderSettings, Vendor } from '@tars/providers'
 import type { FeatureFlags } from './featureFlags'
 import {
-	azureVendor,
-	claudeVendor,
-	deepSeekVendor,
-	doubaoVendor,
-	geminiVendor,
-	gptImageVendor,
-	grokVendor,
-	kimiVendor,
-	ollamaVendor,
-	openAIVendor,
-	openRouterVendor,
-	qianFanVendor,
-	qwenVendor,
-	siliconFlowVendor,
-	zhipuVendor
+	allVendors,
+	type ClaudeOptions,
+	type GptImageOptions
 } from '@tars/providers'
 
 export const APP_FOLDER = 'Tars'
@@ -125,21 +113,4 @@ export const DEFAULT_SETTINGS: PluginSettings = {
 	}
 }
 
-export const availableVendors: Vendor[] = [
-	openAIVendor,
-	// The following are arranged in alphabetical order
-	azureVendor,
-	claudeVendor,
-	deepSeekVendor,
-	doubaoVendor,
-	geminiVendor,
-	gptImageVendor,
-	grokVendor,
-	kimiVendor,
-	ollamaVendor,
-	openRouterVendor,
-	qianFanVendor,
-	qwenVendor,
-	siliconFlowVendor,
-	zhipuVendor
-]
+export const availableVendors = allVendors
