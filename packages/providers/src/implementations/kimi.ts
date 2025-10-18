@@ -3,6 +3,7 @@ import axios from 'axios'
 import { t } from '../i18n'
 import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
 import { CALLOUT_BLOCK_END, CALLOUT_BLOCK_START, convertEmbedToImageUrl } from '../utils'
+import { createMCPIntegrationHelper } from '../mcp-integration-helper'
 
 const logger = createLogger('providers:kimi')
 
@@ -15,15 +16,32 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 		if (!model) throw new Error(t('Model is required'))
 		logger.info('starting kimi chat', { baseURL, model, messageCount: messages.length })
 
-		// Inject MCP tools if available
+		// Create MCP integration helper
+		const mcpHelper = createMCPIntegrationHelper(settings)
+
+		// Tool-aware path: Use coordinator for autonomous tool calling
+		if (mcpHelper?.hasToolCalling()) {
+			try {
+				// Kimi uses custom HTTP client, but for tool calling we can still use the helper
+				yield* mcpHelper.generateWithTools({
+					documentPath: settings.documentPath || 'unknown.md',
+					providerName: 'Kimi',
+					messages,
+					controller
+				})
+
+				return
+			} catch (error) {
+				logger.warn('Tool calling failed, falling back to streaming pipeline', error)
+				// Fall through to original path
+			}
+		}
+
+		// Original streaming path with tool injection
 		// biome-ignore lint/suspicious/noExplicitAny: MCP tools inject runtime
 		let requestBody: any = { model, ...remains }
-		if (mcpToolInjector) {
-			try {
-				requestBody = await mcpToolInjector.injectTools(requestBody, 'Kimi')
-			} catch (error) {
-				logger.warn('failed to inject MCP tools for kimi', error)
-			}
+		if (mcpHelper) {
+			requestBody = await mcpHelper.injectTools(requestBody, 'Kimi')
 		}
 
 		const formattedMessages = await Promise.all(messages.map((msg) => formatMsg(msg, resolveEmbedAsBinary)))

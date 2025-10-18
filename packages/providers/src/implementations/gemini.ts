@@ -2,17 +2,44 @@ import { type Content, GoogleGenerativeAI } from '@google/generative-ai'
 import { createLogger } from '@tars/logger'
 import { t } from '../i18n/i18n'
 import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
-import { ConcreteMCPToolInjector } from '../mcp-tool-injection-impl'
+import { createMCPIntegrationHelper } from '../mcp-integration-helper'
 
 const logger = createLogger('providers:gemini')
 
 const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 	async function* (messages: Message[], controller: AbortController, _resolveEmbedAsBinary: ResolveEmbedAsBinary) {
-		const { parameters, mcpToolInjector, mcpManager, mcpExecutor, ...optionsExcludingParams } = settings
+		const { parameters, documentPath, pluginSettings, documentWriteLock, beforeToolExecution, ...optionsExcludingParams } = settings
 		const options = { ...optionsExcludingParams, ...parameters }
 		const { apiKey, baseURL: baseUrl, model } = options
 		if (!apiKey) throw new Error(t('API key is required'))
 
+		// Create MCP integration helper
+		const mcpHelper = createMCPIntegrationHelper(settings)
+
+		// Tool-aware path: Use coordinator for autonomous tool calling
+		if (mcpHelper?.hasToolCalling()) {
+			try {
+				const client = new GoogleGenerativeAI(apiKey)
+
+				yield* mcpHelper.generateWithTools({
+					documentPath: documentPath || 'unknown.md',
+					providerName: 'Gemini',
+					messages,
+					controller,
+					client,
+					pluginSettings,
+					documentWriteLock,
+					beforeToolExecution
+				})
+
+				return
+			} catch (error) {
+				logger.warn('Tool calling failed, falling back to standard Gemini workflow', error)
+				// Fall through to original path
+			}
+		}
+
+		// Original streaming path with tool injection
 		const [system_msg, messagesWithoutSys, lastMsg] =
 			messages[0].role === 'system'
 				? [messages[0], messages.slice(1, -1), messages[messages.length - 1]]
@@ -25,24 +52,10 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 
 		// Inject MCP tools for Gemini if available
 		let tools: any[] = []
-		if (mcpToolInjector) {
-			try {
-				const result = await mcpToolInjector.injectTools({}, 'Gemini')
-				tools = (result.tools as any[]) || []
-				logger.debug('Injected MCP tools for Gemini', { toolCount: tools.length })
-			} catch (error) {
-				logger.warn('failed to inject MCP tools for gemini', error)
-			}
-		} else if (mcpManager && mcpExecutor) {
-			// Legacy MCP integration - create injector on the fly
-			try {
-				const injector = new ConcreteMCPToolInjector(mcpManager, mcpExecutor)
-				const result = await injector.injectTools({}, 'Gemini')
-				tools = (result.tools as any[]) || []
-				logger.debug('Injected MCP tools for Gemini using legacy integration', { toolCount: tools.length })
-			} catch (error) {
-				logger.warn('failed to inject MCP tools for gemini using legacy integration', error)
-			}
+		if (mcpHelper) {
+			const result = await mcpHelper.injectTools({}, 'Gemini')
+			tools = (result.tools as any[]) || []
+			logger.debug('Injected MCP tools for Gemini', { toolCount: tools.length })
 		}
 
 		const genAI = new GoogleGenerativeAI(apiKey)

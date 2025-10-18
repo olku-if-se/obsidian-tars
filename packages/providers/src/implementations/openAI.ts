@@ -3,6 +3,7 @@ import OpenAI from 'openai'
 import { t } from '../i18n'
 import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
 import { convertEmbedToImageUrl } from '../utils'
+import { createMCPIntegrationHelper } from '../mcp-integration-helper'
 
 const logger = createLogger('providers:openai')
 
@@ -12,7 +13,6 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 			parameters,
 			mcpToolInjector,
 			mcpIntegration,
-			mcpExecutor,
 			documentPath,
 			pluginSettings,
 			documentWriteLock,
@@ -24,58 +24,40 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 		if (!apiKey) throw new Error(t('API key is required'))
 		logger.info('starting openai chat', { baseURL, model, messageCount: messages.length })
 
-		// Tool-aware path: Use coordinator for autonomous tool calling
-		if (mcpIntegration?.toolCallingCoordinator && mcpIntegration?.providerAdapter) {
-			try {
-				// biome-ignore lint/suspicious/noExplicitAny: MCP types are optional dependencies
-				const coordinator = mcpIntegration.toolCallingCoordinator as any
-				// biome-ignore lint/suspicious/noExplicitAny: MCP types are optional dependencies
-				const adapter = mcpIntegration.providerAdapter as any
-				// biome-ignore lint/suspicious/noExplicitAny: Plugin settings type is not imported
-				const pluginOpts = pluginSettings as any
-				// biome-ignore lint/suspicious/noExplicitAny: MCP types are optional dependencies
-				const mcpExec = mcpExecutor as any
+		// Create MCP integration helper
+		const mcpHelper = createMCPIntegrationHelper(settings)
 
-				const _client = new OpenAI({
+		// Tool-aware path: Use coordinator for autonomous tool calling
+		if (mcpHelper?.hasToolCalling()) {
+			try {
+				const client = new OpenAI({
 					apiKey,
 					baseURL,
 					dangerouslyAllowBrowser: true
 				})
 
-				// Initialize adapter if needed
-				if (adapter.initialize) {
-					await adapter.initialize({ preloadTools: false })
-				}
-
-				// Convert messages to coordinator format
-				const formattedMessages = await Promise.all(
-					messages.map((msg) => formatMsgForCoordinator(msg, resolveEmbedAsBinary))
-				)
-
-				yield* coordinator.generateWithTools(formattedMessages, adapter, mcpExec, {
+				yield* mcpHelper.generateWithTools({
 					documentPath: documentPath || 'unknown.md',
-					autoUseDocumentCache: true,
-					parallelExecution: pluginOpts?.mcpParallelExecution ?? false,
-					maxParallelTools: pluginOpts?.mcpMaxParallelTools ?? 3,
+					providerName: 'OpenAI',
+					messages,
+					controller,
+					client,
+					pluginSettings,
 					documentWriteLock,
-					onBeforeToolExecution: beforeToolExecution
+					beforeToolExecution
 				})
 
 				return
 			} catch (error) {
-				logger.warn('tool-aware path unavailable, falling back to streaming pipeline', error)
+				logger.warn('Tool calling failed, falling back to streaming pipeline', error)
 				// Fall through to original path
 			}
 		}
 
-		// Original streaming path (backward compatible)
+		// Original streaming path with tool injection
 		let requestParams: Record<string, unknown> = { model, ...remains }
-		if (mcpToolInjector) {
-			try {
-				requestParams = await mcpToolInjector.injectTools(requestParams, 'OpenAI')
-			} catch (error) {
-				logger.warn('failed to inject MCP tools for openai', error)
-			}
+		if (mcpHelper) {
+			requestParams = await mcpHelper.injectTools(requestParams, 'OpenAI')
 		}
 
 		const formattedMessages = await Promise.all(messages.map((msg) => formatMsg(msg, resolveEmbedAsBinary)))

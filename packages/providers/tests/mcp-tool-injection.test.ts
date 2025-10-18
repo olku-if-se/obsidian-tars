@@ -201,7 +201,7 @@ describe('MCPToolInjector Basic Functionality', () => {
 		expect(result).not.toHaveProperty('tools')
 	})
 
-	it('should return empty tools for unsupported provider', async () => {
+	it('should default to OpenAI format for unsupported provider', async () => {
 		// GIVEN: Unsupported provider name
 		const parameters = { model: 'unknown-model' }
 		const mockSnapshot = createMockToolSnapshot()
@@ -210,8 +210,23 @@ describe('MCPToolInjector Basic Functionality', () => {
 		// WHEN: Injecting tools for unsupported provider
 		const result = await mockInjector.injectTools(parameters, 'UnknownProvider')
 
-		// THEN: Should return empty tools array
-		expect(result.tools).toEqual([])
+		// THEN: Should default to OpenAI format for unknown providers
+		expect(result.tools).toEqual([
+			{
+				type: 'function',
+				function: {
+					name: 'test_tool',
+					description: 'Test tool for testing',
+					parameters: {
+						type: 'object',
+						properties: {
+							param: { type: 'string', description: 'Test parameter' }
+						},
+						required: ['param']
+					}
+				}
+			}
+		])
 		expect(result.model).toBe('unknown-model')
 	})
 })

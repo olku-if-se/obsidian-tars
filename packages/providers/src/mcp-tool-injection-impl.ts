@@ -166,8 +166,15 @@ export class ConcreteMCPToolInjector implements MCPToolInjector {
 			}))
 		}
 
-		// Default to empty tools
-		return []
+		// Default to OpenAI format for unknown providers
+		return validTools.map((tool: any) => ({
+			type: 'function',
+			function: {
+				name: tool.name,
+				description: tool.description || '',
+				parameters: tool.inputSchema as any
+			}
+		}))
 	}
 }
 

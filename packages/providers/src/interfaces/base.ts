@@ -57,6 +57,7 @@ export interface MCPIntegration {
 	mcpToolInjector: MCPToolInjector
 	toolCallingCoordinator?: unknown // ToolCallingCoordinator from mcp module
 	providerAdapter?: unknown // Provider-specific adapter from mcp module
+	mcpExecutor?: unknown // ToolExecutor from mcp module
 	// Factory functions for creating MCP components
 	createToolCallingCoordinator?: () => unknown
 	createProviderAdapter?: (config: unknown) => unknown
@@ -88,12 +89,10 @@ export interface BaseOptions {
 	model: string
 	parameters: Record<string, unknown>
 	enableWebSearch?: boolean
-	// MCP tool integration - injected by the system when available
+	// MCP tool integration - always provided by the system (may contain no tools)
 	mcpToolInjector?: MCPToolInjector
 	mcpIntegration?: MCPIntegration // Advanced MCP integration for tool coordination
-	// Legacy MCP fields for backward compatibility (deprecated)
-	mcpManager?: unknown // MCPServerManager from mcp module
-	mcpExecutor?: unknown // ToolExecutor from mcp module
+	// Document context for tool execution
 	documentPath?: string // Current document path for tool execution context
 	statusBarManager?: StatusBarManager
 	editor?: Editor
@@ -185,6 +184,17 @@ export interface Vendor {
 	readonly models: string[]
 	readonly websiteToObtainKey: string
 	readonly capabilities: Capability[]
+}
+
+/**
+ * Create default options with required MCP fields
+ */
+export function createDefaultOptions(options: Omit<BaseOptions, 'mcpToolInjector' | 'mcpIntegration'>): BaseOptions {
+	return {
+		...options,
+		mcpToolInjector: null as any, // Will be injected by the system
+		mcpIntegration: null as any // Will be injected by the system
+	}
 }
 
 /**

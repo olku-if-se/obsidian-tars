@@ -3,6 +3,7 @@ import OpenAI from 'openai'
 import { t } from '../i18n'
 import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
 import { CALLOUT_BLOCK_END, CALLOUT_BLOCK_START, convertEmbedToImageUrl } from '../utils'
+import { createMCPIntegrationHelper } from '../mcp-integration-helper'
 
 const logger = createLogger('providers:siliconflow')
 
@@ -17,14 +18,37 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 		const { apiKey, baseURL, model, ...remains } = options
 		if (!apiKey) throw new Error(t('API key is required'))
 
-		// Inject MCP tools if available
-		let requestParams: Record<string, unknown> = { model, ...remains }
-		if (mcpToolInjector) {
+		// Create MCP integration helper
+		const mcpHelper = createMCPIntegrationHelper(settings)
+
+		// Tool-aware path: Use coordinator for autonomous tool calling
+		if (mcpHelper?.hasToolCalling()) {
 			try {
-				requestParams = await mcpToolInjector.injectTools(requestParams, 'SiliconFlow')
+				const client = new OpenAI({
+					apiKey,
+					baseURL,
+					dangerouslyAllowBrowser: true
+				})
+
+				yield* mcpHelper.generateWithTools({
+					documentPath: settings.documentPath || 'unknown.md',
+					providerName: 'SiliconFlow',
+					messages,
+					controller,
+					client
+				})
+
+				return
 			} catch (error) {
-				logger.warn('failed to inject MCP tools for siliconflow', error)
+				logger.warn('Tool calling failed, falling back to streaming pipeline', error)
+				// Fall through to original path
 			}
+		}
+
+		// Original streaming path with tool injection
+		let requestParams: Record<string, unknown> = { model, ...remains }
+		if (mcpHelper) {
+			requestParams = await mcpHelper.injectTools(requestParams, 'SiliconFlow')
 		}
 
 		const formattedMessages = await Promise.all(messages.map((msg) => formatMsg(msg, resolveEmbedAsBinary)))

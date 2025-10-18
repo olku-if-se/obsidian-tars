@@ -4,6 +4,7 @@ import OpenAI from 'openai'
 import { t } from '../i18n'
 import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
 import { arrayBufferToBase64, getMimeTypeFromFilename } from '../utils'
+import { createMCPIntegrationHelper } from '../mcp-integration-helper'
 
 const logger = createLogger('providers:openrouter')
 
@@ -13,7 +14,6 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 			parameters,
 			mcpToolInjector,
 			mcpIntegration,
-			mcpExecutor,
 			documentPath,
 			pluginSettings,
 			documentWriteLock,
@@ -26,62 +26,42 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 		if (!model) throw new Error(t('Model is required'))
 		logger.info('starting openrouter chat', { baseURL, model, messageCount: messages.length })
 
-		// Tool-aware path: Use coordinator for autonomous tool calling
-		if (mcpIntegration?.toolCallingCoordinator && mcpIntegration?.providerAdapter) {
-			try {
-				// biome-ignore lint/suspicious/noExplicitAny: MCP types are optional dependencies
-				const coordinator = mcpIntegration.toolCallingCoordinator as any
-				// biome-ignore lint/suspicious/noExplicitAny: MCP types are optional dependencies
-				const adapter = mcpIntegration.providerAdapter as any
-				// biome-ignore lint/suspicious/noExplicitAny: Plugin settings type is not imported
-				const pluginOpts = pluginSettings as any
-				// biome-ignore lint/suspicious/noExplicitAny: MCP types are optional dependencies
-				const mcpExec = mcpExecutor as any
+		// Create MCP integration helper
+		const mcpHelper = createMCPIntegrationHelper(settings)
 
+		// Tool-aware path: Use coordinator for autonomous tool calling
+		if (mcpHelper?.hasToolCalling()) {
+			try {
 				// OpenRouter is OpenAI-compatible, so use OpenAI SDK
-				const _client = new OpenAI({
+				const client = new OpenAI({
 					apiKey,
 					baseURL,
 					dangerouslyAllowBrowser: true
 				})
 
-				// Initialize adapter if needed
-				if (adapter.initialize) {
-					await adapter.initialize({ preloadTools: false })
-				}
-
-				// Convert messages to coordinator format
-				const formattedMessages = messages.map((msg) => ({
-					role: msg.role,
-					content: msg.content,
-					embeds: msg.embeds
-				}))
-
-				yield* coordinator.generateWithTools(formattedMessages, adapter, mcpExec, {
+				yield* mcpHelper.generateWithTools({
 					documentPath: documentPath || 'unknown.md',
-					autoUseDocumentCache: true,
-					parallelExecution: pluginOpts?.mcpParallelExecution ?? false,
-					maxParallelTools: pluginOpts?.mcpMaxParallelTools ?? 3,
+					providerName: 'OpenRouter',
+					messages,
+					controller,
+					client,
+					pluginSettings,
 					documentWriteLock,
-					onBeforeToolExecution: beforeToolExecution
+					beforeToolExecution
 				})
 
 				return
 			} catch (error) {
-				logger.warn('tool-aware path unavailable, falling back to streaming pipeline', error)
+				logger.warn('Tool calling failed, falling back to streaming pipeline', error)
 				// Fall through to original path
 			}
 		}
 
-		// Original streaming path (backward compatible)
+		// Original streaming path with tool injection
 		// biome-ignore lint/suspicious/noExplicitAny: MCP tools inject runtime
 		let requestBody: any = { model, messages: [], ...remains }
-		if (mcpToolInjector) {
-			try {
-				requestBody = await mcpToolInjector.injectTools(requestBody, 'OpenRouter')
-			} catch (error) {
-				logger.warn('failed to inject MCP tools for openrouter', error)
-			}
+		if (mcpHelper) {
+			requestBody = await mcpHelper.injectTools(requestBody, 'OpenRouter')
 		}
 
 		const formattedMessages = await Promise.all(messages.map((msg) => formatMsg(msg, resolveEmbedAsBinary)))

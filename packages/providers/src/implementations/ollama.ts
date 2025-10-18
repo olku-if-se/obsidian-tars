@@ -1,6 +1,7 @@
 import { createLogger } from '@tars/logger'
 import { Ollama } from 'ollama'
 import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
+import { createMCPIntegrationHelper } from '../mcp-integration-helper'
 
 const logger = createLogger('providers:ollama')
 
@@ -10,7 +11,6 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 			parameters,
 			mcpToolInjector,
 			mcpIntegration,
-			mcpExecutor,
 			documentPath,
 			statusBarManager,
 			editor,
@@ -22,63 +22,43 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 		const options = { ...optionsExcludingParams, ...parameters }
 		const { baseURL, model, ...remains } = options
 
+		// Create MCP integration helper
+		const mcpHelper = createMCPIntegrationHelper(settings)
+
 		// Tool-aware path: Use coordinator for autonomous tool calling
-		if (mcpIntegration?.toolCallingCoordinator && mcpIntegration?.providerAdapter) {
+		if (mcpHelper?.hasToolCalling()) {
 			try {
-				// biome-ignore lint/suspicious/noExplicitAny: MCP types are optional dependencies
-				const coordinator = mcpIntegration.toolCallingCoordinator as any
-				// biome-ignore lint/suspicious/noExplicitAny: MCP types are optional dependencies
-				const adapter = mcpIntegration.providerAdapter as any
-				// biome-ignore lint/suspicious/noExplicitAny: MCP types are optional dependencies
-				const pluginOpts = pluginSettings as any
-				// biome-ignore lint/suspicious/noExplicitAny: MCP types are optional dependencies
-				const mcpExec = mcpExecutor as any
+				const client = new Ollama({ host: baseURL })
 
-				const _ollama = new Ollama({ host: baseURL })
-
-				// Initialize adapter if needed
-				if (adapter.initialize) {
-					await adapter.initialize({ preloadTools: false })
-				}
-
-				// Convert messages to coordinator format
-				const formattedMessages = messages.map((msg) => ({
-					role: msg.role,
-					content: msg.content,
-					embeds: msg.embeds
-				}))
-
-				yield* coordinator.generateWithTools(formattedMessages, adapter, mcpExec, {
+				yield* mcpHelper.generateWithTools({
 					documentPath: documentPath || 'unknown.md',
+					providerName: 'Ollama',
+					messages,
+					controller,
+					client,
 					statusBarManager,
 					editor,
-					autoUseDocumentCache: true,
-					parallelExecution: pluginOpts?.mcpParallelExecution ?? false,
-					maxParallelTools: pluginOpts?.mcpMaxParallelTools ?? 3,
+					pluginSettings,
 					documentWriteLock,
-					onBeforeToolExecution: beforeToolExecution
+					beforeToolExecution
 				})
 
 				return
 			} catch (error) {
-				logger.warn('tool-aware path unavailable, falling back to streaming pipeline', error)
+				logger.warn('Tool calling failed, falling back to streaming pipeline', error)
 				// Fall through to original path
 			}
 		}
 
-		// Original streaming path (backward compatible)
+		// Original streaming path with tool injection
 		let requestParams: Record<string, unknown> = { model, ...remains }
 
 		logger.info('starting ollama chat', { baseURL, model, messageCount: messages.length })
 		logger.debug('initial request params', { ...requestParams, messages: `${messages.length} messages` })
 
-		if (mcpToolInjector) {
-			try {
-				requestParams = await mcpToolInjector.injectTools(requestParams, 'Ollama')
-				logger.debug('mcp tools injected successfully')
-			} catch (error) {
-				logger.warn('failed to inject MCP tools for ollama', error)
-			}
+		if (mcpHelper) {
+			requestParams = await mcpHelper.injectTools(requestParams, 'Ollama')
+			logger.debug('mcp tools injected successfully')
 		}
 
 		const ollama = new Ollama({ host: baseURL })

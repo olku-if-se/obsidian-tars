@@ -4,6 +4,7 @@ import { type EmbedCache, Notice } from 'obsidian'
 import { getCapabilityEmoji, t } from '../i18n'
 import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
 import { arrayBufferToBase64, CALLOUT_BLOCK_END, CALLOUT_BLOCK_START, getMimeTypeFromFilename } from '../utils'
+import { createMCPIntegrationHelper } from '../mcp-integration-helper'
 
 const logger = createLogger('providers:claude')
 
@@ -66,7 +67,6 @@ const sendRequestFunc = (settings: ClaudeOptions): SendRequest =>
 		const {
 			parameters,
 			mcpIntegration,
-			mcpExecutor,
 			documentPath,
 			statusBarManager,
 			pluginSettings,
@@ -95,52 +95,34 @@ const sendRequestFunc = (settings: ClaudeOptions): SendRequest =>
 			baseURL = baseURL.slice(0, -'/v1/messages'.length)
 		}
 
-		// Tool-aware path: Use coordinator for autonomous tool calling
-		if (mcpIntegration?.toolCallingCoordinator && mcpIntegration?.providerAdapter) {
-			try {
-				// biome-ignore lint/suspicious/noExplicitAny: MCP types are optional dependencies
-				const coordinator = mcpIntegration.toolCallingCoordinator as any
-				// biome-ignore lint/suspicious/noExplicitAny: MCP types are optional dependencies
-				const adapter = mcpIntegration.providerAdapter as any
-				// biome-ignore lint/suspicious/noExplicitAny: MCP types are optional dependencies
-				const pluginOpts = pluginSettings as any
-				// biome-ignore lint/suspicious/noExplicitAny: MCP types are optional dependencies
-				const mcpExec = mcpExecutor as any
+		// Create MCP integration helper
+		const mcpHelper = createMCPIntegrationHelper(settings)
 
-				const _client = new Anthropic({
+		// Tool-aware path: Use coordinator for autonomous tool calling
+		if (mcpHelper?.hasToolCalling()) {
+			try {
+				const client = new Anthropic({
 					apiKey,
 					baseURL,
 					fetch: globalThis.fetch
 				})
 
-				// Initialize adapter if needed
-				if (adapter.initialize) {
-					await adapter.initialize({ preloadTools: false })
-				}
-
-				// Convert messages to coordinator format
-				const formattedMessages = messages.map((msg) => ({
-					role: msg.role,
-					content: msg.content,
-					embeds: msg.embeds
-				}))
-
-				const editor = settings.editor
-
-				yield* coordinator.generateWithTools(formattedMessages, adapter, mcpExec, {
+				yield* mcpHelper.generateWithTools({
 					documentPath: documentPath || 'unknown.md',
-					editor,
+					providerName: 'Claude',
+					messages,
+					controller,
+					client,
 					statusBarManager,
-					autoUseDocumentCache: true,
-					parallelExecution: pluginOpts?.mcpParallelExecution ?? false,
-					maxParallelTools: pluginOpts?.mcpMaxParallelTools ?? 3,
+					editor: settings.editor,
+					pluginSettings,
 					documentWriteLock,
-					onBeforeToolExecution: beforeToolExecution
+					beforeToolExecution
 				})
 
 				return
 			} catch (error) {
-				logger.warn('tool-aware path unavailable for claude; falling back to standard workflow', error)
+				logger.warn('Tool calling failed for Claude, falling back to standard workflow', error)
 				// Fall through to original path
 			}
 		}
