@@ -3,8 +3,8 @@ import { createLogger } from '@tars/logger'
 import { type EmbedCache, Notice } from 'obsidian'
 import { getCapabilityEmoji, t } from '../i18n'
 import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
-import { arrayBufferToBase64, CALLOUT_BLOCK_END, CALLOUT_BLOCK_START, getMimeTypeFromFilename } from '../utils'
 import { createMCPIntegrationHelper } from '../mcp-integration-helper'
+import { arrayBufferToBase64, CALLOUT_BLOCK_END, CALLOUT_BLOCK_START, getMimeTypeFromFilename } from '../utils'
 
 const logger = createLogger('providers:claude')
 
@@ -170,9 +170,9 @@ const sendRequestFunc = (settings: ClaudeOptions): SendRequest =>
 			})
 		}
 
-		const stream = await client.messages.create(requestParams as any, {
+		const stream = (await client.messages.create(requestParams as any, {
 			signal: controller.signal
-		}) as any
+		})) as any
 
 		let startReasoning = false
 		for await (const messageStreamEvent of stream) {

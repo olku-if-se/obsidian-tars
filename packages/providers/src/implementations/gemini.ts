@@ -1,4 +1,4 @@
-import { type Content, GoogleGenerativeAI } from '@google/generative-ai'
+import { type Content, GoogleGenerativeAI, type Tool } from '@google/generative-ai'
 import { createLogger } from '@tars/logger'
 import { t } from '../i18n/i18n'
 import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
@@ -8,7 +8,14 @@ const logger = createLogger('providers:gemini')
 
 const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 	async function* (messages: Message[], controller: AbortController, _resolveEmbedAsBinary: ResolveEmbedAsBinary) {
-		const { parameters, documentPath, pluginSettings, documentWriteLock, beforeToolExecution, ...optionsExcludingParams } = settings
+		const {
+			parameters,
+			documentPath,
+			pluginSettings,
+			documentWriteLock,
+			beforeToolExecution,
+			...optionsExcludingParams
+		} = settings
 		const options = { ...optionsExcludingParams, ...parameters }
 		const { apiKey, baseURL: baseUrl, model } = options
 		if (!apiKey) throw new Error(t('API key is required'))
@@ -51,10 +58,10 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 		}))
 
 		// Inject MCP tools for Gemini if available
-		let tools: any[] = []
+		let tools: Tool[] = []
 		if (mcpHelper) {
-			const result = await mcpHelper.injectTools({}, 'Gemini')
-			tools = (result.tools as any[]) || []
+			const result = await mcpHelper.injectTools(options, 'Gemini')
+			tools = (result.tools as Tool[]) || []
 			logger.debug('Injected MCP tools for Gemini', { toolCount: tools.length })
 		}
 
@@ -62,9 +69,9 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 		const genModel = genAI.getGenerativeModel({ model, systemInstruction }, { baseUrl })
 
 		// Start chat with tools if available
-		const chatConfig: any = { history }
+		const chatConfig = { history }
 		if (tools.length > 0) {
-			chatConfig.tools = tools
+			(chatConfig as any).tools = tools
 			logger.debug('Starting Gemini chat with tools', { toolCount: tools.length })
 		}
 		const chat = genModel.startChat(chatConfig)

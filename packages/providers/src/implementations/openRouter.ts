@@ -3,8 +3,8 @@ import type { EmbedCache } from 'obsidian'
 import OpenAI from 'openai'
 import { t } from '../i18n'
 import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
-import { arrayBufferToBase64, getMimeTypeFromFilename } from '../utils'
 import { createMCPIntegrationHelper } from '../mcp-integration-helper'
+import { arrayBufferToBase64, getMimeTypeFromFilename } from '../utils'
 
 const logger = createLogger('providers:openrouter')
 
@@ -12,8 +12,6 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 	async function* (messages: Message[], controller: AbortController, resolveEmbedAsBinary: ResolveEmbedAsBinary) {
 		const {
 			parameters,
-			mcpToolInjector,
-			mcpIntegration,
 			documentPath,
 			pluginSettings,
 			documentWriteLock,

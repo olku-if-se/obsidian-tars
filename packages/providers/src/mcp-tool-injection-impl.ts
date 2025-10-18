@@ -8,6 +8,32 @@
 import { createLogger } from '@tars/logger'
 import type { MCPToolInjector } from './interfaces'
 
+// Interface for MCP Server Manager (minimal interface for this implementation)
+interface MCPServerManager {
+	getToolDiscoveryCache(): {
+		getSnapshot(): Promise<ToolSnapshot>
+	}
+}
+
+// Interface for Tool Executor (minimal interface for this implementation)
+interface ToolExecutor {
+	executeTool?(serverId: string, toolName: string, arguments_: Record<string, unknown>): Promise<unknown>
+}
+
+// Interface for Tool Snapshot
+interface ToolSnapshot {
+	servers: Array<{
+		serverId: string
+		serverName: string
+		tools: Array<{
+			name: string
+			description: string
+			inputSchema: Record<string, unknown>
+		}>
+	}>
+	mapping: Map<string, { id: string; name: string }>
+}
+
 const logger = createLogger('providers:mcp-tool-injection-impl')
 
 /**
@@ -15,10 +41,10 @@ const logger = createLogger('providers:mcp-tool-injection-impl')
  * Converts MCP tools to provider-specific formats for injection
  */
 export class ConcreteMCPToolInjector implements MCPToolInjector {
-	private readonly manager: any
-	private readonly executor: any
+	private readonly manager: MCPServerManager
+	private readonly executor: ToolExecutor
 
-	constructor(manager: any, executor: any) {
+	constructor(manager: MCPServerManager, executor: ToolExecutor) {
 		this.manager = manager
 		this.executor = executor
 	}
@@ -79,15 +105,39 @@ export class ConcreteMCPToolInjector implements MCPToolInjector {
 		// Basic JSON Schema validation
 		const schema = tool.inputSchema
 		if (schema.type !== 'object') {
+			console.warn(`Tool ${tool.name} has invalid schema: missing or invalid type property`)
 			return false
 		}
 
 		if (!schema.properties || typeof schema.properties !== 'object') {
+			console.warn(`Tool ${tool.name} has invalid schema: missing or invalid properties`)
 			return false
+		}
+
+		// Validate property types
+		for (const [propName, propSchema] of Object.entries(schema.properties)) {
+			if (typeof propSchema !== 'object' || !propSchema.type) {
+				console.warn(`Tool ${tool.name} has invalid property schema for ${propName}: missing type`)
+				return false
+			}
+
+			// Check for valid JSON Schema types
+			const validTypes = ['string', 'number', 'integer', 'boolean', 'array', 'object']
+			if (!validTypes.includes((propSchema as any).type)) {
+				console.warn(`Tool ${tool.name} has invalid property type for ${propName}: ${(propSchema as any).type}`)
+				return false
+			}
+
+			// Check for missing descriptions in properties (required for MCP compatibility)
+			if (!(propSchema as any).description) {
+				console.warn(`Tool ${tool.name} property ${propName} is missing description - rejecting tool`)
+				return false
+			}
 		}
 
 		// If required field exists, validate it
 		if (schema.required && !Array.isArray(schema.required)) {
+			console.warn(`Tool ${tool.name} has invalid required field: must be an array`)
 			return false
 		}
 

@@ -192,8 +192,8 @@ export interface Vendor {
 export function createDefaultOptions(options: Omit<BaseOptions, 'mcpToolInjector' | 'mcpIntegration'>): BaseOptions {
 	return {
 		...options,
-		mcpToolInjector: null as any, // Will be injected by the system
-		mcpIntegration: null as any // Will be injected by the system
+		mcpToolInjector: undefined, // Will be injected by the system
+		mcpIntegration: undefined // Will be injected by the system
 	}
 }
 

@@ -2,8 +2,8 @@ import { createLogger } from '@tars/logger'
 import OpenAI from 'openai'
 import { t } from '../i18n'
 import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
-import { CALLOUT_BLOCK_END, CALLOUT_BLOCK_START } from '../utils'
 import { createMCPIntegrationHelper } from '../mcp-integration-helper'
+import { CALLOUT_BLOCK_END, CALLOUT_BLOCK_START } from '../utils'
 
 const logger = createLogger('providers:deepseek')
 
@@ -13,7 +13,7 @@ type DeepSeekDelta = OpenAI.ChatCompletionChunk.Choice.Delta & {
 
 const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 	async function* (messages: Message[], controller: AbortController, _resolveEmbedAsBinary: ResolveEmbedAsBinary) {
-		const { parameters, mcpToolInjector, ...optionsExcludingParams } = settings
+		const { parameters, ...optionsExcludingParams } = settings
 		const options = { ...optionsExcludingParams, ...parameters }
 		const { apiKey, baseURL, model, ...remains } = options
 		if (!apiKey) throw new Error(t('API key is required'))

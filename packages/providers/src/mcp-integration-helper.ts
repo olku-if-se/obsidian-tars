@@ -1,5 +1,5 @@
 import { createLogger } from '@tars/logger'
-import type { BaseOptions, Message, MCPIntegration, MCPToolInjector, SendRequest } from './interfaces'
+import type { BaseOptions, MCPIntegration, MCPToolInjector, Message, SendRequest } from './interfaces'
 
 const logger = createLogger('providers:mcp-integration')
 
@@ -42,12 +42,22 @@ export class MCPIntegrationHelper {
 	/**
 	 * Generate with tools using the coordinator (autonomous tool calling)
 	 */
-	async* generateWithTools(config: MCPGenerateConfig): AsyncGenerator<string, void, unknown> {
+	async *generateWithTools(config: MCPGenerateConfig): AsyncGenerator<string, void, unknown> {
 		if (!this.hasToolCalling()) {
 			throw new Error('Tool calling not available')
 		}
 
-		const { documentPath, providerName, messages, client, statusBarManager, editor, pluginSettings, documentWriteLock, beforeToolExecution } = config
+		const {
+			documentPath,
+			providerName,
+			messages,
+			client,
+			statusBarManager,
+			editor,
+			pluginSettings,
+			documentWriteLock,
+			beforeToolExecution
+		} = config
 
 		try {
 			const coordinator = this.mcpIntegration.toolCallingCoordinator as any
@@ -100,7 +110,7 @@ export class MCPIntegrationHelper {
 	/**
 	 * Generate with automatic fallback from tool calling to tool injection
 	 */
-	async* generateWithFallback(config: MCPGenerateConfig): AsyncGenerator<string, void, unknown> {
+	async *generateWithFallback(config: MCPGenerateConfig): AsyncGenerator<string, void, unknown> {
 		// Try tool calling first
 		if (this.hasToolCalling()) {
 			try {

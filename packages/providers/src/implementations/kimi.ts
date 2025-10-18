@@ -2,14 +2,14 @@ import { createLogger } from '@tars/logger'
 import axios from 'axios'
 import { t } from '../i18n'
 import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
-import { CALLOUT_BLOCK_END, CALLOUT_BLOCK_START, convertEmbedToImageUrl } from '../utils'
 import { createMCPIntegrationHelper } from '../mcp-integration-helper'
+import { CALLOUT_BLOCK_END, CALLOUT_BLOCK_START, convertEmbedToImageUrl } from '../utils'
 
 const logger = createLogger('providers:kimi')
 
 const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 	async function* (messages: Message[], controller: AbortController, resolveEmbedAsBinary: ResolveEmbedAsBinary) {
-		const { parameters, mcpToolInjector, ...optionsExcludingParams } = settings
+		const { parameters, ...optionsExcludingParams } = settings
 		const options = { ...optionsExcludingParams, ...parameters }
 		const { apiKey, baseURL, model, ...remains } = options
 		if (!apiKey) throw new Error(t('API key is required'))

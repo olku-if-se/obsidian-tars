@@ -8,6 +8,7 @@ import { describe, expect, it } from 'vitest'
 
 describe('Providers Package Structure', () => {
 	it('should have package.json with correct fields', () => {
+		// Infrastructure test - validates build system, no business value
 		const packageJsonPath = resolve(__dirname, '../../package.json')
 		const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'))
 

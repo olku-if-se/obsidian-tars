@@ -2,8 +2,8 @@ import { createLogger } from '@tars/logger'
 import { AzureOpenAI } from 'openai'
 import { t } from '../i18n'
 import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
-import { CALLOUT_BLOCK_END, CALLOUT_BLOCK_START } from '../utils'
 import { createMCPIntegrationHelper } from '../mcp-integration-helper'
+import { CALLOUT_BLOCK_END, CALLOUT_BLOCK_START } from '../utils'
 
 interface AzureOptions extends BaseOptions {
 	endpoint: string
@@ -16,8 +16,6 @@ const sendRequestFunc = (settings: AzureOptions): SendRequest =>
 	async function* (messages: Message[], controller: AbortController, _resolveEmbedAsBinary: ResolveEmbedAsBinary) {
 		const {
 			parameters,
-			mcpToolInjector,
-			mcpIntegration,
 			documentPath,
 			pluginSettings,
 			documentWriteLock,

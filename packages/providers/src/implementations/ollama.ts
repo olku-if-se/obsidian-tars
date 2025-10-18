@@ -9,8 +9,6 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 	async function* (messages: Message[], controller: AbortController, _resolveEmbedAsBinary: ResolveEmbedAsBinary) {
 		const {
 			parameters,
-			mcpToolInjector,
-			mcpIntegration,
 			documentPath,
 			statusBarManager,
 			editor,
