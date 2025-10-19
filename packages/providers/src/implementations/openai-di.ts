@@ -1,29 +1,17 @@
-import {
-	DIBaseProvider,
-	DIBaseOptions,
-	SendRequest,
-	ILoggingService,
-	INotificationService,
-	ISettingsService,
-	IDocumentService,
-	BaseOptions
-} from '@tars/contracts'
+import type { Capability } from '@tars/contracts'
+import { type BaseOptions, type DIBaseOptions, DIBaseProvider, type SendRequest } from '@tars/contracts'
 import { openAIVendor } from './openAI'
-import type { Message, EmbedCache, Vendor } from '../interfaces/base'
 
 export class OpenAIDIProvider extends DIBaseProvider {
 	readonly name = 'OpenAI'
 	readonly websiteToObtainKey = 'https://platform.openai.com/api-keys'
-	readonly capabilities = ['Text Generation', 'Image Vision', 'Image Generation', 'Tool Calling', 'Reasoning']
-
-	constructor(
-		loggingService: ILoggingService,
-		notificationService: INotificationService,
-		settingsService: ISettingsService,
-		documentService: IDocumentService
-	) {
-		super(loggingService, notificationService, settingsService, documentService)
-	}
+	readonly capabilities: Capability[] = [
+		'Text Generation',
+		'Image Vision',
+		'Image Generation',
+		'Tool Calling',
+		'Reasoning'
+	]
 
 	get defaultOptions(): DIBaseOptions {
 		const openaiDefaults = openAIVendor.defaultOptions

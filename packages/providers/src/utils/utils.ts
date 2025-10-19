@@ -1,5 +1,5 @@
+import type { BaseOptions, EmbedCache, ResolveEmbedAsBinary, Vendor } from '@tars/contracts'
 import { t } from '../i18n'
-import type { BaseOptions, EmbedCache, ResolveEmbedAsBinary, Vendor } from '../interfaces'
 
 export const getMimeTypeFromFilename = (filename: string) => {
 	const extension = filename.split('.').pop()?.toLowerCase() || ''

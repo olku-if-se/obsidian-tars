@@ -1,6 +1,6 @@
+import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '@tars/contracts'
 import { createLogger } from '@tars/logger'
 import { Ollama } from 'ollama'
-import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
 import { createMCPIntegrationHelper } from '../mcp-integration-helper'
 
 const logger = createLogger('providers:ollama')
@@ -113,18 +113,7 @@ export const ollamaVendor: Vendor = {
 		parameters: {}
 	},
 	sendRequestFunc,
-	models: [
-		'llama2',
-		'llama3',
-		'llama3.1',
-		'llama3.2',
-		'llama3.3',
-		'codellama',
-		'mistral',
-		'mixtral',
-		'qwen',
-		'gemma'
-	],
+	models: ['llama2', 'llama3', 'llama3.1', 'llama3.2', 'llama3.3', 'codellama', 'mistral', 'mixtral', 'qwen', 'gemma'],
 	websiteToObtainKey: 'https://ollama.com',
 	capabilities: ['Text Generation', 'Tool Calling']
 }

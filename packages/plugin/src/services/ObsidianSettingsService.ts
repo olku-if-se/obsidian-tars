@@ -1,7 +1,7 @@
 import { injectable } from '@needle-di/core'
 import { App, TFile } from 'obsidian'
 import { ISettingsService } from '@tars/contracts'
-import { PluginSettings } from '@tars/contracts/providers'
+import type { PluginSettings } from '../settings'
 
 @injectable()
 export class ObsidianSettingsService implements ISettingsService {

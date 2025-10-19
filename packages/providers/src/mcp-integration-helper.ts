@@ -1,5 +1,13 @@
+import type {
+	BaseOptions,
+	DocumentWriteLock,
+	Editor,
+	MCPIntegration,
+	MCPToolInjector,
+	Message,
+	StatusBarManager
+} from '@tars/contracts'
 import { createLogger } from '@tars/logger'
-import type { BaseOptions, MCPIntegration, MCPToolInjector, Message, SendRequest, ToolCallingCoordinator, ProviderAdapter, ToolExecutor, StatusBarManager, Editor, DocumentWriteLock } from './interfaces'
 
 const logger = createLogger('providers:mcp-integration')
 

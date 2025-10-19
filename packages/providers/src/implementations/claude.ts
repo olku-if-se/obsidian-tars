@@ -1,7 +1,8 @@
 // Simplified Claude vendor for testing DI integration
+
+import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '@tars/contracts'
 import { createLogger } from '@tars/logger'
 import { t } from '../i18n'
-import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
 import { createMCPIntegrationHelper } from '../mcp-integration-helper'
 
 const logger = createLogger('providers:claude')
@@ -14,7 +15,7 @@ export interface ClaudeOptions extends BaseOptions {
 }
 
 const sendRequestFunc = (settings: BaseOptions): SendRequest =>
-	async function* (messages: Message[], controller: AbortController, resolveEmbedAsBinary: ResolveEmbedAsBinary) {
+	async function* (messages: Message[], controller: AbortController, _resolveEmbedAsBinary: ResolveEmbedAsBinary) {
 		const {
 			parameters,
 			documentPath,
@@ -70,17 +71,7 @@ export const claudeVendor: Vendor = {
 		budget_tokens: 20000
 	} as ClaudeOptions,
 	sendRequestFunc,
-	models: [
-		'claude-3-sonnet-20240229',
-		'claude-3-haiku-20240307',
-		'claude-3-opus-20240229'
-	],
+	models: ['claude-3-sonnet-20240229', 'claude-3-haiku-20240307', 'claude-3-opus-20240229'],
 	websiteToObtainKey: 'https://console.anthropic.com/',
-	capabilities: [
-		'Text Generation',
-		'Image Vision',
-		'PDF Vision',
-		'Tool Calling',
-		'Reasoning'
-	]
+	capabilities: ['Text Generation', 'Image Vision', 'PDF Vision', 'Tool Calling', 'Reasoning']
 }

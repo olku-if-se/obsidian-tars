@@ -33,7 +33,8 @@
 		"paths": {
 			"~/*": ["src/*"],
 			"@/*": ["src/*"]
-		}
+		},
+		"importHelpers": true
 	},
 	"exclude": ["node_modules", "dist", ".storybook", "**/*.test.*", "**/*.stories.*"],
 	"include": ["src/**/*", "test/**/*"]

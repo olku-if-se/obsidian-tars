@@ -5,8 +5,8 @@
  * Following TDD approach - tests will fail initially but define expected behavior.
  */
 
+import type { MCPServerManager, MCPToolInjector, ToolExecutor } from '@tars/contracts'
 import { createLogger } from '@tars/logger'
-import type { MCPToolInjector, MCPServerManager, ToolExecutor, ToolSnapshot } from './interfaces'
 
 const logger = createLogger('providers:mcp-tool-injection-impl')
 
@@ -15,10 +15,11 @@ const logger = createLogger('providers:mcp-tool-injection-impl')
  * Converts MCP tools to provider-specific formats for injection
  */
 export class ConcreteMCPToolInjector implements MCPToolInjector {
-	private readonly manager: MCPServerManager
-	private readonly executor: ToolExecutor
-
-	constructor(manager: MCPServerManager, executor: ToolExecutor) {
+	constructor(
+		private readonly manager: MCPServerManager,
+		// biome-ignore lint/correctness/noUnusedPrivateClassMembers: keep it
+		private readonly executor: ToolExecutor
+	) {
 		this.manager = manager
 		this.executor = executor
 	}

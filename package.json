@@ -29,8 +29,6 @@
     "ui:lint": "pnpm --filter @tars/ui lint",
     "knip": "knip",
     "knip:check": "knip --check",
-    "knip:contracts": "pnpm --filter @tars/contracts knip",
-    "knip:providers": "pnpm --filter @tars/providers knip",
     "knip:plugin": "pnpm --filter obsidian-tars knip",
     "knip:ui": "pnpm --filter @tars/ui knip",
     "knip:all": "pnpm --filter '*' knip"

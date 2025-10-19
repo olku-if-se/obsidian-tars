@@ -8,5 +8,9 @@ export default defineConfig({
 	sourcemap: true,
 	clean: true,
 	treeshake: true,
-	external: ['@modelcontextprotocol/sdk', '@tars/logger', 'mcp-use', 'async-mutex', 'p-limit', 'debug']
+	outDir: 'dist',
+	external: ['@modelcontextprotocol/sdk', '@tars/logger', 'mcp-use', 'async-mutex', 'p-limit', 'debug'],
+	onSuccess: async () => {
+		console.log('✅ @tars/mcp-hosting build completed successfully')
+	}
 })

@@ -12,36 +12,13 @@
 		"isolatedModules": true,
 		"jsx": "react-jsx",
 		"jsxImportSource": "react",
-		"lib": [
-			"DOM",
-			"ES5",
-			"ES6",
-			"ES7",
-			"ES2023",
-			"DOM.Iterable"
-		],
+		"lib": ["DOM", "ES5", "ES6", "ES7", "ES2023", "DOM.Iterable"],
 		"module": "ESNext",
 		"moduleResolution": "bundler",
 		"noImplicitAny": true,
 		"paths": {
-			"@tars/contracts": [
-				"../contracts/src/index.ts"
-			],
-			"@tars/logger": [
-				"../logger/src/index.ts"
-			],
-			"@tars/mcp-hosting": [
-				"../mcp-hosting/src/index.ts"
-			],
-			"@tars/streams": [
-				"../streams/src/index.ts"
-			],
-			"@tars/ui": [
-				"../ui/src/index.ts"
-			],
-			"src/*": [
-				"src/*"
-			]
+			"@tars/*": ["../*/src"],
+			"src/*": ["src/*"]
 		},
 		"skipLibCheck": true,
 		"strictNullChecks": true,
@@ -49,12 +26,6 @@
 		"outDir": "./dist",
 		"noEmit": true
 	},
-	"exclude": [
-		"node_modules",
-		"dist"
-	],
-	"include": [
-		"src/**/*.ts",
-		"src/**/*.tsx"
-	]
+	"exclude": ["node_modules", "dist"],
+	"include": ["src/**/*.ts", "src/**/*.tsx"]
 }

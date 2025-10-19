@@ -1,7 +1,15 @@
+import type {
+	BaseOptions,
+	Message,
+	Optional,
+	RequestSystem,
+	ResolveEmbedAsBinary,
+	SendRequest,
+	Vendor
+} from '@tars/contracts'
 import { createLogger } from '@tars/logger'
 import axios from 'axios'
 import { t } from '../i18n'
-import type { BaseOptions, Message, NoticeSystem, Optional, PlatformInfo, RequestSystem, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
 
 const logger = createLogger('providers:qianfan')
 
@@ -61,7 +69,12 @@ const createToken = async (apiKey: string, apiSecret: string, frameworkConfig?: 
 	} as Token
 }
 
-const validOrCreate = async (currentToken: Token | undefined, apiKey: string, apiSecret: string, frameworkConfig?: { requestSystem?: RequestSystem }) => {
+const validOrCreate = async (
+	currentToken: Token | undefined,
+	apiKey: string,
+	apiSecret: string,
+	frameworkConfig?: { requestSystem?: RequestSystem }
+) => {
 	const now = Date.now()
 	if (
 		currentToken &&
@@ -163,13 +176,16 @@ const sendRequestFunc = (settings: QianFanOptions): SendRequest =>
 			// Use injected request system or fallback to fetch
 			let response
 			if (frameworkConfig?.requestSystem) {
-				response = await frameworkConfig.requestSystem.requestUrl(`${baseURL}/${model}?access_token=${token.accessToken}`, {
-					method: 'POST',
-					body: JSON.stringify(data),
-					headers: {
-						'Content-Type': 'application/json'
+				response = await frameworkConfig.requestSystem.requestUrl(
+					`${baseURL}/${model}?access_token=${token.accessToken}`,
+					{
+						method: 'POST',
+						body: JSON.stringify(data),
+						headers: {
+							'Content-Type': 'application/json'
+						}
 					}
-				})
+				)
 			} else {
 				// Fallback to native fetch
 				const fetchResponse = await fetch(`${baseURL}/${model}?access_token=${token.accessToken}`, {

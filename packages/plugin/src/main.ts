@@ -10,6 +10,11 @@ import type {
 	IDocumentService,
 	IMcpService
 } from '@tars/contracts'
+import type {
+	MCPServerManager,
+	ToolExecutor
+} from '@tars/mcp-hosting'
+import type { CodeBlockProcessor } from './mcp'
 
 const logger = createLogger('plugin')
 

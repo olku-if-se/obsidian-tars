@@ -1,5 +1,5 @@
+import type { CreatePlainText, SendRequest } from '@tars/contracts'
 import { createLogger } from '@tars/logger'
-import type { CreatePlainText, SendRequest, NormalizePath } from '../interfaces'
 
 interface TextWithTime {
 	readonly text: string
@@ -19,7 +19,13 @@ export const withStreamLogging = (originalFunc: SendRequest, createPlainText: Cr
 		const startTime = Date.now()
 		const texts: TextWithTime[] = []
 		try {
-			for await (const text of originalFunc(messages, controller, resolveEmbedAsBinary, saveAttachment, normalizePath)) {
+			for await (const text of originalFunc(
+				messages,
+				controller,
+				resolveEmbedAsBinary,
+				saveAttachment,
+				normalizePath
+			)) {
 				const currentTime = Date.now()
 				texts.push({ text, time: currentTime - startTime })
 				yield text

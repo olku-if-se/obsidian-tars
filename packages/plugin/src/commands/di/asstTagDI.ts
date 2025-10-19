@@ -6,12 +6,19 @@ import {
 	Notice
 } from 'obsidian'
 import { injectable, inject } from '@needle-di/core'
-import {
+import type {
 	ILoggingService,
 	INotificationService,
 	ISettingsService,
 	IStatusService
 } from '@tars/contracts'
+
+// Runtime tokens for dependency injection (interfaces can't be used as tokens with isolatedModules)
+const ILoggingServiceToken = Symbol('ILoggingService')
+const INotificationServiceToken = Symbol('INotificationService')
+const ISettingsServiceToken = Symbol('ISettingsService')
+const IStatusServiceToken = Symbol('IStatusService')
+
 import { buildRunEnv, generate, type RequestController } from 'src/editor'
 import { t } from 'src/lang/helper'
 import type { ProviderSettings } from '@tars/providers'
@@ -30,10 +37,10 @@ import {
 @injectable()
 export class AssistantTagDICommand {
 	constructor(
-		@inject(ILoggingService) private loggingService: ILoggingService,
-		@inject(INotificationService) private notificationService: INotificationService,
-		@inject(ISettingsService) private settingsService: ISettingsService,
-		@inject(IStatusService) private statusService: IStatusService
+		@inject(ILoggingServiceToken) private loggingService: ILoggingService,
+		@inject(INotificationServiceToken) private notificationService: INotificationService,
+		@inject(ISettingsServiceToken) private settingsService: ISettingsService,
+		@inject(IStatusServiceToken) private statusService: IStatusService
 	) {}
 
 	createCommand(
@@ -61,20 +68,17 @@ export class AssistantTagDICommand {
 					const { range, role, tagContent, tagRange } = fetchTagMeta(app, editor, settings)
 
 					// Update status using DI service
-					this.statusService.updateStatus(`Generating response with ${provider.name}...`)
+					this.statusService.updateStatus(`Generating response with ${provider.vendor}...`)
 
 					// Insert assistant tag
 					const insertResult = insertMarkToBegin(
 						editor,
 						range,
-						mark,
-						role,
-						tagContent,
-						tagRange
+						mark
 					)
 
 					if (isEmptyLines(tagContent)) {
-						insertMarkToEmptyLines(editor, insertResult, defaultUserMark, 'user')
+						insertMarkToEmptyLines(editor, insertResult, defaultUserMark)
 					}
 
 					// Generate response with DI services
@@ -90,7 +94,7 @@ export class AssistantTagDICommand {
 						requestController,
 						afterTagInsert: (newRange) => {
 							if (tagContent && tagContent.trim().length > 0 && !isEmptyLines(tagContent)) {
-								insertText(editor, newRange.end, HARD_LINE_BREAK)
+								insertText(editor, HARD_LINE_BREAK)
 							}
 						}
 					})

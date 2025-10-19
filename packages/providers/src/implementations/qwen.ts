@@ -1,7 +1,7 @@
+import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '@tars/contracts'
 import { createLogger } from '@tars/logger'
 import OpenAI from 'openai'
 import { t } from '../i18n'
-import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
 import { createMCPIntegrationHelper } from '../mcp-integration-helper'
 import { convertEmbedToImageUrl } from '../utils'
 

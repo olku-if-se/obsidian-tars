@@ -11,7 +11,7 @@ import {
 } from 'obsidian'
 import { buildRunEnv, generate, type RequestController } from 'src/editor'
 import { t } from 'src/lang/helper'
-import type { ProviderSettings } from 'src/providers'
+import type { ProviderSettings } from '@tars/providers'
 import type { PluginSettings } from 'src/settings'
 import type { StatusBarController } from 'src/statusBarManager'
 import { toSpeakMark } from 'src/suggest'

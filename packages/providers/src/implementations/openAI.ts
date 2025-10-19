@@ -1,7 +1,7 @@
+import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '@tars/contracts'
 import { createLogger } from '@tars/logger'
 import OpenAI from 'openai'
 import { t } from '../i18n'
-import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
 import { createMCPIntegrationHelper } from '../mcp-integration-helper'
 import { convertEmbedToImageUrl } from '../utils'
 
@@ -62,18 +62,23 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 
 		// Process message embeddings
 		const processedMessages = await Promise.all(
-			messages.map(async msg => ({
+			messages.map(async (msg) => ({
 				role: msg.role,
 				content: msg.content,
-				embeds: msg.embeds ? await Promise.all(
-					msg.embeds.map(async embed => ({
-						type: 'image_url',
-						image_url: {
-							url: convertEmbedToImageUrl(embed.link),
-							detail: 'auto'
-						}
-					}))
-				) : undefined
+				embeds: msg.embeds
+					? await Promise.all(
+							msg.embeds.map(async (embed) => {
+								const imageData = await convertEmbedToImageUrl(embed, resolveEmbedAsBinary)
+								return {
+									type: 'image_url',
+									image_url: {
+										...imageData.image_url,
+										detail: 'auto'
+									}
+								}
+							})
+						)
+					: undefined
 			}))
 		)
 
@@ -89,7 +94,7 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 
 			let responseChunkCount = 0
 			try {
-				for await (const chunk of response) {
+				for await (const chunk of response as any) {
 					responseChunkCount++
 					if (controller.signal.aborted) {
 						logger.info('request aborted', { chunkCount: responseChunkCount })
@@ -130,19 +135,7 @@ export const openAIVendor: Vendor = {
 		parameters: {}
 	},
 	sendRequestFunc,
-	models: [
-		'gpt-4',
-		'gpt-4-turbo',
-		'gpt-3.5-turbo',
-		'gpt-4o',
-		'gpt-4o-mini'
-	],
+	models: ['gpt-4', 'gpt-4-turbo', 'gpt-3.5-turbo', 'gpt-4o', 'gpt-4o-mini'],
 	websiteToObtainKey: 'https://platform.openai.com/api-keys',
-	capabilities: [
-		'Text Generation',
-		'Image Vision',
-		'Image Generation',
-		'Tool Calling',
-		'Reasoning'
-	]
+	capabilities: ['Text Generation', 'Image Vision', 'Image Generation', 'Tool Calling', 'Reasoning']
 }

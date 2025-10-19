@@ -1,8 +1,8 @@
-import { Container } from '@needle-di/core'
-import { Vendor, providerToVendor } from '../interfaces/base'
+import type { Container } from '@needle-di/core'
+import { providerToVendor, type Vendor } from '@tars/contracts'
 import { ClaudeDIProvider } from '../implementations/claude-di'
-import { OpenAIDIProvider } from '../implementations/openai-di'
 import { OllamaDIProvider } from '../implementations/ollama-di'
+import { OpenAIDIProvider } from '../implementations/openai-di'
 
 export class DIProviderFactory {
 	constructor(private container: Container) {}
@@ -38,7 +38,7 @@ export class DIProviderFactory {
 	 * Create multiple vendors for the given provider names
 	 */
 	createVendors(providerNames: string[]): Vendor[] {
-		return providerNames.map(name => this.createVendor(name))
+		return providerNames.map((name) => this.createVendor(name))
 	}
 }
 

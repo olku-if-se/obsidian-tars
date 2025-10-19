@@ -1,29 +1,38 @@
 import { injectable, inject } from '@needle-di/core'
-import {
+import type {
 	IMcpService,
-	ICodeBlockProcessor,
+	CodeBlockProcessor,
 	McpStatus,
-	IToolExecutor,
-	IMCPServerManager,
+	ToolExecutor,
+	MCPServerManager,
 	IStatusService,
 	ILoggingService
 } from '@tars/contracts'
+import {
+	ILoggingServiceToken,
+	IStatusServiceToken
+} from '../container/tokens'
+
+// Injection tokens for MCP-specific services
+export const ToolExecutorToken = Symbol('ToolExecutor')
+export const MCPServerManagerToken = Symbol('MCPServerManager')
+export const CodeBlockProcessorToken = Symbol('CodeBlockProcessor')
 
 @injectable()
 export class ObsidianMcpService implements IMcpService {
-	private toolExecutor: IToolExecutor
-	private serverManager: IMCPServerManager
-	private codeBlockProcessor: ICodeBlockProcessor
+	private toolExecutor: ToolExecutor
+	private serverManager: MCPServerManager
+	private codeBlockProcessor: CodeBlockProcessor
 	private statusService: IStatusService
 	private loggingService: ILoggingService
 	private isInitialized = false
 
 	constructor(
-		@inject(IToolExecutor) toolExecutor: IToolExecutor,
-		@inject(IMCPServerManager) serverManager: IMCPServerManager,
-		@inject(ICodeBlockProcessor) codeBlockProcessor: ICodeBlockProcessor,
-		@inject(IStatusService) statusService: IStatusService,
-		@inject(ILoggingService) loggingService: ILoggingService
+		@inject(ToolExecutorToken) toolExecutor: ToolExecutor,
+		@inject(MCPServerManagerToken) serverManager: MCPServerManager,
+		@inject(CodeBlockProcessorToken) codeBlockProcessor: CodeBlockProcessor,
+		@inject(IStatusServiceToken) statusService: IStatusService,
+		@inject(ILoggingServiceToken) loggingService: ILoggingService
 	) {
 		this.toolExecutor = toolExecutor
 		this.serverManager = serverManager

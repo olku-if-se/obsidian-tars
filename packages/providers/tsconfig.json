@@ -5,11 +5,9 @@
 		"moduleResolution": "node",
 		"lib": ["ES2018", "DOM"],
 		"outDir": "./dist",
-		"rootDir": "./src",
 		"declaration": true,
 		"declarationMap": true,
 		"sourceMap": true,
-		"composite": true,
 		"strict": true,
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
@@ -20,18 +18,14 @@
 		"noEmit": false,
 		"baseUrl": ".",
 		"paths": {
-			"@tars/contracts": [
-				"../contracts/src/index.ts"
-			],
-			"@tars/logger": [
-				"../logger/src/index.ts"
-			]
+			"@tars/*": ["../*/src"]
 		},
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
 		"downlevelIteration": true,
-		"importsNotUsedAsValues": "remove"
+		"importsNotUsedAsValues": "remove",
+		"importHelpers": true
 	},
-	"include": ["src/**/*"],
+	"include": ["src/**/*.ts"],
 	"exclude": ["node_modules", "dist", "**/*.test.ts"]
 }

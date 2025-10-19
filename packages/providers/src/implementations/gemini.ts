@@ -1,7 +1,7 @@
 import { type Content, GoogleGenerativeAI, type Tool } from '@google/generative-ai'
+import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '@tars/contracts'
 import { createLogger } from '@tars/logger'
 import { t } from '../i18n/i18n'
-import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
 import { createMCPIntegrationHelper } from '../mcp-integration-helper'
 
 const logger = createLogger('providers:gemini')
@@ -71,7 +71,7 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 		// Start chat with tools if available
 		const chatConfig = { history }
 		if (tools.length > 0) {
-			(chatConfig as any).tools = tools
+			;(chatConfig as any).tools = tools
 			logger.debug('Starting Gemini chat with tools', { toolCount: tools.length })
 		}
 		const chat = genModel.startChat(chatConfig)

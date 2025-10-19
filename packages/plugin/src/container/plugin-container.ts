@@ -1,5 +1,6 @@
 import 'reflect-metadata'
 import { Container } from '@needle-di/core'
+import type { InjectionToken } from '@needle-di/core'
 import {
 	ILoggingService,
 	INotificationService,
@@ -15,21 +16,37 @@ import { ObsidianNotificationService } from '../services/ObsidianNotificationSer
 import { ObsidianStatusService } from '../services/ObsidianStatusService'
 import { ObsidianDocumentService } from '../services/ObsidianDocumentService'
 import { ObsidianSettingsService } from '../services/ObsidianSettingsService'
-import { ObsidianMcpService } from '../services/ObsidianMcpService'
+// MCP imports temporarily commented out
+// import { ObsidianMcpService, ToolExecutorToken, MCPServerManagerToken, CodeBlockProcessorToken } from '../services/ObsidianMcpService'
 
 // Existing MCP components (will be wrapped for DI)
-import { MCPServerManager, ToolExecutor } from '@tars/mcp-hosting'
-import { CodeBlockProcessor } from '../mcp/codeBlockProcessor'
+// import {
+// 	MCPServerManager as MCPServerManagerImpl,
+// 	ToolExecutor as ToolExecutorImpl
+// } from '@tars/mcp-hosting'
+// import { CodeBlockProcessor as CodeBlockProcessorImpl } from '../mcp/codeBlockProcessor'
 
 // Contract imports for token registration
-import {
-	IMCPServerManager,
-	IToolExecutor,
-	ICodeBlockProcessor
-} from '@tars/contracts'
+// import type {
+// 	MCPServerManager,
+// 	ToolExecutor,
+// 	CodeBlockProcessor
+// } from '@tars/contracts'
 
 // DI Commands
 import { AssistantTagDICommand, UserTagDICommand, SystemTagDICommand } from '../commands/di'
+// Central tokens
+import {
+	ILoggingServiceToken,
+	INotificationServiceToken,
+	ISettingsServiceToken,
+	IStatusServiceToken,
+	IDocumentServiceToken,
+	AppToken,
+	TarsPluginToken,
+	PluginSettingsToken,
+	StatusBarManagerToken
+} from './tokens'
 
 export interface CreateContainerOptions {
 	app: any // Obsidian App instance
@@ -41,127 +58,46 @@ export interface CreateContainerOptions {
 export function createPluginContainer(options: CreateContainerOptions): Container {
 	const { app, plugin, settings, statusBarManager } = options
 
-	const container = new Container({ defaultScope: 'singleton' })
+	const container = new Container()
 
-	// Register framework instances
-	container.register('App').toInstance(app)
-	container.register('TarsPlugin').toInstance(plugin)
-	container.register('PluginSettings').toInstance(settings)
-	container.register('StatusBarManager').toInstance(statusBarManager)
+	// Register framework instances as values
+	container.bind(AppToken).toConstantValue(app)
+	container.bind(TarsPluginToken).toConstantValue(plugin)
+	container.bind(PluginSettingsToken).toConstantValue(settings)
+	container.bind(StatusBarManagerToken).toConstantValue(statusBarManager)
 
-	// Register service implementations
-	container.register(ILoggingService).toClass(ObsidianLoggingService)
-	container.register(INotificationService).toClass(ObsidianNotificationService)
-	container.register(IStatusService).toClass(ObsidianStatusService)
-	container.register(IDocumentService).toClass(ObsidianDocumentService)
-	container.register(ISettingsService).toClass(ObsidianSettingsService)
+	// Register service implementations as singletons
+	// Register with both interface types and tokens for maximum compatibility
+	container.bind(ILoggingService).toClass(ObsidianLoggingService)
+	container.bind(ILoggingServiceToken).toClass(ObsidianLoggingService)
+
+	container.bind(INotificationService).toClass(ObsidianNotificationService)
+	container.bind(INotificationServiceToken).toClass(ObsidianNotificationService)
+
+	container.bind(IStatusService).toClass(ObsidianStatusService)
+	container.bind(IStatusServiceToken).toClass(ObsidianStatusService)
+
+	container.bind(IDocumentService).toClass(ObsidianDocumentService)
+	container.bind(IDocumentServiceToken).toClass(ObsidianDocumentService)
+
+	container.bind(ISettingsService).toClass(ObsidianSettingsService)
+	container.bind(ISettingsServiceToken).toClass(ObsidianSettingsService)
 
 	// Register MCP components as DI services with proper tokens
-	container.register(IMCPServerManager).toClass(MCPServerManager)
-	container.register(IToolExecutor).toClass(ToolExecutor)
-	container.register(ICodeBlockProcessor).toClass(CodeBlockProcessor)
+	// TODO: Fix MCP service injection issues - temporarily commented out
+	// container.register(MCPServerManagerToken, { useClass: MCPServerManagerImpl })
+	// container.register(ToolExecutorToken, { useClass: ToolExecutorImpl })
+	// container.register(CodeBlockProcessorToken, { useClass: CodeBlockProcessorImpl })
 
 	// Register MCP service with dependencies
-	container.register(IMcpService).toClass(ObsidianMcpService)
+	// container.register(IMcpService, { useClass: ObsidianMcpService })
 
 	// Register DI Commands
-	container.register(AssistantTagDICommand).toClass(AssistantTagDICommand)
-	container.register(UserTagDICommand).toClass(UserTagDICommand)
-	container.register(SystemTagDICommand).toClass(SystemTagDICommand)
+	// TODO: Fix token mismatch between central tokens and command-local tokens
+	// container.register(AssistantTagDICommand, { useClass: AssistantTagDICommand })
+	// container.register(UserTagDICommand, { useClass: UserTagDICommand })
+	// container.register(SystemTagDICommand, { useClass: SystemTagDICommand })
 
 	return container
 }
 
-/**
- * Create a container for testing with mocked services
- */
-export function createTestContainer(): Container {
-	const container = new Container({ defaultScope: 'singleton' })
-
-	// Mock implementations for testing
-	container.register(ILoggingService).toInstance({
-		debug: jest.fn(),
-		info: jest.fn(),
-		warn: jest.fn(),
-		error: jest.fn()
-	})
-
-	container.register(INotificationService).toInstance({
-		show: jest.fn(),
-		warn: jest.fn(),
-		error: jest.fn()
-	})
-
-	container.register(ISettingsService).toInstance({
-		get: jest.fn(),
-		set: jest.fn(),
-		watch: jest.fn(),
-		getAll: jest.fn(),
-		setAll: jest.fn(),
-		has: jest.fn(),
-		remove: jest.fn(),
-		clear: jest.fn()
-	})
-
-	container.register(IStatusService).toInstance({
-		updateStatus: jest.fn(),
-		showProgress: jest.fn(),
-		hideProgress: jest.fn(),
-		reportError: jest.fn(),
-		setReady: jest.fn(),
-		setBusy: jest.fn(),
-		setError: jest.fn(),
-		getCurrentStatus: jest.fn(),
-		onStatusChange: jest.fn()
-	})
-
-	container.register(IDocumentService).toInstance({
-		getCurrentDocumentPath: jest.fn().mockReturnValue('test.md'),
-		resolveEmbedAsBinary: jest.fn(),
-		createPlainText: jest.fn(),
-		getDocumentWriteLock: jest.fn(),
-		normalizePath: jest.fn().mockImplementation(path => path),
-		getFileBasename: jest.fn().mockReturnValue('test'),
-		getFileExtension: jest.fn().mockReturnValue('md'),
-		getFolderPath: jest.fn().mockReturnValue(''),
-		fileExists: jest.fn().mockReturnValue(true),
-		readFile: jest.fn(),
-		writeFile: jest.fn(),
-		getFolderFiles: jest.fn().mockReturnValue([])
-	})
-
-	// Register MCP services for testing
-	container.register(IMCPServerManager).toInstance({
-		startServer: jest.fn(),
-		stopServer: jest.fn(),
-		listTools: jest.fn(),
-		callTool: jest.fn(),
-		isServerRunning: jest.fn().mockReturnValue(false)
-	})
-
-	container.register(IToolExecutor).toInstance({
-		executeTool: jest.fn(),
-		getActiveExecutions: jest.fn().mockReturnValue(new Map()),
-		cancelExecution: jest.fn(),
-		getStats: jest.fn()
-	})
-
-	container.register(ICodeBlockProcessor).toInstance({
-		processCodeBlock: jest.fn(),
-		renderToolResult: jest.fn()
-	})
-
-	container.register(IMcpService).toInstance({
-		initialize: jest.fn(),
-		shutdown: jest.fn(),
-		getStatus: jest.fn().mockReturnValue({ isConnected: false }),
-		executeTool: jest.fn()
-	})
-
-	container.register('App').toInstance({})
-	container.register('TarsPlugin').toInstance({})
-	container.register('PluginSettings').toInstance({})
-	container.register('StatusBarManager').toInstance({})
-
-	return container
-}

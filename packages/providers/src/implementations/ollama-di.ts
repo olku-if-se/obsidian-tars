@@ -1,29 +1,11 @@
-import {
-	DIBaseProvider,
-	DIBaseOptions,
-	SendRequest,
-	ILoggingService,
-	INotificationService,
-	ISettingsService,
-	IDocumentService,
-	BaseOptions
-} from '@tars/contracts'
+import type { Capability } from '@tars/contracts'
+import { type BaseOptions, type DIBaseOptions, DIBaseProvider, type SendRequest } from '@tars/contracts'
 import { ollamaVendor } from './ollama'
-import type { Message, EmbedCache, Vendor } from '../interfaces/base'
 
 export class OllamaDIProvider extends DIBaseProvider {
 	readonly name = 'Ollama'
 	readonly websiteToObtainKey = 'https://ollama.com/'
-	readonly capabilities = ['Text Generation', 'Image Vision', 'Tool Calling', 'Reasoning']
-
-	constructor(
-		loggingService: ILoggingService,
-		notificationService: INotificationService,
-		settingsService: ISettingsService,
-		documentService: IDocumentService
-	) {
-		super(loggingService, notificationService, settingsService, documentService)
-	}
+	readonly capabilities: Capability[] = ['Text Generation', 'Image Vision', 'Tool Calling', 'Reasoning']
 
 	get defaultOptions(): DIBaseOptions {
 		const ollamaDefaults = ollamaVendor.defaultOptions

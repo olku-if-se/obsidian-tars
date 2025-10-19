@@ -5,8 +5,8 @@ import { StrictMode } from 'react'
 import type TarsPlugin from './main'
 import type { PluginSettings } from './settings'
 import { adaptObsidianToReact, mergeReactChanges } from './adapters/reactSettingsAdapter'
-import { SettingsProvider } from '@tars/ui/providers'
-import { SettingsTab } from '@tars/ui/views'
+import { SettingsProvider } from '@tars/ui'
+import { SettingsTab } from '@tars/ui'
 
 /**
  * React-based settings tab implementation

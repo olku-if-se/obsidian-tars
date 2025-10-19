@@ -10,6 +10,7 @@
 		"lint": "biome lint .",
 		"format": "biome format --write .",
 		"check": "biome check --write .",
+		"typecheck": "tsc --project tsconfig.json --noEmit --skipLibCheck",
 		"typecheck:build": "tsc --project tsconfig.build.json --noEmit --skipLibCheck",
 		"typecheck:tests": "tsc --project tsconfig.tests.json --noEmit",
 		"test": "vitest run",
@@ -41,7 +42,7 @@
 		"ollama": "^0.6.0",
 		"openai": "^6.3.0",
 		"testcontainers": "^11.7.0",
-		"tslib": "^2.4.0",
+		"tslib": "^2.8.1",
 		"typescript": "^5.9.3",
 		"vitest": "^3.2.4"
 	},

@@ -1,7 +1,7 @@
 import { type App, Notice, normalizePath } from 'obsidian'
 import { buildRunEnv, extractConversationsTextOnly } from 'src/editor'
 import { t } from 'src/lang/helper'
-import type { Message } from 'src/providers'
+import type { Message } from '@tars/providers'
 import type { PluginSettings } from 'src/settings'
 import { createLogger } from '@tars/logger'
 

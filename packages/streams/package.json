@@ -26,6 +26,7 @@
 	"author": "C Jack<https://github.com/ae86jack>",
 	"license": "MIT",
 	"dependencies": {
+		"tslib": "^2.8.1",
 		"async-mutex": "^0.5.0"
 	},
 	"devDependencies": {

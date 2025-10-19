@@ -1,7 +1,7 @@
+import type { BaseOptions, Message, ResolveEmbedAsBinary, SaveAttachment, SendRequest, Vendor } from '@tars/contracts'
 import { createLogger } from '@tars/logger'
 import OpenAI from 'openai'
 import { t } from '../i18n'
-import type { BaseOptions, Message, NoticeSystem, ResolveEmbedAsBinary, SaveAttachment, SendRequest, Vendor } from '../interfaces'
 import { getMimeTypeFromFilename } from '../utils'
 
 const models = ['gpt-image-1']

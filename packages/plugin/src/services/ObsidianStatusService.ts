@@ -1,5 +1,5 @@
 import { injectable } from '@needle-di/core'
-import { StatusBarManager } from '@tars/contracts/providers'
+import type { StatusBarManager } from '@tars/contracts'
 import { IStatusService, StatusInfo, StatusState } from '@tars/contracts'
 
 @injectable()

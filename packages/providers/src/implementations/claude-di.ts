@@ -1,29 +1,11 @@
-import {
-	DIBaseProvider,
-	DIBaseOptions,
-	SendRequest,
-	ILoggingService,
-	INotificationService,
-	ISettingsService,
-	IDocumentService,
-	BaseOptions
-} from '@tars/contracts'
-import { claudeVendor, ClaudeOptions } from './claude'
-import type { Message, EmbedCache, Vendor } from '../interfaces/base'
+import type { Capability } from '@tars/contracts'
+import { type BaseOptions, type DIBaseOptions, DIBaseProvider, type SendRequest } from '@tars/contracts'
+import { type ClaudeOptions, claudeVendor } from './claude'
 
 export class ClaudeDIProvider extends DIBaseProvider {
 	readonly name = 'Claude'
 	readonly websiteToObtainKey = 'https://console.anthropic.com/'
-	readonly capabilities = ['Text Generation', 'Image Vision', 'PDF Vision', 'Tool Calling', 'Reasoning']
-
-	constructor(
-		loggingService: ILoggingService,
-		notificationService: INotificationService,
-		settingsService: ISettingsService,
-		documentService: IDocumentService
-	) {
-		super(loggingService, notificationService, settingsService, documentService)
-	}
+	readonly capabilities: Capability[] = ['Text Generation', 'Image Vision', 'PDF Vision', 'Tool Calling', 'Reasoning']
 
 	get defaultOptions(): DIBaseOptions {
 		const claudeDefaults = claudeVendor.defaultOptions as ClaudeOptions

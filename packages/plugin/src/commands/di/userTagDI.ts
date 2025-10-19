@@ -5,7 +5,7 @@ import {
 	type MarkdownView
 } from 'obsidian'
 import { injectable, inject } from '@needle-di/core'
-import {
+import type {
 	ILoggingService,
 	INotificationService,
 	ISettingsService
@@ -16,12 +16,17 @@ import type { TagCmdMeta } from '../tagCmd'
 import { toSpeakMark } from 'src/suggest'
 import { fetchTagMeta, insertMarkToBegin } from '../tagUtils'
 
+// Runtime tokens for dependency injection (interfaces can't be used as tokens with isolatedModules)
+const ILoggingServiceToken = Symbol('ILoggingService')
+const INotificationServiceToken = Symbol('INotificationService')
+const ISettingsServiceToken = Symbol('ISettingsService')
+
 @injectable()
 export class UserTagDICommand {
 	constructor(
-		@inject(ILoggingService) private loggingService: ILoggingService,
-		@inject(INotificationService) private notificationService: INotificationService,
-		@inject(ISettingsService) private settingsService: ISettingsService
+		@inject(ILoggingServiceToken) private loggingService: ILoggingService,
+		@inject(INotificationServiceToken) private notificationService: INotificationService,
+		@inject(ISettingsServiceToken) private settingsService: ISettingsService
 	) {}
 
 	createCommand(
