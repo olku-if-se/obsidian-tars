@@ -1,0 +1,40 @@
+{
+  "entry": [
+    "packages/contracts/src/index.ts",
+    "packages/providers/src/index.ts",
+    "packages/plugin/src/index.ts",
+    "packages/ui/src/index.ts"
+  ],
+  "project": [
+    "packages/contracts/package.json",
+    "packages/providers/package.json",
+    "packages/plugin/package.json",
+    "packages/ui/package.json"
+  ],
+  "ignore": [
+    "packages/*/dist/**/*",
+    "packages/*/coverage/**/*",
+    "packages/*/node_modules/**/*",
+    "packages/*/tsconfig.json",
+    "packages/*/vitest.config.ts",
+    "packages/*/biome.json",
+    "packages/*/tsup.config.ts",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "**/__tests__/**/*",
+    "**/fixtures/**/*"
+  ],
+  "ignoreDependencies": [
+    "node",
+    "@types/node",
+    "vitest",
+    "typescript"
+  ],
+  "ignoreBinaries": [
+    "tsup",
+    "biome",
+    "pnpm",
+    "node",
+    "turbo"
+  ]
+}

@@ -15,7 +15,8 @@
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
 		"test:watch": "vitest --ui --coverage --watch",
-		"clean": "rm -rf dist node_modules coverage .turbo"
+		"clean": "rm -rf dist node_modules coverage .turbo",
+		"knip": "knip"
 	},
 	"keywords": [],
 	"author": "C Jack<https://github.com/ae86jack>",

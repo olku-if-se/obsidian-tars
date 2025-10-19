@@ -4,6 +4,8 @@ export * from './implementations'
 export * from './mcp-tool-injection-impl'
 export * from './utils'
 export * from './factories'
+export * from './interfaces'
+export * from './mcp-integration-helper'
 
 // Export DI providers with their own types
 export {

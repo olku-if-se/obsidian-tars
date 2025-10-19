@@ -51,6 +51,10 @@
 		},
 		"clean": {
 			"cache": false
+		},
+		"knip": {
+			"outputs": [],
+			"cache": true
 		}
 	}
 }
