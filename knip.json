@@ -22,7 +22,13 @@
     "**/*.test.ts",
     "**/*.spec.ts",
     "**/__tests__/**/*",
-    "**/fixtures/**/*"
+    "**/fixtures/**/*",
+    "**/*.d.ts",
+    "packages/presentation/**/*",
+    "packages/plugin/src/container/**/*",
+    "packages/plugin/src/services/**/*",
+    "packages/plugin/scripts/integration-tests/**/*",
+    "packages/*/tests/mocks/**/*"
   ],
   "ignoreDependencies": [
     "node",
