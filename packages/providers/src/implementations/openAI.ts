@@ -28,11 +28,7 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 		// Tool-aware path: Use coordinator for autonomous tool calling
 		if (mcpHelper?.hasToolCalling()) {
 			try {
-				const client = new OpenAI({
-					apiKey,
-					baseURL,
-					dangerouslyAllowBrowser: true
-				})
+				const client = new OpenAI({ apiKey, baseURL })
 
 				yield* mcpHelper.generateWithTools({
 					documentPath: documentPath || 'unknown.md',
@@ -40,6 +36,8 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 					messages,
 					controller,
 					client,
+					statusBarManager: settings.statusBarManager,
+					editor: settings.editor,
 					pluginSettings,
 					documentWriteLock,
 					beforeToolExecution
@@ -54,81 +52,97 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 
 		// Original streaming path with tool injection
 		let requestParams: Record<string, unknown> = { model, ...remains }
+
+		logger.debug('initial request params', { ...requestParams, messages: `${messages.length} messages` })
+
 		if (mcpHelper) {
 			requestParams = await mcpHelper.injectTools(requestParams, 'OpenAI')
+			logger.debug('mcp tools injected successfully')
 		}
 
-		const formattedMessages = await Promise.all(messages.map((msg) => formatMsg(msg, resolveEmbedAsBinary)))
-		const client = new OpenAI({
-			apiKey,
-			baseURL,
-			dangerouslyAllowBrowser: true
-		})
-
-		const stream = await client.chat.completions.create(
-			{
-				...(requestParams as object),
-				messages: formattedMessages as OpenAI.ChatCompletionMessageParam[],
-				stream: true
-			} as OpenAI.ChatCompletionCreateParamsStreaming,
-			{ signal: controller.signal }
+		// Process message embeddings
+		const processedMessages = await Promise.all(
+			messages.map(async msg => ({
+				role: msg.role,
+				content: msg.content,
+				embeds: msg.embeds ? await Promise.all(
+					msg.embeds.map(async embed => ({
+						type: 'image_url',
+						image_url: {
+							url: convertEmbedToImageUrl(embed.link),
+							detail: 'auto'
+						}
+					}))
+				) : undefined
+			}))
 		)
 
-		for await (const part of stream) {
-			const text = part.choices[0]?.delta?.content
-			if (!text) continue
-			yield text
+		logger.debug('initiating streaming chat request')
+		const client = new OpenAI({ apiKey, baseURL })
+
+		try {
+			const response = await client.chat.completions.create({
+				...requestParams,
+				messages: processedMessages,
+				stream: true
+			} as any)
+
+			let responseChunkCount = 0
+			try {
+				for await (const chunk of response) {
+					responseChunkCount++
+					if (controller.signal.aborted) {
+						logger.info('request aborted', { chunkCount: responseChunkCount })
+						break
+					}
+
+					const content = chunk.choices[0]?.delta?.content || ''
+					logger.debug('received chunk', {
+						chunk: responseChunkCount,
+						contentLength: content.length,
+						preview: content.substring(0, 100)
+					})
+
+					if (content) {
+						yield content
+					}
+				}
+			} catch (streamError) {
+				logger.error('error during openai stream', streamError)
+				throw streamError
+			}
+
+			logger.info('stream completed', { chunkCount: responseChunkCount })
+		} catch (connectionError) {
+			logger.error('failed to connect to openai', connectionError)
+			throw new Error(
+				`OpenAI connection failed: ${connectionError instanceof Error ? connectionError.message : String(connectionError)}`
+			)
 		}
 	}
-
-type ContentItem =
-	| {
-			type: 'image_url'
-			image_url: {
-				url: string
-			}
-	  }
-	| { type: 'text'; text: string }
-
-const formatMsg = async (msg: Message, resolveEmbedAsBinary: ResolveEmbedAsBinary) => {
-	const content: ContentItem[] = msg.embeds
-		? await Promise.all(msg.embeds.map((embed) => convertEmbedToImageUrl(embed, resolveEmbedAsBinary)))
-		: []
-
-	if (msg.content.trim()) {
-		content.push({
-			type: 'text' as const,
-			text: msg.content
-		})
-	}
-	return {
-		role: msg.role,
-		content
-	}
-}
-
-/**
- * Format message for coordinator (simpler format - just role and content)
- */
-const formatMsgForCoordinator = async (msg: Message, _resolveEmbedAsBinary: ResolveEmbedAsBinary) => {
-	// For coordinator, we keep it simple - embeds will be handled by the adapter
-	return {
-		role: msg.role,
-		content: msg.content,
-		embeds: msg.embeds
-	}
-}
 
 export const openAIVendor: Vendor = {
 	name: 'OpenAI',
 	defaultOptions: {
 		apiKey: '',
 		baseURL: 'https://api.openai.com/v1',
-		model: 'gpt-4.1',
+		model: 'gpt-4',
 		parameters: {}
 	},
 	sendRequestFunc,
-	models: [],
+	models: [
+		'gpt-4',
+		'gpt-4-turbo',
+		'gpt-3.5-turbo',
+		'gpt-4o',
+		'gpt-4o-mini'
+	],
 	websiteToObtainKey: 'https://platform.openai.com/api-keys',
-	capabilities: ['Text Generation', 'Image Vision', 'Tool Calling']
+	capabilities: [
+		'Text Generation',
+		'Image Vision',
+		'Image Generation',
+		'Tool Calling',
+		'Reasoning'
+	]
 }

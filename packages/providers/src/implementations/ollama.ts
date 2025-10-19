@@ -113,7 +113,18 @@ export const ollamaVendor: Vendor = {
 		parameters: {}
 	},
 	sendRequestFunc,
-	models: [],
+	models: [
+		'llama2',
+		'llama3',
+		'llama3.1',
+		'llama3.2',
+		'llama3.3',
+		'codellama',
+		'mistral',
+		'mixtral',
+		'qwen',
+		'gemma'
+	],
 	websiteToObtainKey: 'https://ollama.com',
 	capabilities: ['Text Generation', 'Tool Calling']
 }

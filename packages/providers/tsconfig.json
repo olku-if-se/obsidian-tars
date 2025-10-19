@@ -18,6 +18,15 @@
 		"resolveJsonModule": true,
 		"allowJs": true,
 		"noEmit": false,
+		"baseUrl": ".",
+		"paths": {
+			"@tars/contracts": [
+				"../contracts/src/index.ts"
+			],
+			"@tars/logger": [
+				"../logger/src/index.ts"
+			]
+		},
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
 		"downlevelIteration": true,

@@ -4,6 +4,8 @@
 		"allowSyntheticDefaultImports": true,
 		"baseUrl": ".",
 		"esModuleInterop": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
 		"importHelpers": true,
 		"inlineSourceMap": true,
 		"inlineSources": true,
@@ -22,6 +24,9 @@
 		"moduleResolution": "bundler",
 		"noImplicitAny": true,
 		"paths": {
+			"@tars/contracts": [
+				"../contracts/src/index.ts"
+			],
 			"@tars/logger": [
 				"../logger/src/index.ts"
 			],

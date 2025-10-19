@@ -46,6 +46,8 @@
 	},
 	"dependencies": {
 		"@modelcontextprotocol/sdk": "^1.18.2",
+		"@needle-di/core": "^1.0.0",
+		"@tars/contracts": "workspace:*",
 		"@tars/logger": "workspace:*",
 		"@tars/mcp-hosting": "workspace:*",
 		"@tars/providers": "workspace:*",
@@ -58,6 +60,7 @@
 		"p-limit": "^7.1.1",
 		"react": "^18.3.1",
 		"react-dom": "^18.3.1",
+		"reflect-metadata": "^0.1.13",
 		"yaml": "^2.8.1"
 	}
 }

@@ -49,10 +49,16 @@ describe('Providers Package Structure', () => {
 		// Check that key exports are present
 		expect(indexContent).toContain('export')
 		expect(indexContent).toContain('export * from')
-		expect(indexContent).toContain('interfaces')
 		expect(indexContent).toContain('implementations')
 		expect(indexContent).toContain('i18n')
 		expect(indexContent).toContain('utils')
+		expect(indexContent).toContain('factories')
+
+		// Check for DI-specific exports
+		expect(indexContent).toContain('ClaudeDIProvider')
+		expect(indexContent).toContain('OpenAIDIProvider')
+		expect(indexContent).toContain('OllamaDIProvider')
+		expect(indexContent).toContain('DIProviderFactory')
 	})
 
 	it('should have organized folder structure', () => {
