@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { ObsidianSettingsService } from '../ObsidianSettingsService'
-import { ISettingsService } from '@tars/contracts/services'
+import { ISettingsService } from '@tars/contracts'
 import { App, TFile } from 'obsidian'
 
 // Mock Obsidian App and TFile

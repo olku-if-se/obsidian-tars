@@ -9,7 +9,7 @@ import type {
 	IStatusService,
 	IDocumentService,
 	IMcpService
-} from '@tars/contracts/services'
+} from '@tars/contracts'
 
 const logger = createLogger('plugin')
 

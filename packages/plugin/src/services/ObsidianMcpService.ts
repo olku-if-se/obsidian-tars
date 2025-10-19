@@ -1,26 +1,27 @@
 import { injectable, inject } from '@needle-di/core'
 import {
 	IMcpService,
-	CodeBlockProcessor,
+	ICodeBlockProcessor,
 	McpStatus,
-	ToolExecutor,
-	MCPServerManager
-} from '@tars/contracts/services'
-import { IStatusService, ILoggingService } from '@tars/contracts/services'
+	IToolExecutor,
+	IMCPServerManager,
+	IStatusService,
+	ILoggingService
+} from '@tars/contracts'
 
 @injectable()
 export class ObsidianMcpService implements IMcpService {
-	private toolExecutor: ToolExecutor
-	private serverManager: MCPServerManager
-	private codeBlockProcessor: CodeBlockProcessor
+	private toolExecutor: IToolExecutor
+	private serverManager: IMCPServerManager
+	private codeBlockProcessor: ICodeBlockProcessor
 	private statusService: IStatusService
 	private loggingService: ILoggingService
 	private isInitialized = false
 
 	constructor(
-		@inject(ToolExecutor) toolExecutor: ToolExecutor,
-		@inject(MCPServerManager) serverManager: MCPServerManager,
-		@inject(CodeBlockProcessor) codeBlockProcessor: CodeBlockProcessor,
+		@inject(IToolExecutor) toolExecutor: IToolExecutor,
+		@inject(IMCPServerManager) serverManager: IMCPServerManager,
+		@inject(ICodeBlockProcessor) codeBlockProcessor: ICodeBlockProcessor,
 		@inject(IStatusService) statusService: IStatusService,
 		@inject(ILoggingService) loggingService: ILoggingService
 	) {

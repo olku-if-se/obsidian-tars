@@ -47,7 +47,7 @@
 	},
 	"dependencies": {
 		"@modelcontextprotocol/sdk": "^1.18.2",
-		"@needle-di/core": "^1.0.0",
+		"@needle-di/core": "^1.1.0",
 		"@tars/contracts": "workspace:*",
 		"@tars/logger": "workspace:*",
 		"@tars/mcp-hosting": "workspace:*",

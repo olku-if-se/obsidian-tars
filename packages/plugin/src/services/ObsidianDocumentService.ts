@@ -4,7 +4,7 @@ import {
 	IDocumentService,
 	DocumentWriteLock,
 	EmbedCache
-} from '@tars/contracts/services'
+} from '@tars/contracts'
 
 @injectable()
 export class ObsidianDocumentService implements IDocumentService {

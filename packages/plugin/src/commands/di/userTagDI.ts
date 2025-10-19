@@ -9,7 +9,7 @@ import {
 	ILoggingService,
 	INotificationService,
 	ISettingsService
-} from '@tars/contracts/services'
+} from '@tars/contracts'
 import type { PluginSettings } from 'src/settings'
 import type { RequestController } from 'src/editor'
 import type { TagCmdMeta } from '../tagCmd'

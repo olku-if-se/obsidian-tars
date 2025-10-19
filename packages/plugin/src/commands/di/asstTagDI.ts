@@ -11,7 +11,7 @@ import {
 	INotificationService,
 	ISettingsService,
 	IStatusService
-} from '@tars/contracts/services'
+} from '@tars/contracts'
 import { buildRunEnv, generate, type RequestController } from 'src/editor'
 import { t } from 'src/lang/helper'
 import type { ProviderSettings } from '@tars/providers'

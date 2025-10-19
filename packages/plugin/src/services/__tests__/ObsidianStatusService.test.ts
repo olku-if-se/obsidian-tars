@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { ObsidianStatusService } from '../ObsidianStatusService'
-import { IStatusService } from '@tars/contracts/services'
+import { IStatusService } from '@tars/contracts'
 
 describe('ObsidianStatusService', () => {
 	let statusService: IStatusService

@@ -7,7 +7,7 @@ import {
 	IStatusService,
 	IDocumentService,
 	IMcpService
-} from '@tars/contracts/services'
+} from '@tars/contracts'
 
 describe('Plugin Container', () => {
 	let mockApp: any

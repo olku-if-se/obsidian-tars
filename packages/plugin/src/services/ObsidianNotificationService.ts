@@ -1,6 +1,6 @@
 import { injectable } from '@needle-di/core'
 import { Notice } from 'obsidian'
-import { INotificationService } from '@tars/contracts/services'
+import { INotificationService } from '@tars/contracts'
 
 @injectable()
 export class ObsidianNotificationService implements INotificationService {

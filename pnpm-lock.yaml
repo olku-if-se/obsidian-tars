@@ -19,10 +19,6 @@ importers:
         version: 5.9.3
 
   packages/contracts:
-    dependencies:
-      async-mutex:
-        specifier: ^0.5.0
-        version: 0.5.0
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.2.6
@@ -42,6 +38,9 @@ importers:
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1
+      tslib:
+        specifier: ^2.8.1
+        version: 2.8.1
       tsup:
         specifier: ^8.3.5
         version: 8.5.0(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
@@ -85,15 +84,12 @@ importers:
       '@tars/logger':
         specifier: workspace:*
         version: link:../logger
-      async-mutex:
-        specifier: ^0.5.0
-        version: 0.5.0
       debug:
         specifier: ^4.4.3
         version: 4.4.3
       mcp-use:
         specifier: ^1.0.0
-        version: 1.0.0(@opentelemetry/api@1.9.0)(@types/node@24.7.2)(axios@1.12.2(debug@4.4.3))(cors@2.8.5)(express@5.1.0)(handlebars@4.7.8)(openai@6.3.0(ws@8.18.3)(zod@3.25.76))(react@19.2.0)(typescript@5.9.3)
+        version: 1.0.0(@opentelemetry/api@1.9.0)(@types/node@24.7.2)(axios@1.12.2(debug@4.4.3))(cors@2.8.5)(handlebars@4.7.8)(openai@6.3.0(ws@8.18.3)(zod@4.1.12))(react@19.2.0)(typescript@5.9.3)
       p-limit:
         specifier: ^7.1.1
         version: 7.1.1
@@ -112,7 +108,10 @@ importers:
         version: 3.2.4(vitest@3.2.4)
       openai:
         specifier: ^6.3.0
-        version: 6.3.0(ws@8.18.3)(zod@3.25.76)
+        version: 6.3.0(ws@8.18.3)(zod@4.1.12)
+      tslib:
+        specifier: ^2.8.1
+        version: 2.8.1
       tsup:
         specifier: ^8.3.5
         version: 8.5.0(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.9.3)(yaml@2.8.1)
@@ -129,7 +128,7 @@ importers:
         specifier: ^1.18.2
         version: 1.20.0
       '@needle-di/core':
-        specifier: ^1.0.0
+        specifier: ^1.1.0
         version: 1.1.0
       '@tars/contracts':
         specifier: workspace:*
@@ -160,7 +159,7 @@ importers:
         version: 4.4.3
       mcp-use:
         specifier: ^1.0.0
-        version: 1.0.0(@opentelemetry/api@1.9.0)(@types/node@24.7.2)(axios@1.12.2(debug@4.4.3))(cors@2.8.5)(handlebars@4.7.8)(openai@6.3.0(ws@8.18.3)(zod@4.1.12))(react@18.3.1)(typescript@5.9.3)
+        version: 1.0.0(@opentelemetry/api@1.9.0)(@types/node@24.7.2)(axios@1.12.2(debug@4.4.3))(cors@2.8.5)(express@5.1.0)(handlebars@4.7.8)(openai@6.3.0(ws@8.18.3)(zod@3.25.76))(react@18.3.1)(typescript@5.9.3)
       p-limit:
         specifier: ^7.1.1
         version: 7.1.1
@@ -179,7 +178,7 @@ importers:
     devDependencies:
       '@anthropic-ai/sdk':
         specifier: ^0.65.0
-        version: 0.65.0(zod@4.1.12)
+        version: 0.65.0(zod@3.25.76)
       '@biomejs/biome':
         specifier: 2.2.6
         version: 2.2.6
@@ -230,7 +229,7 @@ importers:
         version: 0.6.0
       openai:
         specifier: ^6.3.0
-        version: 6.3.0(ws@8.18.3)(zod@4.1.12)
+        version: 6.3.0(ws@8.18.3)(zod@3.25.76)
       testcontainers:
         specifier: ^11.7.0
         version: 11.7.1
@@ -285,9 +284,6 @@ importers:
       jose:
         specifier: ^6.1.0
         version: 6.1.0
-      nanoid:
-        specifier: ^5.0.7
-        version: 5.1.6
       ollama:
         specifier: ^0.6.0
         version: 0.6.0
@@ -4213,11 +4209,6 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanoid@5.1.6:
-    resolution: {integrity: sha512-c7+7RQ+dMB5dPwwCp4ee1/iV/q2P6aK1mTZcfr1BTuVlyW9hJYiMPybJCcnBlQtuSmTIWNeazm/zqNoZSSElBg==}
-    engines: {node: ^18 || >=20}
-    hasBin: true
-
   nanotar@0.2.0:
     resolution: {integrity: sha512-9ca1h0Xjvo9bEkE4UOxgAzLV0jHKe6LMaxo37ND2DAhhAtd0j8pR1Wxz+/goMrZO8AEZTWCmyaOsFI/W5AdpCQ==}
 
@@ -5988,12 +5979,6 @@ snapshots:
       json-schema-to-ts: 3.1.1
     optionalDependencies:
       zod: 3.25.76
-
-  '@anthropic-ai/sdk@0.65.0(zod@4.1.12)':
-    dependencies:
-      json-schema-to-ts: 3.1.1
-    optionalDependencies:
-      zod: 4.1.12
 
   '@asamuzakjp/css-color@4.0.5':
     dependencies:
@@ -10088,7 +10073,7 @@ snapshots:
 
   math-intrinsics@1.1.0: {}
 
-  mcp-use@1.0.0(@opentelemetry/api@1.9.0)(@types/node@24.7.2)(axios@1.12.2(debug@4.4.3))(cors@2.8.5)(express@5.1.0)(handlebars@4.7.8)(openai@6.3.0(ws@8.18.3)(zod@3.25.76))(react@19.2.0)(typescript@5.9.3):
+  mcp-use@1.0.0(@opentelemetry/api@1.9.0)(@types/node@24.7.2)(axios@1.12.2(debug@4.4.3))(cors@2.8.5)(express@5.1.0)(handlebars@4.7.8)(openai@6.3.0(ws@8.18.3)(zod@3.25.76))(react@18.3.1)(typescript@5.9.3):
     dependencies:
       '@dmitryrechkin/json-schema-to-zod': 1.0.1
       '@langchain/anthropic': 0.3.30(@langchain/core@0.3.78(@opentelemetry/api@1.9.0)(openai@6.3.0(ws@8.18.3)(zod@3.25.76)))(zod@3.25.76)
@@ -10097,13 +10082,13 @@ snapshots:
       '@mcp-ui/server': 5.11.0
       '@modelcontextprotocol/sdk': 1.12.1
       '@scarf/scarf': 1.4.0
-      ai: 4.3.19(react@19.2.0)(zod@3.25.76)
+      ai: 4.3.19(react@18.3.1)(zod@3.25.76)
       commander: 14.0.1
       dotenv: 16.6.1
       langchain: 0.3.35(@langchain/anthropic@0.3.30(@langchain/core@0.3.78(@opentelemetry/api@1.9.0)(openai@6.3.0(ws@8.18.3)(zod@3.25.76)))(zod@3.25.76))(@langchain/core@0.3.78(@opentelemetry/api@1.9.0)(openai@6.3.0(ws@8.18.3)(zod@3.25.76)))(@opentelemetry/api@1.9.0)(axios@1.12.2(debug@4.4.3))(handlebars@4.7.8)(openai@6.3.0(ws@8.18.3)(zod@3.25.76))(ws@8.18.3)
       lodash-es: 4.17.21
       posthog-node: 5.9.5
-      react: 19.2.0
+      react: 18.3.1
       strict-url-sanitise: 0.0.1
       ts-node: 10.9.2(@types/node@24.7.2)(typescript@5.9.3)
       tsx: 4.20.6
@@ -10145,7 +10130,7 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  mcp-use@1.0.0(@opentelemetry/api@1.9.0)(@types/node@24.7.2)(axios@1.12.2(debug@4.4.3))(cors@2.8.5)(handlebars@4.7.8)(openai@6.3.0(ws@8.18.3)(zod@4.1.12))(react@18.3.1)(typescript@5.9.3):
+  mcp-use@1.0.0(@opentelemetry/api@1.9.0)(@types/node@24.7.2)(axios@1.12.2(debug@4.4.3))(cors@2.8.5)(handlebars@4.7.8)(openai@6.3.0(ws@8.18.3)(zod@4.1.12))(react@19.2.0)(typescript@5.9.3):
     dependencies:
       '@dmitryrechkin/json-schema-to-zod': 1.0.1
       '@langchain/anthropic': 0.3.30(@langchain/core@0.3.78(@opentelemetry/api@1.9.0)(openai@6.3.0(ws@8.18.3)(zod@4.1.12)))(zod@3.25.76)
@@ -10154,13 +10139,13 @@ snapshots:
       '@mcp-ui/server': 5.11.0
       '@modelcontextprotocol/sdk': 1.12.1
       '@scarf/scarf': 1.4.0
-      ai: 4.3.19(react@18.3.1)(zod@3.25.76)
+      ai: 4.3.19(react@19.2.0)(zod@3.25.76)
       commander: 14.0.1
       dotenv: 16.6.1
       langchain: 0.3.35(@langchain/anthropic@0.3.30(@langchain/core@0.3.78(@opentelemetry/api@1.9.0)(openai@6.3.0(ws@8.18.3)(zod@4.1.12)))(zod@3.25.76))(@langchain/core@0.3.78(@opentelemetry/api@1.9.0)(openai@6.3.0(ws@8.18.3)(zod@4.1.12)))(@opentelemetry/api@1.9.0)(axios@1.12.2(debug@4.4.3))(handlebars@4.7.8)(openai@6.3.0(ws@8.18.3)(zod@4.1.12))(ws@8.18.3)
       lodash-es: 4.17.21
       posthog-node: 5.9.5
-      react: 18.3.1
+      react: 19.2.0
       strict-url-sanitise: 0.0.1
       ts-node: 10.9.2(@types/node@24.7.2)(typescript@5.9.3)
       tsx: 4.20.6
@@ -10559,8 +10544,6 @@ snapshots:
     optional: true
 
   nanoid@3.3.11: {}
-
-  nanoid@5.1.6: {}
 
   nanotar@0.2.0: {}
 

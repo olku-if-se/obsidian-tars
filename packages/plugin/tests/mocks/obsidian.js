@@ -1,6 +1,6 @@
 // Mock Obsidian API for testing
 export class PluginSettingTab {
-	constructor(app: any, plugin: any) {
+	constructor(app, plugin) {
 		this.app = app
 		this.plugin = plugin
 	}
