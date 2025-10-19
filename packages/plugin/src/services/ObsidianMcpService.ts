@@ -31,13 +31,32 @@ export class ObsidianMcpService implements IMcpService {
 		this.loggingService = loggingService
 	}
 
-	async initialize(): Promise<void> {
+	async initialize(serverConfigs?: any[]): Promise<void> {
 		this.loggingService.info('Initializing MCP service...')
 
 		try {
-			// Initialize server manager
-			if (this.serverManager && typeof this.serverManager.initialize === 'function') {
-				await this.serverManager.initialize()
+			// Initialize server manager with configs if provided
+			if (this.serverManager) {
+				if (serverConfigs && typeof this.serverManager.initialize === 'function') {
+					await this.serverManager.initialize(serverConfigs, {
+						failureThreshold: 3, // Default values
+						retryPolicy: {
+							maxAttempts: 5,
+							initialDelay: 1000,
+							maxDelay: 30000,
+							backoffMultiplier: 2,
+							jitter: 0.1,
+							transientErrorCodes: ['ECONNREFUSED', 'ECONNRESET', 'ETIMEDOUT']
+						}
+					})
+				} else if (typeof this.serverManager.initialize === 'function') {
+					await this.serverManager.initialize()
+				}
+			}
+
+			// Initialize code block processor with server configs
+			if (this.codeBlockProcessor && serverConfigs) {
+				this.codeBlockProcessor.updateServerConfigs(serverConfigs)
 			}
 
 			// Initialize code block processor

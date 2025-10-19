@@ -1,25 +1,31 @@
 import { type Editor, Notice, Plugin } from 'obsidian'
 import { createLogger } from '@tars/logger'
 import { ReactBridge } from './bridge'
+import { createPluginContainer, type CreateContainerOptions } from './container/plugin-container'
+import type {
+	ILoggingService,
+	INotificationService,
+	ISettingsService,
+	IStatusService,
+	IDocumentService,
+	IMcpService
+} from '@tars/contracts/services'
 
 const logger = createLogger('plugin')
 
-import { MCPServerManager, type SessionNotificationHandlers, ToolExecutor } from '@tars/mcp-hosting'
+import { type SessionNotificationHandlers } from '@tars/mcp-hosting'
 import {
-	asstTagCmd,
 	exportCmd,
 	getMeta,
 	getTagCmdIdsFromSettings,
 	newChatTagCmd,
 	replaceCmd,
-	selectMsgAtCursorCmd,
-	systemTagCmd,
-	userTagCmd
+	selectMsgAtCursorCmd
 } from './commands'
+import { AssistantTagDICommand, UserTagDICommand, SystemTagDICommand } from './commands/di'
 import { getMCPCommands } from './commands/mcpCommands'
 import type { RequestController } from './editor'
 import { t } from './lang/helper'
-import { ModalNotifier, ObsidianLogger, StatusBarReporter } from './mcp/adapters'
 import { CodeBlockProcessor } from './mcp/codeBlockProcessor'
 import { registerDocumentSessionHandlers } from './mcp/documentSessionHandlers'
 import { HEALTH_CHECK_INTERVAL } from './mcp/index'
@@ -104,13 +110,56 @@ export default class TarsPlugin extends Plugin {
 	promptCmdIds: string[] = []
 	tagLowerCaseMap: Map<string, Omit<TagEntry, 'replacement'>> = new Map()
 	aborterInstance: AbortController | null = null
+
+	// DI Container Integration
+	private container: ReturnType<typeof createPluginContainer> | null = null
+
+	// Service Injections
+	private loggingService: ILoggingService
+	private notificationService: INotificationService
+	private settingsService: ISettingsService
+	private statusService: IStatusService
+	private documentService: IDocumentService
+	private mcpService: IMcpService
+
+	// DI Command Instances
+	private assistantTagCommand: AssistantTagDICommand
+	private userTagCommand: UserTagDICommand
+	private systemTagCommand: SystemTagDICommand
+
 	// React Integration
 	reactBridge: ReactBridge | null = null
+
 	// MCP Integration
 	mcpManager: MCPServerManager | null = null
 	mcpExecutor: ToolExecutor | null = null
 	mcpCodeBlockProcessor: CodeBlockProcessor | null = null
 	mcpHealthCheckInterval: NodeJS.Timeout | null = null
+
+	private initializeDIContainer() {
+		if (!this.container) {
+			const containerOptions: CreateContainerOptions = {
+				app: this.app,
+				plugin: this,
+				settings: this.settings,
+				statusBarManager: this.statusBarManager
+			}
+			this.container = createPluginContainer(containerOptions)
+
+			// Resolve injected services
+			this.loggingService = this.container.get(ILoggingService)
+			this.notificationService = this.container.get(INotificationService)
+			this.settingsService = this.container.get(ISettingsService)
+			this.statusService = this.container.get(IStatusService)
+			this.documentService = this.container.get(IDocumentService)
+			this.mcpService = this.container.get(IMcpService)
+
+			// Resolve DI commands
+			this.assistantTagCommand = this.container.get(AssistantTagDICommand)
+			this.userTagCommand = this.container.get(UserTagDICommand)
+			this.systemTagCommand = this.container.get(SystemTagDICommand)
+		}
+	}
 
 	async onload() {
 		await this.loadSettings()
@@ -138,18 +187,17 @@ export default class TarsPlugin extends Plugin {
 		)
 		logger.info('Using React status bar manager')
 
+		// Initialize DI Container with all dependencies
+		this.initializeDIContainer()
+		logger.info('DI container initialized with service injections')
+
 		// Initialize MCP Server Manager (non-blocking)
 		if (this.settings.mcpServers && this.settings.mcpServers.length > 0) {
-			// Create Obsidian-specific adapters
-			const logger = new ObsidianLogger()
-			const statusReporter = new StatusBarReporter(this.statusBarManager)
-			const notifier = new ModalNotifier(this.app)
-
-			// Initialize MCP Server Manager with adapters
-			this.mcpManager = new MCPServerManager({
-				logger,
-				statusReporter
-			})
+			// Initialize and use DI services for MCP components
+			await this.mcpService.initialize(this.settings.mcpServers)
+			this.mcpManager = this.mcpService.getServerManager()
+			this.mcpExecutor = this.mcpService.getToolExecutor()
+			this.mcpCodeBlockProcessor = this.mcpService.getCodeBlockProcessor()
 
 			// Setup real-time status updates from MCP events (Feature-400-30)
 			this.mcpManager.on('server-started', () => this.updateMCPStatus())
@@ -158,26 +206,7 @@ export default class TarsPlugin extends Plugin {
 			this.mcpManager.on('server-auto-disabled', () => this.updateMCPStatus())
 			this.mcpManager.on('server-retry', () => this.updateMCPStatus())
 
-			// Create tool executor with settings and adapters
-			const executionTracker = {
-				concurrentLimit: this.settings.mcpConcurrentLimit,
-				sessionLimit: this.settings.mcpSessionLimit,
-				activeExecutions: new Set<string>(),
-				totalExecuted: 0,
-				stopped: false,
-				executionHistory: []
-			}
-
-			this.mcpExecutor = new ToolExecutor(this.mcpManager, executionTracker, {
-				timeout: this.settings.mcpGlobalTimeout,
-				sessionNotifications: createNoticeSessionNotifications(),
-				logger,
-				statusReporter,
-				notificationHandler: notifier
-			})
-
-			// Create code block processor
-			this.mcpCodeBlockProcessor = new CodeBlockProcessor()
+			// Update code block processor with server configs
 			this.mcpCodeBlockProcessor.updateServerConfigs(this.settings.mcpServers)
 
 			registerDocumentSessionHandlers(this.app, this.mcpExecutor, (ref) => this.registerEvent(ref))
@@ -439,14 +468,34 @@ export default class TarsPlugin extends Plugin {
 				this.addCommand(newChatTagCmd(tagCmdMeta))
 				break
 			case 'system':
-				this.addCommand(systemTagCmd(tagCmdMeta, this.app, this.settings))
+				this.addCommand(
+					this.systemTagCommand.createCommand(
+						tagCmdMeta,
+						this.app,
+						this.settings,
+						this.statusBarManager,
+						this.getRequestController(),
+						this.mcpManager,
+						this.mcpExecutor
+					)
+				)
 				break
 			case 'user':
-				this.addCommand(userTagCmd(tagCmdMeta, this.app, this.settings))
+				this.addCommand(
+					this.userTagCommand.createCommand(
+						tagCmdMeta,
+						this.app,
+						this.settings,
+						this.statusBarManager,
+						this.getRequestController(),
+						this.mcpManager,
+						this.mcpExecutor
+					)
+				)
 				break
 			case 'assistant':
 				this.addCommand(
-					asstTagCmd(
+					this.assistantTagCommand.createCommand(
 						tagCmdMeta,
 						this.app,
 						this.settings,

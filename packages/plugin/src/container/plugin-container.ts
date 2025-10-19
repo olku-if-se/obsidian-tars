@@ -21,6 +21,9 @@ import { MCPServerManager } from '../mcp/managerMCPUse'
 import { ToolExecutor } from '../mcp/executor'
 import { CodeBlockProcessor } from '../mcp/codeBlockProcessor'
 
+// DI Commands
+import { AssistantTagDICommand, UserTagDICommand, SystemTagDICommand } from '../commands/di'
+
 export interface CreateContainerOptions {
 	app: any // Obsidian App instance
 	plugin: any // TarsPlugin instance
@@ -56,6 +59,11 @@ export function createPluginContainer(options: CreateContainerOptions): Containe
 
 	// Register MCP service with dependencies
 	container.register(IMcpService).toClass(ObsidianMcpService)
+
+	// Register DI Commands
+	container.register(AssistantTagDICommand).toClass(AssistantTagDICommand)
+	container.register(UserTagDICommand).toClass(UserTagDICommand)
+	container.register(SystemTagDICommand).toClass(SystemTagDICommand)
 
 	return container
 }
