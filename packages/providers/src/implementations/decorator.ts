@@ -1,9 +1,5 @@
 import { createLogger } from '@tars/logger'
-import { normalizePath } from 'obsidian'
-import type { CreatePlainText, SendRequest } from '../interfaces'
-
-// App folder constant for logging
-const APP_FOLDER = 'Tars'
+import type { CreatePlainText, SendRequest, NormalizePath } from '../interfaces'
 
 interface TextWithTime {
 	readonly text: string
@@ -19,11 +15,11 @@ interface ResponseWithTime {
 const logger = createLogger('providers:decorator')
 
 export const withStreamLogging = (originalFunc: SendRequest, createPlainText: CreatePlainText): SendRequest => {
-	return async function* (messages, controller, resolveEmbedAsBinary, saveAttachment) {
+	return async function* (messages, controller, resolveEmbedAsBinary, saveAttachment, normalizePath) {
 		const startTime = Date.now()
 		const texts: TextWithTime[] = []
 		try {
-			for await (const text of originalFunc(messages, controller, resolveEmbedAsBinary, saveAttachment)) {
+			for await (const text of originalFunc(messages, controller, resolveEmbedAsBinary, saveAttachment, normalizePath)) {
 				const currentTime = Date.now()
 				texts.push({ text, time: currentTime - startTime })
 				yield text
@@ -34,7 +30,11 @@ export const withStreamLogging = (originalFunc: SendRequest, createPlainText: Cr
 			const ILLEGAL_FILENAME_CHARS = /[<>:"/\\|?*\u0000-\u001F\u007F-\u009F]/g
 			const brief = lastMsg.content.slice(0, 20).replace(ILLEGAL_FILENAME_CHARS, '').trim() || 'untitled'
 
-			const filePath = normalizePath(`${APP_FOLDER}/${formatDate(new Date())}-${brief}.json`)
+			// Use default app folder if not provided
+			const appFolder = 'Tars' // Default - can be overridden via framework config
+			const pathNormalizer = normalizePath || ((path: string) => path) // Fallback if not provided
+
+			const filePath = pathNormalizer(`${appFolder}/${formatDate(new Date())}-${brief}.json`)
 			const response: ResponseWithTime = {
 				lastMsg: messages[messages.length - 1].content.trim(),
 				createdAt: new Date().toISOString(),

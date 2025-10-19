@@ -1,8 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { createLogger } from '@tars/logger'
-import { type EmbedCache, Notice } from 'obsidian'
 import { getCapabilityEmoji, t } from '../i18n'
-import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
+import type { BaseOptions, EmbedCache, Message, NoticeSystem, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
 import { createMCPIntegrationHelper } from '../mcp-integration-helper'
 import { arrayBufferToBase64, CALLOUT_BLOCK_END, CALLOUT_BLOCK_START, getMimeTypeFromFilename } from '../utils'
 
@@ -72,6 +71,7 @@ const sendRequestFunc = (settings: ClaudeOptions): SendRequest =>
 			pluginSettings,
 			documentWriteLock,
 			beforeToolExecution,
+			frameworkConfig,
 			...optionsExcludingParams
 		} = settings
 		const options = { ...optionsExcludingParams, ...parameters }
@@ -199,7 +199,13 @@ const sendRequestFunc = (settings: ClaudeOptions): SendRequest =>
 					messageStreamEvent.content_block.type === 'server_tool_use' &&
 					messageStreamEvent.content_block.name === 'web_search'
 				) {
-					new Notice(`${getCapabilityEmoji('Web Search')}Web Search`)
+					// Use injected notice system if available, otherwise fallback to console
+					const noticeMessage = `${getCapabilityEmoji('Web Search')}Web Search`
+					if (frameworkConfig?.noticeSystem) {
+						frameworkConfig.noticeSystem.show(noticeMessage)
+					} else {
+						console.log('Web Search:', noticeMessage)
+					}
 				}
 			} else if (messageStreamEvent.type === 'message_delta') {
 				// Handle message-level incremental updates

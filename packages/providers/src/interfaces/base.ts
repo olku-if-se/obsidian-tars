@@ -1,5 +1,25 @@
 import { Mutex } from 'async-mutex'
-import type { EmbedCache } from 'obsidian'
+
+// Define EmbedCache interface to avoid Obsidian dependency
+// This matches the Obsidian EmbedCache interface structure
+export interface EmbedCache {
+	link: string
+	path?: string
+	original: string
+	displayText?: string
+	position: {
+		start: {
+			offset: number
+			col: number
+			line: number
+		}
+		end: {
+			offset: number
+			col: number
+			line: number
+		}
+	}
+}
 
 // DocumentWriteLock class for thread-safe document editing
 export class DocumentWriteLock {
@@ -18,6 +38,27 @@ export type ResolveEmbedAsBinary = (embed: EmbedCache) => Promise<ArrayBuffer>
 
 export type CreatePlainText = (filePath: string, text: string) => Promise<void>
 
+export type NormalizePath = (path: string) => string
+
+/**
+ * Configuration for framework-specific settings
+ * Allows providers to be framework-agnostic while receiving necessary configuration
+ */
+export interface FrameworkConfig {
+	/** App folder name for logging and file operations */
+	appFolder?: string
+	/** Path normalization function */
+	normalizePath?: NormalizePath
+	/** Notice system for showing user notifications */
+	noticeSystem?: NoticeSystem
+	/** HTTP request system */
+	requestSystem?: RequestSystem
+	/** Platform information */
+	platform?: PlatformInfo
+	/** Additional framework-specific configuration */
+	[key: string]: unknown
+}
+
 export interface Message {
 	readonly role: MsgRole
 	readonly content: string
@@ -28,7 +69,8 @@ export type SendRequest = (
 	messages: Message[],
 	controller: AbortController,
 	resolveEmbedAsBinary: ResolveEmbedAsBinary,
-	saveAttachment?: SaveAttachment
+	saveAttachment?: SaveAttachment,
+	normalizePath?: NormalizePath
 ) => AsyncGenerator<string, void, unknown>
 
 export type Capability =
@@ -50,17 +92,82 @@ export interface MCPToolInjector {
 }
 
 /**
+ * Interface for MCP Tool Executor
+ * Manages execution of MCP tools with proper error handling
+ */
+export interface ToolExecutor {
+	executeTool(serverId: string, toolName: string, arguments_: Record<string, unknown>): Promise<unknown>
+}
+
+/**
+ * Interface for MCP Server Manager
+ * Manages lifecycle and tool discovery for MCP servers
+ */
+export interface MCPServerManager {
+	getToolDiscoveryCache(): {
+		getSnapshot(): Promise<ToolSnapshot>
+	}
+}
+
+/**
+ * Interface for Tool Snapshot from MCP server discovery
+ */
+export interface ToolSnapshot {
+	servers: Array<{
+		serverId: string
+		serverName: string
+		tools: Array<{
+			name: string
+			description: string
+			inputSchema: Record<string, unknown>
+		}>
+	}>
+	mapping: Map<string, { id: string; name: string }>
+}
+
+/**
+ * Interface for Provider-specific MCP Adapter
+ * Converts MCP tools to provider-specific formats
+ */
+export interface ProviderAdapter {
+	initialize?(config: { preloadTools?: boolean }): Promise<void>
+	convertTools?(): Promise<unknown>
+}
+
+/**
+ * Interface for Tool Calling Coordinator
+ * Orchestrates autonomous tool calling for providers that support it
+ */
+export interface ToolCallingCoordinator {
+	generateWithTools(
+		messages: Array<{ role: string; content: string; embeds?: EmbedCache[] }>,
+		adapter: ProviderAdapter,
+		executor: ToolExecutor,
+		options: {
+			documentPath: string
+			statusBarManager?: StatusBarManager
+			editor?: Editor
+			autoUseDocumentCache?: boolean
+			parallelExecution?: boolean
+			maxParallelTools?: number
+			documentWriteLock?: DocumentWriteLock
+			onBeforeToolExecution?: () => Promise<void>
+		}
+	): AsyncGenerator<string, void, unknown>
+}
+
+/**
  * Interface for advanced MCP integration including tool coordination
  * Used by providers that support autonomous tool calling
  */
 export interface MCPIntegration {
 	mcpToolInjector: MCPToolInjector
-	toolCallingCoordinator?: unknown // ToolCallingCoordinator from mcp module
-	providerAdapter?: unknown // Provider-specific adapter from mcp module
-	mcpExecutor?: unknown // ToolExecutor from mcp module
+	toolCallingCoordinator?: ToolCallingCoordinator
+	providerAdapter?: ProviderAdapter
+	mcpExecutor?: ToolExecutor
 	// Factory functions for creating MCP components
-	createToolCallingCoordinator?: () => unknown
-	createProviderAdapter?: (config: unknown) => unknown
+	createToolCallingCoordinator?: () => ToolCallingCoordinator
+	createProviderAdapter?: (config: unknown) => ProviderAdapter
 }
 
 // Type definitions for optional plugin integration
@@ -74,6 +181,50 @@ export interface Editor {
 	// Basic interface for editor operations
 	// Methods depend on Obsidian API
 	[key: string]: unknown
+}
+
+/**
+ * Interface for showing notices to users
+ * Framework-agnostic replacement for Obsidian's Notice
+ */
+export interface NoticeSystem {
+	show(message: string): void
+}
+
+/**
+ * Interface for making HTTP requests
+ * Framework-agnostic replacement for Obsidian's requestUrl
+ */
+export interface RequestSystem {
+	requestUrl(url: string, options?: RequestUrlOptions): Promise<RequestUrlResponse>
+}
+
+export interface RequestUrlOptions {
+	method?: string
+	headers?: Record<string, string>
+	body?: string
+	throw?: boolean
+}
+
+export interface RequestUrlResponse {
+	status: number
+	text: string
+	json?: unknown
+	headers: Record<string, string>
+}
+
+/**
+ * Interface for platform detection
+ * Framework-agnostic replacement for Obsidian's Platform
+ */
+export interface PlatformInfo {
+	isMobileApp: boolean
+	isDesktop: boolean
+	isMacOS: boolean
+	isWindows: boolean
+	isLinux: boolean
+	isIosApp: boolean
+	isAndroidApp: boolean
 }
 
 export interface PluginSettings {
@@ -99,6 +250,8 @@ export interface BaseOptions {
 	pluginSettings?: PluginSettings
 	documentWriteLock?: DocumentWriteLock
 	beforeToolExecution?: () => Promise<void>
+	// Framework-specific configuration
+	frameworkConfig?: FrameworkConfig
 }
 
 export interface ProviderSettings {

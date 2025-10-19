@@ -1,8 +1,7 @@
 import { createLogger } from '@tars/logger'
 import axios from 'axios'
-import { Notice, Platform, requestUrl } from 'obsidian'
 import { t } from '../i18n'
-import type { BaseOptions, Message, Optional, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
+import type { BaseOptions, Message, NoticeSystem, Optional, PlatformInfo, RequestSystem, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
 
 const logger = createLogger('providers:qianfan')
 
@@ -20,7 +19,7 @@ interface Token {
 
 type QianFanOptions = BaseOptions & Pick<Optional, 'apiSecret'> & { token?: Token }
 
-const createToken = async (apiKey: string, apiSecret: string) => {
+const createToken = async (apiKey: string, apiSecret: string, frameworkConfig?: { requestSystem?: RequestSystem }) => {
 	if (!apiKey || !apiSecret) throw new Error('Invalid API key secret')
 
 	const queryParams = {
@@ -29,7 +28,29 @@ const createToken = async (apiKey: string, apiSecret: string) => {
 		client_secret: apiSecret
 	}
 	const queryString = new URLSearchParams(queryParams).toString()
-	const res = await requestUrl(`https://aip.baidubce.com/oauth/2.0/token?${queryString}`)
+
+	// Use injected request system or fallback to fetch
+	let res
+	if (frameworkConfig?.requestSystem) {
+		res = await frameworkConfig.requestSystem.requestUrl(`https://aip.baidubce.com/oauth/2.0/token?${queryString}`)
+	} else {
+		// Fallback to native fetch
+		const fetchResponse = await fetch(`https://aip.baidubce.com/oauth/2.0/token?${queryString}`)
+		const responseText = await fetchResponse.text()
+		// Convert Headers to plain object
+		const headersObj: Record<string, string> = {}
+		fetchResponse.headers.forEach((value, key) => {
+			headersObj[key] = value
+		})
+
+		res = {
+			status: fetchResponse.status,
+			text: responseText,
+			json: JSON.parse(responseText),
+			headers: headersObj
+		}
+	}
+
 	const result = res.json as TokenResponse
 
 	return {
@@ -40,7 +61,7 @@ const createToken = async (apiKey: string, apiSecret: string) => {
 	} as Token
 }
 
-const validOrCreate = async (currentToken: Token | undefined, apiKey: string, apiSecret: string) => {
+const validOrCreate = async (currentToken: Token | undefined, apiKey: string, apiSecret: string, frameworkConfig?: { requestSystem?: RequestSystem }) => {
 	const now = Date.now()
 	if (
 		currentToken &&
@@ -53,7 +74,7 @@ const validOrCreate = async (currentToken: Token | undefined, apiKey: string, ap
 			token: currentToken
 		}
 	}
-	const newToken = await createToken(apiKey, apiSecret)
+	const newToken = await createToken(apiKey, apiSecret, frameworkConfig)
 	logger.debug('issued new qianfan token', { expiresAt: newToken.exp })
 	return {
 		isValid: false,
@@ -81,17 +102,19 @@ const getLines = (buffer: string[], text: string): string[] => {
 
 const sendRequestFunc = (settings: QianFanOptions): SendRequest =>
 	async function* (messages: Message[], controller: AbortController, _resolveEmbedAsBinary: ResolveEmbedAsBinary) {
-		const { parameters, ...optionsExcludingParams } = settings
+		const { parameters, frameworkConfig, ...optionsExcludingParams } = settings
 		const options = { ...optionsExcludingParams, ...parameters }
 		const { apiKey, apiSecret, baseURL, model, token: currentToken, ...remains } = options
 		if (!apiKey) throw new Error(t('API key is required'))
 		if (!apiSecret) throw new Error(t('API secret is required'))
 		if (!model) throw new Error(t('Model is required'))
 
-		const { token } = await validOrCreate(currentToken, apiKey, apiSecret)
+		const { token } = await validOrCreate(currentToken, apiKey, apiSecret, frameworkConfig)
 		settings.token = token
 
-		if (Platform.isDesktopApp) {
+		// Use injected platform info or fallback to desktop assumption
+		const isDesktop = frameworkConfig?.platform?.isDesktop ?? true
+		if (isDesktop) {
 			const data = {
 				messages,
 				stream: true,
@@ -130,16 +153,46 @@ const sendRequestFunc = (settings: QianFanOptions): SendRequest =>
 				...remains
 			}
 
-			new Notice(t('This is a non-streaming request, please wait...'), 5 * 1000)
+			const waitMessage = t('This is a non-streaming request, please wait...')
+			if (frameworkConfig?.noticeSystem) {
+				frameworkConfig.noticeSystem.show(waitMessage)
+			} else {
+				console.log('QianFan:', waitMessage)
+			}
 
-			const response = await requestUrl({
-				url: `${baseURL}/${model}?access_token=${token.accessToken}`,
-				method: 'POST',
-				body: JSON.stringify(data),
-				headers: {
-					'Content-Type': 'application/json'
+			// Use injected request system or fallback to fetch
+			let response
+			if (frameworkConfig?.requestSystem) {
+				response = await frameworkConfig.requestSystem.requestUrl(`${baseURL}/${model}?access_token=${token.accessToken}`, {
+					method: 'POST',
+					body: JSON.stringify(data),
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				})
+			} else {
+				// Fallback to native fetch
+				const fetchResponse = await fetch(`${baseURL}/${model}?access_token=${token.accessToken}`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(data)
+				})
+				const responseText = await fetchResponse.text()
+				// Convert Headers to plain object
+				const headersObj: Record<string, string> = {}
+				fetchResponse.headers.forEach((value, key) => {
+					headersObj[key] = value
+				})
+
+				response = {
+					status: fetchResponse.status,
+					text: responseText,
+					json: JSON.parse(responseText),
+					headers: headersObj
 				}
-			})
+			}
 
 			logger.debug('qianfan response received', {
 				statusCode: response.status,

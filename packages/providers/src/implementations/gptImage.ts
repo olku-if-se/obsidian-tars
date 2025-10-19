@@ -1,8 +1,7 @@
 import { createLogger } from '@tars/logger'
-import { Notice } from 'obsidian'
 import OpenAI from 'openai'
 import { t } from '../i18n'
-import type { BaseOptions, Message, ResolveEmbedAsBinary, SaveAttachment, SendRequest, Vendor } from '../interfaces'
+import type { BaseOptions, Message, NoticeSystem, ResolveEmbedAsBinary, SaveAttachment, SendRequest, Vendor } from '../interfaces'
 import { getMimeTypeFromFilename } from '../utils'
 
 const models = ['gpt-image-1']
@@ -36,7 +35,7 @@ const sendRequestFunc = (settings: GptImageOptions): SendRequest =>
 		resolveEmbedAsBinary: ResolveEmbedAsBinary,
 		saveAttachment?: SaveAttachment
 	) {
-		const { parameters, ...optionsExcludingParams } = settings
+		const { parameters, frameworkConfig, ...optionsExcludingParams } = settings
 		const options = { ...optionsExcludingParams, ...parameters }
 		const { apiKey, baseURL, model, displayWidth, background, n, output_compression, output_format, quality, size } =
 			options
@@ -45,7 +44,7 @@ const sendRequestFunc = (settings: GptImageOptions): SendRequest =>
 		logger.info('starting gpt image generation', {
 			model,
 			imageCount: n,
-			hasInputImage: Boolean(messages.last()?.embeds?.length)
+			hasInputImage: Boolean(messages[messages.length - 1]?.embeds?.length)
 		})
 		logger.debug('image generation options', {
 			displayWidth,
@@ -56,9 +55,14 @@ const sendRequestFunc = (settings: GptImageOptions): SendRequest =>
 			size
 		})
 		if (messages.length > 1) {
-			new Notice(t('Only the last user message is used for image generation. Other messages are ignored.'))
+			const noticeMessage = t('Only the last user message is used for image generation. Other messages are ignored.')
+			if (frameworkConfig?.noticeSystem) {
+				frameworkConfig.noticeSystem.show(noticeMessage)
+			} else {
+				console.log('GPT Image:', noticeMessage)
+			}
 		}
-		const lastMsg = messages.last()
+		const lastMsg = messages[messages.length - 1]
 		if (!lastMsg) {
 			throw new Error('No user message found in the conversation')
 		}
@@ -70,14 +74,24 @@ const sendRequestFunc = (settings: GptImageOptions): SendRequest =>
 			dangerouslyAllowBrowser: true
 		})
 
-		new Notice(t('This is a non-streaming request, please wait...'), 5 * 1000)
+		const waitMessage = t('This is a non-streaming request, please wait...')
+		if (frameworkConfig?.noticeSystem) {
+			frameworkConfig.noticeSystem.show(waitMessage)
+		} else {
+			console.log('GPT Image:', waitMessage)
+		}
 		let response = null
 		if (lastMsg.embeds && lastMsg.embeds.length > 0) {
 			if (lastMsg.embeds.length > 1) {
-				new Notice(t('Multiple embeds found, only the first one will be used'))
+				const embedMessage = t('Multiple embeds found, only the first one will be used')
+				if (frameworkConfig?.noticeSystem) {
+					frameworkConfig.noticeSystem.show(embedMessage)
+				} else {
+					console.log('GPT Image:', embedMessage)
+				}
 			}
 			const embed = lastMsg.embeds[0]
-			const mimeType = getMimeTypeFromFilename(embed.link)
+			const mimeType = getMimeTypeFromFilename(embed.link || '')
 			const supportedMimeTypes = ['image/png', 'image/jpeg', 'image/webp']
 			if (!supportedMimeTypes.includes(mimeType)) {
 				throw new Error(t('Only PNG, JPEG, and WebP images are supported for editing.'))
@@ -88,7 +102,7 @@ const sendRequestFunc = (settings: GptImageOptions): SendRequest =>
 				throw new Error(t('Embed data is empty or invalid'))
 			}
 
-			const file = new File([embedBuffer], embed.link, { type: mimeType })
+			const file = new File([embedBuffer], embed.link || 'image', { type: mimeType })
 			response = await client.images.edit(
 				{
 					image: file,

@@ -11,7 +11,9 @@ import {
 	Notice,
 	normalizePath,
 	parseLinktext,
+	Platform,
 	type ReferenceCache,
+	requestUrl,
 	resolveSubpath,
 	type SectionCache,
 	type TagCache,
@@ -23,7 +25,10 @@ import { formatUtilitySectionCallout, type UtilitySectionServer } from './mcp/ut
 import type {
 	CreatePlainText,
 	Message,
+	NoticeSystem,
+	PlatformInfo,
 	ProviderSettings,
+	RequestSystem,
 	ResolveEmbedAsBinary,
 	SaveAttachment,
 	Vendor
@@ -463,15 +468,74 @@ export interface RequestController {
 	cleanup: () => void
 }
 
+// Obsidian-specific implementations for framework interfaces
+class ObsidianNoticeSystem implements NoticeSystem {
+	show(message: string): void {
+		// eslint-disable-next-line no-new
+		new Notice(message)
+	}
+}
+
+class ObsidianRequestSystem implements RequestSystem {
+	async requestUrl(url: string, options?: {
+		method?: string
+		headers?: Record<string, string>
+		body?: string
+		throw?: boolean
+	}): Promise<{
+		status: number
+		text: string
+		json?: unknown
+		headers: Record<string, string>
+	}> {
+		const response = await requestUrl({
+			url,
+			method: options?.method || 'GET',
+			headers: options?.headers,
+			body: options?.body,
+			throw: options?.throw ?? true
+		})
+
+		return {
+			status: response.status,
+			text: response.text,
+			json: response.json,
+			headers: response.headers || {}
+		}
+	}
+}
+
+const obsidianPlatformInfo: PlatformInfo = {
+	isMobileApp: Platform.isMobileApp,
+	isDesktop: Platform.isDesktop,
+	isMacOS: Platform.isMacOS,
+	isWindows: Platform.isWindows,
+	isLinux: Platform.isLinux,
+	isIosApp: Platform.isIosApp,
+	isAndroidApp: Platform.isAndroidApp
+}
+
 const createDecoratedSendRequest = async (env: RunEnv, vendor: Vendor, provider: ProviderSettings) => {
+	// Add framework configuration to provider options
+	const optionsWithFramework = {
+		...provider.options,
+		frameworkConfig: {
+			appFolder: APP_FOLDER,
+			normalizePath: normalizePath,
+			noticeSystem: new ObsidianNoticeSystem(),
+			requestSystem: new ObsidianRequestSystem(),
+			platform: obsidianPlatformInfo
+		}
+	}
+
 	if (env.options.enableStreamLog) {
 		if (!(await env.vault.adapter.exists(normalizePath(APP_FOLDER)))) {
 			await env.vault.createFolder(APP_FOLDER)
 		}
 		logger.info('stream logging enabled for provider request')
-		return withStreamLogging(vendor.sendRequestFunc(provider.options), env.createPlainText)
+		return withStreamLogging(vendor.sendRequestFunc(optionsWithFramework), env.createPlainText)
 	} else {
-		return vendor.sendRequestFunc(provider.options)
+		return vendor.sendRequestFunc(optionsWithFramework)
 	}
 }
 

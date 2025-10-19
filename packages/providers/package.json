@@ -41,8 +41,5 @@
 		"nanoid": "^5.0.7",
 		"jose": "^6.1.0",
 		"async-mutex": "^0.5.0"
-	},
-	"peerDependencies": {
-		"obsidian": "^1.0.0"
 	}
 }

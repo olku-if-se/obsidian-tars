@@ -6,33 +6,7 @@
  */
 
 import { createLogger } from '@tars/logger'
-import type { MCPToolInjector } from './interfaces'
-
-// Interface for MCP Server Manager (minimal interface for this implementation)
-interface MCPServerManager {
-	getToolDiscoveryCache(): {
-		getSnapshot(): Promise<ToolSnapshot>
-	}
-}
-
-// Interface for Tool Executor (minimal interface for this implementation)
-interface ToolExecutor {
-	executeTool?(serverId: string, toolName: string, arguments_: Record<string, unknown>): Promise<unknown>
-}
-
-// Interface for Tool Snapshot
-interface ToolSnapshot {
-	servers: Array<{
-		serverId: string
-		serverName: string
-		tools: Array<{
-			name: string
-			description: string
-			inputSchema: Record<string, unknown>
-		}>
-	}>
-	mapping: Map<string, { id: string; name: string }>
-}
+import type { MCPToolInjector, MCPServerManager, ToolExecutor, ToolSnapshot } from './interfaces'
 
 const logger = createLogger('providers:mcp-tool-injection-impl')
 
@@ -116,20 +90,20 @@ export class ConcreteMCPToolInjector implements MCPToolInjector {
 
 		// Validate property types
 		for (const [propName, propSchema] of Object.entries(schema.properties)) {
-			if (typeof propSchema !== 'object' || !propSchema.type) {
+			if (!propSchema || typeof propSchema !== 'object' || !('type' in propSchema) || !propSchema.type) {
 				console.warn(`Tool ${tool.name} has invalid property schema for ${propName}: missing type`)
 				return false
 			}
 
 			// Check for valid JSON Schema types
 			const validTypes = ['string', 'number', 'integer', 'boolean', 'array', 'object']
-			if (!validTypes.includes((propSchema as any).type)) {
-				console.warn(`Tool ${tool.name} has invalid property type for ${propName}: ${(propSchema as any).type}`)
+			if (!validTypes.includes(propSchema.type as string)) {
+				console.warn(`Tool ${tool.name} has invalid property type for ${propName}: ${propSchema.type}`)
 				return false
 			}
 
 			// Check for missing descriptions in properties (required for MCP compatibility)
-			if (!(propSchema as any).description) {
+			if (!('description' in propSchema) || !propSchema.description) {
 				console.warn(`Tool ${tool.name} property ${propName} is missing description - rejecting tool`)
 				return false
 			}

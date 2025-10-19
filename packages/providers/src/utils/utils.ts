@@ -1,6 +1,5 @@
-import type { EmbedCache } from 'obsidian'
 import { t } from '../i18n'
-import type { BaseOptions, ResolveEmbedAsBinary, Vendor } from '../interfaces'
+import type { BaseOptions, EmbedCache, ResolveEmbedAsBinary, Vendor } from '../interfaces'
 
 export const getMimeTypeFromFilename = (filename: string) => {
 	const extension = filename.split('.').pop()?.toLowerCase() || ''

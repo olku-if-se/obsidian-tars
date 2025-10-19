@@ -1,8 +1,7 @@
 import { createLogger } from '@tars/logger'
-import type { EmbedCache } from 'obsidian'
 import OpenAI from 'openai'
 import { t } from '../i18n'
-import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
+import type { BaseOptions, EmbedCache, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '../interfaces'
 import { createMCPIntegrationHelper } from '../mcp-integration-helper'
 import { arrayBufferToBase64, getMimeTypeFromFilename } from '../utils'
 
