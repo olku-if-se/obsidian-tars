@@ -149,4 +149,5 @@ echo "✅ Stopped all tars-mcp* containers"
 
 [tools]
 node = "22.20.0"  # Node 22 LTS (Iron)
+#node = "24.10.0"  # Node 24 LTS (Kinetic)
 pnpm = "10.18.2"

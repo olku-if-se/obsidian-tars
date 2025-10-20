@@ -1,0 +1,335 @@
+{
+  "../../logger/dist/index.d.ts": [],
+  "../../mcp-hosting/dist/index.d.ts": [],
+  "../../streams/dist/index.d.ts": [],
+  "../../ui/dist/index.js": [],
+  "adapters/reactSettingsAdapter.ts": [
+    "featureFlags.ts",
+    "settings.ts"
+  ],
+  "bridge/ReactBridge.ts": [],
+  "bridge/ReactStatusBarIndicator.tsx": [
+    "bridge/ReactBridge.ts"
+  ],
+  "bridge/createReactContainer.ts": [
+    "bridge/ReactBridge.ts"
+  ],
+  "bridge/index.ts": [
+    "bridge/ReactBridge.ts",
+    "bridge/createReactContainer.ts"
+  ],
+  "commands/asstTag.ts": [
+    "../../logger/dist/index.d.ts",
+    "commands/tagCmd.ts",
+    "commands/tagUtils.ts"
+  ],
+  "commands/di/asstTagDI.ts": [
+    "commands/tagCmd.ts",
+    "commands/tagUtils.ts"
+  ],
+  "commands/di/index.ts": [
+    "commands/di/asstTagDI.ts",
+    "commands/di/systemTagDI.ts",
+    "commands/di/userTagDI.ts"
+  ],
+  "commands/di/systemTagDI.ts": [
+    "commands/tagCmd.ts",
+    "commands/tagUtils.ts"
+  ],
+  "commands/di/userTagDI.ts": [
+    "commands/tagCmd.ts",
+    "commands/tagUtils.ts"
+  ],
+  "commands/export.ts": [
+    "../../logger/dist/index.d.ts"
+  ],
+  "commands/index.ts": [
+    "commands/asstTag.ts",
+    "commands/export.ts",
+    "commands/newChatTag.ts",
+    "commands/replaceTag.ts",
+    "commands/select.ts",
+    "commands/systemTag.ts",
+    "commands/tagCmd.ts",
+    "commands/userTag.ts"
+  ],
+  "commands/mcpCommands.ts": [
+    "../../mcp-hosting/dist/index.d.ts"
+  ],
+  "commands/newChatTag.ts": [
+    "../../logger/dist/index.d.ts",
+    "commands/tagCmd.ts"
+  ],
+  "commands/replaceTag.ts": [
+    "../../logger/dist/index.d.ts"
+  ],
+  "commands/select.ts": [],
+  "commands/systemTag.ts": [
+    "../../logger/dist/index.d.ts",
+    "commands/tagCmd.ts",
+    "commands/tagUtils.ts"
+  ],
+  "commands/tagCmd.ts": [],
+  "commands/tagUtils.ts": [
+    "../../logger/dist/index.d.ts"
+  ],
+  "commands/userTag.ts": [
+    "../../logger/dist/index.d.ts",
+    "commands/tagCmd.ts",
+    "commands/tagUtils.ts"
+  ],
+  "container/__tests__/plugin-container.test.ts": [
+    "container/__tests__/test-container.ts",
+    "container/plugin-container.ts"
+  ],
+  "container/__tests__/test-container.ts": [
+    "container/tokens.ts"
+  ],
+  "container/plugin-container.ts": [
+    "commands/di/index.ts",
+    "container/tokens.ts",
+    "services/ObsidianDocumentService.ts",
+    "services/ObsidianLoggingService.ts",
+    "services/ObsidianNotificationService.ts",
+    "services/ObsidianSettingsService.ts",
+    "services/ObsidianStatusService.ts"
+  ],
+  "container/test-container.ts": [],
+  "container/tokens.ts": [],
+  "editor.ts": [
+    "../../logger/dist/index.d.ts",
+    "../../mcp-hosting/dist/index.d.ts",
+    "../../streams/dist/index.d.ts",
+    "mcp/utilitySectionFormatter.ts",
+    "settings.ts",
+    "statusBarManager.ts",
+    "suggest.ts",
+    "utils/documentWriteLock.ts"
+  ],
+  "featureFlags.ts": [
+    "settings.ts"
+  ],
+  "lang/helper.ts": [
+    "../../logger/dist/index.d.ts",
+    "lang/locale/en.ts",
+    "lang/locale/zh-cn.ts",
+    "lang/locale/zh-tw.ts"
+  ],
+  "lang/locale/en.ts": [],
+  "lang/locale/zh-cn.ts": [],
+  "lang/locale/zh-tw.ts": [],
+  "main.ts": [
+    "../../logger/dist/index.d.ts",
+    "../../mcp-hosting/dist/index.d.ts",
+    "bridge/index.ts",
+    "commands/di/index.ts",
+    "commands/index.ts",
+    "commands/mcpCommands.ts",
+    "container/plugin-container.ts",
+    "editor.ts",
+    "lang/helper.ts",
+    "mcp/codeBlockProcessor.ts",
+    "mcp/documentSessionHandlers.ts",
+    "mcp/index.ts",
+    "prompt/command.ts",
+    "reactSettingsTab.tsx",
+    "settingTab.ts",
+    "settings.ts",
+    "statusBarManager.ts",
+    "statusBarReact.ts",
+    "suggest.ts",
+    "suggests/mcpParameterSuggest.ts",
+    "suggests/mcpToolSuggest.ts"
+  ],
+  "mcp/adapters/ClaudeProviderAdapter.ts": [
+    "../../mcp-hosting/dist/index.d.ts",
+    "mcp/toolCallingCoordinator.ts"
+  ],
+  "mcp/adapters/ModalNotifier.ts": [
+    "../../mcp-hosting/dist/index.d.ts"
+  ],
+  "mcp/adapters/ObsidianLogger.ts": [
+    "../../logger/dist/index.d.ts",
+    "../../mcp-hosting/dist/index.d.ts"
+  ],
+  "mcp/adapters/OllamaProviderAdapter.ts": [
+    "../../logger/dist/index.d.ts",
+    "../../mcp-hosting/dist/index.d.ts",
+    "mcp/toolCallingCoordinator.ts"
+  ],
+  "mcp/adapters/OpenAIAdapterFactory.ts": [
+    "../../logger/dist/index.d.ts",
+    "../../mcp-hosting/dist/index.d.ts",
+    "mcp/adapters/OpenAIProviderAdapter.ts",
+    "mcp/toolCallingCoordinator.ts"
+  ],
+  "mcp/adapters/OpenAIProviderAdapter.ts": [
+    "../../mcp-hosting/dist/index.d.ts",
+    "mcp/toolCallingCoordinator.ts"
+  ],
+  "mcp/adapters/StatusBarReporter.ts": [
+    "../../mcp-hosting/dist/index.d.ts",
+    "statusBarManager.ts"
+  ],
+  "mcp/adapters/index.ts": [
+    "mcp/adapters/ModalNotifier.ts",
+    "mcp/adapters/ObsidianLogger.ts",
+    "mcp/adapters/StatusBarReporter.ts"
+  ],
+  "mcp/adapters/toolMapping.ts": [
+    "../../mcp-hosting/dist/index.d.ts"
+  ],
+  "mcp/codeBlockProcessor.ts": [
+    "../../logger/dist/index.d.ts",
+    "../../mcp-hosting/dist/index.d.ts",
+    "mcp/toolResultFormatter.ts"
+  ],
+  "mcp/displayMode.ts": [
+    "../../mcp-hosting/dist/index.d.ts"
+  ],
+  "mcp/documentSessionHandlers.ts": [
+    "../../mcp-hosting/dist/index.d.ts"
+  ],
+  "mcp/index.ts": [
+    "../../mcp-hosting/dist/index.d.ts",
+    "mcp/codeBlockProcessor.ts",
+    "mcp/displayMode.ts",
+    "mcp/documentSessionHandlers.ts",
+    "mcp/providerAdapters.ts",
+    "mcp/providerIntegration.ts",
+    "mcp/providerToolIntegration.ts",
+    "mcp/toolCallingCoordinator.ts",
+    "mcp/toolResultFormatter.ts",
+    "mcp/utilitySectionFormatter.ts",
+    "statusBarManager.ts"
+  ],
+  "mcp/providerAdapters.ts": [
+    "mcp/adapters/ClaudeProviderAdapter.ts",
+    "mcp/adapters/OllamaProviderAdapter.ts",
+    "mcp/adapters/OpenAIAdapterFactory.ts",
+    "mcp/adapters/OpenAIProviderAdapter.ts",
+    "mcp/adapters/toolMapping.ts"
+  ],
+  "mcp/providerIntegration.ts": [
+    "../../logger/dist/index.d.ts",
+    "../../mcp-hosting/dist/index.d.ts"
+  ],
+  "mcp/providerToolIntegration.ts": [
+    "../../mcp-hosting/dist/index.d.ts",
+    "mcp/providerIntegration.ts"
+  ],
+  "mcp/toolCallingCoordinator.ts": [
+    "../../logger/dist/index.d.ts",
+    "../../mcp-hosting/dist/index.d.ts",
+    "statusBarManager.ts",
+    "utils/documentWriteLock.ts"
+  ],
+  "mcp/toolResponseParser.ts": [
+    "../../logger/dist/index.d.ts"
+  ],
+  "mcp/toolResultFormatter.ts": [
+    "../../mcp-hosting/dist/index.d.ts"
+  ],
+  "mcp/utilitySectionFormatter.ts": [],
+  "modal.ts": [],
+  "modals/toolBrowserModal.ts": [
+    "../../logger/dist/index.d.ts",
+    "../../mcp-hosting/dist/index.d.ts"
+  ],
+  "prompt/command.ts": [
+    "../../logger/dist/index.d.ts",
+    "prompt/modal.ts",
+    "prompt/template.ts"
+  ],
+  "prompt/index.ts": [
+    "prompt/command.ts",
+    "prompt/template.ts"
+  ],
+  "prompt/modal.ts": [],
+  "prompt/template.ts": [
+    "../../logger/dist/index.d.ts"
+  ],
+  "reactSettingsTab.tsx": [
+    "../../mcp-hosting/dist/index.d.ts",
+    "../../ui/dist/index.js",
+    "adapters/reactSettingsAdapter.ts",
+    "main.ts",
+    "settings.ts"
+  ],
+  "services/ObsidianDocumentService.ts": [],
+  "services/ObsidianLoggingService.ts": [],
+  "services/ObsidianMcpService.ts": [
+    "container/tokens.ts"
+  ],
+  "services/ObsidianNotificationService.ts": [],
+  "services/ObsidianSettingsService.ts": [
+    "settings.ts"
+  ],
+  "services/ObsidianStatusService.ts": [],
+  "services/__tests__/ObsidianLoggingService.test.ts": [
+    "services/ObsidianLoggingService.ts"
+  ],
+  "services/__tests__/ObsidianNotificationService.test.ts": [
+    "services/ObsidianNotificationService.ts"
+  ],
+  "services/__tests__/ObsidianSettingsService.test.ts": [
+    "services/ObsidianSettingsService.ts"
+  ],
+  "services/__tests__/ObsidianStatusService.test.ts": [
+    "services/ObsidianStatusService.ts"
+  ],
+  "settingTab.ts": [
+    "commands/export.ts",
+    "commands/index.ts",
+    "lang/helper.ts",
+    "main.ts",
+    "modal.ts",
+    "settings.ts",
+    "settings/MCPServerSettings.ts"
+  ],
+  "settings.ts": [
+    "../../mcp-hosting/dist/index.d.ts",
+    "featureFlags.ts",
+    "prompt/index.ts"
+  ],
+  "settings/MCPServerSettings.ts": [
+    "../../logger/dist/index.d.ts",
+    "../../mcp-hosting/dist/index.d.ts",
+    "main.ts",
+    "mcp/displayMode.ts"
+  ],
+  "statusBarManager.ts": [
+    "lang/helper.ts"
+  ],
+  "statusBarReact.ts": [
+    "../../ui/dist/index.js",
+    "bridge/ReactBridge.ts",
+    "featureFlags.ts",
+    "settings.ts",
+    "statusBarManager.ts"
+  ],
+  "suggest.ts": [
+    "../../logger/dist/index.d.ts",
+    "editor.ts",
+    "lang/helper.ts",
+    "settings.ts",
+    "statusBarManager.ts"
+  ],
+  "suggests/mcpParameterSuggest.ts": [
+    "../../logger/dist/index.d.ts",
+    "../../mcp-hosting/dist/index.d.ts",
+    "suggests/mcpToolSuggestHelpers.ts"
+  ],
+  "suggests/mcpToolSuggest.ts": [
+    "../../logger/dist/index.d.ts",
+    "../../mcp-hosting/dist/index.d.ts",
+    "suggests/mcpToolSuggestHelpers.ts"
+  ],
+  "suggests/mcpToolSuggestHelpers.ts": [
+    "../../logger/dist/index.d.ts",
+    "../../mcp-hosting/dist/index.d.ts"
+  ],
+  "types/css-modules.d.ts": [],
+  "types/style-mod.d.ts": [],
+  "utils/documentWriteLock.ts": []
+}
