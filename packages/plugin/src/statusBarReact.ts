@@ -1,5 +1,7 @@
+import { injectable, inject } from '@needle-di/core'
 import { type App, Notice } from 'obsidian'
-import { ReactBridge } from './bridge/ReactBridge'
+import type { IReactBridge, ISettingsService, LoggingServiceToken, ILoggingService, StatusBarElementToken } from '@tars/contracts'
+import { StatusBarElementToken } from '@tars/contracts'
 // Import React components from the UI package
 import { StatusBar } from '@tars/ui'
 import { MCPStatusModal } from '@tars/ui'
@@ -16,8 +18,9 @@ import type { ErrorLogType, StatusBarController } from './statusBarManager'
 import { isFeatureEnabled } from './featureFlags'
 
 /**
- * React-enabled status bar manager that uses React components when feature flags are enabled
+ * DI-enabled React status bar manager that uses React components when feature flags are enabled
  */
+@injectable()
 export class StatusBarReactManager implements StatusBarController {
 	private state: StatusBarState
 	private autoHideTimer: NodeJS.Timeout | null = null
@@ -25,12 +28,14 @@ export class StatusBarReactManager implements StatusBarController {
 	private readonly maxErrorLogSize = 50
 	private onRefreshMCPStatus?: (updateStatus: (message: string) => void) => Promise<void>
 	private reactRootContainer: HTMLElement | null = null
+	private statusBarItem: HTMLElement
+	private settingsUnsubscribe?: () => void
 
 	constructor(
-		private app: App,
-		private statusBarItem: HTMLElement,
-		private reactBridge: ReactBridge,
-		private settings: PluginSettings
+		private app = inject('app'),
+		private reactBridge = inject(IReactBridge),
+		private settingsService = inject(ISettingsService),
+		private loggingService = inject(LoggingServiceToken)
 	) {
 		this.state = {
 			type: 'idle',
@@ -41,15 +46,39 @@ export class StatusBarReactManager implements StatusBarController {
 			timestamp: new Date()
 		}
 
+		this.loggingService.debug('Initializing DI-enabled StatusBarReactManager')
+
+		// Create our own status bar element
+		this.createStatusBarElement()
+
+		// Set up settings watcher for automatic UI updates
+		this.setupSettingsWatcher()
+
 		this.initializeReactStatusBar()
+
+		this.loggingService.debug('StatusBarReactManager initialized successfully')
+	}
+
+	/**
+	 * Create the status bar element using the Obsidian app
+	 */
+	private createStatusBarElement(): void {
+		this.statusBarItem = this.app.addStatusBarItem()
+
+		// Register the status bar element in DI container for other components to use
+		// Note: This would require container access, which we'll handle differently
+		this.loggingService.debug('Created status bar element', {
+			element: !!this.statusBarItem
+		})
 	}
 
 	/**
 	 * Check if React UI is enabled for status bar
 	 */
 	private isReactUIEnabled(): boolean {
-		return isFeatureEnabled(this.settings, 'reactStatusBar') ||
-		       isFeatureEnabled(this.settings, 'reactModals')
+		const settings = this.settingsService.getAll() as PluginSettings
+		return isFeatureEnabled(settings, 'reactStatusBar') ||
+		       isFeatureEnabled(settings, 'reactModals')
 	}
 
 	/**
@@ -148,10 +177,29 @@ export class StatusBarReactManager implements StatusBarController {
 	}
 
 	/**
+	 * Set up settings watcher for automatic UI updates when settings change
+	 */
+	private setupSettingsWatcher(): void {
+		// Watch for settings changes that affect the UI
+		this.settingsUnsubscribe = this.settingsService.watch('featureFlags', () => {
+			this.loggingService.debug('Feature flags changed, refreshing status bar')
+			this.initializeReactStatusBar()
+		})
+
+		this.loggingService.debug('Settings watcher configured for feature flags')
+	}
+
+	/**
 	 * Handle opening different modal types
 	 */
 	private handleOpenModal(type: 'mcp' | 'stats' | 'error') {
-		const useReactModals = isFeatureEnabled(this.settings, 'reactModals')
+		const settings = this.settingsService.getAll() as PluginSettings
+		const useReactModals = isFeatureEnabled(settings, 'reactModals')
+
+		this.loggingService.debug('Opening modal', {
+			type,
+			useReactModals
+		})
 
 		if (useReactModals) {
 			this.openReactModal(type)
@@ -555,26 +603,52 @@ export class StatusBarReactManager implements StatusBarController {
 	}
 
 	/**
+	 * Get the status bar element for other components to use
+	 */
+	getStatusBarElement(): HTMLElement {
+		return this.statusBarItem
+	}
+
+	/**
 	 * Update settings (called when feature flags change)
+	 * This method is kept for backward compatibility but settings changes are automatically detected
 	 */
 	updateSettings(settings: PluginSettings) {
-		this.settings = settings
-		// Re-initialize status bar with new settings
+		this.loggingService.debug('updateSettings called, updating settings through DI service')
+
+		// Update all settings at once
+		this.settingsService.setAll(settings as Record<string, any>)
+
+		// Re-initialize status bar with new settings (will also be triggered by watcher)
 		this.initializeReactStatusBar()
+
+		this.loggingService.debug('Settings updated successfully')
 	}
 
 	/**
 	 * Dispose of resources
 	 */
 	dispose() {
+		this.loggingService.debug('Disposing StatusBarReactManager')
+
+		// Clear auto-hide timer
 		if (this.autoHideTimer) {
 			clearTimeout(this.autoHideTimer)
 			this.autoHideTimer = null
 		}
 
+		// Unmount React component
 		if (this.reactRootContainer && this.reactBridge) {
 			this.reactBridge.unmount(this.reactRootContainer)
 			this.reactRootContainer = null
 		}
+
+		// Clean up settings watcher
+		if (this.settingsUnsubscribe) {
+			this.settingsUnsubscribe()
+			this.settingsUnsubscribe = undefined
+		}
+
+		this.loggingService.debug('StatusBarReactManager disposed successfully')
 	}
 }

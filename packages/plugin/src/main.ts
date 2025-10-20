@@ -1,118 +1,35 @@
-import { type Editor, Notice, Plugin } from 'obsidian'
-import { createLogger } from '@tars/logger'
-import { ReactBridge } from './bridge'
-import { createPluginContainer, type CreateContainerOptions } from './container/plugin-container'
 import type {
+	IDocumentService,
 	ILoggingService,
+	IMcpService,
 	INotificationService,
+	IReactBridgeManager,
 	ISettingsService,
 	IStatusService,
-	IDocumentService,
-	IMcpService
-} from '@tars/contracts'
-import type {
 	MCPServerManager,
 	ToolExecutor
-} from '@tars/mcp-hosting'
-import type { CodeBlockProcessor } from './mcp'
-
-const logger = createLogger('plugin')
-
-import { type SessionNotificationHandlers } from '@tars/mcp-hosting'
-import {
-	exportCmd,
-	getMeta,
-	getTagCmdIdsFromSettings,
-	newChatTagCmd,
-	replaceCmd,
-	selectMsgAtCursorCmd
-} from './commands'
-import { AssistantTagDICommand, UserTagDICommand, SystemTagDICommand } from './commands/di'
+} from '@tars/contracts'
+import { SettingsServiceToken } from '@tars/contracts'
+import Debug from 'debug'
+import { type Editor, Notice, Plugin } from 'obsidian'
+import { AssistantTagDICommand, SystemTagDICommand, UserTagDICommand } from './commands/di'
 import { getMCPCommands } from './commands/mcpCommands'
+import { createPluginContainer, registerStatusBarElement } from './container/plugin-container'
 import type { RequestController } from './editor'
 import { t } from './lang/helper'
-import { CodeBlockProcessor } from './mcp/codeBlockProcessor'
+import type { CodeBlockProcessor } from './mcp/codeBlockProcessor'
 import { registerDocumentSessionHandlers } from './mcp/documentSessionHandlers'
 import { HEALTH_CHECK_INTERVAL } from './mcp/index'
 import { getTitleFromCmdId, loadTemplateFileCommand, promptTemplateCmd, templateToCmdId } from './prompt/command'
-import { DEFAULT_SETTINGS, type PluginSettings } from './settings'
-import { TarsSettingTab } from './settingTab'
 import { ReactSettingsTab } from './reactSettingsTab'
-import { StatusBarManager, type StatusBarController } from './statusBarManager'
-import { StatusBarReactManager } from './statusBarReact'
-import { getMaxTriggerLineLength, TagEditorSuggest, type TagEntry } from './suggest'
-import { MCPParameterSuggest } from './suggests/mcpParameterSuggest'
-import { MCPToolSuggest } from './suggests/mcpToolSuggest'
+import type { ObsidianSettingsService } from './services/ObsidianSettingsService'
+import type { PluginSettings } from './settings'
+import type { StatusBarController } from './statusBarManager'
 
-function createNoticeSessionNotifications(): SessionNotificationHandlers {
-	return {
-		onLimitReached: async (documentPath: string, limit: number, current: number) => {
-			return new Promise((resolve) => {
-				try {
-					const notice: any = new Notice('', 0)
-					const root = notice?.noticeEl?.createDiv?.({ cls: 'mcp-session-notice' }) ?? null
-					const container = root ?? notice?.noticeEl
-					if (!container) {
-						resolve('cancel')
-						return
-					}
-
-					if (typeof container.empty === 'function') {
-						container.empty()
-					} else {
-						if ('innerHTML' in container) {
-							;(container as HTMLElement).innerHTML = ''
-						}
-						if ('textContent' in container) {
-							container.textContent = ''
-						}
-					}
-
-					container.createEl?.('p', {
-						text: `Session limit reached for this document (total across all servers).`
-					})
-					container.createEl?.('p', {
-						cls: 'mcp-session-limit-meta',
-						text: `Document: ${documentPath} — ${current}/${limit}`
-					})
-
-					const actions = container.createDiv?.({ cls: 'mcp-session-actions' }) ?? container
-
-					const cleanup = (result: 'continue' | 'cancel') => {
-						if (typeof notice?.hide === 'function') {
-							notice.hide()
-						}
-						resolve(result)
-					}
-
-					const continueBtn = actions.createEl?.('button', {
-						cls: 'mod-cta',
-						text: 'Continue'
-					})
-					continueBtn?.addEventListener('click', () => cleanup('continue'))
-
-					const cancelBtn = actions.createEl?.('button', { text: 'Cancel' })
-					cancelBtn?.addEventListener('click', () => cleanup('cancel'))
-				} catch {
-					resolve('cancel')
-				}
-			})
-		},
-		onSessionReset: (documentPath: string) => {
-			try {
-				new Notice(`Session counter reset for ${documentPath}`, 4000)
-			} catch {
-				// Ignore notice failures in environments without UI
-			}
-		}
-	}
-}
+const logger = Debug('tars:plugin')
 
 export default class TarsPlugin extends Plugin {
-	settings: PluginSettings
 	statusBarManager: StatusBarController
-	tagCmdIds: string[] = []
-	promptCmdIds: string[] = []
 	tagLowerCaseMap: Map<string, Omit<TagEntry, 'replacement'>> = new Map()
 	aborterInstance: AbortController | null = null
 
@@ -133,7 +50,7 @@ export default class TarsPlugin extends Plugin {
 	private systemTagCommand: SystemTagDICommand
 
 	// React Integration
-	reactBridge: ReactBridge | null = null
+	reactBridgeManager: IReactBridgeManager
 
 	// MCP Integration
 	mcpManager: MCPServerManager | null = null
@@ -141,65 +58,52 @@ export default class TarsPlugin extends Plugin {
 	mcpCodeBlockProcessor: CodeBlockProcessor | null = null
 	mcpHealthCheckInterval: NodeJS.Timeout | null = null
 
-	private initializeDIContainer() {
-		if (!this.container) {
-			const containerOptions: CreateContainerOptions = {
-				app: this.app,
-				plugin: this,
-				settings: this.settings,
-				statusBarManager: this.statusBarManager
-			}
-			this.container = createPluginContainer(containerOptions)
-
-			// Resolve injected services
-			this.loggingService = this.container.get(ILoggingService)
-			this.notificationService = this.container.get(INotificationService)
-			this.settingsService = this.container.get(ISettingsService)
-			this.statusService = this.container.get(IStatusService)
-			this.documentService = this.container.get(IDocumentService)
-			this.mcpService = this.container.get(IMcpService)
-
-			// Resolve DI commands
-			this.assistantTagCommand = this.container.get(AssistantTagDICommand)
-			this.userTagCommand = this.container.get(UserTagDICommand)
-			this.systemTagCommand = this.container.get(SystemTagDICommand)
-		}
-	}
-
 	async onload() {
-		await this.loadSettings()
+		logger('loading tars plugin')
 
-		logger.info('loading tars plugin')
+		// Initialize DI Container with all dependencies first
+		this.container = createPluginContainer({ plugin: this })
+		logger('DI container initialized with service injections')
 
-		// Initialize React Bridge for UI components (v4.0.0 direct migration)
-		if (ReactBridge.isReactAvailable()) {
-			this.reactBridge = new ReactBridge(this.app)
-			logger.info('React bridge initialized for v4.0.0')
-		} else {
-			logger.error('React not available - plugin cannot initialize')
-			throw new Error('React 18.3.1 is required for TARS v4.0.0')
-		}
+		// Initialize settings through DI service
+		this.settingsService = this.container.get(SettingsServiceToken)
+		await this.settingsService.initialize()
 
-		// Initialize StatusBar early so MCP components can log errors
-		const statusBarItem = this.addStatusBarItem()
+		// Update plugin settings to reference DI service settings
+		this.settings = this.settingsService.getAll() as unknown as PluginSettings
+		logger('Settings initialized through DI service')
 
-		// Use React status bar (v4.0.0 direct migration)
-		this.statusBarManager = new StatusBarReactManager(
-			this.app,
-			statusBarItem,
-			this.reactBridge!,
-			this.settings
-		)
-		logger.info('Using React status bar manager')
+		// Resolve injected services
+		this.loggingService = this.container.get(ILoggingService)
+		this.notificationService = this.container.get(INotificationService)
+		this.settingsService = this.container.get(ISettingsService)
+		this.statusService = this.container.get(IStatusService)
+		this.documentService = this.container.get(IDocumentService)
+		this.mcpService = this.container.get(IMcpService)
+		this.reactBridgeManager = this.container.get(ReactBridgeManagerToken)
 
-		// Initialize DI Container with all dependencies
-		this.initializeDIContainer()
-		logger.info('DI container initialized with service injections')
+		// Resolve DI commands
+		this.assistantTagCommand = this.container.get(AssistantTagDICommand)
+		this.userTagCommand = this.container.get(UserTagDICommand)
+		this.systemTagCommand = this.container.get(SystemTagDICommand)
+
+		// Use DI-injected React status bar manager (creates its own status bar element)
+		this.statusBarManager = this.container.get(StatusBarReactManagerToken)
+
+		// Register the status bar element for other components to use via DI
+		registerStatusBarElement(this.container)
+
+		logger.info('Using DI-injected React status bar manager (creates own status bar element)')
+
+		// Initialize React Bridge through DI for UI components
+		this.reactBridgeManager.initialize(this.app)
+		logger.info('React bridge initialized through DI')
 
 		// Initialize MCP Server Manager (non-blocking)
-		if (this.settings.mcpServers && this.settings.mcpServers.length > 0) {
+		const mcpServers = this.settingsService.get('mcpServers', [])
+		if (mcpServers && mcpServers.length > 0) {
 			// Initialize and use DI services for MCP components
-			await this.mcpService.initialize(this.settings.mcpServers)
+			await this.mcpService.initialize(mcpServers)
 			this.mcpManager = this.mcpService.getServerManager()
 			this.mcpExecutor = this.mcpService.getToolExecutor()
 			this.mcpCodeBlockProcessor = this.mcpService.getCodeBlockProcessor()
@@ -442,11 +346,9 @@ export default class TarsPlugin extends Plugin {
 	async onunload() {
 		this.statusBarManager?.dispose()
 
-		// Cleanup React Bridge
-		if (this.reactBridge) {
-			this.reactBridge.unmountAll()
-			logger.info('React bridge cleaned up')
-		}
+		// Cleanup React Bridge through DI
+		this.reactBridgeManager.dispose()
+		logger.info('React bridge manager cleaned up through DI')
 
 		// Clear health check timer
 		if (this.mcpHealthCheckInterval) {
@@ -465,7 +367,6 @@ export default class TarsPlugin extends Plugin {
 		}
 	}
 
-	
 	addTagCommand(cmdId: string) {
 		const tagCmdMeta = getMeta(cmdId)
 		switch (tagCmdMeta.role) {
@@ -591,17 +492,13 @@ export default class TarsPlugin extends Plugin {
 		}
 	}
 
-	async loadSettings() {
-		const data = await this.loadData()
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, data)
-		this.settings.uiState = {
-			...DEFAULT_SETTINGS.uiState,
-			...this.settings.uiState
-		}
-	}
-
 	async saveSettings() {
-		await this.saveData(this.settings)
+		// Use DI settings service for saving
+		const settingsService = this.container.get(ISettingsServiceToken) as ObsidianSettingsService
+		await settingsService.saveSettings()
+
+		// Update local reference to stay in sync
+		this.settings = settingsService.getAll() as PluginSettings
 
 		// Update React status bar manager if settings changed
 		this.statusBarManager.updateSettings(this.settings)
@@ -891,5 +788,4 @@ export default class TarsPlugin extends Plugin {
 			editor.setCursor(editor.offsetToPos(endOffset))
 		}
 	}
-
-	}
+}

@@ -85,18 +85,22 @@ export interface MCPToolInjector {
 }
 
 /**
- * Interface for MCP Tool Executor
+ * Interface for MCP Tool Executor (Provider-specific)
  * Manages execution of MCP tools with proper error handling
+ * Note: This is a legacy interface - use ToolExecutor from services/mcp-types instead
+ * @deprecated Use ToolExecutor from services/mcp-types
  */
-export interface ToolExecutor {
+export interface ProviderToolExecutor {
 	executeTool(serverId: string, toolName: string, arguments_: Record<string, unknown>): Promise<unknown>
 }
 
 /**
- * Interface for MCP Server Manager
+ * Interface for MCP Server Manager (Provider-specific)
  * Manages lifecycle and tool discovery for MCP servers
+ * Note: This is a legacy interface - use MCPServerManager from services/mcp-types instead
+ * @deprecated Use MCPServerManager from services/mcp-types
  */
-export interface MCPServerManager {
+export interface ProviderMCPServerManager {
 	getToolDiscoveryCache(): {
 		getSnapshot(): Promise<ToolSnapshot>
 	}
@@ -135,7 +139,7 @@ export interface ToolCallingCoordinator {
 	generateWithTools(
 		messages: Array<{ role: string; content: string; embeds?: EmbedCache[] }>,
 		adapter: ProviderAdapter,
-		executor: ToolExecutor,
+		executor: ProviderToolExecutor,
 		options: {
 			documentPath: string
 			statusBarManager?: StatusBarManager
@@ -157,7 +161,7 @@ export interface MCPIntegration {
 	mcpToolInjector: MCPToolInjector
 	toolCallingCoordinator?: ToolCallingCoordinator
 	providerAdapter?: ProviderAdapter
-	mcpExecutor?: ToolExecutor
+	mcpExecutor?: ProviderToolExecutor
 	// Factory functions for creating MCP components
 	createToolCallingCoordinator?: () => ToolCallingCoordinator
 	createProviderAdapter?: (config: unknown) => ProviderAdapter

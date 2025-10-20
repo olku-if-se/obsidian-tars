@@ -1,106 +1,47 @@
-import 'reflect-metadata'
 import { Container } from '@needle-di/core'
-import type { InjectionToken } from '@needle-di/core'
-import {
-	ILoggingService,
-	INotificationService,
-	ISettingsService,
-	IStatusService,
-	IDocumentService,
-	IMcpService,
-	LoggerFactoryToken
-} from '@tars/contracts'
+import * as di from '@tars/contracts'
 import { LoggerFactory } from '@tars/logger'
-
-// Service implementations
+import type { Plugin } from 'obsidian'
+import { ReactBridge } from '../bridge/ReactBridge'
+import { ReactBridgeManager } from '../bridge/ReactBridgeManagerDI'
+import { CodeBlockProcessor } from '../mcp/codeBlockProcessor'
+import { ServerConfigManager } from '../mcp/serverConfigManagerDI'
+import { ObsidianDocumentService } from '../services/ObsidianDocumentService'
 import { ObsidianLoggingService } from '../services/ObsidianLoggingService'
 import { ObsidianNotificationService } from '../services/ObsidianNotificationService'
-import { ObsidianStatusService } from '../services/ObsidianStatusService'
-import { ObsidianDocumentService } from '../services/ObsidianDocumentService'
 import { ObsidianSettingsService } from '../services/ObsidianSettingsService'
-// MCP imports temporarily commented out
-// import { ObsidianMcpService, ToolExecutorToken, MCPServerManagerToken, CodeBlockProcessorToken } from '../services/ObsidianMcpService'
-
-// Existing MCP components (will be wrapped for DI)
-// import {
-// 	MCPServerManager as MCPServerManagerImpl,
-// 	ToolExecutor as ToolExecutorImpl
-// } from '@tars/mcp-hosting'
-// import { CodeBlockProcessor as CodeBlockProcessorImpl } from '../mcp/codeBlockProcessor'
-
-// Contract imports for token registration
-// import type {
-// 	MCPServerManager,
-// 	ToolExecutor,
-// 	CodeBlockProcessor
-// } from '@tars/contracts'
-
-// DI Commands
-import { AssistantTagDICommand, UserTagDICommand, SystemTagDICommand } from '../commands/di'
-// Central tokens
-import {
-	ILoggingServiceToken,
-	INotificationServiceToken,
-	ISettingsServiceToken,
-	IStatusServiceToken,
-	IDocumentServiceToken,
-	AppToken,
-	TarsPluginToken,
-	PluginSettingsToken,
-	StatusBarManagerToken
-} from './tokens'
+import { ObsidianStatusService } from '../services/ObsidianStatusService'
+import { StatusBarReactManager } from '../statusBarReact'
 
 export interface CreateContainerOptions {
-	app: any // Obsidian App instance
-	plugin: any // TarsPlugin instance
-	settings: any // PluginSettings instance
-	statusBarManager: any // StatusBarManager instance
+	plugin: Plugin // TarsPlugin instance
 }
 
-export function createPluginContainer(options: CreateContainerOptions): Container {
-	const { app, plugin, settings, statusBarManager } = options
-
+export function createPluginContainer({ plugin }: CreateContainerOptions): Container {
 	const container = new Container()
 
 	// Register framework instances as values
-	container.bind(AppToken).toConstantValue(app)
-	container.bind(TarsPluginToken).toConstantValue(plugin)
-	container.bind(PluginSettingsToken).toConstantValue(settings)
-	container.bind(StatusBarManagerToken).toConstantValue(statusBarManager)
+	container.bind({ provide: di.TarsPluginToken, useValue: plugin })
+	container.bind({ provide: di.AppToken, useValue: plugin.app })
 
-	// Register service implementations as singletons
-	// Register with both interface types and tokens for maximum compatibility
-	container.bind(ILoggingService).toClass(ObsidianLoggingService)
-	container.bind(ILoggingServiceToken).toClass(ObsidianLoggingService)
-	container.bind(LoggerFactoryToken).toClass(LoggerFactory)
-
-	container.bind(INotificationService).toClass(ObsidianNotificationService)
-	container.bind(INotificationServiceToken).toClass(ObsidianNotificationService)
-
-	container.bind(IStatusService).toClass(ObsidianStatusService)
-	container.bind(IStatusServiceToken).toClass(ObsidianStatusService)
-
-	container.bind(IDocumentService).toClass(ObsidianDocumentService)
-	container.bind(IDocumentServiceToken).toClass(ObsidianDocumentService)
-
-	container.bind(ISettingsService).toClass(ObsidianSettingsService)
-	container.bind(ISettingsServiceToken).toClass(ObsidianSettingsService)
+	// Register service implementations
+	container.bind({ provide: di.ISettingsServiceToken, useClass: ObsidianSettingsService })
+	container.bind({ provide: di.ILoggingServiceToken, useClass: ObsidianLoggingService })
+	container.bind({ provide: di.LoggerFactoryToken, useClass: LoggerFactory })
+	container.bind({ provide: di.INotificationServiceToken, useClass: ObsidianNotificationService })
+	container.bind({ provide: di.IStatusServiceToken, useClass: ObsidianStatusService })
+	container.bind({ provide: di.IDocumentServiceToken, useClass: ObsidianDocumentService })
 
 	// Register MCP components as DI services with proper tokens
-	// TODO: Fix MCP service injection issues - temporarily commented out
-	// container.register(MCPServerManagerToken, { useClass: MCPServerManagerImpl })
-	// container.register(ToolExecutorToken, { useClass: ToolExecutorImpl })
-	// container.register(CodeBlockProcessorToken, { useClass: CodeBlockProcessorImpl })
+	container.bind({ provide: di.ServerConfigManagerToken, useClass: ServerConfigManager })
+	container.bind({ provide: di.CodeBlockProcessorToken, useClass: CodeBlockProcessor })
 
-	// Register MCP service with dependencies
-	// container.register(IMcpService, { useClass: ObsidianMcpService })
+	// Register React Bridge components as DI services
+	container.bind({ provide: di.ReactBridgeToken, useClass: ReactBridge })
+	container.bind({ provide: di.ReactBridgeManagerToken, useClass: ReactBridgeManager })
 
-	// Register DI Commands
-	// TODO: Fix token mismatch between central tokens and command-local tokens
-	// container.register(AssistantTagDICommand, { useClass: AssistantTagDICommand })
-	// container.register(UserTagDICommand, { useClass: UserTagDICommand })
-	// container.register(SystemTagDICommand, { useClass: SystemTagDICommand })
+	// Register StatusBar React Manager as DI service
+	container.bind({ provide: di.StatusBarReactManagerToken, useClass: StatusBarReactManager })
 
 	return container
 }
-

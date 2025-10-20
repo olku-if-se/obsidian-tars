@@ -1,4 +1,4 @@
-import type { MCPServerManager, ToolExecutor } from '../providers/base'
+import type { MCPServerManager, ToolExecutor } from './mcp-types'
 
 /**
  * MCP service interface for Model Context Protocol integration

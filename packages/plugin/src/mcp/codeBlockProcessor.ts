@@ -1,15 +1,19 @@
 /**
- * Code Block Processor
- * Handles parsing and rendering of MCP tool invocation code blocks
+ * DI-enabled Code Block Processor
+ * Handles parsing and rendering of MCP tool invocation code blocks with full dependency injection
  */
 
+import { injectable, inject } from '@needle-di/core'
 import type { ErrorInfo, MCPServerConfig, ToolExecutionResult } from '@tars/mcp-hosting'
 import { logError, YAMLParseError } from '@tars/mcp-hosting'
 import { parse as parseYAML } from 'yaml'
-import { createLogger } from '@tars/logger'
 import { renderToolResultToDOM } from './toolResultFormatter'
-
-const logger = createLogger('mcp:code-block-processor')
+import type {
+	ILoggingService,
+	ICodeBlockProcessor,
+	LoggingServiceToken,
+	ServerConfigManagerToken
+} from '@tars/contracts'
 
 // Local interface for tool invocation (not exported from mcp-hosting)
 interface ToolInvocation {
@@ -18,24 +22,76 @@ interface ToolInvocation {
 	parameters: Record<string, unknown>
 }
 
-export class CodeBlockProcessor {
-	private serverConfigs: MCPServerConfig[] = []
+/**
+ * DI-enabled CodeBlockProcessor implementation
+ * Fully migrated to dependency injection with no legacy fallback
+ */
+@injectable()
+export class CodeBlockProcessor implements ICodeBlockProcessor {
+	constructor(
+		private loggingService = inject(LoggingServiceToken),
+		private serverConfigManager = inject(ServerConfigManagerToken)
+	) {}
 
 	/**
-	 * Update server configurations
+	 * Process a code block containing MCP tool invocation
+	 * Implementation of interface method
 	 */
-	updateServerConfigs(configs: MCPServerConfig[]): void {
-		this.serverConfigs = configs
+	async processCodeBlock(serverName: string, content: string): Promise<string> {
+		const invocation = this.parseToolInvocation(content, serverName)
+		if (!invocation) {
+			return 'Invalid tool invocation format'
+		}
+
+		// This would integrate with ToolExecutor - for now return formatted result
+		return `Tool "${invocation.toolName}" parsed successfully with ${Object.keys(invocation.parameters).length} parameters`
+	}
+
+	/**
+	 * Render tool execution results in markdown format
+	 * Implementation of interface method
+	 */
+	renderResults(results: unknown, metadata?: Record<string, unknown>): string {
+		if (typeof results === 'object' && results !== null) {
+			return JSON.stringify(results, null, 2)
+		}
+		return String(results)
+	}
+
+	/**
+	 * Validate tool invocation syntax
+	 * Implementation of interface method
+	 */
+	validateInvocation(content: string): boolean {
+		return this.parseToolInvocation(content, 'test') !== null
+	}
+
+	/**
+	 * Extract tool name and arguments from code block content
+	 * Implementation of base interface method
+	 */
+	parseToolInvocation(content: string): { toolName: string; arguments: Record<string, unknown> } | null {
+		const invocation = this.parseToolInvocationExtended(content, 'dummy')
+		if (!invocation) {
+			return null
+		}
+
+		return {
+			toolName: invocation.toolName,
+			arguments: invocation.parameters
+		}
 	}
 
 	/**
 	 * Parse code block content to extract tool invocation
+	 * Enhanced version with DI logging service integration
 	 */
-	parseToolInvocation(source: string, language: string): ToolInvocation | null {
+	parseToolInvocationExtended(source: string, language: string): { serverId: string; toolName: string; parameters: Record<string, unknown> } | null {
 		try {
 			// Check if language matches a server name
-			const serverConfig = this.getServerByName(language)
+			const serverConfig = this.serverConfigManager.getServerByName(language)
 			if (!serverConfig) {
+				this.loggingService.debug(`No server configuration found for language: ${language}`)
 				return null // Not an MCP code block
 			}
 
@@ -61,12 +117,19 @@ export class CodeBlockProcessor {
 			const yamlLines = lines.filter((line) => !line.trim().startsWith('tool:'))
 			const parameters = this.parseYAMLParameters(yamlLines)
 
+			this.loggingService.debug(`Parsed tool invocation`, {
+				serverId: serverConfig.id,
+				toolName,
+				parameterCount: Object.keys(parameters).length
+			})
+
 			return {
 				serverId: serverConfig.id,
 				toolName,
 				parameters
 			}
 		} catch (error) {
+			this.loggingService.error('Failed to parse tool invocation', { error, source, language })
 			logError('Failed to parse tool invocation', error)
 			return null
 		}
@@ -74,6 +137,7 @@ export class CodeBlockProcessor {
 
 	/**
 	 * Render tool execution result in code block element
+	 * Enhanced with DI logging service integration
 	 */
 	renderResult(
 		el: HTMLElement,
@@ -83,6 +147,12 @@ export class CodeBlockProcessor {
 			showMetadata?: boolean
 		} = {}
 	): void {
+		this.loggingService.debug('Rendering tool result', {
+			contentType: result.contentType,
+			executionDuration: result.executionDuration,
+			cached: result.cached
+		})
+
 		// Use shared formatter for consistent rendering
 		renderToolResultToDOM(el, result, {
 			collapsible: options.collapsible,
@@ -92,8 +162,14 @@ export class CodeBlockProcessor {
 
 	/**
 	 * Render error state in code block element
+	 * Enhanced with DI logging service integration
 	 */
 	renderError(el: HTMLElement, error: ErrorInfo): void {
+		this.loggingService.error('Rendering tool error', {
+			message: error.message,
+			timestamp: error.timestamp
+		})
+
 		el.empty()
 
 		const container = el.createDiv({ cls: 'mcp-tool-error' })
@@ -122,8 +198,11 @@ export class CodeBlockProcessor {
 
 	/**
 	 * Render pending/executing state in code block element
+	 * Enhanced with DI logging service integration
 	 */
 	renderStatus(el: HTMLElement, status: 'pending' | 'executing', onCancel?: () => void): void {
+		this.loggingService.debug(`Rendering tool status: ${status}`)
+
 		el.empty()
 
 		const container = el.createDiv({ cls: 'mcp-tool-status' })
@@ -145,6 +224,7 @@ export class CodeBlockProcessor {
 			cancelButton.addEventListener('click', (event) => {
 				event.preventDefault()
 				event.stopPropagation()
+				this.loggingService.debug('Tool execution cancelled by user')
 				onCancel()
 			})
 		}
@@ -152,6 +232,7 @@ export class CodeBlockProcessor {
 
 	/**
 	 * Parse YAML parameters from code block lines
+	 * Enhanced with DI logging service integration
 	 */
 	parseYAMLParameters(lines: string[]): Record<string, unknown> {
 		if (lines.length === 0) {
@@ -163,16 +244,19 @@ export class CodeBlockProcessor {
 		try {
 			const parsed = parseYAML(source)
 			if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+				this.loggingService.debug('YAML parameters parsed successfully', {
+					parameterCount: Object.keys(parsed).length
+				})
 				return parsed as Record<string, unknown>
 			}
 			if (parsed === null || parsed === undefined) {
 				return {}
 			}
-			logger.debug('unexpected yaml root type for tool parameters, falling back', {
+			this.loggingService.debug('Unexpected YAML root type for tool parameters, falling back', {
 				rootType: typeof parsed
 			})
 		} catch (yamlError) {
-			logger.debug('yaml parsing failed for tool parameters, falling back to manual parser', yamlError)
+			this.loggingService.debug('YAML parsing failed for tool parameters, falling back to manual parser', { yamlError })
 		}
 
 		// Fallback: simple key-value parser (legacy behaviour)
@@ -207,14 +291,20 @@ export class CodeBlockProcessor {
 				params[currentKey] = this.parseYAMLValue(currentValue.join('\n'))
 			}
 
+			this.loggingService.debug('Manual YAML parameter parsing completed', {
+				parameterCount: Object.keys(params).length
+			})
+
 			return params
 		} catch (error) {
+			this.loggingService.error('Manual YAML parsing failed', { error, lines })
 			throw new YAMLParseError(undefined, error instanceof Error ? error.message : String(error))
 		}
 	}
 
 	/**
 	 * Parse individual YAML value
+	 * Enhanced with DI logging service integration for complex cases
 	 */
 	private parseYAMLValue(value: string): unknown {
 		const trimmed = value.trim()
@@ -236,9 +326,13 @@ export class CodeBlockProcessor {
 		// Handle JSON-like arrays/objects (e.g., [] or {})
 		if ((trimmed.startsWith('[') && trimmed.endsWith(']')) || (trimmed.startsWith('{') && trimmed.endsWith('}'))) {
 			try {
-				return JSON.parse(trimmed)
+				const parsed = JSON.parse(trimmed)
+				this.loggingService.debug('Parsed JSON-like parameter value', {
+					valueType: Array.isArray(parsed) ? 'array' : 'object'
+				})
+				return parsed
 			} catch (error) {
-				logger.debug('failed to parse json-like parameter value', error)
+				this.loggingService.debug('Failed to parse JSON-like parameter value', { value, error })
 			}
 		}
 
@@ -253,8 +347,9 @@ export class CodeBlockProcessor {
 
 	/**
 	 * Get server configuration by name
+	 * Uses DI server config manager for consistency
 	 */
 	getServerByName(serverName: string): MCPServerConfig | undefined {
-		return this.serverConfigs.find((config) => config.name === serverName)
+		return this.serverConfigManager.getServerByName(serverName)
 	}
 }

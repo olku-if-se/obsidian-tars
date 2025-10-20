@@ -1,38 +1,76 @@
-import { injectable } from '@needle-di/core'
-import { App, TFile } from 'obsidian'
-import { ISettingsService } from '@tars/contracts'
+import { inject, injectable } from '@needle-di/core'
+import type { ISettingsService } from '@tars/contracts'
+import { AppToken, TarsPluginToken } from '@tars/contracts'
+import { type App, type Plugin, TFile } from 'obsidian'
 import type { PluginSettings } from '../settings'
+import { DEFAULT_SETTINGS } from '../settings'
 
 @injectable()
 export class ObsidianSettingsService implements ISettingsService {
 	private app: App
-	private plugin: any // TarsPlugin instance
+	private plugin: Plugin
 	private settings: PluginSettings
-	private watchers: Map<string, Set<(value: any) => void>> = new Map()
+	private watchers: Map<string, Set<(value: unknown) => void>> = new Map()
+	private initialized = false
 
-	constructor(app: App, plugin: any, initialSettings: PluginSettings) {
+	constructor(app: App = inject(AppToken), plugin: Plugin = inject(TarsPluginToken)) {
 		this.app = app
 		this.plugin = plugin
-		this.settings = { ...initialSettings }
+		this.settings = { ...DEFAULT_SETTINGS }
+	}
+
+	/**
+	 * Initialize settings by loading from Obsidian's storage
+	 * This should be called once during plugin initialization
+	 */
+	async initialize(): Promise<void> {
+		if (this.initialized) {
+			return
+		}
+
+		try {
+			const data = await this.loadData()
+			this.settings = Object.assign({}, DEFAULT_SETTINGS, data)
+			this.settings.uiState = {
+				...DEFAULT_SETTINGS.uiState,
+				...this.settings.uiState
+			}
+			this.initialized = true
+		} catch (error) {
+			console.error('Failed to load settings, using defaults:', error)
+			this.settings = { ...DEFAULT_SETTINGS }
+			this.initialized = true
+		}
+	}
+
+	/**
+	 * Load settings data from Obsidian's storage
+	 */
+	private async loadData(): Promise<Partial<PluginSettings>> {
+		return await this.plugin.loadData()
 	}
 
 	get<T>(key: string, defaultValue?: T): T {
-		const value = (this.settings as any)[key]
-		return value !== undefined ? value : defaultValue
+		const value = (this.settings as unknown as Record<string, unknown>)[key]
+		return value !== undefined ? (value as T) : defaultValue
 	}
 
-	set(key: string, value: any): void {
-		(this.settings as any)[key] = value
-		this.saveSettings()
+	async set(key: string, value: unknown): Promise<void> {
+		;(this.settings as unknown as Record<string, unknown>)[key] = value
+		await this.saveSettings()
 		this.notifyWatchers(key, value)
 	}
 
-	watch(key: string, callback: (value: any) => void): () => void {
+	watch(key: string, callback: (value: unknown) => void): () => void {
 		if (!this.watchers.has(key)) {
 			this.watchers.set(key, new Set())
 		}
 
-		const keyWatchers = this.watchers.get(key)!
+		const keyWatchers = this.watchers.get(key)
+		if (!keyWatchers) {
+			return () => {} // Return empty function if somehow keyWatchers is undefined
+		}
+
 		keyWatchers.add(callback)
 
 		// Return unsubscribe function
@@ -44,13 +82,13 @@ export class ObsidianSettingsService implements ISettingsService {
 		}
 	}
 
-	getAll(): Record<string, any> {
+	getAll(): Record<string, unknown> {
 		return { ...this.settings }
 	}
 
-	setAll(settings: Record<string, any>): void {
+	async setAll(settings: Record<string, unknown>): Promise<void> {
 		this.settings = { ...this.settings, ...settings }
-		this.saveSettings()
+		await this.saveSettings()
 		this.notifyAllWatchers()
 	}
 
@@ -58,28 +96,29 @@ export class ObsidianSettingsService implements ISettingsService {
 		return key in this.settings
 	}
 
-	remove(key: string): void {
-		delete (this.settings as any)[key]
-		this.saveSettings()
+	async remove(key: string): Promise<void> {
+		delete (this.settings as unknown as Record<string, unknown>)[key]
+		await this.saveSettings()
 		this.notifyWatchers(key, undefined)
 	}
 
-	clear(): void {
-		this.settings = {}
-		this.saveSettings()
+	async clear(): Promise<void> {
+		this.settings = { ...DEFAULT_SETTINGS }
+		await this.saveSettings()
 		this.notifyAllWatchers()
 	}
 
-	private async saveSettings(): Promise<void> {
-		if (this.plugin && this.plugin.saveSettings) {
-			await this.plugin.saveSettings()
-		}
+	/**
+	 * Save settings to Obsidian's storage
+	 */
+	async saveSettings(): Promise<void> {
+		await this.plugin.saveData(this.settings)
 	}
 
-	private notifyWatchers(key: string, value: any): void {
+	private notifyWatchers(key: string, value: unknown): void {
 		const keyWatchers = this.watchers.get(key)
 		if (keyWatchers) {
-			keyWatchers.forEach(callback => callback(value))
+			keyWatchers.forEach((callback) => callback(value))
 		}
 	}
 
@@ -95,9 +134,13 @@ export class ObsidianSettingsService implements ISettingsService {
 	 * Get the app folder name for logging
 	 */
 	getAppFolder(): string {
-		const adapter = this.app.vault.adapter
-		const basePath = adapter.getBasePath()
-		return basePath ? basePath.split('/').pop() || 'Tars' : 'Tars'
+		// Try to get vault name from the active file or fallback to default
+		const activeFile = this.app.workspace.getActiveFile()
+		if (activeFile?.path) {
+			const pathParts = activeFile.path.split('/')
+			return pathParts.length > 1 ? pathParts[0] : 'Tars'
+		}
+		return 'Tars'
 	}
 
 	/**
@@ -112,22 +155,30 @@ export class ObsidianSettingsService implements ISettingsService {
 	 * Read a file from the vault
 	 */
 	async readFile(path: string): Promise<string> {
-		const file = this.app.vault.getAbstractFileByPath(path)
-		if (file instanceof TFile) {
-			return await this.app.vault.read(file)
+		try {
+			const file = this.app.vault.getAbstractFileByPath(path)
+			if (file instanceof TFile) {
+				return await this.app.vault.read(file)
+			}
+			throw new Error(`File not found: ${path}`)
+		} catch (error) {
+			throw new Error(`Failed to read file ${path}: ${error instanceof Error ? error.message : String(error)}`)
 		}
-		throw new Error(`File not found: ${path}`)
 	}
 
 	/**
 	 * Write content to a file in the vault
 	 */
 	async writeFile(path: string, content: string): Promise<void> {
-		const file = this.app.vault.getAbstractFileByPath(path)
-		if (file instanceof TFile) {
-			await this.app.vault.modify(file, content)
-		} else {
-			await this.app.vault.create(path, content)
+		try {
+			const file = this.app.vault.getAbstractFileByPath(path)
+			if (file instanceof TFile) {
+				await this.app.vault.modify(file, content)
+			} else {
+				await this.app.vault.create(path, content)
+			}
+		} catch (error) {
+			throw new Error(`Failed to write file ${path}: ${error instanceof Error ? error.message : String(error)}`)
 		}
 	}
 }

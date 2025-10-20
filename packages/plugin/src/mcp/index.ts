@@ -3,6 +3,17 @@
  * Main entry point for MCP server integration functionality
  */
 
+// Core MCP interfaces from contracts
+export {
+	type MCPServerManager,
+	type ToolExecutor,
+	type MCPServerConfig,
+	type TransportProtocol,
+	type SessionNotificationHandlers,
+	type ToolExecutionRequest,
+	type ToolExecutionResult
+} from '@tars/contracts'
+
 // Tool calling infrastructure
 export {
 	ClaudeToolResponseParser,
@@ -12,11 +23,7 @@ export {
 	type TextChunk,
 	type ToolCall,
 	type ToolCallChunk,
-	type ToolResponseParser,
-	MCPServerManager,
-	ToolExecutor,
-	type TransportProtocol,
-	type MCPServerConfig
+	type ToolResponseParser
 } from '@tars/mcp-hosting'
 // Core classes
 export { CodeBlockProcessor } from './codeBlockProcessor'

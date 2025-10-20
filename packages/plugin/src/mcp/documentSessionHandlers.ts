@@ -1,4 +1,4 @@
-import type { ToolExecutor } from '@tars/mcp-hosting'
+import type { ToolExecutor } from '@tars/contracts'
 import type { App, EventRef, TFile, WorkspaceLeaf } from 'obsidian'
 
 export function registerDocumentSessionHandlers(

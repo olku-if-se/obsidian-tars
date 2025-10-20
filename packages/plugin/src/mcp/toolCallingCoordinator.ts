@@ -9,7 +9,8 @@
  * 5. Continue until LLM generates final text response
  */
 
-import type { ToolCall, ToolExecutionResult, ToolExecutor, ToolResponseParser, ToolServerInfo } from '@tars/mcp-hosting'
+import type { ToolExecutionResult, ToolExecutor } from '@tars/contracts'
+import type { ToolCall, ToolResponseParser, ToolServerInfo } from '@tars/mcp-hosting'
 import type { Editor, EditorPosition } from 'obsidian'
 import pLimit from 'p-limit'
 import { stringify as stringifyYAML } from 'yaml'
