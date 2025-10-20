@@ -7,8 +7,10 @@ import {
 	ISettingsService,
 	IStatusService,
 	IDocumentService,
-	IMcpService
+	IMcpService,
+	LoggerFactoryToken
 } from '@tars/contracts'
+import { LoggerFactory } from '@tars/logger'
 
 // Service implementations
 import { ObsidianLoggingService } from '../services/ObsidianLoggingService'
@@ -70,6 +72,7 @@ export function createPluginContainer(options: CreateContainerOptions): Containe
 	// Register with both interface types and tokens for maximum compatibility
 	container.bind(ILoggingService).toClass(ObsidianLoggingService)
 	container.bind(ILoggingServiceToken).toClass(ObsidianLoggingService)
+	container.bind(LoggerFactoryToken).toClass(LoggerFactory)
 
 	container.bind(INotificationService).toClass(ObsidianNotificationService)
 	container.bind(INotificationServiceToken).toClass(ObsidianNotificationService)

@@ -1,3 +1,5 @@
+// @ts-expect-error - Type definitions resolved via workspace build pipeline
+import { inject, injectable } from '@needle-di/core'
 import type {
 	MCPServerManager,
 	ToolDiscoveryCache,
@@ -6,12 +8,17 @@ import type {
 	ToolServerInfo
 } from '@tars/mcp-hosting'
 import { OllamaToolResponseParser } from '@tars/mcp-hosting'
+import type { Logger, LoggerFactory } from '@tars/logger'
 import type { Ollama } from 'ollama/browser'
-import { createLogger } from '@tars/logger'
+import type { OllamaAdapterRuntimeConfig } from '@tars/contracts'
+import {
+	LoggerFactoryToken,
+	MCPServerManagerToken,
+	OllamaClientToken,
+	OllamaRuntimeConfigToken,
+	ToolExecutorToken
+} from '@tars/contracts'
 import type { Message, ProviderAdapter } from '../toolCallingCoordinator'
-
-const logger = createLogger('mcp:ollama-adapter')
-const streamLogger = createLogger('mcp:ollama-adapter:stream')
 
 interface OllamaChunk {
 	message?: {
@@ -26,6 +33,10 @@ interface OllamaChunk {
 	done?: boolean
 }
 
+/**
+ * @deprecated Retained for type compatibility only. Passing this config to the
+ * constructor will throw at runtime—register dependencies via DI instead.
+ */
 export interface OllamaAdapterConfig {
 	mcpManager: MCPServerManager
 	mcpExecutor: ToolExecutor
@@ -34,27 +45,47 @@ export interface OllamaAdapterConfig {
 	model: string
 }
 
+@injectable()
 export class OllamaProviderAdapter implements ProviderAdapter<OllamaChunk> {
 	private readonly mcpManager: MCPServerManager
 	private readonly mcpExecutor: ToolExecutor
 	private readonly client: Ollama
-	private readonly controller: AbortController
-	private readonly model: string
 	private readonly toolDiscoveryCache: ToolDiscoveryCache
+	private runtimeConfig: OllamaAdapterRuntimeConfig
+	private controller: AbortController
+	private model: string
 	private toolMapping: Map<string, ToolServerInfo> | null = null
 	private cachedTools: Array<{
 		type: 'function'
 		function: { name: string; description?: string; parameters?: unknown }
 	}> | null = null
 	private readonly parser = new OllamaToolResponseParser()
+	private readonly logger: Logger
+	private readonly streamLogger: Logger
 
-	constructor(config: OllamaAdapterConfig) {
-		this.mcpManager = config.mcpManager
-		this.mcpExecutor = config.mcpExecutor
-		this.client = config.ollamaClient
-		this.controller = config.controller
-		this.model = config.model
+	constructor(
+		@inject(MCPServerManagerToken) mcpManager: MCPServerManager,
+		@inject(ToolExecutorToken) mcpExecutor: ToolExecutor,
+		@inject(OllamaClientToken) ollamaClient: Ollama,
+		@inject(OllamaRuntimeConfigToken) runtimeConfig: OllamaAdapterRuntimeConfig,
+		@inject(LoggerFactoryToken) loggerFactory: LoggerFactory,
+		config?: OllamaAdapterConfig
+	) {
+		if (config) {
+			throw new Error(
+				'OllamaAdapterConfig-based construction is no longer supported. Register dependencies via dependency injection.'
+			)
+		}
+
+		this.mcpManager = mcpManager
+		this.mcpExecutor = mcpExecutor
+		this.client = ollamaClient
+		this.runtimeConfig = resolveRuntimeConfig(runtimeConfig)
+		this.controller = this.runtimeConfig.createAbortController()
+		this.model = this.runtimeConfig.model
 		this.toolDiscoveryCache = this.mcpManager.getToolDiscoveryCache()
+		this.logger = loggerFactory.create('mcp:ollama-adapter')
+		this.streamLogger = loggerFactory.createChild('mcp:ollama-adapter', 'stream')
 
 		this.mcpManager.on('server-started', () => this.invalidateCache())
 		this.mcpManager.on('server-stopped', () => this.invalidateCache())
@@ -62,21 +93,21 @@ export class OllamaProviderAdapter implements ProviderAdapter<OllamaChunk> {
 	}
 
 	async initialize(options?: { preloadTools?: boolean }): Promise<void> {
-		logger.debug('initializing adapter')
+		this.logger.debug('initializing adapter')
 
 		try {
 			if (options?.preloadTools === false) {
-				logger.debug('lazy initialization enabled; deferring tool preload')
+				this.logger.debug('lazy initialization enabled; deferring tool preload')
 				this.toolMapping = this.toolDiscoveryCache.getCachedMapping()
 				this.cachedTools = null
 				return
 			}
 
 			const tools = await this.buildTools()
-			logger.debug('tools preloaded', { count: tools.length })
-			logger.debug('initialization complete')
+			this.logger.debug('tools preloaded', { count: tools.length })
+			this.logger.debug('initialization complete')
 		} catch (error) {
-			logger.error('adapter initialization failed', error)
+			this.logger.error('adapter initialization failed', error)
 			throw error
 		}
 	}
@@ -84,6 +115,33 @@ export class OllamaProviderAdapter implements ProviderAdapter<OllamaChunk> {
 	private invalidateCache(): void {
 		this.cachedTools = null
 		this.toolMapping = null
+	}
+
+	setAbortController(controller: AbortController): void {
+		this.controller = controller
+		this.runtimeConfig = {
+			...this.runtimeConfig,
+			createAbortController: () => controller
+		}
+	}
+
+	getAbortController(): AbortController {
+		return this.controller
+	}
+
+	setModel(model: string): void {
+		if (!model) {
+			throw new Error('OllamaProviderAdapter requires a non-empty model identifier')
+		}
+		this.model = model
+		this.runtimeConfig = {
+			...this.runtimeConfig,
+			model
+		}
+	}
+
+	getModel(): string {
+		return this.model
 	}
 
 	getParser(): OllamaToolResponseParser {
@@ -103,13 +161,21 @@ export class OllamaProviderAdapter implements ProviderAdapter<OllamaChunk> {
 	}
 
 	async *sendRequest(messages: Message[]): AsyncGenerator<OllamaChunk> {
-		logger.debug('starting sendRequest', { messageCount: messages.length })
+		this.logger.debug('starting sendRequest', { messageCount: messages.length })
+
+		if (!this.client) {
+			throw new Error('Ollama client dependency not resolved')
+		}
+
+		if (!this.model) {
+			throw new Error('Ollama model not configured')
+		}
 
 		const tools = await this.buildTools()
 		const formattedMessages = await this.formatMessages(messages)
 
-		logger.debug('messages formatted for ollama', { count: formattedMessages.length })
-		logger.debug('available tools for ollama request', { count: tools.length })
+		this.logger.debug('messages formatted for ollama', { count: formattedMessages.length })
+		this.logger.debug('available tools for ollama request', { count: tools.length })
 
 		const requestParams = {
 			model: this.model,
@@ -118,7 +184,7 @@ export class OllamaProviderAdapter implements ProviderAdapter<OllamaChunk> {
 			tools: tools.length > 0 ? tools : undefined
 		}
 
-		logger.debug('ollama request params prepared', {
+		this.logger.debug('ollama request params prepared', {
 			model: this.model,
 			messageCount: formattedMessages.length,
 			toolCount: tools.length,
@@ -133,18 +199,18 @@ export class OllamaProviderAdapter implements ProviderAdapter<OllamaChunk> {
 			try {
 				for await (const chunk of response) {
 					chunkCount++
-					streamLogger.debug('received chunk', {
+					this.streamLogger.debug('received chunk', {
 						chunk: chunkCount,
 						hasMessage: Boolean(chunk.message),
 						done: chunk.done
 					})
 					if (this.controller.signal.aborted) {
-						streamLogger.info('request aborted', { chunkCount })
+						this.streamLogger.info('request aborted', { chunkCount })
 						this.client.abort()
 						break
 					}
 
-					streamLogger.debug('chunk summary', {
+					this.streamLogger.debug('chunk summary', {
 						hasMessage: Boolean(chunk.message),
 						contentLength: chunk.message?.content?.length || 0,
 						hasToolCalls: Boolean(chunk.message?.tool_calls?.length),
@@ -153,19 +219,19 @@ export class OllamaProviderAdapter implements ProviderAdapter<OllamaChunk> {
 					})
 
 					if (!chunk.message?.content && !chunk.message?.tool_calls?.length) {
-						streamLogger.debug('chunk without content or tool calls', { chunk: chunkCount, done: chunk.done })
+						this.streamLogger.debug('chunk without content or tool calls', { chunk: chunkCount, done: chunk.done })
 					}
 
 					yield chunk
 				}
 			} catch (streamError) {
-				streamLogger.error('error during streaming', streamError)
+				this.streamLogger.error('error during streaming', streamError)
 				throw streamError
 			}
 
-			streamLogger.info('streaming completed', { chunkCount })
+			this.streamLogger.info('streaming completed', { chunkCount })
 		} catch (connectionError) {
-			logger.error('failed to connect to ollama', connectionError)
+			this.logger.error('failed to connect to ollama', connectionError)
 			throw new Error(
 				`Ollama connection failed: ${connectionError instanceof Error ? connectionError.message : String(connectionError)}`
 			)
@@ -184,11 +250,11 @@ export class OllamaProviderAdapter implements ProviderAdapter<OllamaChunk> {
 		Array<{ type: 'function'; function: { name: string; description?: string; parameters?: unknown } }>
 	> {
 		if (this.cachedTools) {
-			logger.debug('using cached tools', { count: this.cachedTools.length })
+			this.logger.debug('using cached tools', { count: this.cachedTools.length })
 			return this.cachedTools
 		}
 
-		logger.debug('building tools from discovery cache')
+		this.logger.debug('building tools from discovery cache')
 		const snapshot = await this.toolDiscoveryCache.getSnapshot()
 		this.toolMapping = snapshot.mapping
 
@@ -203,7 +269,7 @@ export class OllamaProviderAdapter implements ProviderAdapter<OllamaChunk> {
 			}))
 		)
 
-		logger.debug('discovery cache tools built', {
+		this.logger.debug('discovery cache tools built', {
 			toolCount: tools.length,
 			serverCount: snapshot.servers.length
 		})
@@ -241,5 +307,22 @@ export class OllamaProviderAdapter implements ProviderAdapter<OllamaChunk> {
 				content: typeof msg.content === 'string' ? msg.content : JSON.stringify(msg.content)
 			}
 		})
+	}
+}
+
+function resolveRuntimeConfig(runtimeConfig?: OllamaAdapterRuntimeConfig): OllamaAdapterRuntimeConfig {
+	if (!runtimeConfig) {
+		throw new Error('OllamaProviderAdapter requires runtime configuration provided through dependency injection')
+	}
+
+	const { model, createAbortController } = runtimeConfig
+
+	if (!model) {
+		throw new Error('OllamaProviderAdapter requires a model configuration')
+	}
+
+	return {
+		model,
+		createAbortController: createAbortController ?? (() => new AbortController())
 	}
 }

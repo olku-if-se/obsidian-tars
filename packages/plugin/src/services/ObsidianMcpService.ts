@@ -8,15 +8,11 @@ import type {
 	IStatusService,
 	ILoggingService
 } from '@tars/contracts'
+import { CodeBlockProcessorToken, MCPServerManagerToken, ToolExecutorToken } from '@tars/contracts'
 import {
 	ILoggingServiceToken,
 	IStatusServiceToken
 } from '../container/tokens'
-
-// Injection tokens for MCP-specific services
-export const ToolExecutorToken = Symbol('ToolExecutor')
-export const MCPServerManagerToken = Symbol('MCPServerManager')
-export const CodeBlockProcessorToken = Symbol('CodeBlockProcessor')
 
 @injectable()
 export class ObsidianMcpService implements IMcpService {
