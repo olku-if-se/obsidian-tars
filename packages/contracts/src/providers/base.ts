@@ -360,3 +360,37 @@ export function providerToVendor(provider: BaseProvider): Vendor {
 		capabilities: provider.capabilities
 	}
 }
+
+// === New Universal Provider Interfaces ===
+
+/**
+ * Universal LLM Provider Interface
+ * All providers implement this for consistency
+ */
+export interface LlmProvider {
+	/** Unique provider name */
+	readonly name: string
+	/** Human-readable display name */
+	readonly displayName: string
+	/** Capabilities this provider supports */
+	readonly capabilities: LlmCapability[]
+	/** Default configuration */
+	readonly defaultOptions: BaseOptions
+
+	/** Create streaming request function */
+	createSendRequest(options: BaseOptions): SendRequest
+
+	/** Validate provider configuration */
+	validateOptions(options: BaseOptions): boolean
+}
+
+/** Updated capability type for LlmProvider */
+export type LlmCapability =
+	| 'Text Generation'
+	| 'Image Vision'
+	| 'PDF Vision'
+	| 'Image Generation'
+	| 'Image Editing'
+	| 'Web Search'
+	| 'Reasoning'
+	| 'Tool Calling'

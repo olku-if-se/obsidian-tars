@@ -1,57 +1,60 @@
-// Export all provider implementations
-export { azureVendor } from './azure'
-export { type ClaudeOptions, claudeVendor } from './claude'
+// Export all providers
 export { ClaudeDIProvider } from './claude-di'
-export { withStreamLogging } from './decorator'
-export { deepSeekVendor } from './deepSeek'
-export { doubaoVendor } from './doubao'
-export { geminiVendor } from './gemini'
-export { type GptImageOptions, gptImageVendor } from './gptImage'
-export { grokVendor } from './grok'
-export { kimiVendor } from './kimi'
-export { ollamaVendor } from './ollama'
-export { OllamaDIProvider } from './ollama-di'
-export { openAIVendor } from './openAI'
 export { OpenAIDIProvider } from './openai-di'
-export { openRouterVendor } from './openRouter'
-export { qianFanVendor } from './qianFan'
-export { qwenVendor } from './qwen'
-export { siliconFlowVendor } from './siliconflow'
-export { createSimpleVendor } from './simple'
-export { zhipuVendor } from './zhipu'
+export { OllamaDIProvider } from './ollama-di'
+export { AzureProvider } from './azure-provider'
+export { DeepSeekProvider } from './deepseek-provider'
+export { DoubaoProvider } from './doubao-provider'
+export { GeminiProvider } from './gemini-provider'
+export { GrokProvider } from './grok-provider'
+export { KimiProvider } from './kimi-provider'
+export { OpenRouterProvider } from './openrouter-provider'
+export { QianFanProvider } from './qianfan-provider'
+export { QwenProvider } from './qwen-provider'
+export { SiliconFlowProvider } from './siliconflow-provider'
+export { ZhipuProvider } from './zhipu-provider'
+export { GptImageProvider } from './gptimage-provider'
 
-// Import all vendors for the allVendors array
-import { azureVendor } from './azure'
-import { claudeVendor } from './claude'
-import { deepSeekVendor } from './deepSeek'
-import { doubaoVendor } from './doubao'
-import { geminiVendor } from './gemini'
-import { gptImageVendor } from './gptImage'
-import { grokVendor } from './grok'
-import { kimiVendor } from './kimi'
-import { ollamaVendor } from './ollama'
-import { openAIVendor } from './openAI'
-import { openRouterVendor } from './openRouter'
-import { qianFanVendor } from './qianFan'
-import { qwenVendor } from './qwen'
-import { siliconFlowVendor } from './siliconflow'
-import { zhipuVendor } from './zhipu'
+// Export utilities
+export { withStreamLogging } from './decorator'
 
-// Export all available vendors
-export const allVendors = [
-	azureVendor,
-	claudeVendor,
-	deepSeekVendor,
-	doubaoVendor,
-	geminiVendor,
-	gptImageVendor,
-	grokVendor,
-	kimiVendor,
-	ollamaVendor,
-	openAIVendor,
-	openRouterVendor,
-	qianFanVendor,
-	qwenVendor,
-	siliconFlowVendor,
-	zhipuVendor
+// Export types from legacy vendors (still needed for options)
+export { type ClaudeOptions } from './claude'
+export { type GptImageOptions } from './gptImage'
+
+// All providers array
+import {
+	ClaudeDIProvider,
+	OpenAIDIProvider,
+	OllamaDIProvider,
+	AzureProvider,
+	DeepSeekProvider,
+	DoubaoProvider,
+	GeminiProvider,
+	GrokProvider,
+	KimiProvider,
+	OpenRouterProvider,
+	QianFanProvider,
+	QwenProvider,
+	SiliconFlowProvider,
+	ZhipuProvider,
+	GptImageProvider
+} from './index'
+
+export const allProviders = [
+	ClaudeDIProvider,
+	OpenAIDIProvider,
+	OllamaDIProvider,
+	AzureProvider,
+	DeepSeekProvider,
+	DoubaoProvider,
+	GeminiProvider,
+	GrokProvider,
+	KimiProvider,
+	OpenRouterProvider,
+	QianFanProvider,
+	QwenProvider,
+	SiliconFlowProvider,
+	ZhipuProvider,
+	GptImageProvider
 ]

@@ -1,0 +1,6 @@
+{
+  "statusLine": {
+    "type": "command",
+    "command": "input=$(cat); model=$(echo \"$input\" | jq -r '.model.display_name // \"Claude\"'); current_dir=$(echo \"$input\" | jq -r '.workspace.current_dir' | sed 's|.*/||'); git_branch=$(cd \"$(echo \"$input\" | jq -r '.workspace.current_dir')\" && git rev-parse --abbrev-ref HEAD 2>/dev/null || echo \"no-git\"); printf \"[%s] %s (%s)\" \"$model\" \"$current_dir\" \"$git_branch\""
+  }
+}

@@ -31,9 +31,22 @@ obsidian-tars/                  # Monorepo root
 
 ### Workspace Packages
 
+**@tars/contracts (packages/contracts/)**
+- Central hub for interface definitions and DI tokens
+- Shared type contracts across all packages
+- Provider specifications and vendor interfaces
+- Foundation for type-safe dependency injection
+
+**@tars/providers (packages/providers/)**
+- LLM provider implementations and vendor adapters
+- Integration with various AI services (Claude, OpenAI, DeepSeek, etc.)
+- Provider-specific tool calling adapters
+- DI container registration and lifecycle management
+
 **@tars/logger (packages/logger/)**
 - Shared logging utilities using debug library
 - Workspace dependency for consistent logging across packages
+- DI-injectable logger instances
 
 **@tars/mcp-hosting (packages/mcp-hosting/)**
 - Standalone MCP server hosting infrastructure
@@ -154,6 +167,8 @@ mise docker-stop
 
 ### Workspace Dependencies
 - Internal packages use `workspace:*` dependencies
+- Shared contracts and DI tokens via @tars/contracts
+- Provider implementations via @tars/providers
 - Shared logging via @tars/logger
 - MCP infrastructure via @tars/mcp-hosting
 - Text utilities via @tars/streams
@@ -161,32 +176,53 @@ mise docker-stop
 
 ## High-Level Architecture
 
+### Dependency Injection Architecture
+
+This project uses **Needle-DI** (https://needle-di.io) as its dependency injection framework for managing component relationships and lifecycle. Needle-DI provides a lightweight, performant DI container with excellent TypeScript support and a clean API.
+
+**Key Benefits of Needle-DI:**
+- **Type-safe injection** with full TypeScript support
+- **Automatic lifecycle management** (singleton, transient, scoped)
+- **Circular dependency detection** and resolution
+- **Token-based registration** for clean interfaces
+- **Minimal runtime overhead** with tree-shakable dependencies
+- **Excellent debugging support** with clear error messages
+
 ### Core Plugin Flow
 
-1. **main.ts (TarsPlugin)**: Plugin entry point that orchestrates initialization
+1. **Dependency Injection Container Setup**
+   - All components register via tokens in the DI container
+   - Container manages component lifecycle and dependencies
+   - Type-safe injection ensures proper wiring at compile time
+   - Configuration and settings injected as singletons
+
+2. **main.ts (TarsPlugin)**: Plugin entry point that orchestrates initialization
+   - Resolves core services from DI container
    - Registers tag commands for each configured AI assistant
    - Initializes MCP server manager and executor
    - Sets up status bar manager
    - Registers editor suggests for tag completion
 
-2. **Tag-Based Conversation System**
+3. **Tag-Based Conversation System**
    - Users write conversations using markdown tags: `#User :`, `#Claude :`, `#System :`
    - Tag commands transform text at cursor into proper message format
    - `suggest.ts (TagEditorSuggest)`: Auto-completion when typing tags + space
    - Messages parsed from markdown and sent to appropriate provider
 
-3. **Provider Architecture** (`src/providers/`)
+4. **Provider Architecture** (`src/providers/`)
    - Each LLM vendor has a dedicated module (claude.ts, openAI.ts, deepSeek.ts, etc.)
    - All implement the `Vendor` interface with `sendRequestFunc`
    - Providers yield text chunks via async generators for streaming responses
    - Provider adapters in `src/mcp/adapters/` convert MCP tools to provider-specific formats
+   - Provider instances resolved from DI container with injected dependencies
 
-4. **MCP Integration** (`src/mcp/`)
+5. **MCP Integration** (`src/mcp/`)
    - **MCPServerManager**: Manages lifecycle of Docker-based or remote MCP servers
    - **ToolExecutor**: Executes MCP tools with concurrency limits, session tracking, and cancellation
    - **CodeBlockProcessor**: Renders tool invocations and results in markdown code blocks
    - **Tool Calling Coordinator**: Orchestrates multi-turn AI conversations with autonomous tool execution
    - **Provider Adapters**: Convert MCP tools to native tool formats (OpenAI functions, Claude tools, Ollama tools)
+   - All MCP components receive their dependencies via constructor injection
 
 ### MCP Architecture Key Points
 
@@ -235,10 +271,26 @@ mise docker-stop
 
 ## Important Patterns and Conventions
 
-### Provider Integration
+### Provider Integration with DI
 - When adding a new provider, create `packages/plugin/src/providers/providerName.ts` with a `Vendor` export
-- Register in `packages/plugin/src/settings.ts` under `availableVendors`
+- Register provider and its dependencies in the DI container using tokens from `packages/contracts`
+- Add to `availableVendors` in `packages/plugin/src/settings.ts`
 - If provider supports native tool calling, add adapter in `packages/plugin/src/mcp/adapters/` and update `providerToolIntegration.ts`
+- Provider receives dependencies via constructor injection (logger, config, etc.)
+
+### Contracts Package Architecture
+The `packages/contracts` package serves as the central hub for:
+- **Interface definitions** - TypeScript interfaces for all major components
+- **DI tokens** - Needle-DI tokens for type-safe dependency injection
+- **Type contracts** - Shared types used across all packages
+- **Provider contracts** - Vendor interfaces and provider specifications
+
+**Benefits of contracts package:**
+- Enforces consistent interfaces across the monorepo
+- Prevents circular dependencies between packages
+- Enables type-safe DI registration and resolution
+- Central location for all shared types and tokens
+- Supports clean separation of concerns between packages
 
 ### MCP Tool Execution Context
 - All tool executions tracked per document (`documentPath`) for session limits
@@ -303,25 +355,41 @@ async function* sendRequest(messages, controller): AsyncGenerator<string> {
 - Provides context for debugging MCP and LLM issues
 
 ### Provider Integration Guide
-When adding new AI providers, follow this pattern:
+When adding new AI providers, follow this DI-enabled pattern:
 
 ```typescript
-// src/providers/newProvider.ts
-export const newProviderVendor: Vendor = {
-  name: 'newProvider',
-  sendRequestFunc: (options) => async function* (messages, controller) {
+// packages/providers/src/implementations/newProvider.ts
+import { Vendor } from '@tars/contracts';
+import { Logger } from '@tars/logger';
+
+export class NewProvider implements Vendor {
+  constructor(
+    private readonly logger: Logger,
+    private readonly config: ProviderConfig
+  ) {}
+
+  get name() { return 'newProvider'; }
+
+  sendRequestFunc = (options) => async function* (messages, controller) {
     // Streaming implementation with async generators
     for await (const chunk of streamResponse(options)) {
       yield chunk
     }
   }
 }
+
+// Register in DI container
+container.registerSingleton<ProviderFactory>(NewProvider, {
+  provide: ProviderTokens.newProvider
+});
 ```
 
-1. Create provider file implementing `Vendor` interface
-2. Add to `availableVendors` in `settings.ts`
-3. If supporting tool calling, create adapter in `src/mcp/adapters/`
-4. Update `providerToolIntegration.ts` for tool integration
+1. Create provider class implementing `Vendor` interface from `@tars/contracts`
+2. Inject dependencies via constructor (logger, config, etc.)
+3. Register provider in DI container using tokens from `@tars/contracts`
+4. Add to `availableVendors` in `settings.ts`
+5. If supporting tool calling, create adapter in `src/mcp/adapters/`
+6. Update `providerToolIntegration.ts` for tool integration
 
 ### Testing Strategy
 - **Unit tests**: Mock MCP SDK, Docker client, and Obsidian APIs
@@ -340,10 +408,12 @@ export const newProviderVendor: Vendor = {
 ## Common Development Tasks
 
 ### Adding a New LLM Provider
-1. Create `src/providers/newProvider.ts` implementing `Vendor` interface
-2. Add to `availableVendors` in `settings.ts`
-3. If supporting tool calling, implement adapter in `src/mcp/adapters/NewProviderAdapter.ts`
-4. Update `providerToolIntegration.ts` to include new provider in `getToolCallingModels()`
+1. Create `packages/providers/src/implementations/newProvider.ts` implementing `Vendor` interface from `@tars/contracts`
+2. Inject dependencies via constructor (logger, config, etc.)
+3. Register provider in DI container using tokens from `@tars/contracts`
+4. Add to `availableVendors` in `settings.ts`
+5. If supporting tool calling, implement adapter in `src/mcp/adapters/NewProviderAdapter.ts`
+6. Update `providerToolIntegration.ts` to include new provider in `getToolCallingModels()`
 
 ### Debugging MCP Issues
 - Check Docker connectivity: MCP stdio transport spawns containers directly
@@ -463,6 +533,7 @@ MCP servers configured via settings with these fields:
 
 ### Key Dependencies
 - **@modelcontextprotocol/sdk**: MCP integration
+- **needle-di**: Dependency injection framework (https://needle-di.io)
 - **obsidian**: Obsidian plugin API
 - **async-mutex**: Document write locking
 - **debug**: Logging throughout application
