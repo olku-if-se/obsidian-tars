@@ -7,6 +7,7 @@ export const OllamaClientToken = Symbol('OllamaClient')
 export const OllamaRuntimeConfigToken = Symbol('OllamaRuntimeConfig')
 export const ServerConfigManagerToken = Symbol('ServerConfigManager')
 export const SessionNotificationHandlersToken = Symbol('SessionNotificationHandlers')
+export const IMcpServiceToken = Symbol('IMcpService')
 
 // Type assertions to help TypeScript understand the token-service relationship
 export type ToolExecutorToken = typeof ToolExecutorToken
@@ -17,3 +18,4 @@ export type OllamaClientToken = typeof OllamaClientToken
 export type OllamaRuntimeConfigToken = typeof OllamaRuntimeConfigToken
 export type ServerConfigManagerToken = typeof ServerConfigManagerToken
 export type SessionNotificationHandlersToken = typeof SessionNotificationHandlersToken
+export type IMcpServiceToken = typeof IMcpServiceToken

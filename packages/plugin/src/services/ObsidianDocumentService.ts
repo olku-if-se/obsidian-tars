@@ -2,9 +2,9 @@ import { injectable } from '@needle-di/core'
 import { App, TFile, TFolder, normalizePath } from 'obsidian'
 import {
 	IDocumentService,
-	DocumentWriteLock,
 	EmbedCache
 } from '@tars/contracts'
+import { DocumentWriteLock } from '../utils/documentWriteLock'
 
 @injectable()
 export class ObsidianDocumentService implements IDocumentService {

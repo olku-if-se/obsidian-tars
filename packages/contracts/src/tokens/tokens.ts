@@ -10,8 +10,12 @@ export const StatusBarReactManagerToken = Symbol('StatusBarReactManager')
 
 export const SettingsServiceToken = Symbol('SettingsService')
 
+// Request controller token
+export const RequestControllerToken = Symbol('RequestController')
+
 // Type assertions to help TypeScript understand the token-service relationship
 export type PluginSettingsToken = typeof PluginSettingsToken
 export type StatusBarManagerToken = typeof StatusBarManagerToken
 export type SettingsServiceToken = typeof SettingsServiceToken
 export type StatusBarReactManagerToken = typeof StatusBarReactManagerToken
+export type RequestControllerToken = typeof RequestControllerToken

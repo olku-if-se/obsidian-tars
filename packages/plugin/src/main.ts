@@ -4,18 +4,18 @@ import type {
 	IMcpService,
 	INotificationService,
 	IReactBridgeManager,
+	IRequestController,
 	ISettingsService,
 	IStatusService,
 	MCPServerManager,
 	ToolExecutor
 } from '@tars/contracts'
-import { SettingsServiceToken } from '@tars/contracts'
+import * as di from '@tars/contracts'
 import Debug from 'debug'
 import { type Editor, Notice, Plugin } from 'obsidian'
 import { AssistantTagDICommand, SystemTagDICommand, UserTagDICommand } from './commands/di'
 import { getMCPCommands } from './commands/mcpCommands'
-import { createPluginContainer, registerStatusBarElement } from './container/plugin-container'
-import type { RequestController } from './editor'
+import { createPluginContainer } from './container/plugin-container'
 import { t } from './lang/helper'
 import type { CodeBlockProcessor } from './mcp/codeBlockProcessor'
 import { registerDocumentSessionHandlers } from './mcp/documentSessionHandlers'
@@ -31,7 +31,6 @@ const logger = Debug('tars:plugin')
 export default class TarsPlugin extends Plugin {
 	statusBarManager: StatusBarController
 	tagLowerCaseMap: Map<string, Omit<TagEntry, 'replacement'>> = new Map()
-	aborterInstance: AbortController | null = null
 
 	// DI Container Integration
 	private container: ReturnType<typeof createPluginContainer> | null = null
@@ -39,6 +38,7 @@ export default class TarsPlugin extends Plugin {
 	// Service Injections
 	private loggingService: ILoggingService
 	private notificationService: INotificationService
+	private requestController: IRequestController
 	private settingsService: ISettingsService
 	private statusService: IStatusService
 	private documentService: IDocumentService
@@ -66,7 +66,7 @@ export default class TarsPlugin extends Plugin {
 		logger('DI container initialized with service injections')
 
 		// Initialize settings through DI service
-		this.settingsService = this.container.get(SettingsServiceToken)
+		this.settingsService = this.container.get(di.SettingsServiceToken)
 		await this.settingsService.initialize()
 
 		// Update plugin settings to reference DI service settings
@@ -74,13 +74,13 @@ export default class TarsPlugin extends Plugin {
 		logger('Settings initialized through DI service')
 
 		// Resolve injected services
-		this.loggingService = this.container.get(ILoggingService)
-		this.notificationService = this.container.get(INotificationService)
-		this.settingsService = this.container.get(ISettingsService)
-		this.statusService = this.container.get(IStatusService)
-		this.documentService = this.container.get(IDocumentService)
-		this.mcpService = this.container.get(IMcpService)
-		this.reactBridgeManager = this.container.get(ReactBridgeManagerToken)
+		this.loggingService = this.container.get(di.ILoggingServiceToken)
+		this.notificationService = this.container.get(di.INotificationServiceToken)
+		this.requestController = this.container.get(di.RequestControllerToken)
+		this.statusService = this.container.get(di.IStatusServiceToken)
+		this.documentService = this.container.get(di.IDocumentServiceToken)
+		this.mcpService = this.container.get(di.IMcpServiceToken)
+		this.reactBridgeManager = this.container.get(di.ReactBridgeManagerToken)
 
 		// Resolve DI commands
 		this.assistantTagCommand = this.container.get(AssistantTagDICommand)
@@ -93,11 +93,11 @@ export default class TarsPlugin extends Plugin {
 		// Register the status bar element for other components to use via DI
 		registerStatusBarElement(this.container)
 
-		logger.info('Using DI-injected React status bar manager (creates own status bar element)')
+		logger('Using DI-injected React status bar manager (creates own status bar element)')
 
 		// Initialize React Bridge through DI for UI components
 		this.reactBridgeManager.initialize(this.app)
-		logger.info('React bridge initialized through DI')
+		logger('React bridge initialized through DI')
 
 		// Initialize MCP Server Manager (non-blocking)
 		const mcpServers = this.settingsService.get('mcpServers', [])
@@ -209,7 +209,7 @@ export default class TarsPlugin extends Plugin {
 						const stats = this.mcpExecutor.getCacheStats()
 						this.mcpExecutor.clearCache()
 						new Notice(`Tool result cache cleared (${stats.size} entries removed, ${stats.hits} previous hits)`)
-						logger.info('mcp tool result cache cleared', {
+						logger('mcp tool result cache cleared', {
 							clearedEntries: stats.size,
 							previousHits: stats.hits,
 							previousMisses: stats.misses
@@ -270,7 +270,7 @@ export default class TarsPlugin extends Plugin {
 					new Notice('Some MCP servers failed to start. Check console for details.')
 				})
 
-			logger.info('mcp integration setup complete, initializing servers in background', {
+			logger('mcp integration setup complete, initializing servers in background', {
 				serverCount: this.settings.mcpServers.length
 			})
 		}
@@ -306,7 +306,7 @@ export default class TarsPlugin extends Plugin {
 					this.settings,
 					this.tagLowerCaseMap,
 					this.statusBarManager,
-					this.getRequestController(),
+					this.requestController,
 					this.mcpManager,
 					this.mcpExecutor
 				)
@@ -348,7 +348,7 @@ export default class TarsPlugin extends Plugin {
 
 		// Cleanup React Bridge through DI
 		this.reactBridgeManager.dispose()
-		logger.info('React bridge manager cleaned up through DI')
+		logger('React bridge manager cleaned up through DI')
 
 		// Clear health check timer
 		if (this.mcpHealthCheckInterval) {
@@ -360,7 +360,7 @@ export default class TarsPlugin extends Plugin {
 		if (this.mcpManager) {
 			try {
 				await this.mcpManager.shutdown()
-				logger.info('mcp integration shutdown complete')
+				logger('mcp integration shutdown complete')
 			} catch (error) {
 				logger.error('error shutting down mcp integration', error)
 			}
@@ -380,7 +380,7 @@ export default class TarsPlugin extends Plugin {
 						this.app,
 						this.settings,
 						this.statusBarManager,
-						this.getRequestController(),
+						this.requestController,
 						this.mcpManager,
 						this.mcpExecutor
 					)
@@ -393,7 +393,7 @@ export default class TarsPlugin extends Plugin {
 						this.app,
 						this.settings,
 						this.statusBarManager,
-						this.getRequestController(),
+						this.requestController,
 						this.mcpManager,
 						this.mcpExecutor
 					)
@@ -406,7 +406,7 @@ export default class TarsPlugin extends Plugin {
 						this.app,
 						this.settings,
 						this.statusBarManager,
-						this.getRequestController(),
+						this.requestController,
 						this.mcpManager,
 						this.mcpExecutor
 					)
@@ -441,12 +441,12 @@ export default class TarsPlugin extends Plugin {
 
 		const removedTags = toRemove.map((cmdId) => getMeta(cmdId).tag)
 		if (removedTags.length > 0) {
-			logger.info('removed tag commands', { tags: removedTags })
+			logger('removed tag commands', { tags: removedTags })
 			new Notice(`${t('Removed commands')}: ${removedTags.join(', ')}`)
 		}
 		const addedTags = toAdd.map((cmdId) => getMeta(cmdId).tag)
 		if (addedTags.length > 0) {
-			logger.info('added tag commands', { tags: addedTags })
+			logger('added tag commands', { tags: addedTags })
 			new Notice(`${t('Added commands')}: ${addedTags.join(', ')}`)
 		}
 	}
@@ -467,34 +467,19 @@ export default class TarsPlugin extends Plugin {
 
 		const removedTitles = toRemove.map((cmdId) => getTitleFromCmdId(cmdId))
 		if (removedTitles.length > 0) {
-			logger.info('removed prompt commands', { titles: removedTitles })
+			logger('removed prompt commands', { titles: removedTitles })
 			new Notice(`${t('Removed commands')}: ${removedTitles.join(', ')}`)
 		}
 		const addedTitles = toAdd.map((t) => t.title)
 		if (addedTitles.length > 0) {
-			logger.info('added prompt commands', { titles: addedTitles })
+			logger('added prompt commands', { titles: addedTitles })
 			new Notice(`${t('Added commands')}: ${addedTitles.join(', ')}`)
-		}
-	}
-
-	getRequestController(): RequestController {
-		return {
-			getController: () => {
-				if (!this.aborterInstance) {
-					this.aborterInstance = new AbortController()
-				}
-				return this.aborterInstance
-			},
-			cleanup: () => {
-				this.settings.editorStatus.isTextInserting = false
-				this.aborterInstance = null
-			}
 		}
 	}
 
 	async saveSettings() {
 		// Use DI settings service for saving
-		const settingsService = this.container.get(ISettingsServiceToken) as ObsidianSettingsService
+		const settingsService = this.container.get(di.ISettingsServiceToken) as ObsidianSettingsService
 		await settingsService.saveSettings()
 
 		// Update local reference to stay in sync
@@ -510,10 +495,10 @@ export default class TarsPlugin extends Plugin {
 	private createSettingsTab(): TarsSettingTab | ReactSettingsTab {
 		// Check if React settings tab is enabled
 		if (this.settings.features?.reactSettingsTab) {
-			logger.info('Using React-based settings tab')
+			logger('Using React-based settings tab')
 			return new ReactSettingsTab(this.app, this)
 		} else {
-			logger.info('Using classic settings tab')
+			logger('Using classic settings tab')
 			return new TarsSettingTab(this.app, this)
 		}
 	}
