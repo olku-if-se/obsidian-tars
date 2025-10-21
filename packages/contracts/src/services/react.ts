@@ -5,16 +5,15 @@
 import type { App } from 'obsidian'
 
 // Generic React component type to avoid direct React dependency
-export type ReactComponentType<T extends Record<string, any> = Record<string, any>> = {
-	(props: T): any
-	// displayName?: string // Optional display name for debugging
-}
+export type ReactComponentType<T extends Record<string, unknown> = Record<string, unknown>> = (
+	props: T
+) => unknown
 
 export interface IReactBridge {
 	/**
 	 * Mount a React component into a container element
 	 */
-	mount<T extends Record<string, any>>(container: HTMLElement, component: ReactComponentType<T>, props: T): void
+	mount<T extends Record<string, unknown>>(container: HTMLElement, component: ReactComponentType<T>, props: T): void
 
 	/**
 	 * Unmount a React component from a container element

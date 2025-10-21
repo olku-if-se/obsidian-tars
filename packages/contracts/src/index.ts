@@ -1,4 +1,6 @@
 export * from './events'
 export * from './providers'
 export * from './services'
+export * from './types'
 export * from './tokens'
+export * from './mocks'

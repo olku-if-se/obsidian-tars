@@ -24,6 +24,7 @@ import type {
   ISettingsService,
   IDocumentService
 } from '../services'
+import type { MCPIntegration, MCPToolInjector } from '../providers'
 
 /**
  * Token registry for provider-related dependencies
@@ -44,7 +45,11 @@ export const tokens = {
   TextGenerationProviders: new InjectionToken<LlmProvider[]>(urn.provider('text-generation-providers')),
   ToolCallingProviders: new InjectionToken<LlmProvider[]>(urn.provider('tool-calling-providers')),
   VisionProviders: new InjectionToken<LlmProvider[]>(urn.provider('vision-providers')),
-  ImageGenerationProviders: new InjectionToken<LlmProvider[]>(urn.provider('image-generation-providers'))
+  ImageGenerationProviders: new InjectionToken<LlmProvider[]>(urn.provider('image-generation-providers')),
+
+  // === MCP Integration Tokens ===
+  MCPIntegrationToken: new InjectionToken<MCPIntegration>(urn.service('mcp-integration')),
+  MCPToolInjectorToken: new InjectionToken<MCPToolInjector>(urn.service('mcp-tool-injector'))
 
 } as const
 

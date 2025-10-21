@@ -4,7 +4,7 @@
  * Uses SHA-256 hashing over server ID, tool name, and parameters for deterministic keys
  */
 
-import type { ToolExecutionResult } from '../types'
+import type { CacheStats, ToolExecutionResult } from '@tars/contracts/services/mcp-types'
 
 /**
  * Cache entry with result and metadata
@@ -15,16 +15,6 @@ interface CacheEntry {
 	serverId: string
 	toolName: string
 	parameters: Record<string, unknown>
-}
-
-/**
- * Cache statistics
- */
-export interface CacheStats {
-	hits: number
-	misses: number
-	size: number
-	oldestEntryAge: number | null
 }
 
 /**

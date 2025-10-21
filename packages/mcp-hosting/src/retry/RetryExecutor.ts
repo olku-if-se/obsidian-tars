@@ -3,9 +3,9 @@
  * Implements exponential backoff with jitter for resilient server management
  */
 
-import type { RetryPolicy, RetryState } from './types'
+import type { RetryPolicy, RetryState } from '@tars/contracts/services/mcp-types'
 
-export type { RetryPolicy, RetryState }
+export type { RetryPolicy, RetryState } from '@tars/contracts/services/mcp-types'
 
 /**
  * Default retry policy for MCP server connections

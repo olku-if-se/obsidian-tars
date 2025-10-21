@@ -15,8 +15,13 @@ import type { IStatusReporter } from '../adapters/IStatusReporter'
 import { ToolDiscoveryCache, type ToolDiscoveryMetrics, type ToolServerAccessor } from '../caching/ToolDiscoveryCache'
 import { ServerNotAvailableError } from '../errors'
 import { DEFAULT_RETRY_POLICY, withRetry } from '../retry'
-import type { MCPServerConfig, RetryPolicy, ServerHealthStatus, ToolDefinition } from '../types'
-import { ConnectionState } from '../types'
+import type {
+	MCPServerConfig,
+	RetryPolicy,
+	ServerHealthStatus,
+	ToolDefinition
+} from '@tars/contracts/services/mcp-types'
+import { ConnectionState } from '@tars/contracts/services/mcp-types'
 import { partitionConfigs, toMCPUseConfig } from './mcpUseAdapter'
 
 const _logger = {

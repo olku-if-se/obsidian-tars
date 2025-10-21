@@ -29,8 +29,12 @@ export class ConcreteMCPToolInjector implements MCPToolInjector {
 	 */
 	async injectTools(parameters: Record<string, unknown>, providerName: string): Promise<Record<string, unknown>> {
 		try {
-			// Get all tools from manager
-			const allTools = await this.manager.getAllTools()
+			// Get all tools from manager via tool discovery cache
+			const toolCache = this.manager.getToolDiscoveryCache()
+			const snapshot = await toolCache.getSnapshot()
+
+			// Flatten all tools from all servers
+			const allTools = snapshot.servers.flatMap(server => server.tools)
 
 			// Build provider-specific tool format
 			const tools = this.buildToolsForProvider(providerName, allTools)

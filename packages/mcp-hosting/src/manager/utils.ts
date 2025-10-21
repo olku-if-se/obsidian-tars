@@ -3,9 +3,7 @@
  * Common helpers and patterns used across MCP modules
  */
 
-import { createLogger } from '../logger'
-import type { MCPServerConfig } from './types'
-import { TransportProtocol } from './types'
+import { createLogger } from '@tars/logger'
 
 const logger = createLogger('mcp:utils')
 

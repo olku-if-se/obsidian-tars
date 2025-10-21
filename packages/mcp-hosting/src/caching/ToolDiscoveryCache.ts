@@ -1,4 +1,10 @@
-import type { MCPServerConfig, ToolDefinition, ToolServerInfo } from '../types'
+import type {
+	MCPServerConfig,
+	ToolDefinition,
+	ToolDiscoveryMetrics as ContractsToolDiscoveryMetrics,
+	ToolDiscoverySnapshot as ContractsToolDiscoverySnapshot,
+	ToolServerInfo
+} from '@tars/contracts/services/mcp-types'
 import { logWarning } from '../utils'
 
 export interface ToolServerAccessor {
@@ -6,30 +12,8 @@ export interface ToolServerAccessor {
 	getClient(serverId: string): { listTools(): Promise<ToolDefinition[]> } | undefined
 }
 
-export interface ToolDiscoverySnapshot {
-	mapping: Map<string, ToolServerInfo>
-	servers: Array<{
-		serverId: string
-		serverName: string
-		tools: ToolDefinition[]
-	}>
-}
-
-export interface ToolDiscoveryMetrics {
-	requests: number
-	hits: number
-	misses: number
-	batched: number
-	invalidations: number
-	inFlight: boolean
-	lastUpdatedAt: number | null
-	lastBuildDurationMs: number | null
-	lastServerCount: number
-	lastToolCount: number
-	lastError: string | null
-	lastInvalidationAt: number | null
-	lastInvalidationReason: string | null
-}
+export type ToolDiscoverySnapshot = ContractsToolDiscoverySnapshot
+export type ToolDiscoveryMetrics = ContractsToolDiscoveryMetrics
 
 interface InternalSnapshot {
 	mapping: Map<string, ToolServerInfo>

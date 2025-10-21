@@ -2,7 +2,7 @@
 export { ClaudeDIProvider } from './claude-di'
 export { OpenAIDIProvider } from './openai-di'
 export { OllamaDIProvider } from './ollama-di'
-export { AzureProvider } from './azure-provider'
+export { AzureDIProvider } from './azure-di'
 export { DeepSeekProvider } from './deepseek-provider'
 export { DoubaoProvider } from './doubao-provider'
 export { GeminiProvider } from './gemini-provider'
@@ -27,7 +27,7 @@ import {
 	ClaudeDIProvider,
 	OpenAIDIProvider,
 	OllamaDIProvider,
-	AzureProvider,
+	AzureDIProvider,
 	DeepSeekProvider,
 	DoubaoProvider,
 	GeminiProvider,
@@ -45,7 +45,7 @@ export const allProviders = [
 	ClaudeDIProvider,
 	OpenAIDIProvider,
 	OllamaDIProvider,
-	AzureProvider,
+	AzureDIProvider,
 	DeepSeekProvider,
 	DoubaoProvider,
 	GeminiProvider,

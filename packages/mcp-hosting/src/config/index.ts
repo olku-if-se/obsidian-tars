@@ -8,7 +8,7 @@
  * - This enables SSE (Server-Sent Events) transport support
  */
 
-import type { MCPServerConfig } from '../types'
+import type { MCPServerConfig } from '@tars/contracts/services/mcp-types'
 
 /**
  * Substitute environment variables in env object

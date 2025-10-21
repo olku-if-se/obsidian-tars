@@ -1,10 +1,4 @@
 /**
- * MCP Utility Functions
- * Common helpers and patterns used across MCP modules
- */
-
-import { TransportProtocol } from '../types'
-/**
  * Extract error message from unknown error type
  */
 export function getErrorMessage(error: unknown): string {

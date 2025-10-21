@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "allowImportingTsExtensions": false,
+    "strict": true,
+    "noLib": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": false,
+    // Remove isolatedModules to fix circular dependencies
+    "isolatedModules": false
+  },
+  "references": [
+      { "path": "./src" },
+      { "path": "./src/events" },
+      { "path": "./src/providers" },
+      { "path": "./src/services" },
+      { "path": "./src/tokens" },
+      { "path": "./src/mocks" }
+    ]
+  }
+}

@@ -19,7 +19,8 @@
 		"lint": "biome lint .",
 		"format": "biome format --write .",
 		"check": "biome check --write .",
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit",
+		"quality": "pnpm run typecheck && pnpm run lint && pnpm run test && pnpm run build"
 	},
 	"keywords": [
 		"mcp",
@@ -33,6 +34,7 @@
 	"dependencies": {
 		"@modelcontextprotocol/sdk": "^1.18.2",
 		"@tars/logger": "workspace:*",
+		"@tars/contracts": "workspace:*",
 		"mcp-use": "^1.0.0",
 		"p-limit": "^7.1.1",
 		"debug": "^4.4.3"

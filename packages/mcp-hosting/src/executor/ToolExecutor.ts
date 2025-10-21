@@ -9,32 +9,22 @@ import type { IStatusReporter } from '../adapters/IStatusReporter'
 import { ResultCache } from '../caching/ResultCache'
 import { ExecutionLimitError } from '../errors'
 import type { MCPServerManager } from '../manager/MCPServerManager'
-import type { ExecutionHistoryEntry, ExecutionTracker, ToolExecutionResult } from '../types'
+import type {
+	DocumentSessionState,
+	ExecutionHistoryEntry,
+	ExecutionTracker,
+	SessionNotificationHandlers,
+	ToolExecutionRequest,
+	ToolExecutionResult,
+	ToolExecutionResultWithId
+} from '@tars/contracts/services/mcp-types'
 
-export interface DocumentSessionState {
-	documentPath: string
-	totalSessionCount: number
-	lastAccessed: number
-}
-
-export interface ToolExecutionRequest {
-	serverId: string
-	toolName: string
-	parameters: Record<string, unknown>
-	source: 'user-codeblock' | 'ai-autonomous'
-	documentPath: string
-	sectionLine?: number
-	signal?: AbortSignal
-}
-
-export interface ToolExecutionResultWithId extends ToolExecutionResult {
-	requestId: string
-}
-
-export interface SessionNotificationHandlers {
-	onLimitReached: (documentPath: string, limit: number, current: number) => Promise<'continue' | 'cancel'>
-	onSessionReset: (documentPath: string) => void
-}
+export type {
+	DocumentSessionState,
+	SessionNotificationHandlers,
+	ToolExecutionRequest,
+	ToolExecutionResultWithId
+} from '@tars/contracts/services/mcp-types'
 
 function createDefaultSessionNotifications(): SessionNotificationHandlers {
 	return {

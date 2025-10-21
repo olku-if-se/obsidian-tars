@@ -111,9 +111,9 @@ export type {
 	ToolDefinition,
 	ToolExecutionResult,
 	ToolInvocationRequest,
-	ToolServerInfo,
-	TransportProtocol
-} from './types'
+	ToolServerInfo
+} from '@tars/contracts/services/mcp-types'
+export { TransportProtocol } from '@tars/contracts/services/mcp-types'
 
 // Utility functions
 export {

@@ -16,6 +16,8 @@
 		"outDir": "dist",
 		"baseUrl": ".",
 		"paths": {
+			"@tars/contracts": ["../contracts/src/index.ts"],
+			"@tars/contracts/*": ["../contracts/src/*"],
 			"@tars/*": ["../*/src"]
 		}
 	},
