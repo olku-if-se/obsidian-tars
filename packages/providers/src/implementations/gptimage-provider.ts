@@ -8,6 +8,8 @@ export class GptImageProvider extends ProviderTemplate {
   readonly name = 'gptimage'
   readonly displayName = 'GPT Image Generator'
   readonly capabilities: LlmCapability[] = ['Image Generation']
+  readonly models = ['gpt-image-1']
+  readonly websiteToObtainKey = 'https://platform.openai.com/api-keys'
 
   protected getDefaultOptions() {
     return {

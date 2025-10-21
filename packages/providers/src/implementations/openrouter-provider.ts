@@ -8,6 +8,8 @@ export class OpenRouterProvider extends ProviderTemplate {
   readonly name = 'openrouter'
   readonly displayName = 'OpenRouter'
   readonly capabilities: LlmCapability[] = ['Text Generation', 'Image Vision', 'Tool Calling']
+  readonly models = ['meta-llama/llama-3.1-8b-instruct:free']
+  readonly websiteToObtainKey = 'https://openrouter.ai'
 
   protected getDefaultOptions() {
     return {

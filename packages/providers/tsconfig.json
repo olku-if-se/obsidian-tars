@@ -18,7 +18,9 @@
 		"noEmit": false,
 		"baseUrl": ".",
 		"paths": {
-			"@tars/*": ["../*/src"]
+			"@tars/contracts": ["../contracts/src/index.ts"],
+			"@tars/contracts/*": ["../contracts/src/*"],
+			"@tars/logger": ["../logger/src/index.ts"]
 		},
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,

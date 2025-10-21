@@ -8,6 +8,8 @@ export class QwenProvider extends ProviderTemplate {
   readonly name = 'qwen'
   readonly displayName = 'Qwen (Alibaba Cloud)'
   readonly capabilities: LlmCapability[] = ['Text Generation', 'Image Vision', 'Tool Calling']
+  readonly models = ['qwen-turbo', 'qwen-plus', 'qwen-max', 'qwen-vl-max']
+  readonly websiteToObtainKey = 'https://dashscope.console.aliyun.com'
 
   protected getDefaultOptions() {
     return {

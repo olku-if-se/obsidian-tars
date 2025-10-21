@@ -8,6 +8,8 @@ export class KimiProvider extends ProviderTemplate {
   readonly name = 'kimi'
   readonly displayName = 'Kimi (Moonshot)'
   readonly capabilities: LlmCapability[] = ['Text Generation', 'Image Vision', 'Tool Calling']
+  readonly models = ['moonshot-v1-8k', 'moonshot-v1-32k', 'moonshot-v1-128k']
+  readonly websiteToObtainKey = 'https://www.moonshot.cn'
 
   protected getDefaultOptions() {
     return {

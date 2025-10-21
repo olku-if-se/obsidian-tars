@@ -1,4 +1,4 @@
-import { injectable, inject } from '@needle-di/core'
+import { inject } from '@needle-di/core'
 import { DIBaseProvider } from '@tars/contracts'
 import { tokens } from '@tars/contracts/tokens'
 import type { LlmProvider, LlmCapability } from '@tars/contracts/providers'
@@ -7,7 +7,6 @@ import type { LlmProvider, LlmCapability } from '@tars/contracts/providers'
  * Template for creating DI-enabled providers
  * Extend this class to convert existing vendors to DI pattern
  */
-@injectable()
 export abstract class ProviderTemplate extends DIBaseProvider implements LlmProvider {
   // Abstract properties to be implemented by each provider
   abstract readonly name: string
@@ -16,11 +15,16 @@ export abstract class ProviderTemplate extends DIBaseProvider implements LlmProv
 
   constructor(
     loggingService = inject(tokens.Logger),
-    notificationService = inject(tokens.Notification, { optional: true }),
-    settingsService = inject(tokens.Settings, { optional: true }),
-    documentService = inject(tokens.Document, { optional: true })
+    notificationService = inject(tokens.Notification, { optional: true }) || null,
+    settingsService = inject(tokens.Settings, { optional: true }) || null,
+    documentService = inject(tokens.Document, { optional: true }) || null
   ) {
-    super(loggingService, notificationService, settingsService, documentService)
+    super(
+      loggingService,
+      notificationService as any,
+      settingsService as any,
+      documentService as any
+    )
   }
 
   // Getters for LlmProvider interface

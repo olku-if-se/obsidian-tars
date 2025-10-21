@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
-import { Container } from '@needle-di/core'
-import { ProviderModule } from '../modules/ProviderModule'
+import { createProviderContainer } from '../modules/ProviderModule'
 import { tokens } from '@tars/contracts/tokens'
 import {
   isToolCallingProvider,
@@ -16,21 +15,19 @@ async function runDemo(): Promise<void> {
   console.log('🚀 LLM Provider Library Demo\n')
 
   // Setup DI container
-  const container = new Container()
-  container.load(new ProviderModule())
+  const container = createProviderContainer()
 
   // Get all providers
   const allProviders = container.get(tokens.Providers)
-  const registry = container.get(tokens.Registry)
 
   console.log(`📦 Registered ${allProviders.length} providers:\n`)
 
   // Group providers by capabilities for better display
   const capabilityGroups = {
-    'Text Generation': registry.getByCapability('Text Generation'),
-    'Tool Calling': registry.getByCapability('Tool Calling'),
-    'Image Vision': registry.getByCapability('Image Vision'),
-    'Image Generation': registry.getByCapability('Image Generation')
+    'Text Generation': allProviders.filter(p => p.capabilities.includes('Text Generation')),
+    'Tool Calling': allProviders.filter(p => p.capabilities.includes('Tool Calling')),
+    'Image Vision': allProviders.filter(p => p.capabilities.includes('Image Vision')),
+    'Image Generation': allProviders.filter(p => p.capabilities.includes('Image Generation'))
   }
 
   Object.entries(capabilityGroups).forEach(([capability, providers]) => {
@@ -92,10 +89,9 @@ async function runDemo(): Promise<void> {
   console.log('const toolProviders = container.get(tokens.ToolCallingProviders)')
   console.log('const visionProviders = container.get(tokens.VisionProviders)')
   console.log('')
-  console.log('// Use registry for filtering')
-  console.log('const registry = container.get(tokens.Registry)')
-  console.log('const textProviders = registry.getByCapability("Text Generation")')
-  console.log('const claude = registry.getByName("claude")')
+  console.log('// Filter providers by capability')
+  console.log('const textProviders = allProviders.filter(p => p.capabilities.includes("Text Generation"))')
+  console.log('const claude = allProviders.find(p => p.name === "claude")')
   console.log('')
   console.log('// Type guards for capabilities')
   console.log('if (isToolCallingProvider(provider)) {')

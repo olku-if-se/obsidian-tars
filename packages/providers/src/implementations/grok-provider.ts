@@ -8,6 +8,8 @@ export class GrokProvider extends ProviderTemplate {
   readonly name = 'grok'
   readonly displayName = 'Grok (xAI)'
   readonly capabilities: LlmCapability[] = ['Text Generation', 'Image Vision', 'Tool Calling']
+  readonly models = ['grok-beta']
+  readonly websiteToObtainKey = 'https://x.ai'
 
   protected getDefaultOptions() {
     return {

@@ -8,6 +8,8 @@ export class SiliconFlowProvider extends ProviderTemplate {
   readonly name = 'siliconflow'
   readonly displayName = 'Silicon Flow'
   readonly capabilities: LlmCapability[] = ['Text Generation', 'Image Vision', 'Tool Calling']
+  readonly models = ['deepseek-chat']
+  readonly websiteToObtainKey = 'https://siliconflow.cn'
 
   protected getDefaultOptions() {
     return {

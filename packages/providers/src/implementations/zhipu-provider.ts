@@ -8,6 +8,8 @@ export class ZhipuProvider extends ProviderTemplate {
   readonly name = 'zhipu'
   readonly displayName = 'Zhipu AI'
   readonly capabilities: LlmCapability[] = ['Text Generation', 'Web Search']
+  readonly models = ['glm-4-plus', 'glm-4-air', 'glm-4-airx', 'glm-4-long', 'glm-4-flash', 'glm-4-flashx']
+  readonly websiteToObtainKey = 'https://open.bigmodel.cn/'
 
   protected getDefaultOptions() {
     return {

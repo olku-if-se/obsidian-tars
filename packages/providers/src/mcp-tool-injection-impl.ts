@@ -29,11 +29,11 @@ export class ConcreteMCPToolInjector implements MCPToolInjector {
 	 */
 	async injectTools(parameters: Record<string, unknown>, providerName: string): Promise<Record<string, unknown>> {
 		try {
-			// Get tool discovery snapshot
-			const snapshot = await this.manager.getToolDiscoveryCache().getSnapshot()
+			// Get all tools from manager
+			const allTools = await this.manager.getAllTools()
 
 			// Build provider-specific tool format
-			const tools = this.buildToolsForProvider(providerName, snapshot)
+			const tools = this.buildToolsForProvider(providerName, allTools)
 
 			// Return parameters with tools
 			return {
@@ -122,16 +122,14 @@ export class ConcreteMCPToolInjector implements MCPToolInjector {
 	/**
 	 * Build tools for specific provider format
 	 */
-	private buildToolsForProvider(providerName: string, snapshot: any): any[] {
+	private buildToolsForProvider(providerName: string, tools: any[]): any[] {
 		const lowerName = providerName.toLowerCase()
 
 		// Filter out invalid tools first
-		const validTools = snapshot.servers.flatMap((server: any) =>
-			server.tools.filter((tool: any) => this.validateToolSchema(tool))
-		)
+		const validTools = tools.filter((tool: any) => this.validateToolSchema(tool))
 
 		logger.debug('Filtered valid tools', {
-			total: snapshot.servers.reduce((acc: number, server: any) => acc + server.tools.length, 0),
+			total: tools.length,
 			valid: validTools.length
 		})
 

@@ -7,7 +7,9 @@ import type { LlmCapability } from '@tars/contracts/providers'
 export class DeepSeekProvider extends ProviderTemplate {
   readonly name = 'deepseek'
   readonly displayName = 'DeepSeek'
-  readonly capabilities: LlmCapability[] = ['Text Generation', 'Tool Calling']
+  readonly capabilities: LlmCapability[] = ['Text Generation', 'Reasoning', 'Tool Calling']
+  readonly models = ['deepseek-chat', 'deepseek-reasoner']
+  readonly websiteToObtainKey = 'https://platform.deepseek.com'
 
   protected getDefaultOptions() {
     return {

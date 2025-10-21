@@ -8,6 +8,8 @@ export class DoubaoProvider extends ProviderTemplate {
   readonly name = 'doubao'
   readonly displayName = 'Doubao (ByteDance)'
   readonly capabilities: LlmCapability[] = ['Text Generation']
+  readonly models = ['doubao-pro']
+  readonly websiteToObtainKey = 'https://www.volcengine.com'
 
   protected getDefaultOptions() {
     return {

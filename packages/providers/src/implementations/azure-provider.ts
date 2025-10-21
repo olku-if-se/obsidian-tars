@@ -8,6 +8,8 @@ export class AzureProvider extends ProviderTemplate {
   readonly name = 'azure'
   readonly displayName = 'Azure OpenAI'
   readonly capabilities: LlmCapability[] = ['Text Generation', 'Tool Calling']
+  readonly models = ['gpt-4', 'gpt-4-32k', 'gpt-35-turbo', 'gpt-35-turbo-16k']
+  readonly websiteToObtainKey = 'https://azure.microsoft.com/en-us/products/cognitive-services/openai-service'
 
   protected getDefaultOptions() {
     return {
