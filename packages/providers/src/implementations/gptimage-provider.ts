@@ -1,14 +1,14 @@
 import { injectable } from '@needle-di/core'
 import { ProviderTemplate } from '../base/ProviderTemplate'
 import { gptImageVendor } from './gptImage'
-import type { LlmCapability } from '@tars/contracts/providers'
+import { toLlmModels, type LlmCapability } from '@tars/contracts/providers'
 
 @injectable()
 export class GptImageProvider extends ProviderTemplate {
   readonly name = 'gptimage'
   readonly displayName = 'GPT Image Generator'
   readonly capabilities: LlmCapability[] = ['Image Generation']
-  readonly models = ['gpt-image-1']
+	readonly models = toLlmModels(['gpt-image-1'], this.capabilities)
   readonly websiteToObtainKey = 'https://platform.openai.com/api-keys'
 
   protected getDefaultOptions() {

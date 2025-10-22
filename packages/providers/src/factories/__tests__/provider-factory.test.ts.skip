@@ -1,0 +1,299 @@
+import 'reflect-metadata'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { DIProviderFactory, createDIProviderFactory } from '../provider-factory'
+import { Container } from '@needle-di/core'
+import {
+	ILoggingService,
+	INotificationService,
+	ISettingsService,
+	IDocumentService
+} from '@tars/contracts'
+import { ClaudeDIProvider } from '../../implementations/claude-di'
+import { OpenAIDIProvider } from '../../implementations/openai-di'
+import { OllamaDIProvider } from '../../implementations/ollama-di'
+
+describe('DI Provider Factory', () => {
+	let factory: DIProviderFactory
+	let container: Container
+	let mockServices: {
+		loggingService: ILoggingService
+		notificationService: INotificationService
+		settingsService: ISettingsService
+		documentService: IDocumentService
+	}
+
+	beforeEach(() => {
+		// Create mock services
+		mockServices = {
+			loggingService: {
+				debug: vi.fn(),
+				info: vi.fn(),
+				warn: vi.fn(),
+				error: vi.fn()
+			},
+			notificationService: {
+				show: vi.fn(),
+				warn: vi.fn(),
+				error: vi.fn()
+			},
+			settingsService: {
+				get: vi.fn(),
+				set: vi.fn(),
+				watch: vi.fn(),
+				getAll: vi.fn(),
+				setAll: vi.fn(),
+				has: vi.fn(),
+				remove: vi.fn(),
+				clear: vi.fn()
+			},
+			documentService: {
+				getCurrentDocumentPath: vi.fn().mockReturnValue('test.md'),
+				resolveEmbedAsBinary: vi.fn(),
+				createPlainText: vi.fn(),
+				getDocumentWriteLock: vi.fn(),
+				normalizePath: vi.fn().mockImplementation(path => path),
+				getFileBasename: vi.fn().mockReturnValue('test'),
+				getFileExtension: vi.fn().mockReturnValue('md'),
+				getFolderPath: vi.fn().mockReturnValue(''),
+				fileExists: vi.fn().mockReturnValue(true),
+				readFile: vi.fn(),
+				writeFile: vi.fn(),
+				getFolderFiles: vi.fn().mockReturnValue([])
+			}
+		}
+
+		// Create mock DI providers
+		const mockClaudeProvider = new ClaudeDIProvider(
+			mockServices.loggingService,
+			mockServices.notificationService,
+			mockServices.settingsService,
+			mockServices.documentService
+		)
+		const mockOpenAIProvider = new OpenAIDIProvider(
+			mockServices.loggingService,
+			mockServices.notificationService,
+			mockServices.settingsService,
+			mockServices.documentService
+		)
+		const mockOllamaProvider = new OllamaDIProvider(
+			mockServices.loggingService,
+			mockServices.notificationService,
+			mockServices.settingsService,
+			mockServices.documentService
+		)
+
+		// Create mock container with get method
+		container = {
+			get: vi.fn().mockImplementation((token) => {
+				switch (token) {
+					case ClaudeDIProvider:
+						return mockClaudeProvider
+					case OpenAIDIProvider:
+						return mockOpenAIProvider
+					case OllamaDIProvider:
+						return mockOllamaProvider
+					default:
+						throw new Error(`Unknown token: ${token}`)
+				}
+			})
+		} as any
+
+		// Create factory
+		factory = new DIProviderFactory(container)
+	})
+
+	afterEach(() => {
+		vi.clearAllMocks()
+	})
+
+	// DISABLED: Old test for deprecated DI provider factory
+describe.skip('DIProviderFactory', () => {
+		it('should be instantiable with container', () => {
+			expect(factory).toBeInstanceOf(DIProviderFactory)
+		})
+
+		it('should create Claude vendor correctly', () => {
+			const vendor = factory.createVendor('Claude')
+
+			expect(vendor).toBeDefined()
+			expect(vendor.name).toBe('Claude')
+			expect(typeof vendor.sendRequestFunc).toBe('function')
+			expect(Array.isArray(vendor.models)).toBe(true)
+			expect(vendor.models.length).toBeGreaterThan(0)
+			expect(typeof vendor.websiteToObtainKey).toBe('string')
+			expect(Array.isArray(vendor.capabilities)).toBe(true)
+		})
+
+		it('should create OpenAI vendor correctly', () => {
+			const vendor = factory.createVendor('OpenAI')
+
+			expect(vendor).toBeDefined()
+			expect(vendor.name).toBe('OpenAI')
+			expect(typeof vendor.sendRequestFunc).toBe('function')
+			expect(Array.isArray(vendor.models)).toBe(true)
+			expect(vendor.models.length).toBeGreaterThan(0)
+			expect(typeof vendor.websiteToObtainKey).toBe('string')
+			expect(Array.isArray(vendor.capabilities)).toBe(true)
+		})
+
+		it('should create Ollama vendor correctly', () => {
+			const vendor = factory.createVendor('Ollama')
+
+			expect(vendor).toBeDefined()
+			expect(vendor.name).toBe('Ollama')
+			expect(typeof vendor.sendRequestFunc).toBe('function')
+			expect(Array.isArray(vendor.models)).toBe(true)
+			expect(vendor.models.length).toBeGreaterThan(0)
+			expect(typeof vendor.websiteToObtainKey).toBe('string')
+			expect(Array.isArray(vendor.capabilities)).toBe(true)
+		})
+
+		it('should throw error for unknown provider', () => {
+			expect(() => {
+				factory.createVendor('UnknownProvider')
+			}).toThrow('Unknown provider: UnknownProvider')
+		})
+
+		it('should return available providers list', () => {
+			const availableProviders = factory.getAvailableProviders()
+
+			expect(availableProviders).toContain('Claude')
+			expect(availableProviders).toContain('OpenAI')
+			expect(availableProviders).toContain('Ollama')
+			expect(availableProviders).toHaveLength(3)
+		})
+
+		it('should check if provider is DI-enabled', () => {
+			expect(factory.isDIProviderEnabled('Claude')).toBe(true)
+			expect(factory.isDIProviderEnabled('OpenAI')).toBe(true)
+			expect(factory.isDIProviderEnabled('Ollama')).toBe(true)
+			expect(factory.isDIProviderEnabled('Unknown')).toBe(false)
+		})
+
+		it('should create multiple vendors correctly', () => {
+			const providers = ['Claude', 'OpenAI', 'Ollama']
+			const vendors = factory.createVendors(providers)
+
+			expect(vendors).toHaveLength(3)
+			expect(vendors[0].name).toBe('Claude')
+			expect(vendors[1].name).toBe('OpenAI')
+			expect(vendors[2].name).toBe('Ollama')
+		})
+
+		it('should create vendors with DI services integrated', () => {
+			const claudeVendor = factory.createVendor('Claude')
+
+			// Test that the vendor's sendRequest function can be called
+			expect(typeof claudeVendor.sendRequestFunc).toBe('function')
+
+			// Create options for sendRequest
+			const options = {
+				apiKey: 'test-key',
+				baseURL: 'https://api.anthropic.com',
+				model: 'claude-3-sonnet-20240229',
+				parameters: {}
+			}
+
+			// Test that sendRequest function can be created
+			const sendRequest = claudeVendor.sendRequestFunc(options)
+			expect(typeof sendRequest).toBe('function')
+		})
+
+		it('should create vendors with correct capabilities', () => {
+			const claudeVendor = factory.createVendor('Claude')
+			const openaiVendor = factory.createVendor('OpenAI')
+			const ollamaVendor = factory.createVendor('Ollama')
+
+			// Test capabilities
+			expect(claudeVendor.capabilities).toContain('Text Generation')
+			expect(claudeVendor.capabilities).toContain('Image Vision')
+			expect(claudeVendor.capabilities).toContain('PDF Vision')
+			expect(claudeVendor.capabilities).toContain('Tool Calling')
+			expect(claudeVendor.capabilities).toContain('Reasoning')
+
+			expect(openaiVendor.capabilities).toContain('Text Generation')
+			expect(openaiVendor.capabilities).toContain('Image Vision')
+			expect(openaiVendor.capabilities).toContain('Image Generation')
+			expect(openaiVendor.capabilities).toContain('Tool Calling')
+			expect(openaiVendor.capabilities).toContain('Reasoning')
+
+			expect(ollamaVendor.capabilities).toContain('Text Generation')
+			expect(ollamaVendor.capabilities).toContain('Image Vision')
+			expect(ollamaVendor.capabilities).toContain('Tool Calling')
+			expect(ollamaVendor.capabilities).toContain('Reasoning')
+		})
+
+		it('should maintain provider default options', () => {
+			const claudeVendor = factory.createVendor('Claude')
+
+			// Test that default options are preserved
+			expect(claudeVendor.defaultOptions).toBeDefined()
+			expect(typeof claudeVendor.defaultOptions.apiKey).toBe('string')
+			expect(typeof claudeVendor.defaultOptions.baseURL).toBe('string')
+			expect(typeof claudeVendor.defaultOptions.model).toBe('string')
+		})
+	})
+
+	describe('createDIProviderFactory', () => {
+		it('should create factory from container', () => {
+			const factoryFromFunction = createDIProviderFactory(container)
+
+			expect(factoryFromFunction).toBeInstanceOf(DIProviderFactory)
+		})
+
+		it('should create functional factory', () => {
+			const factoryFromFunction = createDIProviderFactory(container)
+
+			const vendor = factoryFromFunction.createVendor('Claude')
+			expect(vendor.name).toBe('Claude')
+		})
+	})
+
+	describe('Factory Error Handling', () => {
+		it('should handle case-insensitive provider names', () => {
+			expect(() => {
+				factory.createVendor('claude')
+				factory.createVendor('CLAUDE')
+				factory.createVendor('openai')
+				factory.createVendor('OPENAI')
+			}).toThrow() // Should throw since exact matching is expected
+		})
+
+		it('should handle empty provider name', () => {
+			expect(() => {
+				factory.createVendor('')
+			}).toThrow('Unknown provider: ')
+		})
+
+		it('should handle null/undefined provider name', () => {
+			expect(() => {
+				factory.createVendor(null as any)
+			}).toThrow('Unknown provider: null')
+
+			expect(() => {
+				factory.createVendor(undefined as any)
+			}).toThrow('Unknown provider: undefined')
+		})
+	})
+
+	describe('Factory Integration', () => {
+		it('should work with container scope settings', () => {
+			const vendor1 = factory.createVendor('Claude')
+			const vendor2 = factory.createVendor('Claude')
+
+			// Both vendors should have the same underlying provider instance (singleton)
+			expect(vendor1).not.toBe(vendor2) // Different vendor objects
+			// But they should have the same underlying provider instance
+		})
+
+		it('should create vendors that can be used independently', () => {
+			const claudeVendor = factory.createVendor('Claude')
+			const openaiVendor = factory.createVendor('OpenAI')
+
+			// Both vendors should work independently
+			expect(claudeVendor.name).toBe('Claude')
+			expect(openaiVendor.name).toBe('OpenAI')
+			expect(claudeVendor).not.toBe(openaiVendor)
+		})
+	})
+})

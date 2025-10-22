@@ -1,14 +1,17 @@
 import { injectable } from '@needle-di/core'
 import { ProviderTemplate } from '../base/ProviderTemplate'
 import { zhipuVendor } from './zhipu'
-import type { LlmCapability } from '@tars/contracts/providers'
+import { toLlmModels, type LlmCapability } from '@tars/contracts/providers'
 
 @injectable()
 export class ZhipuProvider extends ProviderTemplate {
   readonly name = 'zhipu'
   readonly displayName = 'Zhipu AI'
   readonly capabilities: LlmCapability[] = ['Text Generation', 'Web Search']
-  readonly models = ['glm-4-plus', 'glm-4-air', 'glm-4-airx', 'glm-4-long', 'glm-4-flash', 'glm-4-flashx']
+	readonly models = toLlmModels(
+		['glm-4-plus', 'glm-4-air', 'glm-4-airx', 'glm-4-long', 'glm-4-flash', 'glm-4-flashx'],
+		this.capabilities
+	)
   readonly websiteToObtainKey = 'https://open.bigmodel.cn/'
 
   protected getDefaultOptions() {

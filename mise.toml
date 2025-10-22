@@ -1,10 +1,33 @@
 # Mise configuration - Task orchestrator for Obsidian Tars plugin
 # See: https://mise.jdx.dev/tasks/
 
-[env]
+# ============================================================================
+# Settings - SOPS for Encrypted Secrets
+# ============================================================================
+
+[settings]
+experimental = true
+verbose = false                             # enable if SOPS is failing or you need more debug details
+sops.age_key_file = "{{config_root}}/.secrets/mise-age.txt"  # Absolute path from config root
+sops.rops = false                           # use original SOPS binary not a rops library
+sops.strict = false                         # if age key is not provided do not raise an ERROR
+
+# ============================================================================
+# Environment Variables
+# ============================================================================
+
+[[env]]
 #OLLAMA_URL = "http://localhost:11434"
 OLLAMA_URL = "http://192.168.1.228:11434"
 OLLAMA_MODEL = "llama3.2:latest"
+
+# SOPS age key configuration (absolute path from config root)
+MISE_SOPS_AGE_KEY_FILE = "{{config_root}}/.secrets/mise-age.txt"
+SOPS_AGE_KEY_FILE = "{{env.MISE_SOPS_AGE_KEY_FILE}}"
+
+[[env]]
+# Load encrypted secrets (from root directory where mise.toml is located)
+_.file = ["{{config_root}}/.env.secrets.json", "{{config_root}}/.env"]
 
 # ============================================================================
 # Quick Commands (Most Common)
@@ -147,7 +170,100 @@ docker ps --filter 'name=tars-mcp' --format '{{.Names}}' | xargs -r docker stop
 echo "✅ Stopped all tars-mcp* containers"
 """
 
+# ============================================================================
+# E2E Tests
+# ============================================================================
+
+[tasks.test-e2e]
+description = "🔬 Run E2E tests (requires API keys in .env.secrets.json)"
+run = "bash scripts/test-e2e.sh"
+
+[tasks.secrets-init]
+description = "🔐 Initialize SOPS encrypted secrets"
+run = """
+#!/bin/bash
+set -e
+
+echo "🔐 Setting up SOPS encrypted secrets..."
+echo ""
+
+# Create .secrets directory
+mkdir -p .secrets
+
+# Generate age key if it doesn't exist
+if [[ ! -f .secrets/mise-age.txt ]]; then
+  echo "📝 Generating new age key..."
+  age-keygen -o .secrets/mise-age.txt
+  echo "✅ Age key generated: .secrets/mise-age.txt"
+  echo ""
+  echo "⚠️  IMPORTANT: Backup this key file! You won't be able to decrypt secrets without it."
+  echo ""
+else
+  echo "✅ Age key already exists: .secrets/mise-age.txt"
+  echo ""
+fi
+
+# Extract public key
+PUBLIC_KEY=$(grep "# public key:" .secrets/mise-age.txt | cut -d: -f2 | xargs)
+echo "📋 Your public key: $PUBLIC_KEY"
+echo ""
+
+# Create template secrets file if it doesn't exist
+if [[ ! -f .env.secrets.json ]]; then
+  echo "📝 Creating encrypted secrets template..."
+  
+  # Create unencrypted template
+  cat > .env.secrets.json.tmp <<EOF
+{
+  "OPENAI_API_KEY": "sk-proj-REPLACE_WITH_YOUR_KEY",
+  "ANTHROPIC_API_KEY": "sk-ant-REPLACE_WITH_YOUR_KEY",
+  "GROK_API_KEY": "xai-REPLACE_WITH_YOUR_KEY"
+}
+EOF
+
+  # Encrypt it with SOPS
+  sops --encrypt --age "$PUBLIC_KEY" .env.secrets.json.tmp > .env.secrets.json
+  rm .env.secrets.json.tmp
+  
+  echo "✅ Created encrypted .env.secrets.json"
+  echo ""
+  echo "📝 Next steps:"
+  echo "   1. Edit secrets: mise run secrets-edit"
+  echo "   2. Add your API keys"
+  echo "   3. Save and exit"
+  echo ""
+else
+  echo "✅ Encrypted secrets file already exists: .env.secrets.json"
+  echo ""
+fi
+
+echo "🎉 SOPS setup complete!"
+echo ""
+echo "Available commands:"
+echo "   mise run secrets-edit   - Edit encrypted secrets"
+echo "   mise run secrets-show   - View decrypted secrets"
+echo "   mise run test-e2e       - Run E2E tests with secrets"
+"""
+
+[tasks.secrets-edit]
+description = "✏️  Edit encrypted secrets"
+run = "sops .env.secrets.json"
+
+[tasks.secrets-show]
+description = "👁️  Show decrypted secrets (be careful!)"
+run = "sops --decrypt .env.secrets.json"
+
+[tasks.secrets-rotate]
+description = "🔄 Rotate a single API key (usage: mise run secrets-rotate KEY_NAME new-value)"
+run = "bash scripts/secrets-rotate.sh"
+
+# ============================================================================
+# Tools
+# ============================================================================
+
 [tools]
-node = "22.20.0"  # Node 22 LTS (Iron)
+node = "22.20.0" # Node 22 LTS (Iron)
 #node = "24.10.0"  # Node 24 LTS (Kinetic)
 pnpm = "10.18.2"
+age = "latest"   # Encryption tool for SOPS
+sops = "latest"  # Secret encryption/decryption

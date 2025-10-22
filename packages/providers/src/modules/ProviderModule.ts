@@ -2,10 +2,8 @@ import { Container } from '@needle-di/core'
 import { tokens } from '@tars/contracts/tokens'
 import { MockMCPIntegration, MockMCPToolInjector } from '@tars/contracts/mocks'
 import {
-  AzureDIProvider,
   DeepSeekProvider,
   DoubaoProvider,
-  GeminiProvider,
   GrokProvider,
   KimiProvider,
   OpenRouterProvider,
@@ -47,12 +45,10 @@ export function createProviderContainer(): Container {
     useValue: new MockMCPToolInjector()
   })
 
-  // Template-based providers (not the complex DI ones for now)
+  // Template-based providers (deprecated DI providers only)
   const templateProviders = [
-    AzureDIProvider,
     DeepSeekProvider,
     DoubaoProvider,
-    GeminiProvider,
     GrokProvider,
     KimiProvider,
     OpenRouterProvider,

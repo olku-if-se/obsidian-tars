@@ -1,0 +1,106 @@
+import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '@tars/contracts'
+import { toLlmModels, type LlmCapability } from '@tars/contracts/providers'
+import { createLogger } from '@tars/logger'
+import OpenAI from 'openai'
+import { t } from '../i18n'
+import { createMCPIntegrationHelper } from '../mcp-integration-helper'
+import { CALLOUT_BLOCK_END, CALLOUT_BLOCK_START } from '../utils'
+
+const logger = createLogger('providers:deepseek')
+
+type DeepSeekDelta = OpenAI.ChatCompletionChunk.Choice.Delta & {
+	reasoning_content?: string
+} // hack, deepseek-reasoner added a reasoning_content field
+
+const sendRequestFunc = (settings: BaseOptions): SendRequest =>
+	async function* (messages: Message[], controller: AbortController, _resolveEmbedAsBinary: ResolveEmbedAsBinary) {
+		const { parameters, ...optionsExcludingParams } = settings
+		const options = { ...optionsExcludingParams, ...parameters }
+		const { apiKey, baseURL, model, ...remains } = options
+		if (!apiKey) throw new Error(t('API key is required'))
+
+		// Create MCP integration helper
+		const mcpHelper = createMCPIntegrationHelper(settings)
+
+		// Tool-aware path: Use coordinator for autonomous tool calling
+		if (mcpHelper?.hasToolCalling()) {
+			try {
+				const client = new OpenAI({
+					apiKey,
+					baseURL,
+					dangerouslyAllowBrowser: true
+				})
+
+				yield* mcpHelper.generateWithTools({
+					documentPath: settings.documentPath || 'unknown.md',
+					providerName: 'DeepSeek',
+					messages,
+					controller,
+					client
+				})
+
+				return
+			} catch (error) {
+				logger.warn('Tool calling failed, falling back to streaming pipeline', error)
+				// Fall through to original path
+			}
+		}
+
+		// Original streaming path with tool injection
+		let requestParams: Record<string, unknown> = { model, ...remains }
+		if (mcpHelper) {
+			requestParams = await mcpHelper.injectTools(requestParams, 'DeepSeek')
+		}
+
+		const client = new OpenAI({
+			apiKey,
+			baseURL,
+			dangerouslyAllowBrowser: true
+		})
+
+		const stream = await client.chat.completions.create(
+			{
+				...(requestParams as object),
+				messages,
+				stream: true
+			} as OpenAI.ChatCompletionCreateParamsStreaming,
+			{ signal: controller.signal }
+		)
+
+		let startReasoning = false
+		for await (const part of stream) {
+			if (part.usage?.prompt_tokens && part.usage.completion_tokens)
+				logger.debug('usage update', {
+					promptTokens: part.usage.prompt_tokens,
+					completionTokens: part.usage.completion_tokens
+				})
+
+			const delta = part.choices[0]?.delta as DeepSeekDelta
+			const reasonContent = delta?.reasoning_content
+
+			if (reasonContent) {
+				const prefix = !startReasoning ? ((startReasoning = true), CALLOUT_BLOCK_START) : ''
+				yield prefix + reasonContent.replace(/\n/g, '\n> ') // Each line of the callout needs to have '>' at the beginning
+			} else {
+				const prefix = startReasoning ? ((startReasoning = false), CALLOUT_BLOCK_END) : ''
+				if (delta?.content) yield prefix + delta?.content
+			}
+		}
+	}
+
+const deepSeekCapabilities: LlmCapability[] = ['Text Generation', 'Reasoning', 'Tool Calling']
+const models = toLlmModels(['deepseek-chat', 'deepseek-reasoner'], deepSeekCapabilities)
+
+export const deepSeekVendor: Vendor = {
+	name: 'DeepSeek',
+	defaultOptions: {
+		apiKey: '',
+		baseURL: 'https://api.deepseek.com',
+		model: models[0].id,
+		parameters: {}
+	},
+	sendRequestFunc,
+	models,
+	websiteToObtainKey: 'https://platform.deepseek.com',
+	capabilities: deepSeekCapabilities
+}

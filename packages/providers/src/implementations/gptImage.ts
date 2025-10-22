@@ -1,10 +1,12 @@
 import type { BaseOptions, Message, ResolveEmbedAsBinary, SaveAttachment, SendRequest, Vendor } from '@tars/contracts'
+import { toLlmModels, type LlmCapability } from '@tars/contracts/providers'
 import { createLogger } from '@tars/logger'
 import OpenAI from 'openai'
 import { t } from '../i18n'
 import { getMimeTypeFromFilename } from '../utils'
 
-const models = ['gpt-image-1']
+const gptImageCapabilities: LlmCapability[] = ['Image Generation', 'Image Editing']
+const models = toLlmModels(['gpt-image-1'], gptImageCapabilities)
 
 const logger = createLogger('providers:gpt-image')
 
@@ -162,7 +164,7 @@ export const gptImageVendor: Vendor = {
 	defaultOptions: {
 		apiKey: '',
 		baseURL: 'https://api.openai.com/v1',
-		model: models[0],
+		model: models[0].id,
 		n: DEFAULT_GPT_IMAGE_OPTIONS.n,
 		displayWidth: DEFAULT_GPT_IMAGE_OPTIONS.displayWidth,
 		background: DEFAULT_GPT_IMAGE_OPTIONS.background,
@@ -175,5 +177,5 @@ export const gptImageVendor: Vendor = {
 	sendRequestFunc: (options: BaseOptions) => sendRequestFunc(options as GptImageOptions),
 	models,
 	websiteToObtainKey: 'https://platform.openai.com/api-keys',
-	capabilities: ['Image Generation', 'Image Editing']
+	capabilities: gptImageCapabilities
 }

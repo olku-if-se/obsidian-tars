@@ -4,7 +4,7 @@ import { exportCmdId } from './commands/export'
 import { t } from './lang/helper'
 import type TarsPlugin from './main'
 import { SelectModelModal, SelectVendorModal } from './modal'
-import type { BaseOptions, Optional, ProviderSettings, Vendor } from '@tars/providers'
+import type { BaseOptions, LlmModel, Optional, ProviderSettings, Vendor } from '@tars/providers'
 import {
 	allVendors,
 	type ClaudeOptions,
@@ -714,15 +714,16 @@ export class TarsSettingTab extends PluginSettingTab {
 					})
 			)
 
-	addModelDropDownSection = (details: HTMLDetailsElement, options: BaseOptions, models: string[], desc: string) =>
+	addModelDropDownSection = (details: HTMLDetailsElement, options: BaseOptions, models: LlmModel[], desc: string) =>
 		new Setting(details)
 			.setName(t('Model'))
 			.setDesc(desc)
 			.addDropdown((dropdown) =>
 				dropdown
 					.addOptions(
-						models.reduce((acc: Record<string, string>, cur: string) => {
-							acc[cur] = cur
+						models.reduce((acc: Record<string, string>, model: LlmModel) => {
+							const label = model.label ?? model.id
+							acc[model.id] = label
 							return acc
 						}, {})
 					)

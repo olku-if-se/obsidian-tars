@@ -14,8 +14,10 @@
 		"format": "biome format --write .",
 		"check": "biome check --write .",
 		"typecheck": "tsc --noEmit",
+		"quality": "pnpm run typecheck && pnpm run lint && pnpm run test && pnpm run build",
 		"knip": "knip",
-		"demo": "tsx src/cli/demo.ts"
+		"demo": "tsx src/cli/demo.ts",
+		"demo:streaming": "tsx src/cli/streaming-demo.ts"
 	},
 	"keywords": [
 		"ai",
@@ -39,7 +41,7 @@
 		"@tars/logger": "workspace:*",
 		"tslib": "^2.8.1",
 		"@anthropic-ai/sdk": "^0.24.3",
-		"@google/generative-ai": "^0.24.1",
+		"@google/genai": "^1.26.0",
 		"openai": "^4.56.2",
 		"ollama": "^0.6.0",
 		"axios": "^1.8.3",

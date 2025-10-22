@@ -1,4 +1,5 @@
 import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '@tars/contracts'
+import { toLlmModels, type LlmCapability } from '@tars/contracts/providers'
 import { createLogger } from '@tars/logger'
 import OpenAI from 'openai'
 import { t } from '../i18n'
@@ -99,18 +100,19 @@ const formatMsg = async (msg: Message, resolveEmbedAsBinary: ResolveEmbedAsBinar
 	}
 }
 
-const models = ['qwen-turbo', 'qwen-plus', 'qwen-max', 'qwen-vl-max']
+const qwenCapabilities: LlmCapability[] = ['Text Generation', 'Image Vision', 'Tool Calling']
+const models = toLlmModels(['qwen-turbo', 'qwen-plus', 'qwen-max', 'qwen-vl-max'], qwenCapabilities)
 
 export const qwenVendor: Vendor = {
 	name: 'Qwen',
 	defaultOptions: {
 		apiKey: '',
 		baseURL: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
-		model: models[0],
+		model: models[0].id,
 		parameters: {}
 	},
 	sendRequestFunc,
 	models,
 	websiteToObtainKey: 'https://dashscope.console.aliyun.com',
-	capabilities: ['Text Generation', 'Image Vision', 'Tool Calling']
+	capabilities: qwenCapabilities
 }

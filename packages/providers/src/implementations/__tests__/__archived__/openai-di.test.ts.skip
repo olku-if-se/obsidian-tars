@@ -1,0 +1,214 @@
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { OpenAIDIProvider } from '../openai-di'
+import {
+	ILoggingService,
+	INotificationService,
+	ISettingsService,
+	IDocumentService
+} from '@tars/contracts/services'
+
+describe('OpenAIDIProvider', () => {
+	let provider: OpenAIDIProvider
+	let mockLoggingService: ILoggingService
+	let mockNotificationService: INotificationService
+	let mockSettingsService: ISettingsService
+	let mockDocumentService: IDocumentService
+
+	beforeEach(() => {
+		// Create mock services
+		mockLoggingService = {
+			debug: vi.fn(),
+			info: vi.fn(),
+			warn: vi.fn(),
+			error: vi.fn()
+		}
+
+		mockNotificationService = {
+			show: vi.fn(),
+			warn: vi.fn(),
+			error: vi.fn()
+		}
+
+		mockSettingsService = {
+			get: vi.fn(),
+			set: vi.fn(),
+			watch: vi.fn(),
+			getAll: vi.fn(),
+			setAll: vi.fn(),
+			has: vi.fn(),
+			remove: vi.fn(),
+			clear: vi.fn()
+		}
+
+		mockDocumentService = {
+			getCurrentDocumentPath: vi.fn().mockReturnValue('test.md'),
+			resolveEmbedAsBinary: vi.fn(),
+			createPlainText: vi.fn(),
+			getDocumentWriteLock: vi.fn(),
+			normalizePath: vi.fn().mockImplementation(path => path),
+			getFileBasename: vi.fn().mockReturnValue('test'),
+			getFileExtension: vi.fn().mockReturnValue('md'),
+			getFolderPath: vi.fn().mockReturnValue(''),
+			fileExists: vi.fn().mockReturnValue(true),
+			readFile: vi.fn(),
+			writeFile: vi.fn(),
+			getFolderFiles: vi.fn().mockReturnValue([])
+		}
+
+		provider = new OpenAIDIProvider(
+			mockLoggingService,
+			mockNotificationService,
+			mockSettingsService,
+			mockDocumentService
+		)
+	})
+
+	afterEach(() => {
+		vi.clearAllMocks()
+	})
+
+	it('should be instantiable with DI services', () => {
+		expect(provider).toBeInstanceOf(OpenAIDIProvider)
+	})
+
+	it('should have correct provider metadata', () => {
+		expect(provider.name).toBe('OpenAI')
+		expect(provider.websiteToObtainKey).toBe('https://platform.openai.com/api-keys')
+		expect(provider.capabilities).toContain('Text Generation')
+		expect(provider.capabilities).toContain('Image Vision')
+		expect(provider.capabilities).toContain('Image Generation')
+		expect(provider.capabilities).toContain('Tool Calling')
+		expect(provider.capabilities).toContain('Reasoning')
+	})
+
+	it('should have models from the original OpenAI vendor', () => {
+		expect(Array.isArray(provider.models)).toBe(true)
+		expect(provider.models.length).toBeGreaterThan(0)
+	})
+
+	it('should have default options with DI services', () => {
+		const defaultOptions = provider.defaultOptions
+
+		expect(defaultOptions).toBeDefined()
+		expect(defaultOptions.loggingService).toBe(mockLoggingService)
+		expect(defaultOptions.notificationService).toBe(mockNotificationService)
+		expect(defaultOptions.settingsService).toBe(mockSettingsService)
+		expect(defaultOptions.documentService).toBe(mockDocumentService)
+	})
+
+	it('should create send request function', () => {
+		const options = {
+			apiKey: 'test-key',
+			baseURL: 'https://api.openai.com',
+			model: 'gpt-4',
+			parameters: {}
+		}
+
+		const sendRequest = provider.createSendRequest(options)
+		expect(typeof sendRequest).toBe('function')
+	})
+
+	it('should validate options correctly', () => {
+		const validOptions = {
+			apiKey: 'test-key',
+			baseURL: 'https://api.openai.com',
+			model: 'gpt-4',
+			parameters: {}
+		}
+
+		const invalidOptions = {
+			apiKey: '',
+			baseURL: '',
+			model: '',
+			parameters: {}
+		}
+
+		expect(provider.validateOptions(validOptions)).toBe(true)
+		expect(provider.validateOptions(invalidOptions)).toBe(false)
+	})
+
+	it('should format error messages correctly', () => {
+		const error = new Error('Test error')
+		const formattedError = provider.formatError(error, 'test context')
+
+		expect(formattedError).toContain('OpenAI Error in test context: Test error')
+		expect(mockLoggingService.error).toHaveBeenCalledWith(formattedError, {
+			error,
+			context: 'test context'
+		})
+	})
+
+	it('should get capability emoji correctly', () => {
+		expect(provider.getCapabilityEmoji('Text Generation')).toBe('💬')
+		expect(provider.getCapabilityEmoji('Image Vision')).toBe('👁️')
+		expect(provider.getCapabilityEmoji('Image Generation')).toBe('🎨')
+		expect(provider.getCapabilityEmoji('Tool Calling')).toBe('🔧')
+		expect(provider.getCapabilityEmoji('Reasoning')).toBe('🧠')
+		expect(provider.getCapabilityEmoji('Unknown' as any)).toBe('❓')
+	})
+
+	it('should create framework config with DI services', () => {
+		const frameworkConfig = (provider as any).createFrameworkConfig()
+
+		expect(frameworkConfig).toBeDefined()
+		expect(frameworkConfig.noticeSystem).toBeDefined()
+		expect(frameworkConfig.requestSystem).toBeDefined()
+		expect(frameworkConfig.platform).toBeDefined()
+		expect(frameworkConfig.normalizePath).toBeDefined()
+	})
+
+	it('should handle createSendRequest with DI integration', async () => {
+		const options = {
+			apiKey: 'test-key',
+			baseURL: 'https://api.openai.com',
+			model: 'gpt-4',
+			parameters: {}
+		}
+
+		const sendRequest = provider.createSendRequest(options)
+
+		// Mock AbortController for testing
+		const abortController = new AbortController()
+		const messages = [
+			{ role: 'user' as const, content: 'Hello' }
+		]
+
+		// Test that sendRequest is a function
+		expect(typeof sendRequest).toBe('function')
+
+		// Note: We can't easily test the actual stream without mocking the OpenAI API
+		// but we can verify the function structure
+		expect(sendRequest.length).toBeGreaterThanOrEqual(3) // messages, controller, resolveEmbedAsBinary
+	})
+
+	it('should integrate DI services in framework config', () => {
+		const frameworkConfig = (provider as any).createFrameworkConfig()
+
+		// Test that the framework config integrates DI services
+		expect(typeof frameworkConfig.noticeSystem.show).toBe('function')
+		expect(typeof frameworkConfig.requestSystem.requestUrl).toBe('function')
+		expect(typeof frameworkConfig.normalizePath).toBe('function')
+	})
+
+	it('should handle missing DI services gracefully', () => {
+		// Create provider with null services to test error handling
+		const providerWithNullServices = new OpenAIDIProvider(
+			mockLoggingService,
+			mockNotificationService,
+			mockSettingsService,
+			mockDocumentService
+		)
+
+		expect(() => {
+			providerWithNullServices.createSendRequest({} as any)
+		}).not.toThrow()
+	})
+
+	it('should have correct OpenAI-specific models', () => {
+		// Check for common OpenAI models
+		const modelIds = provider.models.map((model) => model.id)
+		expect(modelIds).toContain('gpt-4')
+		expect(modelIds).toContain('gpt-4-turbo')
+		expect(modelIds).toContain('gpt-3.5-turbo')
+	})
+})

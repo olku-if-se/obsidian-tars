@@ -274,8 +274,8 @@ export abstract class BaseProvider {
 	/** Default configuration options for this provider */
 	abstract readonly defaultOptions: BaseOptions
 
-	/** List of available model names for this provider */
-	abstract readonly models: string[]
+	/** List of available models for this provider */
+	abstract readonly models: LlmModel[]
 
 	/** URL where users can obtain API keys */
 	abstract readonly websiteToObtainKey: string
@@ -331,7 +331,7 @@ export interface Vendor {
 	readonly name: string
 	readonly defaultOptions: BaseOptions
 	readonly sendRequestFunc: (options: BaseOptions) => SendRequest
-	readonly models: string[]
+	readonly models: LlmModel[]
 	readonly websiteToObtainKey: string
 	readonly capabilities: Capability[]
 }
@@ -359,6 +359,38 @@ export function providerToVendor(provider: BaseProvider): Vendor {
 		websiteToObtainKey: provider.websiteToObtainKey,
 		capabilities: provider.capabilities
 	}
+}
+
+export interface LlmStreamProcessor {
+	process(delta: string): string[]
+	complete(): string[]
+}
+
+export interface LlmModel {
+	id: string
+	label?: string
+	description?: string
+	capabilities: LlmCapability[]
+	systemPrelude?: Message
+	createStreamProcessor?: () => LlmStreamProcessor
+}
+
+export class NoOpStreamProcessor implements LlmStreamProcessor {
+	process(delta: string): string[] {
+		return delta ? [delta] : []
+	}
+
+	complete(): string[] {
+		return []
+	}
+}
+
+export function getModelById(models: LlmModel[], modelId: string): LlmModel | undefined {
+	return models.find(model => model.id === modelId)
+}
+
+export function toLlmModels(ids: string[], capabilities: LlmCapability[]): LlmModel[] {
+	return ids.map((id) => ({ id, capabilities }))
 }
 
 // === New Universal Provider Interfaces ===

@@ -1,17 +1,19 @@
-// Export all providers
-export { ClaudeDIProvider } from './claude-di'
-export { OpenAIDIProvider } from './openai-di'
-export { OllamaDIProvider } from './ollama-di'
-export { AzureDIProvider } from './azure-di'
-export { DeepSeekProvider } from './deepseek-provider'
+// Export new streaming providers (migrated to comprehensive callbacks)
+export { OpenAIStreamingProvider } from '../providers/openai'
+export { GrokStreamingProvider } from '../providers/grok'
+export { DeepseekStreamingProvider } from '../providers/deepseek'
+export { OpenRouterStreamingProvider } from '../providers/openrouter'
+export { SiliconFlowStreamingProvider } from '../providers/siliconflow'
+export { OllamaStreamingProvider } from '../providers/ollama'
+export { AzureStreamingProvider } from '../providers/azure'
+export { ClaudeStreamingProvider } from '../providers/claude'
+export { GeminiStreamingProvider } from '../providers/gemini'
+
+// Export old DI providers (deprecated - to be removed)
 export { DoubaoProvider } from './doubao-provider'
-export { GeminiProvider } from './gemini-provider'
-export { GrokProvider } from './grok-provider'
 export { KimiProvider } from './kimi-provider'
-export { OpenRouterProvider } from './openrouter-provider'
 export { QianFanProvider } from './qianfan-provider'
 export { QwenProvider } from './qwen-provider'
-export { SiliconFlowProvider } from './siliconflow-provider'
 export { ZhipuProvider } from './zhipu-provider'
 export { GptImageProvider } from './gptimage-provider'
 
@@ -19,42 +21,44 @@ export { GptImageProvider } from './gptimage-provider'
 export { withStreamLogging } from './decorator'
 
 // Export types from legacy vendors (still needed for options)
-export { type ClaudeOptions } from './claude'
 export { type GptImageOptions } from './gptImage'
 
 // All providers array
 import {
-	ClaudeDIProvider,
-	OpenAIDIProvider,
-	OllamaDIProvider,
-	AzureDIProvider,
-	DeepSeekProvider,
+	OpenAIStreamingProvider,
+	GrokStreamingProvider,
+	DeepseekStreamingProvider,
+	OpenRouterStreamingProvider,
+	SiliconFlowStreamingProvider,
+	OllamaStreamingProvider,
+	AzureStreamingProvider,
+	ClaudeStreamingProvider,
+	GeminiStreamingProvider,
 	DoubaoProvider,
-	GeminiProvider,
-	GrokProvider,
 	KimiProvider,
-	OpenRouterProvider,
 	QianFanProvider,
 	QwenProvider,
-	SiliconFlowProvider,
 	ZhipuProvider,
 	GptImageProvider
 } from './index'
 
 export const allProviders = [
-	ClaudeDIProvider,
-	OpenAIDIProvider,
-	OllamaDIProvider,
-	AzureDIProvider,
-	DeepSeekProvider,
+	// New streaming providers with comprehensive callbacks
+	OpenAIStreamingProvider,
+	GrokStreamingProvider,
+	DeepseekStreamingProvider,
+	OpenRouterStreamingProvider,
+	SiliconFlowStreamingProvider,
+	OllamaStreamingProvider,
+	AzureStreamingProvider,
+	ClaudeStreamingProvider,
+	GeminiStreamingProvider,
+	
+	// Old DI providers (deprecated, will be removed)
 	DoubaoProvider,
-	GeminiProvider,
-	GrokProvider,
 	KimiProvider,
-	OpenRouterProvider,
 	QianFanProvider,
 	QwenProvider,
-	SiliconFlowProvider,
 	ZhipuProvider,
 	GptImageProvider
 ]

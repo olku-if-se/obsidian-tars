@@ -2,8 +2,11 @@ import type { Container } from '@needle-di/core'
 import { providerToVendor, type Vendor } from '@tars/contracts'
 import { ClaudeDIProvider } from '../implementations/claude-di'
 import { OllamaDIProvider } from '../implementations/ollama-di'
-import { OpenAIDIProvider } from '../implementations/openai-di'
 
+/**
+ * @deprecated Use streaming providers instead (OpenAIStreamingProvider, etc.)
+ * This factory is for legacy DI providers only.
+ */
 export class DIProviderFactory {
 	constructor(private container: Container) {}
 
@@ -11,20 +14,19 @@ export class DIProviderFactory {
 		switch (providerName) {
 			case 'Claude':
 				return providerToVendor(this.container.get(ClaudeDIProvider))
-			case 'OpenAI':
-				return providerToVendor(this.container.get(OpenAIDIProvider))
 			case 'Ollama':
 				return providerToVendor(this.container.get(OllamaDIProvider))
 			default:
-				throw new Error(`Unknown provider: ${providerName}`)
+				throw new Error(`Unknown provider: ${providerName}. Use streaming providers for OpenAI, Grok, etc.`)
 		}
 	}
 
 	/**
-	 * Get all available DI-enabled providers
+	 * Get all available DI-enabled providers (deprecated)
+	 * @deprecated Use streaming providers instead
 	 */
 	getAvailableProviders(): string[] {
-		return ['Claude', 'OpenAI', 'Ollama']
+		return ['Claude', 'Ollama']
 	}
 
 	/**

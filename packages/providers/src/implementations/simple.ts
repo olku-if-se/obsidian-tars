@@ -1,17 +1,22 @@
+import { toLlmModels, type LlmCapability } from '@tars/contracts/providers'
+
 // Simple exports to get the basic structure working
-export const createSimpleVendor = (name: string) => ({
-	name,
-	defaultOptions: {
-		apiKey: '',
-		baseURL: '',
-		model: '',
-		parameters: {}
-	},
-	models: ['test-model'],
-	websiteToObtainKey: 'https://example.com',
-	capabilities: ['Text Generation'] as const,
-	sendRequestFunc: () =>
-		async function* () {
-			yield 'Simple response'
-		}
-})
+export const createSimpleVendor = (name: string) => {
+	const capabilities: LlmCapability[] = ['Text Generation']
+	return {
+		name,
+		defaultOptions: {
+			apiKey: '',
+			baseURL: '',
+			model: '',
+			parameters: {}
+		},
+		models: toLlmModels(['test-model'], capabilities),
+		websiteToObtainKey: 'https://example.com',
+		capabilities,
+		sendRequestFunc: () =>
+			async function* () {
+				yield 'Simple response'
+			}
+	}
+}

@@ -13,8 +13,13 @@ export type {
 	NoticeSystem,
 	PlatformInfo,
 	RequestSystem,
-	EmbedCache
+	EmbedCache,
+	LlmModel,
+	LlmStreamProcessor,
+	LlmCapability,
+	NoOpStreamProcessor
 } from '@tars/contracts'
+export { getModelById, toLlmModels } from '@tars/contracts'
 
 export * from './factories'
 // Export DI provider factory
@@ -24,11 +29,10 @@ export {
 } from './factories'
 export * from './i18n'
 export * from './implementations'
-// Export DI providers with their own types
+// Export DI providers with their own types (deprecated - use streaming providers)
 export {
 	ClaudeDIProvider,
-	OllamaDIProvider,
-	OpenAIDIProvider
+	OllamaDIProvider
 } from './implementations'
 export * from './mcp-integration-helper'
 export * from './mcp-tool-injection-impl'

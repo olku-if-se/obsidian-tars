@@ -1,14 +1,14 @@
 import { injectable } from '@needle-di/core'
 import { ProviderTemplate } from '../base/ProviderTemplate'
 import { qwenVendor } from './qwen'
-import type { LlmCapability } from '@tars/contracts/providers'
+import { toLlmModels, type LlmCapability } from '@tars/contracts/providers'
 
 @injectable()
 export class QwenProvider extends ProviderTemplate {
   readonly name = 'qwen'
   readonly displayName = 'Qwen (Alibaba Cloud)'
   readonly capabilities: LlmCapability[] = ['Text Generation', 'Image Vision', 'Tool Calling']
-  readonly models = ['qwen-turbo', 'qwen-plus', 'qwen-max', 'qwen-vl-max']
+	readonly models = toLlmModels(['qwen-turbo', 'qwen-plus', 'qwen-max', 'qwen-vl-max'], this.capabilities)
   readonly websiteToObtainKey = 'https://dashscope.console.aliyun.com'
 
   protected getDefaultOptions() {

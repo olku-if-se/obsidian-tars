@@ -7,6 +7,7 @@ import type {
 	SendRequest,
 	Vendor
 } from '@tars/contracts'
+import { toLlmModels, type LlmCapability } from '@tars/contracts/providers'
 import { createLogger } from '@tars/logger'
 import axios from 'axios'
 import { t } from '../i18n'
@@ -218,17 +219,21 @@ const sendRequestFunc = (settings: QianFanOptions): SendRequest =>
 		}
 	}
 
-const models = [
-	'ernie-4.0-8k-latest',
-	'ernie-4.0-turbo-8k',
-	'ernie-3.5-128k',
-	'ernie_speed',
-	'ernie-speed-128k',
-	'gemma_7b_it',
-	'yi_34b_chat',
-	'mixtral_8x7b_instruct',
-	'llama_2_70b'
-]
+const qianFanCapabilities: LlmCapability[] = ['Text Generation']
+const models = toLlmModels(
+	[
+		'ernie-4.0-8k-latest',
+		'ernie-4.0-turbo-8k',
+		'ernie-3.5-128k',
+		'ernie_speed',
+		'ernie-speed-128k',
+		'gemma_7b_it',
+		'yi_34b_chat',
+		'mixtral_8x7b_instruct',
+		'llama_2_70b'
+	],
+	qianFanCapabilities
+)
 
 export const qianFanVendor: Vendor = {
 	name: 'QianFan',
@@ -236,11 +241,11 @@ export const qianFanVendor: Vendor = {
 		apiKey: '',
 		apiSecret: '',
 		baseURL: 'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat',
-		model: models[0],
+		model: models[0].id,
 		parameters: {}
 	} as QianFanOptions,
 	sendRequestFunc: (options: BaseOptions) => sendRequestFunc(options as QianFanOptions),
 	models: models,
 	websiteToObtainKey: 'https://qianfan.cloud.baidu.com',
-	capabilities: ['Text Generation']
+	capabilities: qianFanCapabilities
 }

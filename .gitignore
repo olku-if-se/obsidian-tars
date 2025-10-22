@@ -33,6 +33,14 @@ archive/
 mcp.json
 .mcp.json
 
+# SOPS age private keys (NEVER commit!)
+.secrets/
+
+# Unencrypted env files (NEVER commit!)
+.env
+.env.local
+.env.*.local
+
 # code coverage
 coverage/
 

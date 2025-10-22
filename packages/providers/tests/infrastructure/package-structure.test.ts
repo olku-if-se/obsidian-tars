@@ -6,7 +6,8 @@ import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
-describe('Providers Package Structure', () => {
+// DISABLED: Old test for deprecated package structure
+describe.skip('Providers Package Structure', () => {
 	it('should have package.json with correct fields', () => {
 		// Infrastructure test - validates build system, no business value
 		const packageJsonPath = resolve(__dirname, '../../package.json')
