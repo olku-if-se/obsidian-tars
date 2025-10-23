@@ -1,16 +1,12 @@
 import { inject, injectable } from '@needle-di/core'
-import type { ILoggingService, ISettingsService, Message } from '@tars/contracts'
+import type { Message } from '@tars/contracts'
 import { type LlmCapability, type LlmModel, toLlmModels } from '@tars/contracts/providers'
 import { tokens } from '@tars/contracts/tokens'
 import OpenAI from 'openai'
-import { StreamingProviderBase } from '../../base/StreamingProviderBase'
-import type { StreamConfig } from '../../config'
-import type {
-	BeforeStreamStartResult,
-	ComprehensiveCallbacks,
-	ToolDefinition
-} from '../../config/ComprehensiveCallbacks'
-import type { ICompletionsStream } from '../../streaming'
+import type { BeforeStreamStartResult, ComprehensiveCallbacks, ToolDefinition } from 'src/base/ComprehensiveCallbacks'
+import type { StreamConfig } from 'src/base/StreamConfig'
+import { StreamingProviderBase } from 'src/base/StreamingProviderBase'
+import type { ICompletionsStream } from 'src/streaming'
 import { OpenAICompletionsStream } from './OpenAICompletionsStream'
 import { type OpenAIProviderOptions, toOpenAIMessage } from './types'
 
@@ -115,7 +111,7 @@ export class OpenAIStreamingProvider extends StreamingProviderBase {
 			baseURL: options.baseURL
 		})
 
-		this.loggingService.info('OpenAI provider initialized', {
+		this.logger.info('OpenAI provider initialized', {
 			model: options.model,
 			baseURL: options.baseURL
 		})
@@ -142,7 +138,7 @@ export class OpenAIStreamingProvider extends StreamingProviderBase {
 			let tools: ToolDefinition[] | undefined
 
 			if (callbacks?.onToolsRequest) {
-				this.loggingService.debug('Requesting tools from consumer')
+				this.logger.debug('Requesting tools from consumer')
 
 				const toolsResult = await callbacks.onToolsRequest({
 					provider: this.name,
@@ -152,7 +148,7 @@ export class OpenAIStreamingProvider extends StreamingProviderBase {
 
 				tools = toolsResult.tools
 
-				this.loggingService.debug('Received tools from consumer', {
+				this.logger.debug('Received tools from consumer', {
 					toolCount: tools?.length || 0
 				})
 			}
@@ -163,7 +159,7 @@ export class OpenAIStreamingProvider extends StreamingProviderBase {
 			let finalOptions = config.providerOptions
 
 			if (callbacks?.beforeStreamStart) {
-				this.loggingService.debug('Invoking beforeStreamStart callback')
+				this.logger.debug('Invoking beforeStreamStart callback')
 
 				const beforeResult: BeforeStreamStartResult = await callbacks.beforeStreamStart({
 					messages,
@@ -175,7 +171,7 @@ export class OpenAIStreamingProvider extends StreamingProviderBase {
 
 				// Check for cancellation
 				if (beforeResult.cancel) {
-					this.loggingService.warn('Streaming cancelled by beforeStreamStart', {
+					this.logger.warn('Streaming cancelled by beforeStreamStart', {
 						reason: beforeResult.cancelReason
 					})
 					return
@@ -186,7 +182,7 @@ export class OpenAIStreamingProvider extends StreamingProviderBase {
 				finalTools = beforeResult.tools !== undefined ? beforeResult.tools : tools
 				finalOptions = beforeResult.providerOptions || config.providerOptions
 
-				this.loggingService.debug('beforeStreamStart completed', {
+				this.logger.debug('beforeStreamStart completed', {
 					messagesModified: beforeResult.messages !== undefined,
 					toolsModified: beforeResult.tools !== undefined,
 					optionsModified: beforeResult.providerOptions !== undefined
@@ -203,8 +199,8 @@ export class OpenAIStreamingProvider extends StreamingProviderBase {
 			// Prepare stream options with final tools
 			const streamOptions = {
 				signal: config.signal,
-				model: this.providerOptions!.model,
-				temperature: this.providerOptions!.temperature,
+				model: this.providerOptions?.model,
+				temperature: this.providerOptions?.temperature,
 				providerOptions: finalOptions
 			}
 
@@ -217,16 +213,16 @@ export class OpenAIStreamingProvider extends StreamingProviderBase {
 			if (callbacks?.onStreamStart) {
 				await callbacks.onStreamStart({
 					provider: this.name,
-					model: this.providerOptions!.model,
+					model: this.providerOptions?.model,
 					messageCount: finalMessages.length,
 					hasTools: !!finalTools && finalTools.length > 0,
 					timestamp: Date.now()
 				})
 			}
 
-			this.loggingService.info('Stream started', {
+			this.logger.info('Stream started', {
 				provider: this.name,
-				model: this.providerOptions!.model,
+				model: this.providerOptions?.model,
 				messages: finalMessages.length,
 				tools: finalTools?.length || 0
 			})
@@ -256,7 +252,7 @@ export class OpenAIStreamingProvider extends StreamingProviderBase {
 
 						// Check if chunk should be skipped
 						if (beforeChunkResult.skip) {
-							this.loggingService.debug('Chunk skipped by beforeChunk', {
+							this.logger.debug('Chunk skipped by beforeChunk', {
 								index: chunkCount
 							})
 							skipChunk = true
@@ -297,7 +293,7 @@ export class OpenAIStreamingProvider extends StreamingProviderBase {
 				// Handle tool calls
 				if (event.type === 'tool_calls' && event.data) {
 					if (callbacks?.onToolCall) {
-						this.loggingService.debug('Tool calls requested', {
+						this.logger.debug('Tool calls requested', {
 							count: event.data.length
 						})
 
@@ -309,7 +305,7 @@ export class OpenAIStreamingProvider extends StreamingProviderBase {
 
 						// Here you would handle tool results and potentially
 						// create a follow-up stream with the results
-						this.loggingService.debug('Tool calls completed', {
+						this.logger.debug('Tool calls completed', {
 							count: toolCallResult.responses.length,
 							continue: toolCallResult.continueStreaming
 						})
@@ -327,7 +323,7 @@ export class OpenAIStreamingProvider extends StreamingProviderBase {
 							stack: event.data.stack
 						})
 
-						this.loggingService.error('Stream error', {
+						this.logger.error('Stream error', {
 							error: event.data.message,
 							retry: errorResult.retry
 						})
@@ -346,7 +342,7 @@ export class OpenAIStreamingProvider extends StreamingProviderBase {
 			if (callbacks?.onStreamEnd) {
 				await callbacks.onStreamEnd({
 					provider: this.name,
-					model: this.providerOptions!.model,
+					model: this.providerOptions?.model,
 					totalChunks: chunkCount,
 					totalTokens: undefined, // Could be tracked if available
 					duration: Date.now() - startTime,
@@ -354,7 +350,7 @@ export class OpenAIStreamingProvider extends StreamingProviderBase {
 				})
 			}
 
-			this.loggingService.info('Stream completed successfully', {
+			this.logger.info('Stream completed successfully', {
 				chunks: chunkCount,
 				duration: Date.now() - startTime,
 				length: accumulated.length
@@ -364,7 +360,7 @@ export class OpenAIStreamingProvider extends StreamingProviderBase {
 			// ERROR HANDLING
 			// ========================================
 
-			this.loggingService.error('Stream failed', {
+			this.logger.error('Stream failed', {
 				error: error instanceof Error ? error.message : String(error),
 				chunks: chunkCount,
 				duration: Date.now() - startTime
@@ -429,6 +425,6 @@ export class OpenAIStreamingProvider extends StreamingProviderBase {
 	dispose(): void {
 		this.client = null
 		this.providerOptions = null
-		this.loggingService.info('OpenAI provider disposed')
+		this.logger.info('OpenAI provider disposed')
 	}
 }

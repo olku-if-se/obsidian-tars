@@ -1,14 +1,14 @@
 // Export new streaming providers (migrated to comprehensive callbacks)
 
-export { AzureStreamingProvider } from '../providers/azure'
-export { ClaudeStreamingProvider } from '../providers/claude'
-export { DeepseekStreamingProvider } from '../providers/deepseek'
-export { GeminiStreamingProvider } from '../providers/gemini'
-export { GrokStreamingProvider } from '../providers/grok'
-export { OllamaStreamingProvider } from '../providers/ollama'
-export { OpenAIStreamingProvider } from '../providers/openai'
-export { OpenRouterStreamingProvider } from '../providers/openrouter'
-export { SiliconFlowStreamingProvider } from '../providers/siliconflow'
+export { AzureStreamingProvider } from '../../src/providers/azure'
+export { ClaudeStreamingProvider } from '../../src/providers/claude'
+export { DeepseekStreamingProvider } from '../../src/providers/deepseek'
+export { GeminiStreamingProvider } from '../../src/providers/gemini'
+export { GrokStreamingProvider } from '../../src/providers/grok'
+export { OllamaStreamingProvider } from '../../src/providers/ollama'
+export { OpenAIStreamingProvider } from '../../src/providers/openai'
+export { OpenRouterStreamingProvider } from '../../src/providers/openrouter'
+export { SiliconFlowStreamingProvider } from '../../src/providers/siliconflow'
 // Export utilities
 export { withStreamLogging } from './decorator'
 // Export old DI providers (deprecated - to be removed)

@@ -1,5 +1,5 @@
 import { inject, injectable } from '@needle-di/core'
-import type { ILoggingService, ISettingsService, Message, ResolveEmbedAsBinary } from '@tars/contracts'
+import type { ILogger, ISettingsService, Message, ResolveEmbedAsBinary } from '@tars/contracts'
 import { type LlmCapability, type LlmModel, toLlmModels } from '@tars/contracts/providers'
 import { tokens } from '@tars/contracts/tokens'
 import { StreamingProviderBase } from '../../base/StreamingProviderBase'
@@ -8,7 +8,7 @@ import type {
 	BeforeStreamStartResult,
 	ComprehensiveCallbacks,
 	ToolDefinition
-} from '../../config/ComprehensiveCallbacks'
+} from '../../base/ComprehensiveCallbacks'
 import type { ICompletionsStream } from '../../streaming'
 import { OpenRouterCompletionsStream } from './OpenRouterCompletionsStream'
 import { type ContentItem, type OpenRouterMessage, type OpenRouterProviderOptions, toOpenRouterMessage } from './types'
@@ -88,7 +88,7 @@ export class OpenRouterStreamingProvider extends StreamingProviderBase {
 					messages
 				})
 				tools = toolsResult.tools
-				this.loggingService.debug('Received tools from consumer', { count: tools?.length || 0 })
+				this.logger.debug('Received tools from consumer', { count: tools?.length || 0 })
 			}
 
 			let finalMessages = messages
@@ -105,7 +105,7 @@ export class OpenRouterStreamingProvider extends StreamingProviderBase {
 				})
 
 				if (beforeResult.cancel) {
-					this.loggingService.warn('Stream cancelled', { reason: beforeResult.cancelReason })
+					this.logger.warn('Stream cancelled', { reason: beforeResult.cancelReason })
 					return
 				}
 
@@ -200,7 +200,7 @@ export class OpenRouterStreamingProvider extends StreamingProviderBase {
 				})
 			}
 		} catch (error) {
-			this.loggingService.error('Stream failed', { error })
+			this.logger.error('Stream failed', { error })
 			if (callbacks?.onError) {
 				await callbacks.onError({
 					error: error instanceof Error ? error : new Error(String(error)),
@@ -241,7 +241,7 @@ export class OpenRouterStreamingProvider extends StreamingProviderBase {
 		this.apiKey = options.apiKey
 		this.resolveEmbedAsBinary = resolveEmbedAsBinary || null
 
-		this.loggingService?.info?.('OpenRouter provider initialized', {
+		this.logger?.info?.('OpenRouter provider initialized', {
 			model: options.model,
 			baseURL: options.baseURL
 		})
@@ -272,7 +272,7 @@ export class OpenRouterStreamingProvider extends StreamingProviderBase {
 		// Extract tools from config if available
 		const tools = config.providerOptions?.tools
 
-		this.loggingService?.debug?.('Creating OpenRouter completion stream', {
+		this.logger?.debug?.('Creating OpenRouter completion stream', {
 			messageCount: messages.length,
 			model: streamOptions.model,
 			hasTools: !!tools
@@ -328,7 +328,7 @@ export class OpenRouterStreamingProvider extends StreamingProviderBase {
 							})
 						}
 					} catch (error) {
-						this.loggingService?.warn?.('Failed to process embed', { embed, error })
+						this.logger?.warn?.('Failed to process embed', { embed, error })
 					}
 				}
 
@@ -376,6 +376,6 @@ export class OpenRouterStreamingProvider extends StreamingProviderBase {
 		this.apiKey = null
 		this.providerOptions = null
 		this.resolveEmbedAsBinary = null
-		this.loggingService?.info?.('OpenRouter provider disposed')
+		this.logger?.info?.('OpenRouter provider disposed')
 	}
 }

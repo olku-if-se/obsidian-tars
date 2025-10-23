@@ -380,7 +380,7 @@ pnpm demo:streaming
 ## Next Steps
 
 1. **Migrate existing providers** to new architecture
-2. **Implement MCP adapter** to replace NoOpMCPAdapter
+2. **Implement MCP adapter** to replace McpAdapterMock
 3. **Add provider-specific optimizations** (batching, caching, etc.)
 4. **Enhance error reporting** with provider-specific context
 5. **Add metrics and monitoring** hooks

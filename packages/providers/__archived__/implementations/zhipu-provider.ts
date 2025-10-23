@@ -1,6 +1,6 @@
 import { injectable } from '@needle-di/core'
 import { type LlmCapability, toLlmModels } from '@tars/contracts/providers'
-import { ProviderTemplate } from '../base/ProviderTemplate'
+import { ProviderTemplate } from '../../src/base/ProviderTemplate'
 import { zhipuVendor } from './zhipu'
 
 @injectable()

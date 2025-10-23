@@ -1,5 +1,5 @@
 import { inject, injectable } from '@needle-di/core'
-import type { ILoggingService, ISettingsService, Message, ResolveEmbedAsBinary } from '@tars/contracts'
+import type { ILogger, ISettingsService, Message, ResolveEmbedAsBinary } from '@tars/contracts'
 import { type LlmCapability, type LlmModel, toLlmModels } from '@tars/contracts/providers'
 import { tokens } from '@tars/contracts/tokens'
 import { StreamingProviderBase } from '../../base/StreamingProviderBase'
@@ -8,7 +8,7 @@ import type {
 	BeforeStreamStartResult,
 	ComprehensiveCallbacks,
 	ToolDefinition
-} from '../../config/ComprehensiveCallbacks'
+} from '../../base/ComprehensiveCallbacks'
 import type { ICompletionsStream } from '../../streaming'
 import { convertEmbedToImageUrl } from '../../utils'
 import { GrokCompletionsStream } from './GrokCompletionsStream'
@@ -78,7 +78,7 @@ export class GrokStreamingProvider extends StreamingProviderBase {
 					messages
 				})
 				tools = toolsResult.tools
-				this.loggingService.debug('Received tools from consumer', { count: tools?.length || 0 })
+				this.logger.debug('Received tools from consumer', { count: tools?.length || 0 })
 			}
 
 			// 2. BEFORE STREAM START
@@ -96,7 +96,7 @@ export class GrokStreamingProvider extends StreamingProviderBase {
 				})
 
 				if (beforeResult.cancel) {
-					this.loggingService.warn('Stream cancelled', { reason: beforeResult.cancelReason })
+					this.logger.warn('Stream cancelled', { reason: beforeResult.cancelReason })
 					return
 				}
 
@@ -197,7 +197,7 @@ export class GrokStreamingProvider extends StreamingProviderBase {
 				})
 			}
 		} catch (error) {
-			this.loggingService.error('Stream failed', { error })
+			this.logger.error('Stream failed', { error })
 			if (callbacks?.onError) {
 				await callbacks.onError({
 					error: error instanceof Error ? error : new Error(String(error)),
@@ -241,7 +241,7 @@ export class GrokStreamingProvider extends StreamingProviderBase {
 		this.apiKey = options.apiKey
 		this.resolveEmbedAsBinary = resolveEmbedAsBinary || null
 
-		this.loggingService?.info?.('Grok provider initialized', {
+		this.logger?.info?.('Grok provider initialized', {
 			model: options.model,
 			baseURL: options.baseURL
 		})
@@ -272,7 +272,7 @@ export class GrokStreamingProvider extends StreamingProviderBase {
 		// Extract tools from config if available
 		const tools = config.providerOptions?.tools
 
-		this.loggingService?.debug?.('Creating Grok completion stream', {
+		this.logger?.debug?.('Creating Grok completion stream', {
 			messageCount: messages.length,
 			model: streamOptions.model,
 			hasTools: !!tools
@@ -356,6 +356,6 @@ export class GrokStreamingProvider extends StreamingProviderBase {
 		this.apiKey = null
 		this.providerOptions = null
 		this.resolveEmbedAsBinary = null
-		this.loggingService?.info?.('Grok provider disposed')
+		this.logger?.info?.('Grok provider disposed')
 	}
 }

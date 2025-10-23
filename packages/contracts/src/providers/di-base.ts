@@ -1,4 +1,4 @@
-import type { IDocumentService, ILoggingService, INotificationService, ISettingsService } from '../services'
+import type { IDocumentService, ILogger, INotificationService, ISettingsService } from '../services'
 import { type BaseOptions, BaseProvider, type FrameworkConfig, type SendRequest } from './base'
 
 /**
@@ -7,7 +7,7 @@ import { type BaseOptions, BaseProvider, type FrameworkConfig, type SendRequest 
  */
 export interface DIBaseOptions extends BaseOptions {
 	// DI services - injected automatically
-	loggingService?: ILoggingService
+	loggingService?: ILogger
 	notificationService?: INotificationService
 	settingsService?: ISettingsService
 	documentService?: IDocumentService
@@ -19,13 +19,13 @@ export interface DIBaseOptions extends BaseOptions {
  */
 export abstract class DIBaseProvider extends BaseProvider {
 	// DI services - protected so subclasses can access them
-	protected loggingService: ILoggingService
+	protected loggingService: ILogger
 	protected notificationService: INotificationService
 	protected settingsService: ISettingsService
 	protected documentService: IDocumentService
 
 	constructor(
-		loggingService: ILoggingService,
+		loggingService: ILogger,
 		notificationService: INotificationService,
 		settingsService: ISettingsService,
 		documentService: IDocumentService

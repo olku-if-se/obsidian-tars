@@ -1,16 +1,12 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { inject, injectable } from '@needle-di/core'
-import type { ILoggingService, ISettingsService, Message } from '@tars/contracts'
+import type { Message } from '@tars/contracts'
 import { type LlmCapability, type LlmModel, toLlmModels } from '@tars/contracts/providers'
 import { tokens } from '@tars/contracts/tokens'
-import { StreamingProviderBase } from '../../base/StreamingProviderBase'
-import type { StreamConfig } from '../../config'
-import type {
-	BeforeStreamStartResult,
-	ComprehensiveCallbacks,
-	ToolDefinition
-} from '../../config/ComprehensiveCallbacks'
-import type { ICompletionsStream } from '../../streaming'
+import type { BeforeStreamStartResult, ComprehensiveCallbacks, ToolDefinition } from 'src/base/ComprehensiveCallbacks'
+import type { StreamConfig } from 'src/base/StreamConfig'
+import { StreamingProviderBase } from 'src/base/StreamingProviderBase'
+import type { ICompletionsStream } from 'src/streaming'
 import { ClaudeCompletionsStream } from './ClaudeCompletionsStream'
 
 export interface ClaudeProviderOptions {
@@ -105,7 +101,7 @@ export class ClaudeStreamingProvider extends StreamingProviderBase {
 			baseURL: options.baseURL
 		})
 
-		this.loggingService.info('Claude provider initialized', {
+		this.logger.info('Claude provider initialized', {
 			model: options.model,
 			baseURL: options.baseURL
 		})
@@ -131,7 +127,7 @@ export class ClaudeStreamingProvider extends StreamingProviderBase {
 					messages
 				})
 				tools = toolsResult.tools
-				this.loggingService.debug('Received tools from consumer', { count: tools?.length || 0 })
+				this.logger.debug('Received tools from consumer', { count: tools?.length || 0 })
 			}
 
 			// 2. BEFORE STREAM START
@@ -149,7 +145,7 @@ export class ClaudeStreamingProvider extends StreamingProviderBase {
 				})
 
 				if (beforeResult.cancel) {
-					this.loggingService.warn('Stream cancelled', { reason: beforeResult.cancelReason })
+					this.logger.warn('Stream cancelled', { reason: beforeResult.cancelReason })
 					return
 				}
 
@@ -250,7 +246,7 @@ export class ClaudeStreamingProvider extends StreamingProviderBase {
 				})
 			}
 		} catch (error) {
-			this.loggingService.error('Stream failed', { error })
+			this.logger.error('Stream failed', { error })
 			if (callbacks?.onError) {
 				await callbacks.onError({
 					error: error instanceof Error ? error : new Error(String(error)),
@@ -278,7 +274,7 @@ export class ClaudeStreamingProvider extends StreamingProviderBase {
 		return ClaudeCompletionsStream.from(
 			messages,
 			{
-				model: this.providerOptions!.model,
+				model: this.providerOptions?.model,
 				temperature: this.providerOptions?.temperature,
 				maxTokens: this.providerOptions?.maxTokens || 4096,
 				providerOptions: config.providerOptions

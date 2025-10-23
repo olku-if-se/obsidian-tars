@@ -20,7 +20,7 @@
 
 import type { Message } from '@tars/contracts'
 import { beforeEach, describe, expect, it } from 'vitest'
-import type { ComprehensiveCallbacks } from '../../src/config/ComprehensiveCallbacks'
+import type { ComprehensiveCallbacks } from '../../src/base/ComprehensiveCallbacks'
 import { GrokStreamingProvider } from '../../src/providers/grok/GrokStreamingProvider'
 import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
 

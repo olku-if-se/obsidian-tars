@@ -9,7 +9,7 @@ import { logError, YAMLParseError } from '@tars/mcp-hosting'
 import { parse as parseYAML } from 'yaml'
 import { renderToolResultToDOM } from './toolResultFormatter'
 import type {
-	ILoggingService,
+	ILogger,
 	ICodeBlockProcessor,
 	LoggingServiceToken,
 	ServerConfigManagerToken

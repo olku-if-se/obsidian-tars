@@ -6,7 +6,7 @@ import type {
 	ToolExecutor,
 	MCPServerManager,
 	IStatusService,
-	ILoggingService
+	ILogger
 } from '@tars/contracts'
 import { CodeBlockProcessorToken, MCPServerManagerToken, ToolExecutorToken } from '@tars/contracts'
 import { ILoggingServiceToken, IStatusServiceToken } from '../container/tokens'
@@ -17,7 +17,7 @@ export class ObsidianMcpService implements IMcpService {
 	private serverManager: MCPServerManager
 	private codeBlockProcessor: CodeBlockProcessor
 	private statusService: IStatusService
-	private loggingService: ILoggingService
+	private loggingService: ILogger
 	private isInitialized = false
 
 	constructor(
@@ -25,7 +25,7 @@ export class ObsidianMcpService implements IMcpService {
 		@inject(MCPServerManagerToken) serverManager: MCPServerManager,
 		@inject(CodeBlockProcessorToken) codeBlockProcessor: CodeBlockProcessor,
 		@inject(IStatusServiceToken) statusService: IStatusService,
-		@inject(ILoggingServiceToken) loggingService: ILoggingService
+		@inject(ILoggingServiceToken) loggingService: ILogger
 	) {
 		this.toolExecutor = toolExecutor
 		this.serverManager = serverManager

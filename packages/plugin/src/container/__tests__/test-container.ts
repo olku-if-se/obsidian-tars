@@ -1,7 +1,7 @@
 import { Container } from '@needle-di/core'
 import { vi } from 'vitest'
 import {
-	ILoggingService,
+	ILogger,
 	INotificationService,
 	ISettingsService,
 	IStatusService,
@@ -39,7 +39,7 @@ export function createTestContainer(): Container {
 		warn: vi.fn(),
 		error: vi.fn()
 	}
-	container.bind(ILoggingService).toConstantValue(loggingServiceMock)
+	container.bind(ILogger).toConstantValue(loggingServiceMock)
 	container.bind(ILoggingServiceToken).toConstantValue(loggingServiceMock)
 
 	const notificationServiceMock = {

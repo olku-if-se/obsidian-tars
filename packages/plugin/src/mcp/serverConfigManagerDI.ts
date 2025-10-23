@@ -5,7 +5,7 @@
 
 import { injectable, inject } from '@needle-di/core'
 import type { MCPServerConfig } from '@tars/mcp-hosting'
-import type { IServerConfigManager, ILoggingService, LoggingServiceToken } from '@tars/contracts'
+import type { IServerConfigManager, ILogger, LoggingServiceToken } from '@tars/contracts'
 
 /**
  * DI-enabled implementation of server configuration manager

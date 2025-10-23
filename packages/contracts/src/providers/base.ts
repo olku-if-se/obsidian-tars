@@ -80,7 +80,7 @@ export type Capability =
  * Interface for injecting MCP tools into provider parameters
  * This allows providers to remain independent of MCP implementation details
  */
-export interface MCPToolInjector {
+export interface McpToolInjector {
 	injectTools(parameters: Record<string, unknown>, providerName: string): Promise<Record<string, unknown>>
 }
 
@@ -157,8 +157,8 @@ export interface ToolCallingCoordinator {
  * Interface for advanced MCP integration including tool coordination
  * Used by providers that support autonomous tool calling
  */
-export interface MCPIntegration {
-	mcpToolInjector: MCPToolInjector
+export interface McpIntegration {
+	mcpToolInjector: McpToolInjector
 	toolCallingCoordinator?: ToolCallingCoordinator
 	providerAdapter?: ProviderAdapter
 	mcpExecutor?: ProviderToolExecutor
@@ -231,24 +231,12 @@ export interface PluginSettings {
 	[key: string]: unknown
 }
 
+/** LLM Provider Options */
 export interface BaseOptions {
 	apiKey: string
 	baseURL: string
-	model: string
-	parameters: Record<string, unknown>
-	enableWebSearch?: boolean
-	// MCP tool integration - always provided by the system (may contain no tools)
-	mcpToolInjector?: MCPToolInjector
-	mcpIntegration?: MCPIntegration // Advanced MCP integration for tool coordination
-	// Document context for tool execution
-	documentPath?: string // Current document path for tool execution context
-	statusBarManager?: StatusBarManager
-	editor?: Editor
-	pluginSettings?: PluginSettings
-	documentWriteLock?: DocumentWriteLock
-	beforeToolExecution?: () => Promise<void>
-	// Framework-specific configuration
-	frameworkConfig?: FrameworkConfig
+	model?: string
+	parameters?: Record<string, unknown>
 }
 
 export interface ProviderSettings {
@@ -337,17 +325,6 @@ export interface Vendor {
 }
 
 /**
- * Create default options with required MCP fields
- */
-export function createDefaultOptions(options: Omit<BaseOptions, 'mcpToolInjector' | 'mcpIntegration'>): BaseOptions {
-	return {
-		...options,
-		mcpToolInjector: undefined, // Will be injected by the system
-		mcpIntegration: undefined // Will be injected by the system
-	}
-}
-
-/**
  * Convert a BaseProvider instance to a Vendor interface
  */
 export function providerToVendor(provider: BaseProvider): Vendor {
@@ -409,11 +386,13 @@ export interface LlmProvider {
 	/** Default configuration */
 	readonly defaultOptions: BaseOptions
 
-	/** Create streaming request function */
-	createSendRequest(options: BaseOptions): SendRequest
-
 	/** Validate provider configuration */
 	validateOptions(options: BaseOptions): boolean
+}
+
+export interface LlmSendRequest {
+	/** Create streaming request function */
+	createSendRequest(options: BaseOptions): SendRequest
 }
 
 /** Updated capability type for LlmProvider */

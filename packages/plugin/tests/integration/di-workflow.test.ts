@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { createPluginContainer, createTestContainer } from '../../src/container/plugin-container'
-import type { ILoggingService, INotificationService, ISettingsService } from '@tars/contracts'
+import type { ILogger, INotificationService, ISettingsService } from '@tars/contracts'
 
 describe('DI Workflow Integration Tests', () => {
 	let container: ReturnType<typeof createTestContainer>
@@ -46,7 +46,7 @@ describe('DI Workflow Integration Tests', () => {
 			expect(pluginContainer).toBeDefined()
 
 			// Test that all expected services can be resolved
-			const loggingService = pluginContainer.get(ILoggingService)
+			const loggingService = pluginContainer.get(ILogger)
 			const notificationService = pluginContainer.get(INotificationService)
 			const settingsService = pluginContainer.get(ISettingsService)
 
@@ -56,8 +56,8 @@ describe('DI Workflow Integration Tests', () => {
 		})
 
 		it('should provide consistent service instances (singleton pattern)', () => {
-			const loggingService1 = container.get(ILoggingService)
-			const loggingService2 = container.get(ILoggingService)
+			const loggingService1 = container.get(ILogger)
+			const loggingService2 = container.get(ILogger)
 
 			expect(loggingService1).toBe(loggingService2)
 		})
@@ -65,7 +65,7 @@ describe('DI Workflow Integration Tests', () => {
 
 	describe('Service Integration', () => {
 		it('should allow services to communicate through DI', () => {
-			const loggingService = container.get(ILoggingService)
+			const loggingService = container.get(ILogger)
 			const notificationService = container.get(INotificationService)
 
 			// Test that logging service works
@@ -84,7 +84,7 @@ describe('DI Workflow Integration Tests', () => {
 		})
 
 		it('should support service replacement in test environment', () => {
-			const originalService = container.get(ILoggingService)
+			const originalService = container.get(ILogger)
 
 			// Replace service with mock
 			const mockService = {
@@ -94,8 +94,8 @@ describe('DI Workflow Integration Tests', () => {
 				error: vi.fn()
 			}
 
-			container.register(ILoggingService).toInstance(mockService)
-			const replacedService = container.get(ILoggingService)
+			container.register(ILogger).toInstance(mockService)
+			const replacedService = container.get(ILogger)
 
 			// Verify mock is used
 			replacedService.debug('test')
@@ -138,7 +138,7 @@ describe('DI Workflow Integration Tests', () => {
 			const startTime = performance.now()
 
 			for (let i = 0; i < iterations; i++) {
-				const loggingService = container.get(ILoggingService)
+				const loggingService = container.get(ILogger)
 				const notificationService = container.get(INotificationService)
 				const settingsService = container.get(ISettingsService)
 
@@ -166,8 +166,8 @@ describe('DI Workflow Integration Tests', () => {
 			const container2 = createTestContainer()
 
 			// Both containers should work independently
-			const service1 = container1.get(ILoggingService)
-			const service2 = container2.get(ILoggingService)
+			const service1 = container1.get(ILogger)
+			const service2 = container2.get(ILogger)
 
 			expect(service1).toBeDefined()
 			expect(service2).toBeDefined()
@@ -182,7 +182,7 @@ describe('DI Workflow Integration Tests', () => {
 
 		it('should maintain clean state between tests', () => {
 			// Verify container is clean after setup
-			const loggingService = container.get(ILoggingService)
+			const loggingService = container.get(ILogger)
 			expect(loggingService).toBeDefined()
 
 			// Container should be in clean state
@@ -201,7 +201,7 @@ describe('DI Workflow Integration Tests', () => {
 			})
 
 			// Simulate plugin initialization sequence
-			const loggingService = pluginContainer.get(ILoggingService)
+			const loggingService = pluginContainer.get(ILogger)
 			const notificationService = pluginContainer.get(INotificationService)
 			const settingsService = pluginContainer.get(ISettingsService)
 
@@ -230,7 +230,7 @@ describe('DI Workflow Integration Tests', () => {
 				statusBarManager: mockStatusBarManager
 			})
 
-			const loggingService = container.get(ILoggingService)
+			const loggingService = container.get(ILogger)
 			const notificationService = container.get(INotificationService)
 
 			// Simulate command execution

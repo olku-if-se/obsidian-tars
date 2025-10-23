@@ -28,7 +28,7 @@ export function createPluginContainer({ plugin }: CreateContainerOptions): Conta
 	// Register service implementations
 	container.bind({ provide: di.ISettingsServiceToken, useClass: ObsidianSettingsService })
 	container.bind({ provide: di.ILoggingServiceToken, useClass: ObsidianLoggingService })
-	container.bind({ provide: di.LoggerFactoryToken, useClass: LoggerFactory })
+	container.bind({ provide: di.ILoggerFactoryToken, useClass: LoggerFactory })
 	container.bind({ provide: di.INotificationServiceToken, useClass: ObsidianNotificationService })
 	container.bind({ provide: di.IStatusServiceToken, useClass: ObsidianStatusService })
 	container.bind({ provide: di.IDocumentServiceToken, useClass: ObsidianDocumentService })

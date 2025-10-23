@@ -1,5 +1,5 @@
 import { inject, injectable } from '@needle-di/core'
-import type { ILoggingService, ISettingsService, Message } from '@tars/contracts'
+import type { ILogger, ISettingsService, Message } from '@tars/contracts'
 import { type LlmCapability, type LlmModel, toLlmModels } from '@tars/contracts/providers'
 import { tokens } from '@tars/contracts/tokens'
 import OpenAI from 'openai'
@@ -9,7 +9,7 @@ import type {
 	BeforeStreamStartResult,
 	ComprehensiveCallbacks,
 	ToolDefinition
-} from '../../config/ComprehensiveCallbacks'
+} from '../../base/ComprehensiveCallbacks'
 import type { ICompletionsStream } from '../../streaming'
 import { OpenAICompletionsStream } from '../openai/OpenAICompletionsStream'
 import { toOpenAIMessage } from '../openai/types'
@@ -109,7 +109,7 @@ export class OllamaStreamingProvider extends StreamingProviderBase {
 			baseURL: options.baseURL
 		})
 
-		this.loggingService.info('Ollama provider initialized', {
+		this.logger.info('Ollama provider initialized', {
 			model: options.model,
 			baseURL: options.baseURL
 		})
@@ -135,7 +135,7 @@ export class OllamaStreamingProvider extends StreamingProviderBase {
 					messages
 				})
 				tools = toolsResult.tools
-				this.loggingService.debug('Received tools from consumer', { count: tools?.length || 0 })
+				this.logger.debug('Received tools from consumer', { count: tools?.length || 0 })
 			}
 
 			// 2. BEFORE STREAM START
@@ -153,7 +153,7 @@ export class OllamaStreamingProvider extends StreamingProviderBase {
 				})
 
 				if (beforeResult.cancel) {
-					this.loggingService.warn('Stream cancelled', { reason: beforeResult.cancelReason })
+					this.logger.warn('Stream cancelled', { reason: beforeResult.cancelReason })
 					return
 				}
 
@@ -254,7 +254,7 @@ export class OllamaStreamingProvider extends StreamingProviderBase {
 				})
 			}
 		} catch (error) {
-			this.loggingService.error('Stream failed', { error })
+			this.logger.error('Stream failed', { error })
 			if (callbacks?.onError) {
 				await callbacks.onError({
 					error: error instanceof Error ? error : new Error(String(error)),

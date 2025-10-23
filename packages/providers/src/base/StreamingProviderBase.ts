@@ -1,7 +1,8 @@
-import type { ILoggingService, ISettingsService, Message } from '@tars/contracts'
-import type { RetryConfig, StreamConfig } from '../config'
-import { DEFAULT_ERROR_HANDLING_CONFIG, DEFAULT_PROCESSING_CONFIG, DEFAULT_STREAM_CONFIG } from '../config'
-import { StreamQueue } from '../streaming'
+import type { BaseOptions, ILogger, ISettingsService, LlmCapability, LlmProvider, Message } from '@tars/contracts'
+import { type ICompletionsStream, StreamQueue } from '../streaming'
+import { DEFAULT_ERROR_HANDLING_CONFIG, type RetryConfig } from './ErrorHandlingConfig'
+import type { StreamConfig } from './StreamConfig'
+import { DEFAULT_PROCESSING_CONFIG, DEFAULT_STREAM_CONFIG } from './StreamConfig'
 import { StreamingContext } from './StreamingContext'
 
 /**
@@ -36,20 +37,26 @@ import { StreamingContext } from './StreamingContext'
  * Note: Do not apply @injectable() to this abstract class.
  * Apply it to concrete implementations instead.
  */
-export abstract class StreamingProviderBase {
-	protected loggingService: ILoggingService
-	protected settingsService: ISettingsService
+export abstract class StreamingProviderBase implements LlmProvider {
+	protected logger: ILogger
+	protected settings: ISettingsService
 
-	constructor(loggingService: ILoggingService, settingsService: ISettingsService) {
-		this.loggingService = loggingService
-		this.settingsService = settingsService
+	protected constructor(logger: ILogger, settings: ISettingsService) {
+		this.logger = logger
+		this.settings = settings
 	}
 
 	// Abstract properties that providers must implement
 	abstract readonly name: string
 	abstract readonly displayName: string
-	abstract readonly capabilities: string[]
+	abstract readonly capabilities: LlmCapability[]
 	abstract readonly websiteToObtainKey: string
+	abstract readonly defaultOptions: BaseOptions
+
+	validateOptions(_options: BaseOptions): boolean {
+		return true
+	}
+
 	/**
 	 * Create a completion stream for the given messages
 	 * Provider-specific implementation
@@ -60,65 +67,55 @@ export abstract class StreamingProviderBase {
 	 * Stream with full error handling, retries, and callbacks
 	 * This is the main entry point for streaming
 	 */
-	async *stream(messages: Message[], config: StreamConfig = {}): AsyncGenerator<string, void, unknown> {
-		const mergedConfig = this.mergeConfig(config)
-		const context = new StreamingContext(this.name, 'default-model', mergedConfig)
+	async *stream(messages: Message[], streamConfig: StreamConfig = {}): AsyncGenerator<string, void, unknown> {
+		const config = this.mergeConfig(streamConfig)
+		const context = new StreamingContext(this.name, 'default-model', config, {
+			messageCount: messages.length
+		})
+		const { onStreamStart, onStreamEnd, onStreamEvent, onError } = config.callbacks ?? {}
 
 		// Create stream queue with abort signal
-		const queue = this.createStreamQueue(mergedConfig.signal)
-
-		// Create initial completion stream
-		const initialStream = await this.createStreamWithRetry(messages, mergedConfig)
-		queue.push(initialStream)
+		const stream = await this.createStreamWithRetry(messages, config)
+		const queue = new StreamQueue(stream, config.signal)
 
 		// Call onStreamStart callback
-		await this.invokeCallback(mergedConfig.callbacks?.onStreamStart, {
-			provider: this.name,
-			model: 'default-model',
-			messageCount: messages.length,
-			timestamp: Date.now()
-		})
+		await this.invokeCallback(onStreamStart, context.toStartStreamArgs())
 
 		try {
 			// Process queue with timeout wrapper
-			const wrappedQueue = this.withTimeout(queue, mergedConfig)
+			const wrappedQueue = this.withTimeout(queue, config)
 
 			for await (const event of wrappedQueue) {
 				// Invoke onStreamEvent callback
-				await this.invokeCallback(mergedConfig.callbacks?.onStreamEvent, event)
+				await this.invokeCallback(onStreamEvent, context.toEventArgs(event))
 
 				// Process event based on type
 				if (event.type === 'content') {
-					const content = await this.processContent(event.data, context, mergedConfig)
-					if (content) {
-						yield content
-					}
+					const content = await this.processContent(event.data, context)
+					if (content) yield content
 				} else if (event.type === 'tool_calls') {
 					// Tool calls handled by callback
-					await this.invokeCallback(mergedConfig.callbacks?.onToolCall, event.data)
+					await this.invokeCallback(config.callbacks?.onToolCall, event.data)
 				} else if (event.type === 'stream_end') {
 					// Stream ended
 					break
 				} else if (event.type === 'error') {
 					// Error event
 					const error = event.data
-					await this.invokeCallback(mergedConfig.callbacks?.onError, error, false)
+					await this.invokeCallback(onError, error)
 					throw error
 				}
 			}
 
 			// Call onStreamEnd callback
-			await this.invokeCallback(mergedConfig.callbacks?.onStreamEnd, {
-				provider: this.name,
-				model: 'default-model',
-				messageCount: messages.length,
-				timestamp: Date.now()
-			})
+			// noinspection TypeScriptValidateTypes
+			await this.invokeCallback(onStreamEnd, context.toEndStreamArgs())
 		} catch (error) {
 			const wrappedError = error instanceof Error ? error : new Error(String(error))
 
 			// Call onError callback
-			await this.invokeCallback(mergedConfig.callbacks?.onError, wrappedError, false)
+			// noinspection TypeScriptValidateTypes
+			await this.invokeCallback(onError, context.toErrorArgs(wrappedError))
 
 			throw wrappedError
 		} finally {
@@ -126,16 +123,7 @@ export abstract class StreamingProviderBase {
 		}
 	}
 
-	/**
-	 * Create stream queue with abort signal
-	 */
-	protected createStreamQueue(signal?: AbortSignal): StreamQueue {
-		return new StreamQueue(undefined, signal)
-	}
-
-	/**
-	 * Wrap iterable with timeout support
-	 */
+	/** Wrap iterable with timeout support. */
 	protected withTimeout<T>(iterable: AsyncIterable<T>, config: StreamConfig): AsyncIterable<T> {
 		const timeoutMs = config.errorHandling?.timeout?.chunkTimeout
 
@@ -171,9 +159,7 @@ export abstract class StreamingProviderBase {
 		}
 	}
 
-	/**
-	 * Create stream with retry logic
-	 */
+	/** Create stream with retry logic. */
 	protected async createStreamWithRetry(messages: Message[], config: StreamConfig): Promise<ICompletionsStream> {
 		const retryConfig = {
 			...DEFAULT_ERROR_HANDLING_CONFIG.retry,
@@ -183,9 +169,7 @@ export abstract class StreamingProviderBase {
 		return this.withRetry(() => Promise.resolve(this.createCompletionStream(messages, config)), retryConfig)
 	}
 
-	/**
-	 * Retry logic wrapper
-	 */
+	/** Retry logic wrapper. */
 	protected async withRetry<T>(fn: () => Promise<T>, retryConfig: RetryConfig): Promise<T> {
 		let lastError: Error | null = null
 
@@ -216,9 +200,7 @@ export abstract class StreamingProviderBase {
 		throw lastError || new Error('Retry failed')
 	}
 
-	/**
-	 * Check if error is retryable
-	 */
+	/** Check if error is retryable. */
 	protected isRetryableError(error: Error, retryConfig: RetryConfig): boolean {
 		// Custom predicate
 		if (retryConfig.shouldRetry) {
@@ -231,34 +213,28 @@ export abstract class StreamingProviderBase {
 		)
 	}
 
-	/**
-	 * Process content with preprocessors/postprocessors
-	 */
-	protected async processContent(
-		content: string,
-		context: StreamingContext,
-		config: StreamConfig
-	): Promise<string | null> {
+	/** Process content with preprocessors/postprocessors. */
+	protected async processContent(content: string, context: StreamingContext): Promise<string | null> {
 		context.incrementChunk()
 
+		const config = context.config
+		const { onContentChunk } = config.callbacks ?? {}
+		const { preprocessor, postprocessor } = config.processing ?? {}
 		let processedContent = content
 
 		// Apply preprocessor
-		if (config.processing?.preprocessor) {
-			processedContent = await config.processing.preprocessor(processedContent, context.getProcessingContext())
-		}
-
-		// Apply postprocessor
-		if (config.processing?.postprocessor) {
-			processedContent = await config.processing.postprocessor(processedContent, context.getProcessingContext())
+		if (preprocessor) {
+			processedContent = await preprocessor(processedContent, context.getProcessingContext())
 		}
 
 		// Invoke onContent callback
-		await this.invokeCallback(config.callbacks?.onContent, processedContent, {
-			chunkIndex: context.getCurrentChunkIndex(),
-			tokens: undefined,
-			timestamp: Date.now()
-		})
+		// noinspection TypeScriptValidateTypes
+		await this.invokeCallback(onContentChunk, context.toContentArgs(processedContent))
+
+		// Apply postprocessor
+		if (postprocessor) {
+			processedContent = await postprocessor(processedContent, context.getProcessingContext())
+		}
 
 		// Accumulate if needed
 		if (config.processing?.accumulateContent) {
@@ -268,10 +244,8 @@ export abstract class StreamingProviderBase {
 		return processedContent
 	}
 
-	/**
-	 * Merge configuration with defaults
-	 */
-	protected mergeConfig(config: StreamConfig): StreamConfig {
+	/** Merge configuration with defaults. */
+	protected mergeConfig(config: Partial<StreamConfig>): StreamConfig {
 		return {
 			...DEFAULT_STREAM_CONFIG,
 			...config,
@@ -286,25 +260,22 @@ export abstract class StreamingProviderBase {
 		}
 	}
 
-	/**
-	 * Invoke callback safely
-	 */
-	protected async invokeCallback<T extends (...args: any[]) => any>(
+	// noinspection JSAnnotator
+	/** Invoke callback safely. */
+	protected async invokeCallback<T extends AnyFunction>(
 		callback: T | undefined,
 		...args: Parameters<T>
-	): Promise<void> {
-		if (!callback) {
-			return
-		}
+	): Promise<unknown> {
+		if (!callback) return // empty
 
 		try {
-			const result = callback(...args)
-			if (result instanceof Promise) {
-				await result
-			}
+			return await callback(...args)
 		} catch (error) {
 			// Log callback errors but don't throw
-			this.loggingService?.warn?.('Callback error', error)
+			this.logger?.warn?.('Callback error', error)
 		}
 	}
 }
+
+// biome-ignore lint/suspicious/noExplicitAny: keep it simple
+type AnyFunction = (...args: any[]) => any

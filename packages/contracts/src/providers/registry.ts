@@ -1,22 +1,22 @@
-import type { LlmProvider, LlmCapability } from './base'
+import type { LlmCapability, LlmProvider } from "./base";
 
 /**
  * Provider Registry Interface
  * Manages provider discovery and lookup
  */
-export interface ProviderRegistry {
+export abstract class ProviderRegistry {
 	/** Get all registered providers */
-	getAll(): LlmProvider[]
+	abstract getAll(): LlmProvider[];
 
 	/** Get providers filtered by capability */
-	getByCapability(capability: LlmCapability): LlmProvider[]
+	abstract getByCapability(capability: LlmCapability): LlmProvider[];
 
 	/** Get provider by unique name */
-	getByName(name: string): LlmProvider | undefined
+	abstract getByName(name: string): LlmProvider | undefined;
 
 	/** Check if any providers support a capability */
-	hasCapability(capability: LlmCapability): boolean
+	abstract hasCapability(capability: LlmCapability): boolean;
 
 	/** Get all unique capabilities across all providers */
-	getAllCapabilities(): LlmCapability[]
+	abstract getAllCapabilities(): LlmCapability[];
 }

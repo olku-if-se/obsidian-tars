@@ -2,8 +2,8 @@ import type { BaseOptions, Message, ResolveEmbedAsBinary, SaveAttachment, SendRe
 import { type LlmCapability, toLlmModels } from '@tars/contracts/providers'
 import { createLogger } from '@tars/logger'
 import OpenAI from 'openai'
-import { t } from '../i18n'
-import { getMimeTypeFromFilename } from '../utils'
+import { t } from '../../src/i18n'
+import { getMimeTypeFromFilename } from '../../src/utils'
 
 const gptImageCapabilities: LlmCapability[] = ['Image Generation', 'Image Editing']
 const models = toLlmModels(['gpt-image-1'], gptImageCapabilities)

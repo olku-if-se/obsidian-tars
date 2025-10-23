@@ -21,7 +21,7 @@
 
 import type { Message } from '@tars/contracts'
 import { beforeEach, describe, expect, it } from 'vitest'
-import type { ComprehensiveCallbacks, ToolDefinition } from '../../src/config/ComprehensiveCallbacks'
+import type { ComprehensiveCallbacks, ToolDefinition } from '../../src/base/ComprehensiveCallbacks'
 import { OpenAIStreamingProvider } from '../../src/providers/openai/OpenAIStreamingProvider'
 import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
 

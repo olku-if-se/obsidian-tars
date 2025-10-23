@@ -4,7 +4,7 @@ import type {
 	IReactBridge,
 	ISettingsService,
 	LoggingServiceToken,
-	ILoggingService,
+	ILogger,
 	StatusBarElementToken
 } from '@tars/contracts'
 import { StatusBarElementToken } from '@tars/contracts'

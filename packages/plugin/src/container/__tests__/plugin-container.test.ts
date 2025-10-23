@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPluginContainer } from '../plugin-container'
 import { createTestContainer } from './test-container'
 import {
-	ILoggingService,
+	ILogger,
 	INotificationService,
 	ISettingsService,
 	IStatusService,
@@ -73,7 +73,7 @@ describe('Plugin Container', () => {
 			})
 
 			// Test that core services can be resolved
-			expect(container.get(ILoggingService)).toBeDefined()
+			expect(container.get(ILogger)).toBeDefined()
 			expect(container.get(INotificationService)).toBeDefined()
 			expect(container.get(ISettingsService)).toBeDefined()
 			expect(container.get(IDocumentService)).toBeDefined()
@@ -105,7 +105,7 @@ describe('Plugin Container', () => {
 				statusBarManager: mockStatusBarManager
 			})
 
-			const loggingService = container.get(ILoggingService)
+			const loggingService = container.get(ILogger)
 			const notificationService = container.get(INotificationService)
 			const documentService = container.get(IDocumentService)
 
@@ -169,7 +169,7 @@ describe('Plugin Container', () => {
 		it('should resolve mock services', () => {
 			const container = createTestContainer()
 
-			const loggingService = container.get(ILoggingService)
+			const loggingService = container.get(ILogger)
 			const notificationService = container.get(INotificationService)
 			const settingsService = container.get(ISettingsService)
 			const statusService = container.get(IStatusService)
@@ -218,7 +218,7 @@ describe('Plugin Container', () => {
 		it('should provide mock implementations that can be called', () => {
 			const container = createTestContainer()
 
-			const loggingService = container.get(ILoggingService)
+			const loggingService = container.get(ILogger)
 			const notificationService = container.get(INotificationService)
 			const settingsService = container.get(ISettingsService)
 
@@ -273,8 +273,8 @@ describe('Plugin Container', () => {
 				statusBarManager: mockStatusBarManager
 			})
 
-			const loggingService1 = container.get(ILoggingService)
-			const loggingService2 = container.get(ILoggingService)
+			const loggingService1 = container.get(ILogger)
+			const loggingService2 = container.get(ILogger)
 
 			// Should be the same instance (singleton)
 			expect(loggingService1).toBe(loggingService2)

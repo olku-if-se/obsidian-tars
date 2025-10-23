@@ -16,31 +16,31 @@
  * TDD Approach: GIVEN / WHEN / THEN structure
  */
 
-import type { Message } from '@tars/contracts'
-import { beforeEach, describe, expect, it } from 'vitest'
-import type { ComprehensiveCallbacks } from '../../src/config/ComprehensiveCallbacks'
-import { OpenRouterStreamingProvider } from '../../src/providers/openrouter/OpenRouterStreamingProvider'
-import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
+import type { Message } from "@tars/contracts";
+import { beforeEach, describe, expect, it } from "vitest";
+import type { ComprehensiveCallbacks } from "../../src/base/ComprehensiveCallbacks";
+import { OpenRouterStreamingProvider } from "../../src/providers/openrouter/OpenRouterStreamingProvider";
+import { shouldSkipE2ETests } from "./helpers/skip-if-no-env";
 
 // Auto-skip if no API key
 const shouldSkipE2E = shouldSkipE2ETests({
-	envVar: 'E2E_OPENROUTER_API_KEY',
-	providerName: 'OpenRouter',
+	envVar: "E2E_OPENROUTER_API_KEY",
+	providerName: "OpenRouter",
 	setupInstructions: [
-		'Set API key: mise run secrets-rotate OPENROUTER_API_KEY sk-or-...',
-		'Run tests: mise run test-e2e'
-	]
-})
+		"Set API key: mise run secrets-rotate OPENROUTER_API_KEY sk-or-...",
+		"Run tests: mise run test-e2e",
+	],
+});
 
-const API_KEY = process.env.E2E_OPENROUTER_API_KEY
+const API_KEY = process.env.E2E_OPENROUTER_API_KEY;
 
 // Mock services
 const mockLoggingService = {
 	debug: () => {},
 	info: () => {},
 	warn: () => {},
-	error: (...args: any[]) => console.error('[ERROR]', ...args)
-}
+	error: (...args: any[]) => console.error("[ERROR]", ...args),
+};
 
 const mockSettingsService = {
 	get: (key: string, defaultValue?: any) => defaultValue,
@@ -49,78 +49,84 @@ const mockSettingsService = {
 	watch: () => () => {},
 	remove: async () => {},
 	clear: async () => {},
-	getAll: () => ({})
-}
+	getAll: () => ({}),
+};
 
-describe.skipIf(shouldSkipE2E)('OpenRouter Provider E2E - Comprehensive Callbacks', () => {
-	let provider: OpenRouterStreamingProvider
+describe.skipIf(shouldSkipE2E)(
+	"OpenRouter Provider E2E - Comprehensive Callbacks",
+	() => {
+		let provider: OpenRouterStreamingProvider;
 
-	beforeEach(() => {
-		// GIVEN: Fresh OpenRouter provider instance
-		provider = new OpenRouterStreamingProvider(mockLoggingService as any, mockSettingsService as any)
-		provider.initialize({
-			apiKey: API_KEY as string,
-			model: 'z-ai/glm-4.5-air:free', // FREE model for testing! 🎉
-			baseURL: 'https://openrouter.ai/api/v1/chat/completions' // Correct OpenRouter API endpoint
-		})
-	})
+		beforeEach(() => {
+			// GIVEN: Fresh OpenRouter provider instance
+			provider = new OpenRouterStreamingProvider(
+				mockLoggingService as any,
+				mockSettingsService as any,
+			);
+			provider.initialize({
+				apiKey: API_KEY as string,
+				model: "z-ai/glm-4.5-air:free", // FREE model for testing! 🎉
+				baseURL: "https://openrouter.ai/api/v1/chat/completions", // Correct OpenRouter API endpoint
+			});
+		});
 
-	describe('1. Basic Streaming', () => {
-		it('should stream response from OpenRouter', async () => {
-			// GIVEN: Simple message
-			const messages: Message[] = [
-				{
-					role: 'user',
-					content: 'Say "Hello from OpenRouter E2E test" and nothing else.'
+		describe("1. Basic Streaming", () => {
+			it("should stream response from OpenRouter", async () => {
+				// GIVEN: Simple message
+				const messages: Message[] = [
+					{
+						role: "user",
+						content: 'Say "Hello from OpenRouter E2E test" and nothing else.',
+					},
+				];
+
+				let fullResponse = "";
+				let chunkCount = 0;
+
+				// WHEN: Streaming without callbacks
+				for await (const chunk of provider.stream(messages, {})) {
+					fullResponse += chunk;
+					chunkCount++;
 				}
-			]
 
-			let fullResponse = ''
-			let chunkCount = 0
+				// THEN: Should receive response
+				expect(fullResponse).toContain("Hello");
+				expect(chunkCount).toBeGreaterThan(0);
+				// Silent on success
+			});
+		});
 
-			// WHEN: Streaming without callbacks
-			for await (const chunk of provider.stream(messages, {})) {
-				fullResponse += chunk
-				chunkCount++
-			}
+		describe("2. Lifecycle Event Callbacks", () => {
+			it("should invoke lifecycle callbacks", { timeout: 15000 }, async () => {
+				// GIVEN: Simple message
+				const messages: Message[] = [
+					{
+						role: "user",
+						content: 'Say "testing lifecycle"',
+					},
+				];
 
-			// THEN: Should receive response
-			expect(fullResponse).toContain('Hello')
-			expect(chunkCount).toBeGreaterThan(0)
-			// Silent on success
-		})
-	})
+				const lifecycle: string[] = [];
 
-	describe('2. Lifecycle Event Callbacks', () => {
-		it('should invoke lifecycle callbacks', { timeout: 15000 }, async () => {
-			// GIVEN: Simple message
-			const messages: Message[] = [
-				{
-					role: 'user',
-					content: 'Say "testing lifecycle"'
+				const callbacks: ComprehensiveCallbacks = {
+					onStreamStart: async () => {
+						lifecycle.push("start");
+					},
+
+					onStreamEnd: async () => {
+						lifecycle.push("end");
+					},
+				};
+
+				// WHEN: Streaming with lifecycle callbacks
+				for await (const chunk of provider.stream(messages, { callbacks })) {
+					// Just consume chunks
 				}
-			]
 
-			const lifecycle: string[] = []
-
-			const callbacks: ComprehensiveCallbacks = {
-				onStreamStart: async () => {
-					lifecycle.push('start')
-				},
-
-				onStreamEnd: async () => {
-					lifecycle.push('end')
-				}
-			}
-
-			// WHEN: Streaming with lifecycle callbacks
-			for await (const chunk of provider.stream(messages, { callbacks })) {
-				// Just consume chunks
-			}
-
-			// THEN: Should have called lifecycle events in order
-			expect(lifecycle).toEqual(['start', 'end'])
-			// Silent on success
-		})
-	})
-})
+				// THEN: Should have called lifecycle events in order
+				expect(lifecycle).toEqual(["start", "end"]);
+				// Silent on success
+			});
+		});
+	},
+);

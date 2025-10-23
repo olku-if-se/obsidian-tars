@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 import { Container } from '@needle-di/core'
 import {
-	ILoggingService,
+	ILogger,
 	INotificationService,
 	ISettingsService,
 	IStatusService,
@@ -12,7 +12,7 @@ export function createSimpleTestContainer(): Container {
 	const container = new Container({ defaultScope: 'singleton' })
 
 	// Mock implementations for testing
-	container.bind(ILoggingService).toConstantValue({
+	container.bind(ILogger).toConstantValue({
 		debug: vi.fn(),
 		info: vi.fn(),
 		warn: vi.fn(),

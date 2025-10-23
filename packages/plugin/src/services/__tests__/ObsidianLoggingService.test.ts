@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { ObsidianLoggingService } from '../ObsidianLoggingService'
-import { ILoggingService } from '@tars/contracts'
+import { ILogger } from '@tars/contracts'
 
 describe('ObsidianLoggingService', () => {
-	let loggingService: ILoggingService
+	let loggingService: ILogger
 	let debugSpy: any
 
 	beforeEach(() => {

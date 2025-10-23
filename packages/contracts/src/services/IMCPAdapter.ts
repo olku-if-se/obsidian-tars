@@ -1,5 +1,5 @@
-import type { Message } from '@tars/contracts'
-import type { ToolDefinition } from '../tools'
+import type { ToolDefinition } from "../../../providers/src/tools";
+import type { Message } from "../providers";
 
 /**
  * MCP adapter interface for future integration
@@ -14,34 +14,34 @@ import type { ToolDefinition } from '../tools'
  */
 export interface MCPGenerationConfig {
 	/** Document path for context */
-	documentPath: string
+	documentPath: string;
 
 	/** Provider name */
-	providerName: string
+	providerName: string;
 
 	/** Conversation messages */
-	messages: Message[]
+	messages: Message[];
 
 	/** Abort controller */
-	controller: AbortController
+	controller: AbortController;
 
 	/** Provider-specific client */
-	client?: unknown
+	client?: unknown;
 
 	/** Status bar manager */
-	statusBarManager?: unknown
+	statusBarManager?: unknown;
 
 	/** Editor instance */
-	editor?: unknown
+	editor?: unknown;
 
 	/** Plugin settings */
-	pluginSettings?: Record<string, unknown>
+	pluginSettings?: Record<string, unknown>;
 
 	/** Document write lock */
-	documentWriteLock?: unknown
+	documentWriteLock?: unknown;
 
 	/** Pre-tool execution hook */
-	beforeToolExecution?: () => Promise<void>
+	beforeToolExecution?: () => Promise<void>;
 }
 
 /**
@@ -49,10 +49,10 @@ export interface MCPGenerationConfig {
  */
 export interface MCPToolInjectionResult {
 	/** Updated request parameters with injected tools */
-	parameters: Record<string, unknown>
+	parameters: Record<string, unknown>;
 
 	/** Injected tools */
-	tools?: ToolDefinition[]
+	tools?: ToolDefinition[];
 }
 
 /**
@@ -62,7 +62,7 @@ export interface IMCPAdapter {
 	/**
 	 * Check if tool calling is available
 	 */
-	hasToolCalling(): boolean
+	hasToolCalling(): boolean;
 
 	/**
 	 * Inject MCP tools into request parameters
@@ -72,7 +72,10 @@ export interface IMCPAdapter {
 	 * @param providerName - Name of the provider
 	 * @returns Updated parameters with injected tools
 	 */
-	injectTools(params: Record<string, unknown>, providerName: string): Promise<MCPToolInjectionResult>
+	injectTools(
+		params: Record<string, unknown>,
+		providerName: string,
+	): Promise<MCPToolInjectionResult>;
 
 	/**
 	 * Generate with tools using MCP coordinator
@@ -81,17 +84,19 @@ export interface IMCPAdapter {
 	 * @param config - Generation configuration
 	 * @returns Async generator yielding content chunks
 	 */
-	generateWithTools(config: MCPGenerationConfig): AsyncGenerator<string, void, unknown>
+	generateWithTools(
+		config: MCPGenerationConfig,
+	): AsyncGenerator<string, void, unknown>;
 
 	/**
 	 * Initialize the adapter
 	 * Optional initialization logic for the adapter
 	 */
-	initialize?(): Promise<void>
+	initialize?(): Promise<void>;
 
 	/**
 	 * Cleanup resources
 	 * Optional cleanup logic for the adapter
 	 */
-	dispose?(): Promise<void>
+	dispose?(): Promise<void>;
 }

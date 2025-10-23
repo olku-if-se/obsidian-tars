@@ -1,4 +1,8 @@
-import type { IMCPAdapter, MCPGenerationConfig, MCPToolInjectionResult } from './IMCPAdapter'
+import type {
+	IMCPAdapter,
+	MCPGenerationConfig,
+	MCPToolInjectionResult,
+} from "../services/IMCPAdapter";
 
 /**
  * No-op MCP adapter implementation
@@ -9,32 +13,37 @@ import type { IMCPAdapter, MCPGenerationConfig, MCPToolInjectionResult } from '.
  * - Return unchanged parameters for injectTools()
  * - Throw error for generateWithTools() (should not be called)
  */
-export class NoOpMCPAdapter implements IMCPAdapter {
+export class McpAdapterMock implements IMCPAdapter {
 	/**
 	 * Tool calling is not available in NoOp adapter
 	 */
 	hasToolCalling(): boolean {
-		return false
+		return false;
 	}
 
 	/**
 	 * Returns parameters unchanged (no tools injected)
 	 */
-	async injectTools(params: Record<string, unknown>, _providerName: string): Promise<MCPToolInjectionResult> {
+	async injectTools(
+		params: Record<string, unknown>,
+		_providerName: string,
+	): Promise<MCPToolInjectionResult> {
 		return {
 			parameters: params,
-			tools: []
-		}
+			tools: [],
+		};
 	}
 
 	/**
 	 * Throws error - should not be called when hasToolCalling() is false
 	 */
-	async *generateWithTools(_config: MCPGenerationConfig): AsyncGenerator<string, void, unknown> {
+	async *generateWithTools(
+		_config: MCPGenerationConfig,
+	): AsyncGenerator<string, void, unknown> {
 		// This should never be called when hasToolCalling() returns false
 		// Yield error message instead of throwing to satisfy generator contract
-		yield 'Error: MCP tool calling not available in NoOp adapter'
-		throw new Error('MCP tool calling not available in NoOp adapter')
+		yield "Error: MCP tool calling not available in NoOp adapter";
+		throw new Error("MCP tool calling not available in NoOp adapter");
 	}
 
 	/**
@@ -55,4 +64,4 @@ export class NoOpMCPAdapter implements IMCPAdapter {
 /**
  * Singleton instance for convenience
  */
-export const noOpMCPAdapter = new NoOpMCPAdapter()
+export const noOpMCPAdapter = new NoOpMCPAdapter();

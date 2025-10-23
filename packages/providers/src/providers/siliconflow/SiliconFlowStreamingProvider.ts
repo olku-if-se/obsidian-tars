@@ -1,5 +1,5 @@
 import { inject, injectable } from '@needle-di/core'
-import type { ILoggingService, ISettingsService, Message, ResolveEmbedAsBinary } from '@tars/contracts'
+import type { ILogger, ISettingsService, Message, ResolveEmbedAsBinary } from '@tars/contracts'
 import { type LlmCapability, type LlmModel, toLlmModels } from '@tars/contracts/providers'
 import { tokens } from '@tars/contracts/tokens'
 import OpenAI from 'openai'
@@ -9,7 +9,7 @@ import type {
 	BeforeStreamStartResult,
 	ComprehensiveCallbacks,
 	ToolDefinition
-} from '../../config/ComprehensiveCallbacks'
+} from '../../base/ComprehensiveCallbacks'
 import type { ICompletionsStream } from '../../streaming'
 import { SiliconFlowCompletionsStream } from './SiliconFlowCompletionsStream'
 import {
@@ -85,7 +85,7 @@ export class SiliconFlowStreamingProvider extends StreamingProviderBase {
 					messages
 				})
 				tools = toolsResult.tools
-				this.loggingService.debug('Received tools from consumer', { count: tools?.length || 0 })
+				this.logger.debug('Received tools from consumer', { count: tools?.length || 0 })
 			}
 
 			let finalMessages = messages
@@ -102,7 +102,7 @@ export class SiliconFlowStreamingProvider extends StreamingProviderBase {
 				})
 
 				if (beforeResult.cancel) {
-					this.loggingService.warn('Stream cancelled', { reason: beforeResult.cancelReason })
+					this.logger.warn('Stream cancelled', { reason: beforeResult.cancelReason })
 					return
 				}
 
@@ -197,7 +197,7 @@ export class SiliconFlowStreamingProvider extends StreamingProviderBase {
 				})
 			}
 		} catch (error) {
-			this.loggingService.error('Stream failed', { error })
+			this.logger.error('Stream failed', { error })
 			if (callbacks?.onError) {
 				await callbacks.onError({
 					error: error instanceof Error ? error : new Error(String(error)),
@@ -238,7 +238,7 @@ export class SiliconFlowStreamingProvider extends StreamingProviderBase {
 		})
 		this.resolveEmbedAsBinary = resolveEmbedAsBinary || null
 
-		this.loggingService?.info?.('SiliconFlow provider initialized', {
+		this.logger?.info?.('SiliconFlow provider initialized', {
 			model: options.model,
 			baseURL: options.baseURL
 		})
@@ -267,7 +267,7 @@ export class SiliconFlowStreamingProvider extends StreamingProviderBase {
 		// Extract tools from config if available
 		const tools = config.providerOptions?.tools
 
-		this.loggingService?.debug?.('Creating SiliconFlow completion stream', {
+		this.logger?.debug?.('Creating SiliconFlow completion stream', {
 			messageCount: messages.length,
 			model: streamOptions.model,
 			hasTools: !!tools
@@ -348,6 +348,6 @@ export class SiliconFlowStreamingProvider extends StreamingProviderBase {
 		this.client = null
 		this.providerOptions = null
 		this.resolveEmbedAsBinary = null
-		this.loggingService?.info?.('SiliconFlow provider disposed')
+		this.logger?.info?.('SiliconFlow provider disposed')
 	}
 }

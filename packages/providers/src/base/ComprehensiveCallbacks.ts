@@ -9,7 +9,7 @@
  */
 
 import type { Message } from '@tars/contracts'
-import type { StreamEvent, ToolCall } from '../streaming/types'
+import type { StreamEvent, ToolCall } from '../streaming'
 
 // ============================================================================
 // LIFECYCLE HOOKS
@@ -303,6 +303,18 @@ export interface OnTimeoutHook {
 	provider: string
 }
 
+/**
+ * Called for every chunk of content
+ */
+export interface OnContentHook {
+	/** Chunk index */
+	chunkIndex: number
+	/** Tokens processed stats */
+	tokens?: unknown
+	/** Timestamp */
+	timestamp: number
+}
+
 // ============================================================================
 // COMPREHENSIVE CALLBACK CONFIGURATION
 // ============================================================================
@@ -314,53 +326,56 @@ export interface ComprehensiveCallbacks {
 	// ===== Lifecycle Hooks =====
 
 	/** Called BEFORE streaming starts - allows message/tool modification */
-	beforeStreamStart?: (hook: BeforeStreamStartHook) => Promise<BeforeStreamStartResult> | BeforeStreamStartResult
+	beforeStreamStart?: (hook: BeforeStreamStartHook) => Promise<BeforeStreamStartResult>
 
 	/** Called AFTER stream starts successfully */
-	onStreamStart?: (hook: OnStreamStartHook) => Promise<void> | void
+	onStreamStart?: (hook: OnStreamStartHook) => Promise<void>
 
 	/** Called when stream completes successfully */
-	onStreamEnd?: (hook: OnStreamEndHook) => Promise<void> | void
+	onStreamEnd?: (hook: OnStreamEndHook) => Promise<void>
 
 	// ===== Chunk Hooks =====
 
 	/** Called BEFORE processing each chunk */
-	beforeChunk?: (hook: BeforeChunkHook) => Promise<BeforeChunkResult> | BeforeChunkResult
+	beforeChunk?: (hook: BeforeChunkHook) => Promise<BeforeChunkResult>
 
 	/** Called AFTER processing each chunk */
-	afterChunk?: (hook: AfterChunkHook) => Promise<void> | void
+	afterChunk?: (hook: AfterChunkHook) => Promise<void>
+
+	/** Called for every chunk of content */
+	onContentChunk?: (hook: OnContentHook) => Promise<void>
 
 	// ===== Tool Hooks =====
 
 	/** Called when provider needs tools */
-	onToolsRequest?: (hook: OnToolsRequestHook) => Promise<OnToolsRequestResult> | OnToolsRequestResult
+	onToolsRequest?: (hook: OnToolsRequestHook) => Promise<OnToolsRequestResult>
 
 	/** Called when LLM requests tool execution */
-	onToolCall?: (hook: OnToolCallHook) => Promise<OnToolCallResult> | OnToolCallResult
+	onToolCall?: (hook: OnToolCallHook) => Promise<OnToolCallResult>
 
 	// ===== Error & Retry Hooks =====
 
 	/** Called when error occurs */
-	onError?: (hook: OnErrorHook) => Promise<OnErrorResult> | OnErrorResult
+	onError?: (hook: OnErrorHook) => Promise<OnErrorResult>
 
 	/** Called before retry attempt */
-	onBeforeRetry?: (hook: OnBeforeRetryHook) => Promise<void> | void
+	onBeforeRetry?: (hook: OnBeforeRetryHook) => Promise<void>
 
 	/** Called after successful retry */
-	onRetrySuccess?: (hook: OnRetrySuccessHook) => Promise<void> | void
+	onRetrySuccess?: (hook: OnRetrySuccessHook) => Promise<void>
 
 	// ===== Timeout & Performance Hooks =====
 
 	/** Called at 75% of timeout duration */
-	onLongWaiting?: (hook: OnLongWaitingHook) => Promise<OnLongWaitingResult> | OnLongWaitingResult
+	onLongWaiting?: (hook: OnLongWaitingHook) => Promise<OnLongWaitingResult>
 
 	/** Called on timeout */
-	onTimeout?: (hook: OnTimeoutHook) => Promise<void> | void
+	onTimeout?: (hook: OnTimeoutHook) => Promise<void>
 
 	// ===== Generic Event Hook =====
 
 	/** Called for every stream event (low-level) */
-	onStreamEvent?: (event: StreamEvent) => Promise<void> | void
+	onStreamEvent?: (event: StreamEvent) => Promise<void>
 }
 
 /**

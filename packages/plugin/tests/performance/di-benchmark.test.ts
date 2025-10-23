@@ -61,12 +61,12 @@ describe('DI Performance Benchmarks', () => {
 		})
 
 		it('should resolve services quickly', async () => {
-			const { ILoggingService } = await import('@tars/contracts')
+			const { ILogger } = await import('@tars/contracts')
 
 			const startTime = performance.now()
 
 			for (let i = 0; i < ITERATIONS; i++) {
-				const service = container.get(ILoggingService)
+				const service = container.get(ILogger)
 				expect(service).toBeDefined()
 			}
 
@@ -82,10 +82,10 @@ describe('DI Performance Benchmarks', () => {
 		})
 
 		it('should resolve multiple services efficiently', async () => {
-			const { ILoggingService, INotificationService, ISettingsService, IStatusService, IDocumentService } =
+			const { ILogger, INotificationService, ISettingsService, IStatusService, IDocumentService } =
 				await import('@tars/contracts')
 
-			const services = [ILoggingService, INotificationService, ISettingsService, IStatusService, IDocumentService]
+			const services = [ILogger, INotificationService, ISettingsService, IStatusService, IDocumentService]
 
 			const startTime = performance.now()
 
@@ -110,7 +110,7 @@ describe('DI Performance Benchmarks', () => {
 
 	describe('Memory Usage', () => {
 		it('should not leak memory during repeated operations', async () => {
-			const { ILoggingService } = await import('@tars/contracts')
+			const { ILogger } = await import('@tars/contracts')
 
 			// Measure initial memory
 			const initialMemory = process.memoryUsage().heapUsed
@@ -118,7 +118,7 @@ describe('DI Performance Benchmarks', () => {
 			// Perform many container operations
 			for (let i = 0; i < ITERATIONS; i++) {
 				const container = createTestContainer()
-				const service = container.get(ILoggingService)
+				const service = container.get(ILogger)
 				expect(service).toBeDefined()
 			}
 
@@ -140,7 +140,7 @@ describe('DI Performance Benchmarks', () => {
 
 	describe('DI vs Manual Instantiation Comparison', () => {
 		it('should compare DI overhead with manual instantiation', async () => {
-			const { ILoggingService } = await import('@tars/contracts')
+			const { ILogger } = await import('@tars/contracts')
 
 			// Manual instantiation mock
 			const manualLogger = {
@@ -163,7 +163,7 @@ describe('DI Performance Benchmarks', () => {
 			const container = createTestContainer()
 			const diStartTime = performance.now()
 			for (let i = 0; i < ITERATIONS; i++) {
-				const logger = container.get(ILoggingService)
+				const logger = container.get(ILogger)
 				logger.debug('test')
 			}
 			const diEndTime = performance.now()

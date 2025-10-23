@@ -2,7 +2,7 @@ import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } 
 import { createLogger } from '@tars/logger'
 import * as jose from 'jose'
 import OpenAI from 'openai'
-import { t } from '../i18n'
+import { t } from '../../src/i18n'
 
 interface Token {
 	id: string

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { createSimpleTestContainer } from '../../src/container/test-container'
-import type { ILoggingService, INotificationService, ISettingsService } from '@tars/contracts'
+import type { ILogger, INotificationService, ISettingsService } from '@tars/contracts'
 
 describe('Simple DI Workflow Tests', () => {
 	let container: ReturnType<typeof createSimpleTestContainer>
@@ -15,7 +15,7 @@ describe('Simple DI Workflow Tests', () => {
 		})
 
 		it('should resolve basic services', () => {
-			const loggingService = container.get(ILoggingService)
+			const loggingService = container.get(ILogger)
 			const notificationService = container.get(INotificationService)
 			const settingsService = container.get(ISettingsService)
 
@@ -25,8 +25,8 @@ describe('Simple DI Workflow Tests', () => {
 		})
 
 		it('should maintain singleton pattern', () => {
-			const service1 = container.get(ILoggingService)
-			const service2 = container.get(ILoggingService)
+			const service1 = container.get(ILogger)
+			const service2 = container.get(ILogger)
 
 			expect(service1).toBe(service2)
 		})
@@ -34,7 +34,7 @@ describe('Simple DI Workflow Tests', () => {
 
 	describe('Service Mock Functionality', () => {
 		it('should provide working mock services', () => {
-			const loggingService = container.get(ILoggingService)
+			const loggingService = container.get(ILogger)
 
 			// Test that mock methods work
 			loggingService.debug('test message')
@@ -62,7 +62,7 @@ describe('Simple DI Workflow Tests', () => {
 			const startTime = performance.now()
 
 			for (let i = 0; i < iterations; i++) {
-				const loggingService = container.get(ILoggingService)
+				const loggingService = container.get(ILogger)
 				const notificationService = container.get(INotificationService)
 				const settingsService = container.get(ISettingsService)
 
@@ -86,7 +86,7 @@ describe('Simple DI Workflow Tests', () => {
 
 	describe('Service Integration Patterns', () => {
 		it('should support service composition', () => {
-			const loggingService = container.get(ILoggingService)
+			const loggingService = container.get(ILogger)
 			const notificationService = container.get(INotificationService)
 
 			// Simulate service interaction
@@ -99,7 +99,7 @@ describe('Simple DI Workflow Tests', () => {
 		})
 
 		it('should handle error scenarios gracefully', () => {
-			const loggingService = container.get(ILoggingService)
+			const loggingService = container.get(ILogger)
 			const notificationService = container.get(INotificationService)
 
 			// Simulate error handling
@@ -117,8 +117,8 @@ describe('Simple DI Workflow Tests', () => {
 			const container1 = createSimpleTestContainer()
 			const container2 = createSimpleTestContainer()
 
-			const service1 = container1.get(ILoggingService)
-			const service2 = container2.get(ILoggingService)
+			const service1 = container1.get(ILogger)
+			const service2 = container2.get(ILogger)
 
 			expect(service1).toBeDefined()
 			expect(service2).toBeDefined()
@@ -129,7 +129,7 @@ describe('Simple DI Workflow Tests', () => {
 			const container = createSimpleTestContainer()
 
 			// Container should be ready to use
-			const loggingService = container.get(ILoggingService)
+			const loggingService = container.get(ILogger)
 			expect(loggingService).toBeDefined()
 
 			// Should not throw errors
@@ -143,7 +143,7 @@ describe('Simple DI Workflow Tests', () => {
 			const container = createSimpleTestContainer()
 
 			// Simulate plugin startup
-			const loggingService = container.get(ILoggingService)
+			const loggingService = container.get(ILogger)
 			const notificationService = container.get(INotificationService)
 			const settingsService = container.get(ISettingsService)
 
@@ -162,7 +162,7 @@ describe('Simple DI Workflow Tests', () => {
 		it('should simulate command execution pattern', () => {
 			const container = createSimpleTestContainer()
 
-			const loggingService = container.get(ILoggingService)
+			const loggingService = container.get(ILogger)
 			const notificationService = container.get(INotificationService)
 
 			// Simulate command execution

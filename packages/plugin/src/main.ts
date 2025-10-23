@@ -1,6 +1,6 @@
 import type {
 	IDocumentService,
-	ILoggingService,
+	ILogger,
 	IMcpService,
 	INotificationService,
 	IReactBridgeManager,
@@ -36,7 +36,7 @@ export default class TarsPlugin extends Plugin {
 	private container: ReturnType<typeof createPluginContainer> | null = null
 
 	// Service Injections
-	private loggingService: ILoggingService
+	private loggingService: ILogger
 	private notificationService: INotificationService
 	private requestController: IRequestController
 	private settingsService: ISettingsService

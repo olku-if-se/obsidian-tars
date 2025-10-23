@@ -1,6 +1,6 @@
 import { type App, type Command, type Editor, type MarkdownView } from 'obsidian'
 import { injectable, inject } from '@needle-di/core'
-import type { ILoggingService, INotificationService, ISettingsService } from '@tars/contracts'
+import type { ILogger, INotificationService, ISettingsService } from '@tars/contracts'
 import type { PluginSettings } from 'src/settings'
 import type { RequestController } from 'src/editor'
 import type { TagCmdMeta } from '../tagCmd'
@@ -15,7 +15,7 @@ const ISettingsServiceToken = Symbol('ISettingsService')
 @injectable()
 export class UserTagDICommand {
 	constructor(
-		@inject(ILoggingServiceToken) private loggingService: ILoggingService,
+		@inject(ILoggingServiceToken) private loggingService: ILogger,
 		@inject(INotificationServiceToken) private notificationService: INotificationService,
 		@inject(ISettingsServiceToken) private settingsService: ISettingsService
 	) {}

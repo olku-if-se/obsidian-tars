@@ -1,5 +1,8 @@
 // @ts-expect-error - Type definitions resolved via workspace build pipeline
 import { inject, injectable } from '@needle-di/core'
+import type { OllamaAdapterRuntimeConfig } from '@tars/contracts'
+import { MCPServerManagerToken, OllamaClientToken, OllamaRuntimeConfigToken, ToolExecutorToken } from '@tars/contracts'
+import type { Logger, LoggerFactory } from '@tars/logger'
 import type {
 	MCPServerManager,
 	ToolDiscoveryCache,
@@ -8,16 +11,7 @@ import type {
 	ToolServerInfo
 } from '@tars/mcp-hosting'
 import { OllamaToolResponseParser } from '@tars/mcp-hosting'
-import type { Logger, LoggerFactory } from '@tars/logger'
 import type { Ollama } from 'ollama/browser'
-import type { OllamaAdapterRuntimeConfig } from '@tars/contracts'
-import {
-	LoggerFactoryToken,
-	MCPServerManagerToken,
-	OllamaClientToken,
-	OllamaRuntimeConfigToken,
-	ToolExecutorToken
-} from '@tars/contracts'
 import type { Message, ProviderAdapter } from '../toolCallingCoordinator'
 
 interface OllamaChunk {
@@ -48,8 +42,6 @@ export interface OllamaAdapterConfig {
 @injectable()
 export class OllamaProviderAdapter implements ProviderAdapter<OllamaChunk> {
 	private readonly mcpManager: MCPServerManager
-	private readonly mcpExecutor: ToolExecutor
-	private readonly client: Ollama
 	private readonly toolDiscoveryCache: ToolDiscoveryCache
 	private runtimeConfig: OllamaAdapterRuntimeConfig
 	private controller: AbortController
@@ -68,7 +60,7 @@ export class OllamaProviderAdapter implements ProviderAdapter<OllamaChunk> {
 		@inject(ToolExecutorToken) mcpExecutor: ToolExecutor,
 		@inject(OllamaClientToken) ollamaClient: Ollama,
 		@inject(OllamaRuntimeConfigToken) runtimeConfig: OllamaAdapterRuntimeConfig,
-		@inject(LoggerFactoryToken) loggerFactory: LoggerFactory,
+		@inject(ILoggerFactoryToken) loggerFactory: LoggerFactory,
 		config?: OllamaAdapterConfig
 	) {
 		if (config) {

@@ -1,7 +1,7 @@
 /**
  * Logging service interface for consistent logging across the application
  */
-export interface ILoggingService {
+export interface ILogger {
 	debug(message: string, ...args: unknown[]): void
 	info(message: string, ...args: unknown[]): void
 	warn(message: string, ...args: unknown[]): void

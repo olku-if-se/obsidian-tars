@@ -2,9 +2,9 @@ import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } 
 import { type LlmCapability, toLlmModels } from '@tars/contracts/providers'
 import { createLogger } from '@tars/logger'
 import OpenAI from 'openai'
-import { t } from '../i18n'
-import { createMCPIntegrationHelper } from '../mcp-integration-helper'
-import { convertEmbedToImageUrl } from '../utils'
+import { t } from '../../src/i18n'
+import { createMCPIntegrationHelper } from '../../src/mcp-integration-helper'
+import { convertEmbedToImageUrl } from '../../src/utils'
 
 const logger = createLogger('providers:qwen')
 

@@ -1,5 +1,5 @@
 import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '@tars/contracts'
-import { t } from '../i18n'
+import { t } from '../../src/i18n'
 
 const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 	async function* (messages: Message[], _controller: AbortController, _resolveEmbedAsBinary: ResolveEmbedAsBinary) {

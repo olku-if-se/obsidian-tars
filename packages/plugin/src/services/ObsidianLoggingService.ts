@@ -1,9 +1,9 @@
 import { injectable } from '@needle-di/core'
-import { ILoggingService } from '@tars/contracts'
+import { ILogger } from '@tars/contracts'
 import createDebug from 'debug'
 
 @injectable()
-export class ObsidianLoggingService implements ILoggingService {
+export class ObsidianLoggingService implements ILogger {
 	private logger: debug.Debugger
 
 	constructor() {

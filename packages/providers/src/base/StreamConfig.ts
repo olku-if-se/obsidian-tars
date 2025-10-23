@@ -1,6 +1,6 @@
-import type { StreamEvent } from '../streaming/types'
-import type { ComprehensiveCallbacks } from './ComprehensiveCallbacks'
-import type { ErrorHandlingConfig } from './ErrorHandlingConfig'
+import type { StreamEvent } from "../streaming";
+import type { ComprehensiveCallbacks } from "./ComprehensiveCallbacks";
+import type { ErrorHandlingConfig } from "./ErrorHandlingConfig";
 
 /**
  * Complete streaming configuration
@@ -11,41 +11,47 @@ import type { ErrorHandlingConfig } from './ErrorHandlingConfig'
  * Chunk preprocessor function
  * Applied to raw chunks before they are yielded
  */
-export type ChunkPreprocessor = (chunk: string, context: ProcessingContext) => string | Promise<string>
+export type ChunkPreprocessor = (
+	chunk: string,
+	context: ProcessingContext,
+) => Promise<string>;
 
 /**
  * Chunk postprocessor function
  * Applied to chunks after preprocessing but before yielding
  */
-export type ChunkPostprocessor = (chunk: string, context: ProcessingContext) => string | Promise<string>
+export type ChunkPostprocessor = (
+	chunk: string,
+	context: ProcessingContext,
+) => Promise<string>;
 
 /**
  * Event filter function
  * Return true to allow the event, false to filter it out
  */
-export type EventFilter = (event: StreamEvent) => boolean
+export type EventFilter = (event: StreamEvent) => boolean;
 
 /**
  * Context information for processors
  */
 export interface ProcessingContext {
 	/** Provider name */
-	provider: string
+	provider: string;
 
 	/** Model name */
-	model: string
+	model: string;
 
 	/** Current chunk index */
-	chunkIndex: number
+	chunkIndex: number;
 
 	/** Total chunks processed so far */
-	totalChunks: number
+	totalChunks: number;
 
 	/** Accumulated content so far */
-	accumulatedContent: string
+	accumulatedContent: string;
 
 	/** Timestamp */
-	timestamp: number
+	timestamp: number;
 }
 
 /**
@@ -53,19 +59,19 @@ export interface ProcessingContext {
  */
 export interface ProcessingConfig {
 	/** Preprocess chunks before yielding */
-	preprocessor?: ChunkPreprocessor
+	preprocessor?: ChunkPreprocessor;
 
 	/** Postprocess chunks after preprocessing */
-	postprocessor?: ChunkPostprocessor
+	postprocessor?: ChunkPostprocessor;
 
 	/** Filter events before yielding */
-	eventFilter?: EventFilter
+	eventFilter?: EventFilter;
 
 	/** Whether to accumulate content or yield chunks immediately */
-	accumulateContent: boolean
+	accumulateContent: boolean;
 
 	/** Buffer size for content accumulation (in characters) */
-	bufferSize?: number
+	bufferSize?: number;
 }
 
 /**
@@ -73,31 +79,27 @@ export interface ProcessingConfig {
  */
 export interface StreamConfig {
 	/** Abort signal for cancellation */
-	signal?: AbortSignal
+	signal?: AbortSignal;
 
 	/** Error handling configuration */
-	errorHandling?: Partial<ErrorHandlingConfig>
+	errorHandling?: Partial<ErrorHandlingConfig>;
 
 	/** Callback configuration */
-	callbacks?: ComprehensiveCallbacks
+	callbacks?: ComprehensiveCallbacks;
 
 	/** Processing configuration */
-	processing?: ProcessingConfig
+	processing?: ProcessingConfig;
 
 	/** Provider-specific options */
-	providerOptions?: Record<string, any>
+	providerOptions?: Record<string, unknown>;
 }
 
-/**
- * Default processing configuration
- */
+/** Default processing configuration. */
 export const DEFAULT_PROCESSING_CONFIG: ProcessingConfig = {
-	accumulateContent: false
-}
+	accumulateContent: false,
+};
 
-/**
- * Default stream configuration
- */
+/** Default stream configuration. */
 export const DEFAULT_STREAM_CONFIG: StreamConfig = {
-	processing: DEFAULT_PROCESSING_CONFIG
-}
+	processing: { ...DEFAULT_PROCESSING_CONFIG },
+};

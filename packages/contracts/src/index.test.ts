@@ -5,7 +5,7 @@
 import { describe, expect, it } from 'vitest'
 import type {
 	IDocumentService,
-	ILoggingService,
+	ILogger,
 	IMcpService,
 	INotificationService,
 	ISettingsService,
@@ -18,7 +18,7 @@ describe('Contracts Package', () => {
 	it('should export service interfaces', () => {
 		// Test that interfaces are properly exported (interfaces don't exist at runtime)
 		// We verify they exist through type checking and usage
-		const loggingService: ILoggingService = {} as ILoggingService
+		const loggingService: ILogger = {} as ILogger
 		const notificationService: INotificationService = {} as INotificationService
 		const settingsService: ISettingsService = {} as ISettingsService
 		const statusService: IStatusService = {} as IStatusService
@@ -54,7 +54,7 @@ describe('Contracts Package', () => {
 		// Test that the contracts provide proper type safety
 
 		// Service interfaces should require specific methods
-		const mockLoggingService: ILoggingService = {
+		const mockLoggingService: ILogger = {
 			debug: (_message: string, _args: unknown[]) => {},
 			info: (_message: string, _args: unknown[]) => {},
 			warn: (_message: string, _args: unknown[]) => {},

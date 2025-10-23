@@ -10,7 +10,7 @@ import type {
 import { type LlmCapability, toLlmModels } from '@tars/contracts/providers'
 import { createLogger } from '@tars/logger'
 import axios from 'axios'
-import { t } from '../i18n'
+import { t } from '../../src/i18n'
 
 const logger = createLogger('providers:qianfan')
 
