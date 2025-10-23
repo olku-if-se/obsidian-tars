@@ -9,7 +9,7 @@
  * - Auth: Bearer token
  * 
  * Setup:
- * 1. Set OLLAMA_CLOUD_API_KEY: mise run secrets-rotate OLLAMA_CLOUD_API_KEY your-key
+ * 1. Set E2E_OLLAMA_CLOUD_API_KEY: mise run secrets-rotate OLLAMA_CLOUD_API_KEY your-key
  * 2. Run: mise run test-e2e
  * 
  * Tests:
@@ -29,7 +29,7 @@ import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
 
 // Auto-skip if no API key
 const shouldSkipE2E = shouldSkipE2ETests({
-	envVar: 'OLLAMA_CLOUD_API_KEY',
+	envVar: 'E2E_OLLAMA_CLOUD_API_KEY',
 	providerName: 'Ollama Cloud',
 	setupInstructions: [
 		'Set API key: mise run secrets-rotate OLLAMA_CLOUD_API_KEY your-key',
@@ -37,7 +37,7 @@ const shouldSkipE2E = shouldSkipE2ETests({
 	]
 })
 
-const API_KEY = process.env.OLLAMA_CLOUD_API_KEY
+const API_KEY = process.env.E2E_OLLAMA_CLOUD_API_KEY
 
 // Mock services
 const mockLoggingService = {

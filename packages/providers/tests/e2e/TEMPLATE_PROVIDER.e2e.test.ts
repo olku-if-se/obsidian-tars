@@ -41,16 +41,16 @@ const mockSettingsService = {
 
 // Auto-skip if API key not set
 const shouldSkipE2E = shouldSkipE2ETests({
-	envVar: 'PROVIDER_NAME_API_KEY',  // e.g., 'ANTHROPIC_API_KEY'
-	providerName: 'ProviderName',     // e.g., 'Anthropic'
+	envVar: 'E2E_PROVIDER_NAME_API_KEY',  // e.g., 'E2E_ANTHROPIC_API_KEY'
+	providerName: 'ProviderName',         // e.g., 'Anthropic'
 	setupInstructions: [
 		'Set API key: mise run secrets-init && mise run secrets-edit',
 		'Run tests:   mise run test-e2e',
-		'Or directly: PROVIDER_NAME_API_KEY=your-key npm test -- provider-*.e2e.test.ts'
+		'Or directly: E2E_PROVIDER_NAME_API_KEY=your-key npm test -- provider-*.e2e.test.ts'
 	]
 })
 
-const API_KEY = process.env.PROVIDER_NAME_API_KEY
+const API_KEY = process.env.E2E_PROVIDER_NAME_API_KEY
 
 describe.skipIf(shouldSkipE2E)('ProviderName E2E - Comprehensive Callbacks', () => {
 	let provider: any  // Replace with: YourProviderStreamingProvider

@@ -4,7 +4,7 @@
  * This is an END-TO-END test that makes REAL API calls to Anthropic (Claude).
  * 
  * Setup:
- * 1. Set ANTHROPIC_API_KEY: mise run secrets-rotate ANTHROPIC_API_KEY sk-ant-...
+ * 1. Set E2E_ANTHROPIC_API_KEY: mise run secrets-rotate E2E_ANTHROPIC_API_KEY sk-ant-...
  * 2. Run: mise run test-e2e
  * 
  * Tests:
@@ -25,15 +25,15 @@ import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
 
 // Auto-skip if no API key
 const shouldSkipE2E = shouldSkipE2ETests({
-	envVar: 'ANTHROPIC_API_KEY',
+	envVar: 'E2E_ANTHROPIC_API_KEY',
 	providerName: 'Claude',
 	setupInstructions: [
-		'Set API key: mise run secrets-rotate ANTHROPIC_API_KEY sk-ant-...',
+		'Set API key: mise run secrets-rotate E2E_ANTHROPIC_API_KEY sk-ant-...',
 		'Run tests: mise run test-e2e'
 	]
 })
 
-const API_KEY = process.env.ANTHROPIC_API_KEY
+const API_KEY = process.env.E2E_ANTHROPIC_API_KEY
 
 // Mock services
 const mockLoggingService = {

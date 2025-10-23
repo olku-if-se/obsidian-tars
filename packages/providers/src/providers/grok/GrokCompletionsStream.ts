@@ -96,6 +96,8 @@ export class GrokCompletionsStream extends CompletionsStream {
 
 			// Read stream chunks
 			let reading = true
+			let buffer = '' // Buffer to accumulate incomplete JSON chunks
+
 			while (reading) {
 				this.checkAborted()
 
@@ -105,8 +107,12 @@ export class GrokCompletionsStream extends CompletionsStream {
 					break
 				}
 
-				// Parse SSE format (data: {...}\n\n)
-				const lines = value.split('\n')
+				// Add new data to buffer and process complete lines
+				buffer += value
+				const lines = buffer.split('\n')
+
+				// Keep the last incomplete line in buffer
+				buffer = lines.pop() || ''
 
 				for (const line of lines) {
 					// Check for stream end marker
@@ -178,8 +184,14 @@ export class GrokCompletionsStream extends CompletionsStream {
 							}
 						}
 					} catch (parseError) {
-						// Log parse errors but continue processing
-						console.warn(Errors.parse_error, parseError)
+						// Log parse errors with more context for debugging
+						console.warn(Errors.parse_error, {
+							error: parseError,
+							trimmedData: trimmed,
+							dataPreview: trimmed.substring(0, 100) + (trimmed.length > 100 ? '...' : ''),
+							lineNumber: lines.indexOf(line) + 1
+						})
+						// Continue processing other lines
 					}
 				}
 			}

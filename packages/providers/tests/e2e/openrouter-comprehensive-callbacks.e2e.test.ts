@@ -4,7 +4,7 @@
  * This is an END-TO-END test that makes REAL API calls to OpenRouter.
  * 
  * Setup:
- * 1. Set OPENROUTER_API_KEY: mise run secrets-rotate OPENROUTER_API_KEY sk-or-...
+ * 1. Set E2E_OPENROUTER_API_KEY: mise run secrets-rotate OPENROUTER_API_KEY sk-or-...
  * 2. Run: mise run test-e2e
  * 
  * Tests:
@@ -24,7 +24,7 @@ import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
 
 // Auto-skip if no API key
 const shouldSkipE2E = shouldSkipE2ETests({
-	envVar: 'OPENROUTER_API_KEY',
+	envVar: 'E2E_OPENROUTER_API_KEY',
 	providerName: 'OpenRouter',
 	setupInstructions: [
 		'Set API key: mise run secrets-rotate OPENROUTER_API_KEY sk-or-...',
@@ -32,7 +32,7 @@ const shouldSkipE2E = shouldSkipE2ETests({
 	]
 })
 
-const API_KEY = process.env.OPENROUTER_API_KEY
+const API_KEY = process.env.E2E_OPENROUTER_API_KEY
 
 // Mock services
 const mockLoggingService = {
@@ -92,7 +92,7 @@ describe.skipIf(shouldSkipE2E)('OpenRouter Provider E2E - Comprehensive Callback
 	})
 
 	describe('2. Lifecycle Event Callbacks', () => {
-		it('should invoke lifecycle callbacks', async () => {
+		it('should invoke lifecycle callbacks', { timeout: 15000 }, async () => {
 			// GIVEN: Simple message
 			const messages: Message[] = [
 				{

@@ -71,16 +71,37 @@ export class OpenRouterCompletionsStream extends CompletionsStream {
 				requestBody.tool_choice = 'auto'
 			}
 
-			// Make fetch request
-			const response = await fetch(this.baseURL, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${this.apiKey}`
-				},
-				body: JSON.stringify(requestBody),
-				signal: this.signal
-			})
+			// Create timeout signal (30 seconds)
+			const timeoutController = new AbortController()
+			const timeoutId = setTimeout(() => timeoutController.abort(), 30000)
+
+			// Combine signals
+			const combinedSignal = new AbortController()
+			const handleAbort = () => {
+				combinedSignal.abort()
+				clearTimeout(timeoutId)
+			}
+			this.signal.addEventListener('abort', handleAbort)
+			timeoutController.signal.addEventListener('abort', handleAbort)
+
+			let response: Response
+
+			try {
+				// Make fetch request
+				response = await fetch(this.baseURL, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${this.apiKey}`
+					},
+					body: JSON.stringify(requestBody),
+					signal: combinedSignal.signal
+				})
+			} finally {
+				// Cleanup
+				this.signal.removeEventListener('abort', handleAbort)
+				clearTimeout(timeoutId)
+			}
 
 			// Get reader from response
 			const reader = response.body?.getReader()

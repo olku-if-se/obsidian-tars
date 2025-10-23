@@ -31,10 +31,10 @@ export interface SkipConfig {
  * @example
  * ```typescript
  * const shouldSkip = shouldSkipE2ETests({
- *   envVar: 'OPENAI_API_KEY',
+ *   envVar: 'E2E_OPENAI_API_KEY',
  *   providerName: 'OpenAI'
  * })
- * 
+ *
  * describe.skipIf(shouldSkip)('OpenAI E2E Tests', () => {
  *   // Tests here...
  * })

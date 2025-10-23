@@ -1,28 +1,29 @@
 /**
- * OpenAI Provider E2E Test - Comprehensive Callbacks
- * 
- * This is an END-TO-END test that makes REAL API calls to OpenAI.
- * 
+ * Azure OpenAI Provider E2E Test - Comprehensive Callbacks
+ *
+ * This is an END-TO-END test that makes REAL API calls to Azure OpenAI.
+ *
  * Setup:
- * 1. Set E2E_OPENAI_API_KEY environment variable
- * 2. Run: E2E_OPENAI_API_KEY=sk-... npm test -- openai-comprehensive-callbacks.e2e.test.ts
- * 
+ * 1. Set E2E_AZURE_API_KEY environment variable
+ * 2. Run: E2E_AZURE_API_KEY=... npm test -- azure-comprehensive-callbacks.e2e.test.ts
+ *
  * Tests:
- * - Real streaming from OpenAI API
+ * - Real streaming from Azure OpenAI API
  * - All 13 comprehensive callback hooks
  * - Tool injection and execution
  * - Message transformation
  * - Chunk pre/post processing
  * - Error handling
  * - Lifecycle events
- * 
+ * - Azure-specific configuration validation
+ *
  * TDD Approach: GIVEN / WHEN / THEN structure
  */
 
 import { describe, it, expect, beforeEach } from 'vitest'
 import type { Message } from '@tars/contracts'
 import type { ComprehensiveCallbacks, ToolDefinition } from '../../src/config/ComprehensiveCallbacks'
-import { OpenAIStreamingProvider } from '../../src/providers/openai/OpenAIStreamingProvider'
+import { AzureStreamingProvider } from '../../src/providers/azure/AzureStreamingProvider'
 import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
 
 // Mock logging service for tests (silent unless error)
@@ -46,35 +47,36 @@ const mockSettingsService = {
 	initialize: async () => {}
 }
 
-// Auto-skip all E2E tests if E2E_OPENAI_API_KEY not provided
+// Auto-skip all E2E tests if E2E_AZURE_API_KEY not provided
 const shouldSkipE2E = shouldSkipE2ETests({
-	envVar: 'E2E_OPENAI_API_KEY',
-	providerName: 'OpenAI',
+	envVar: 'E2E_AZURE_API_KEY',
+	providerName: 'Azure OpenAI',
 	setupInstructions: [
 		'Set API key: mise run secrets-init && mise run secrets-edit',
 		'Run tests:   mise run test-e2e',
-		'Or directly: E2E_OPENAI_API_KEY=sk-... npm test -- openai-comprehensive-callbacks.e2e.test.ts'
+		'Or directly: E2E_AZURE_API_KEY=... npm test -- azure-comprehensive-callbacks.e2e.test.ts'
 	]
 })
 
-const API_KEY = process.env.E2E_OPENAI_API_KEY
+const API_KEY = process.env.E2E_AZURE_API_KEY
 
-describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', () => {
-	let provider: OpenAIStreamingProvider
+describe.skipIf(shouldSkipE2E)('Azure OpenAI Provider E2E - Comprehensive Callbacks', () => {
+	let provider: AzureStreamingProvider
 
 	beforeEach(() => {
-		// GIVEN: Fresh OpenAI provider instance
-		provider = new OpenAIStreamingProvider(mockLoggingService as any, mockSettingsService as any)
+		// GIVEN: Fresh Azure OpenAI provider instance
+		provider = new AzureStreamingProvider(mockLoggingService as any, mockSettingsService as any)
 		provider.initialize({
 			apiKey: API_KEY as string,
-			model: 'gpt-5-nano', // Use cheapest model for testing (gpt-5-nano)
-			baseURL: 'https://api.openai.com/v1'
-			// Note: gpt-5-nano only supports temperature=1.0 (default), so we don't set it
+			baseURL: 'https://e2e-oleksander-kucheren-resource.openai.azure.com', // Azure resource URL (without /openai/v1)
+			deployment: 'gpt-oss-120b', // Azure deployment name
+			apiVersion: '2024-08-01-preview',
+			temperature: 0.7
 		})
 	})
 
 	describe('1. Basic Streaming', () => {
-		it('should stream response from OpenAI', async () => {
+		it('should stream response from Azure OpenAI', async () => {
 			// GIVEN: Simple message
 			const messages: Message[] = [
 				{
@@ -95,7 +97,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 			// THEN: Should receive response
 			expect(fullResponse).toContain('Hello')
 			expect(chunkCount).toBeGreaterThan(0)
-			
+
 			// Silent on success
 		})
 	})
@@ -117,7 +119,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 				// Tool injection
 				onToolsRequest: async ({ provider, model }) => {
 					// Silent
-					
+
 					const tools: ToolDefinition[] = [
 						{
 							type: 'function',
@@ -141,15 +143,15 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 							}
 						}
 					]
-					
+
 					toolsProvided = tools
 					return { tools }
 				},
-				
+
 				// Tool execution
 				onToolCall: async ({ toolCalls }) => {
 					// Silent
-					
+
 					// Mock tool execution
 					return {
 						responses: toolCalls.map(call => ({
@@ -196,7 +198,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 				beforeStreamStart: async ({ messages, provider }) => {
 					// Silent
 					originalMessageCount = messages.length
-					
+
 					// Add system message
 					const enhancedMessages: Message[] = [
 						{
@@ -205,12 +207,12 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 						},
 						...messages
 					]
-					
+
 					finalMessageCount = enhancedMessages.length
 					messagesTransformed = true
-					
+
 					// Silent
-					
+
 					return {
 						messages: enhancedMessages
 					}
@@ -228,7 +230,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 			expect(messagesTransformed).toBe(true)
 			expect(originalMessageCount).toBe(1)
 			expect(finalMessageCount).toBe(2)
-			
+
 			// Silent on success
 		})
 	})
@@ -250,20 +252,20 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 				// Pre-process chunks
 				beforeChunk: async ({ chunk, index, accumulated }) => {
 					// Silent
-					
+
 					// Transform: convert to uppercase
 					const transformed = chunk.toUpperCase()
-					
+
 					return {
 						chunk: transformed,
 						metadata: { originalLength: chunk.length }
 					}
 				},
-				
+
 				// Post-process chunks
 				afterChunk: async ({ originalChunk, processedChunk, index, accumulated, duration }) => {
 					// Silent
-					
+
 					processedChunks.push(processedChunk)
 					chunkMetrics.push({
 						index,
@@ -283,10 +285,10 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 			// THEN: Should have processed chunks
 			expect(processedChunks.length).toBeGreaterThan(0)
 			expect(chunkMetrics.length).toBeGreaterThan(0)
-			
+
 			// Response should be uppercase due to beforeChunk transformation
 			expect(fullResponse).toMatch(/[A-Z]/)
-			
+
 			// Silent on success
 		})
 
@@ -306,7 +308,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 				beforeChunk: async ({ chunk, index }) => {
 					// Skip every other chunk
 					const shouldSkip = index % 2 === 0
-					
+
 					if (shouldSkip) {
 						skippedCount++
 						// Silent
@@ -314,7 +316,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 						yieldedCount++
 						// Silent
 					}
-					
+
 					return { skip: shouldSkip }
 				}
 			}
@@ -328,7 +330,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 
 			// THEN: Should have skipped some chunks
 			expect(skippedCount).toBeGreaterThan(0)
-			
+
 			// Silent on success
 		})
 	})
@@ -350,7 +352,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 					lifecycle.push('start')
 					// Silent
 				},
-				
+
 				onStreamEnd: async ({ provider, model, totalChunks, duration, timestamp }) => {
 					lifecycle.push('end')
 					// Silent
@@ -364,7 +366,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 
 			// THEN: Should have called lifecycle events in order
 			expect(lifecycle).toEqual(['start', 'end'])
-			
+
 			// Silent on success
 		})
 	})
@@ -386,13 +388,13 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 				beforeStreamStart: async () => {
 					// Silent
 					streamCancelled = true
-					
+
 					return {
 						cancel: true,
 						cancelReason: 'Quota exceeded'
 					}
 				},
-				
+
 				onStreamStart: async () => {
 					streamStarted = true
 				}
@@ -409,13 +411,242 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 			expect(streamCancelled).toBe(true)
 			expect(streamStarted).toBe(false)
 			expect(chunkReceived).toBe(false)
-			
+
 			// Silent on success
 		})
 	})
 
-	describe('7. Complete Integration Test', () => {
-		it('should exercise all callbacks in one stream', async () => {
+	describe('7. Azure Model Capabilities', () => {
+		it('should confirm Azure deployment supports basic streaming', async () => {
+			// GIVEN: Simple test message
+			const messages: Message[] = [
+				{
+					role: 'user',
+					content: 'Say "Azure streaming works" exactly.'
+				}
+			]
+
+			// WHEN: Streaming response
+			let response = ''
+			let chunkCount = 0
+
+			for await (const chunk of provider.stream(messages, {})) {
+				response += chunk
+				chunkCount++
+			}
+
+			// THEN: Should receive proper streaming response
+			expect(response).toContain('Azure streaming works')
+			expect(chunkCount).toBeGreaterThan(0)
+			expect(response.length).toBeGreaterThan(5)
+
+			console.log(`✅ Azure streaming: ${chunkCount} chunks, response: "${response}"`)
+		})
+
+		it('should confirm Azure provider can accept tools without crashing', async () => {
+			// GIVEN: Provider with tools available
+			const messages: Message[] = [
+				{
+					role: 'user',
+					content: 'Just say "Tools are available" and nothing else.'
+				}
+			]
+
+			let toolsProvided = false
+			let response = ''
+
+			const callbacks: ComprehensiveCallbacks = {
+				onToolsRequest: async () => {
+					toolsProvided = true
+					return {
+						tools: [
+							{
+								type: 'function',
+								function: {
+									name: 'test_tool',
+									description: 'A test tool',
+									parameters: {
+										type: 'object',
+										properties: {
+											input: { type: 'string' }
+										}
+									}
+								}
+							}
+						]
+					}
+				}
+			}
+
+			// WHEN: Streaming with tools available
+			for await (const chunk of provider.stream(messages, { callbacks })) {
+				response += chunk
+			}
+
+			// THEN: Should handle tools gracefully
+			expect(toolsProvided).toBe(true)
+			expect(response).toContain('Tools are available')
+			expect(response.length).toBeGreaterThan(5)
+
+			console.log(`✅ Tools handled gracefully: "${response}"`)
+		})
+
+		it('should confirm Azure provider can process tool call responses', async () => {
+			// GIVEN: Provider that might receive tool calls
+			const messages: Message[] = [
+				{
+					role: 'system',
+					content: 'You have access to a test_tool. You may use it if you want, but you don\'t have to.'
+				},
+				{
+					role: 'user',
+					content: 'Say "Tool calling tested" and nothing else.'
+				}
+			]
+
+			let toolCallsHandled = false
+			let response = ''
+
+			const callbacks: ComprehensiveCallbacks = {
+				onToolsRequest: async () => {
+					return {
+						tools: [
+							{
+								type: 'function',
+								function: {
+									name: 'test_tool',
+									description: 'A test tool',
+									parameters: {
+										type: 'object',
+										properties: {
+											message: { type: 'string' }
+										}
+									}
+								}
+							}
+						]
+					}
+				},
+
+				onToolCall: async ({ toolCalls }) => {
+					toolCallsHandled = true
+					console.log(`🔧 Azure received ${toolCalls.length} tool call(s)`)
+
+					// Return mock responses
+					const responses = toolCalls.map(call => ({
+						tool_call_id: call.id,
+						content: JSON.stringify({ result: 'Tool executed successfully' }),
+						success: true
+					}))
+
+					return { responses }
+				}
+			}
+
+			// WHEN: Streaming with potential tool usage
+			for await (const chunk of provider.stream(messages, { callbacks })) {
+				response += chunk
+			}
+
+			// THEN: Should complete successfully regardless of tool usage
+			expect(response).toContain('Tool calling tested')
+			expect(response.length).toBeGreaterThan(5)
+
+			// Tool calls may or may not be used - both are valid
+			console.log(`✅ Tool calling test completed: tool calls=${toolCallsHandled}, response="${response}"`)
+		})
+
+		it('should confirm Azure provider supports all callback lifecycle events', async () => {
+			// GIVEN: All lifecycle callbacks configured
+			const messages: Message[] = [
+				{
+					role: 'user',
+					content: 'Count to 3.'
+				}
+			]
+
+			const events: string[] = []
+
+			const callbacks: ComprehensiveCallbacks = {
+				onToolsRequest: async () => {
+					events.push('tools_requested')
+					return { tools: [] }
+				},
+
+				beforeStreamStart: async () => {
+					events.push('before_stream_start')
+					return { messages }
+				},
+
+				onStreamStart: async () => {
+					events.push('stream_start')
+				},
+
+				beforeChunk: async ({ chunk }) => {
+					events.push(`before_chunk_${chunk.length}`)
+					return { chunk }
+				},
+
+				afterChunk: async () => {
+					events.push('after_chunk')
+				},
+
+				onStreamEnd: async () => {
+					events.push('stream_end')
+				}
+			}
+
+			// WHEN: Streaming with all callbacks
+			let response = ''
+			for await (const chunk of provider.stream(messages, { callbacks })) {
+				response += chunk
+			}
+
+			// THEN: Should have triggered all lifecycle events
+			expect(events).toContain('tools_requested')
+			expect(events).toContain('before_stream_start')
+			expect(events).toContain('stream_start')
+			expect(events).toContain('stream_end')
+			expect(events.filter(e => e.startsWith('before_chunk')).length).toBeGreaterThan(0)
+			expect(events.filter(e => e === 'after_chunk').length).toBeGreaterThan(0)
+
+			expect(response).toBeTruthy()
+			expect(response.length).toBeGreaterThan(3)
+
+			console.log(`✅ Lifecycle events: ${events.join(' → ')}`)
+		})
+
+		it('should confirm Azure deployment model identity', async () => {
+			// GIVEN: Provider instance
+			// WHEN: Checking provider properties
+			const providerName = provider.name
+			const displayName = provider.displayName
+			const models = provider.models
+			const capabilities = provider.capabilities
+			const defaultOptions = provider.defaultOptions
+
+			// THEN: Should have correct Azure identity
+			expect(providerName).toBe('azure')
+			expect(displayName).toBe('Azure OpenAI')
+			expect(models.length).toBeGreaterThan(0)
+			// Check if any model matches our deployment or is a common Azure model
+			const hasValidModel = models.some(model =>
+				model.id === 'gpt-oss-120b' ||
+				model.id === 'gpt-4o' ||
+				model.id.includes('gpt')
+			)
+			expect(hasValidModel).toBe(true)
+			expect(capabilities).toContain('Text Generation')
+			expect(capabilities).toContain('Tool Calling')
+			expect(defaultOptions.deployment).toBe('gpt-4o')
+			expect(defaultOptions.apiVersion).toBe('2024-08-01-preview')
+
+			console.log(`✅ Azure identity confirmed: ${displayName} with deployment ${defaultOptions.deployment}`)
+		})
+	})
+
+	describe('8. Complete Integration Test', () => {
+		it('should exercise all callbacks in one stream', { timeout: 30000 }, async () => {
 			// GIVEN: Complete test scenario
 			const messages: Message[] = [
 				{
@@ -432,29 +663,29 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 					// Silent
 					return { tools: [] }
 				},
-				
+
 				beforeStreamStart: async ({ messages }) => {
 					callbackLog.push('beforeStreamStart')
 					// Silent
 					return { messages }
 				},
-				
+
 				onStreamStart: async ({ provider, model }) => {
 					callbackLog.push('onStreamStart')
 					// Silent
 				},
-				
+
 				beforeChunk: async ({ chunk, index }) => {
 					callbackLog.push(`beforeChunk-${index}`)
 					// Silent
 					return { chunk }
 				},
-				
+
 				afterChunk: async ({ index, accumulated }) => {
 					callbackLog.push(`afterChunk-${index}`)
 					// Silent
 				},
-				
+
 				onStreamEnd: async ({ totalChunks, duration }) => {
 					callbackLog.push('onStreamEnd')
 					// Silent
@@ -477,7 +708,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 			expect(callbackLog).toContain('onStreamEnd')
 			expect(callbackLog.filter(log => log.startsWith('beforeChunk')).length).toBeGreaterThan(0)
 			expect(callbackLog.filter(log => log.startsWith('afterChunk')).length).toBeGreaterThan(0)
-			
+
 			// Silent on success
 		})
 	})

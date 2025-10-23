@@ -16,15 +16,15 @@ import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
 
 // Auto-skip if no API key
 const shouldSkipE2E = shouldSkipE2ETests({
-	envVar: 'OPENAI_API_KEY',
+	envVar: 'E2E_OPENAI_API_KEY',
 	providerName: 'OpenAI',
 	setupInstructions: [
-		'Set API key: mise run secrets-rotate OPENAI_API_KEY sk-proj-...',
+		'Set API key: mise run secrets-rotate E2E_OPENAI_API_KEY sk-proj-...',
 		'Run tests: mise run test-e2e'
 	]
 })
 
-const API_KEY = process.env.OPENAI_API_KEY
+const API_KEY = process.env.E2E_OPENAI_API_KEY
 
 interface OpenAIModel {
 	id: string

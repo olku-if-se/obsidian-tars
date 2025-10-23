@@ -4,7 +4,7 @@
  * This is an END-TO-END test that makes REAL API calls to Google Gemini.
  * 
  * Setup:
- * 1. Set GEMINI_API_KEY: mise run secrets-rotate GEMINI_API_KEY your-key
+ * 1. Set E2E_GEMINI_API_KEY: mise run secrets-rotate GEMINI_API_KEY your-key
  * 2. Run: mise run test-e2e
  * 
  * Tests:
@@ -25,7 +25,7 @@ import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
 
 // Auto-skip if no API key
 const shouldSkipE2E = shouldSkipE2ETests({
-	envVar: 'GEMINI_API_KEY',
+	envVar: 'E2E_GEMINI_API_KEY',
 	providerName: 'Gemini',
 	setupInstructions: [
 		'Set API key: mise run secrets-rotate GEMINI_API_KEY your-key',
@@ -33,7 +33,7 @@ const shouldSkipE2E = shouldSkipE2ETests({
 	]
 })
 
-const API_KEY = process.env.GEMINI_API_KEY
+const API_KEY = process.env.E2E_GEMINI_API_KEY
 
 // Mock services
 const mockLoggingService = {
