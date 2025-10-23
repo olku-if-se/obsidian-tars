@@ -58,10 +58,9 @@ export const withTimeout = <T>(
 						iterator.next(),
 						new Promise<IteratorResult<T>>((_, reject) => {
 							const timeoutId = setTimeout(() => {
-								const error = Object.assign(
-									new Error(`Stream timed out after ${timeoutMs}ms of inactivity`),
-									{ name: 'TimeoutError' }
-								)
+								const error = Object.assign(new Error(`Stream timed out after ${timeoutMs}ms of inactivity`), {
+									name: 'TimeoutError'
+								})
 								reject(error)
 							}, timeoutMs)
 
@@ -80,32 +79,20 @@ export const withTimeout = <T>(
  * Delay with exponential backoff
  * Pure utility for retry logic
  */
-export const backoffDelay = (
-	attempt: number,
-	baseDelay: number,
-	multiplier: number,
-	maxDelay: number
-): number => {
-	return Math.min(baseDelay * Math.pow(multiplier, attempt), maxDelay)
+export const backoffDelay = (attempt: number, baseDelay: number, multiplier: number, maxDelay: number): number => {
+	return Math.min(baseDelay * multiplier ** attempt, maxDelay)
 }
 
 /**
  * Check if error matches retry pattern
  */
-export const isRetryableError = (
-	error: Error,
-	patterns: string[],
-	statusCodes?: number[]
-): boolean => {
+export const isRetryableError = (error: Error, patterns: string[], statusCodes?: number[]): boolean => {
 	// Check error name/message
-	const matchesPattern = patterns.some(
-		(pattern) => error.name.includes(pattern) || error.message.includes(pattern)
-	)
+	const matchesPattern = patterns.some((pattern) => error.name.includes(pattern) || error.message.includes(pattern))
 
 	// Check status code if available (from HTTP errors)
 	const errorWithStatus = error as Error & { status?: number }
-	const matchesStatus =
-		statusCodes && errorWithStatus.status ? statusCodes.includes(errorWithStatus.status) : false
+	const matchesStatus = statusCodes && errorWithStatus.status ? statusCodes.includes(errorWithStatus.status) : false
 
 	return matchesPattern || matchesStatus
 }

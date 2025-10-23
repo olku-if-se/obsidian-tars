@@ -23,12 +23,12 @@ export class GeminiCompletionsStream extends CompletionsStream {
 		super(messages, options)
 		this.client = client
 		this.maxOutputTokens = options.maxOutputTokens || 4096
-		
+
 		// Convert messages to Gemini format
 		const converted = this.convertMessages(messages)
 		this.systemInstruction = converted.systemInstruction
 		this.userMessage = converted.userMessage
-		
+
 		// Store tools if provided
 		this.tools = tools
 	}
@@ -51,20 +51,19 @@ export class GeminiCompletionsStream extends CompletionsStream {
 	 */
 	private convertMessages(messages: Message[]): { systemInstruction?: string; userMessage: string } {
 		// Extract system message if present
-		const systemMessage = messages.find(msg => msg.role === 'system')
+		const systemMessage = messages.find((msg) => msg.role === 'system')
 		const systemInstruction = systemMessage?.content
 
 		// Get non-system messages
-		const nonSystemMessages = messages.filter(msg => msg.role !== 'system')
-		
+		const nonSystemMessages = messages.filter((msg) => msg.role !== 'system')
+
 		// Combine all messages into user context (simplified approach for streaming)
 		const userMessage = nonSystemMessages
-			.map(msg => `${msg.role === 'assistant' ? 'Assistant' : 'User'}: ${msg.content}`)
+			.map((msg) => `${msg.role === 'assistant' ? 'Assistant' : 'User'}: ${msg.content}`)
 			.join('\n\n')
 
 		return { systemInstruction, userMessage }
 	}
-
 
 	/**
 	 * Async iterator - yields StreamEvents from Gemini API (new SDK)

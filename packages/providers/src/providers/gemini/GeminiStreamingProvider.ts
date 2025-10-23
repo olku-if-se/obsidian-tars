@@ -1,11 +1,15 @@
-import { injectable, inject } from '@needle-di/core'
-import { tokens } from '@tars/contracts/tokens'
-import type { Message, ILoggingService, ISettingsService } from '@tars/contracts'
-import { type LlmCapability, type LlmModel, toLlmModels } from '@tars/contracts/providers'
 import { GoogleGenAI } from '@google/genai'
+import { inject, injectable } from '@needle-di/core'
+import type { ILoggingService, ISettingsService, Message } from '@tars/contracts'
+import { type LlmCapability, type LlmModel, toLlmModels } from '@tars/contracts/providers'
+import { tokens } from '@tars/contracts/tokens'
 import { StreamingProviderBase } from '../../base/StreamingProviderBase'
 import type { StreamConfig } from '../../config'
-import type { ComprehensiveCallbacks, BeforeStreamStartResult, ToolDefinition } from '../../config/ComprehensiveCallbacks'
+import type {
+	BeforeStreamStartResult,
+	ComprehensiveCallbacks,
+	ToolDefinition
+} from '../../config/ComprehensiveCallbacks'
 import type { ICompletionsStream } from '../../streaming'
 import { GeminiCompletionsStream } from './GeminiCompletionsStream'
 
@@ -18,11 +22,11 @@ export interface GeminiProviderOptions {
 
 /**
  * Google Gemini Streaming Provider - Comprehensive Callbacks
- * 
+ *
  * Uses official @google/genai SDK v1.26.0+
- * 
+ *
  * Google's advanced AI models with multimodal capabilities
- * 
+ *
  * Features:
  * - ✅ Gemini 2.5 Pro (thinking model)
  * - ✅ Gemini 2.5 Flash (best price-performance)
@@ -37,20 +41,12 @@ export class GeminiStreamingProvider extends StreamingProviderBase {
 	readonly name = 'gemini'
 	readonly displayName = 'Google Gemini'
 	readonly websiteToObtainKey = 'https://makersuite.google.com/app/apikey'
-	readonly capabilities: LlmCapability[] = [
-		'Text Generation',
-		'Image Vision',
-		'Tool Calling',
-		'Reasoning'
-	]
+	readonly capabilities: LlmCapability[] = ['Text Generation', 'Image Vision', 'Tool Calling', 'Reasoning']
 
 	private client: GoogleGenAI | null = null
 	private providerOptions: GeminiProviderOptions | null = null
 
-	constructor(
-		loggingService = inject(tokens.Logger),
-		settingsService = inject(tokens.Settings)
-	) {
+	constructor(loggingService = inject(tokens.Logger), settingsService = inject(tokens.Settings)) {
 		super(loggingService, settingsService)
 	}
 
@@ -62,18 +58,18 @@ export class GeminiStreamingProvider extends StreamingProviderBase {
 		return toLlmModels(
 			[
 				// Gemini 2.5 series (Latest - Oct 2025)
-				'gemini-2.5-flash-lite',        // CHEAPEST: $0.0375 in / $0.15 out
-				'gemini-2.5-flash',             // Best price-performance: $0.15 in / $0.60 out
-				'gemini-2.5-pro',               // Thinking model: $1.25 in / $5 out
-				
+				'gemini-2.5-flash-lite', // CHEAPEST: $0.0375 in / $0.15 out
+				'gemini-2.5-flash', // Best price-performance: $0.15 in / $0.60 out
+				'gemini-2.5-pro', // Thinking model: $1.25 in / $5 out
+
 				// Gemini 2.0 series (Previous generation)
-				'gemini-2.0-flash',             // Fast: $0.10 in / $0.40 out
-				'gemini-2.0-flash-lite',        // Fast and cheap
-				
+				'gemini-2.0-flash', // Fast: $0.10 in / $0.40 out
+				'gemini-2.0-flash-lite', // Fast and cheap
+
 				// Gemini 1.5 series (Legacy)
-				'gemini-1.5-flash',             // Legacy fast
-				'gemini-1.5-pro',               // Legacy pro
-				'gemini-1.0-pro',               // Legacy
+				'gemini-1.5-flash', // Legacy fast
+				'gemini-1.5-pro', // Legacy pro
+				'gemini-1.0-pro' // Legacy
 			],
 			this.capabilities
 		)
@@ -112,10 +108,7 @@ export class GeminiStreamingProvider extends StreamingProviderBase {
 	 * Stream with comprehensive callbacks (Gold Standard)
 	 * Follows OpenAI/Claude reference implementation
 	 */
-	async *stream(
-		messages: Message[],
-		config: StreamConfig = {}
-	): AsyncGenerator<string, void, unknown> {
+	async *stream(messages: Message[], config: StreamConfig = {}): AsyncGenerator<string, void, unknown> {
 		const callbacks = config.callbacks as ComprehensiveCallbacks | undefined
 		const startTime = Date.now()
 		let chunkCount = 0
@@ -159,7 +152,11 @@ export class GeminiStreamingProvider extends StreamingProviderBase {
 			}
 
 			// 3. CREATE STREAM
-			const completionStream = this.createCompletionStreamWithTools(finalMessages, { ...config, providerOptions: finalOptions }, finalTools)
+			const completionStream = this.createCompletionStreamWithTools(
+				finalMessages,
+				{ ...config, providerOptions: finalOptions },
+				finalTools
+			)
 
 			// 4. STREAM START
 			if (callbacks?.onStreamStart) {
@@ -262,7 +259,11 @@ export class GeminiStreamingProvider extends StreamingProviderBase {
 	/**
 	 * Helper to create stream with tools
 	 */
-	private createCompletionStreamWithTools(messages: Message[], config: StreamConfig, tools?: ToolDefinition[]): ICompletionsStream {
+	private createCompletionStreamWithTools(
+		messages: Message[],
+		config: StreamConfig,
+		tools?: ToolDefinition[]
+	): ICompletionsStream {
 		if (!this.client) {
 			throw new Error('Gemini provider not initialized')
 		}

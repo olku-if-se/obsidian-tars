@@ -9,18 +9,23 @@ describe('Performance with Large Datasets - Integration Tests', () => {
 		// Create large test settings with many providers and MCP servers
 		const manyProviders = Array.from({ length: 50 }, (_, i) => ({
 			tag: `provider-${i}`,
-			vendor: ['Claude', 'OpenAI', 'Ollama', 'Azure', 'DeepSeek'][i % 5] as 'Claude' | 'OpenAI' | 'Ollama' | 'Azure' | 'DeepSeek',
+			vendor: ['Claude', 'OpenAI', 'Ollama', 'Azure', 'DeepSeek'][i % 5] as
+				| 'Claude'
+				| 'OpenAI'
+				| 'Ollama'
+				| 'Azure'
+				| 'DeepSeek',
 			options: {
 				apiKey: `test-key-${i}`,
 				model: `model-${i}`,
 				baseURL: `https://api.example-${i}.com`,
 				parameters: {
-					temperature: 0.1 + (i * 0.01),
-					max_tokens: 1000 + (i * 100),
-					top_p: 0.1 + (i * 0.01),
+					temperature: 0.1 + i * 0.01,
+					max_tokens: 1000 + i * 100,
+					top_p: 0.1 + i * 0.01,
 					top_k: 10 + i,
 					thinkingMode: ['auto', 'manual'][i % 2] as 'auto' | 'manual',
-					budget_tokens: 1000 + (i * 50),
+					budget_tokens: 1000 + i * 50,
 					stop: [`</response-${i}>`, `<END-${i}>`]
 				}
 			}
@@ -30,47 +35,57 @@ describe('Performance with Large Datasets - Integration Tests', () => {
 			id: `server-${i}`,
 			name: `MCP Server ${i}`,
 			enabled: i % 2 === 0,
-			deploymentType: i % 3 === 0 ? 'managed' : 'external' as 'managed' | 'external',
-			transport: i % 2 === 0 ? 'stdio' : 'sse' as 'stdio' | 'sse',
-			dockerConfig: i % 3 === 0 ? {
-				image: `mcp/server-${i}:latest`,
-				containerName: `server-${i}`,
-				ports: [`${3000 + i}:3000`, `${8080 + i}:8080`],
-				volumes: [`/data-${i}:/app/data`, `/config-${i}:/app/config`],
-				environment: {
-					'NODE_ENV': 'production',
-					'LOG_LEVEL': 'debug',
-					'SERVER_ID': `server-${i}`
-				},
-				networks: ['mcp-network', 'default'],
-				restartPolicy: 'unless-stopped'
-			} : undefined,
-			sseConfig: i % 3 !== 0 ? {
-				url: `http://localhost:${8000 + i}/sse`,
-				headers: {
-					'Authorization': `Bearer token-${i}`,
-					'Content-Type': 'application/json'
-				}
-			} : undefined,
+			deploymentType: i % 3 === 0 ? 'managed' : ('external' as 'managed' | 'external'),
+			transport: i % 2 === 0 ? 'stdio' : ('sse' as 'stdio' | 'sse'),
+			dockerConfig:
+				i % 3 === 0
+					? {
+							image: `mcp/server-${i}:latest`,
+							containerName: `server-${i}`,
+							ports: [`${3000 + i}:3000`, `${8080 + i}:8080`],
+							volumes: [`/data-${i}:/app/data`, `/config-${i}:/app/config`],
+							environment: {
+								NODE_ENV: 'production',
+								LOG_LEVEL: 'debug',
+								SERVER_ID: `server-${i}`
+							},
+							networks: ['mcp-network', 'default'],
+							restartPolicy: 'unless-stopped'
+						}
+					: undefined,
+			sseConfig:
+				i % 3 !== 0
+					? {
+							url: `http://localhost:${8000 + i}/sse`,
+							headers: {
+								Authorization: `Bearer token-${i}`,
+								'Content-Type': 'application/json'
+							}
+						}
+					: undefined,
 			healthCheckConfig: {
 				enabled: true,
-				interval: 30000 + (i * 1000),
-				timeout: 5000 + (i * 100),
+				interval: 30000 + i * 1000,
+				timeout: 5000 + i * 100,
 				failureThreshold: 3 + (i % 3),
 				successThreshold: 2
 			},
 			retryConfig: {
 				maxAttempts: 5 + (i % 5),
-				backoffMultiplier: 1.5 + (i * 0.1),
-				initialDelay: 1000 + (i * 100),
-				maxDelay: 60000 - (i * 1000)
+				backoffMultiplier: 1.5 + i * 0.1,
+				initialDelay: 1000 + i * 100,
+				maxDelay: 60000 - i * 1000
 			},
-			configInput: JSON.stringify({
-				serverId: `server-${i}`,
-				maxConnections: 10 + i,
-				queryTimeout: 30000 + (i * 1000),
-				environment: `production-${i % 2}`
-			}, null, 2)
+			configInput: JSON.stringify(
+				{
+					serverId: `server-${i}`,
+					maxConnections: 10 + i,
+					queryTimeout: 30000 + i * 1000,
+					environment: `production-${i % 2}`
+				},
+				null,
+				2
+			)
 		}))
 
 		const manyTags = Array.from({ length: 20 }, (_, i) => `#Tag${i}`)
@@ -225,7 +240,7 @@ describe('Performance with Large Datasets - Integration Tests', () => {
 			// Verify random providers are preserved
 			expect(obsidianUpdates.providers?.[10]?.tag).toBe('provider-10')
 			expect(obsidianUpdates.providers?.[25]?.vendor).toBe('Azure')
-			expect(obsidianUpdates.providers?.[40]?.options.parameters?.temperature).toBe(0.1 + (40 * 0.01))
+			expect(obsidianUpdates.providers?.[40]?.options.parameters?.temperature).toBe(0.1 + 40 * 0.01)
 			expect(obsidianUpdates.providers?.[45]?.options.parameters?.top_k).toBe(55)
 		})
 

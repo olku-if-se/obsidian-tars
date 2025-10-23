@@ -86,7 +86,10 @@ export class CodeBlockProcessor implements ICodeBlockProcessor {
 	 * Parse code block content to extract tool invocation
 	 * Enhanced version with DI logging service integration
 	 */
-	parseToolInvocationExtended(source: string, language: string): { serverId: string; toolName: string; parameters: Record<string, unknown> } | null {
+	parseToolInvocationExtended(
+		source: string,
+		language: string
+	): { serverId: string; toolName: string; parameters: Record<string, unknown> } | null {
 		try {
 			// Check if language matches a server name
 			const serverConfig = this.serverConfigManager.getServerByName(language)

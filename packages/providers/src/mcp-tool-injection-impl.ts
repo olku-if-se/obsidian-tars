@@ -34,7 +34,7 @@ export class ConcreteMCPToolInjector implements MCPToolInjector {
 			const snapshot = await toolCache.getSnapshot()
 
 			// Flatten all tools from all servers
-			const allTools = snapshot.servers.flatMap(server => server.tools)
+			const allTools = snapshot.servers.flatMap((server) => server.tools)
 
 			// Build provider-specific tool format
 			const tools = this.buildToolsForProvider(providerName, allTools)

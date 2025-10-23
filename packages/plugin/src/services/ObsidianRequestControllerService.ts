@@ -10,9 +10,7 @@ import { ISettingsServiceToken } from '@tars/contracts'
 export class ObsidianRequestControllerService implements IRequestController {
 	private aborterInstance: AbortController | null = null
 
-	constructor(
-		private settingsService = inject(ISettingsServiceToken)
-	) {}
+	constructor(private settingsService = inject(ISettingsServiceToken)) {}
 
 	/**
 	 * Get the current AbortController instance, creating one if needed

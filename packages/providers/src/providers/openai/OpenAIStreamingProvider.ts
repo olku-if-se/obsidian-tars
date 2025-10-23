@@ -1,21 +1,25 @@
-import { injectable, inject } from '@needle-di/core'
-import { tokens } from '@tars/contracts/tokens'
-import type { Message, ILoggingService, ISettingsService } from '@tars/contracts'
+import { inject, injectable } from '@needle-di/core'
+import type { ILoggingService, ISettingsService, Message } from '@tars/contracts'
 import { type LlmCapability, type LlmModel, toLlmModels } from '@tars/contracts/providers'
+import { tokens } from '@tars/contracts/tokens'
 import OpenAI from 'openai'
 import { StreamingProviderBase } from '../../base/StreamingProviderBase'
 import type { StreamConfig } from '../../config'
-import type { ComprehensiveCallbacks, BeforeStreamStartResult, ToolDefinition } from '../../config/ComprehensiveCallbacks'
+import type {
+	BeforeStreamStartResult,
+	ComprehensiveCallbacks,
+	ToolDefinition
+} from '../../config/ComprehensiveCallbacks'
 import type { ICompletionsStream } from '../../streaming'
 import { OpenAICompletionsStream } from './OpenAICompletionsStream'
-import { toOpenAIMessage, type OpenAIProviderOptions } from './types'
+import { type OpenAIProviderOptions, toOpenAIMessage } from './types'
 
 /**
  * OpenAI Streaming Provider - Reference Implementation
- * 
+ *
  * This is the REFERENCE implementation demonstrating comprehensive callbacks.
  * All other providers should follow this pattern.
- * 
+ *
  * Features:
  * - ✅ Tool injection via onToolsRequest
  * - ✅ Message transformation via beforeStreamStart
@@ -24,7 +28,7 @@ import { toOpenAIMessage, type OpenAIProviderOptions } from './types'
  * - ✅ Lifecycle events (start, end, error, timeout)
  * - ✅ Retry control via onError
  * - ✅ Timeout warnings via onLongWaiting
- * 
+ *
  * Rule: Providers should NOT interact with UI
  * - ✅ Settings: Required for configuration
  * - ✅ Logging: Required for internal debugging
@@ -48,10 +52,7 @@ export class OpenAIStreamingProvider extends StreamingProviderBase {
 	private client: OpenAI | null = null
 	private providerOptions: OpenAIProviderOptions | null = null
 
-	constructor(
-		loggingService = inject(tokens.Logger),
-		settingsService = inject(tokens.Settings)
-	) {
+	constructor(loggingService = inject(tokens.Logger), settingsService = inject(tokens.Settings)) {
 		super(loggingService, settingsService)
 	}
 
@@ -63,26 +64,26 @@ export class OpenAIStreamingProvider extends StreamingProviderBase {
 		return toLlmModels(
 			[
 				// GPT-5 series (Latest, 2025)
-				'gpt-5-nano',        // Cheapest GPT-5 model
-				'gpt-5-mini',        // Cost-effective GPT-5
-				'gpt-5',             // Standard GPT-5
-				'gpt-5-pro',         // Premium GPT-5
+				'gpt-5-nano', // Cheapest GPT-5 model
+				'gpt-5-mini', // Cost-effective GPT-5
+				'gpt-5', // Standard GPT-5
+				'gpt-5-pro', // Premium GPT-5
 
 				// GPT-4.1 series
-				'gpt-4.1-nano',      // Cheapest GPT-4.1
-				'gpt-4.1-mini',      // Cost-effective GPT-4.1
-				'gpt-4.1',           // Standard GPT-4.1
+				'gpt-4.1-nano', // Cheapest GPT-4.1
+				'gpt-4.1-mini', // Cost-effective GPT-4.1
+				'gpt-4.1', // Standard GPT-4.1
 
 				// GPT-4o series (Optimized)
-				'gpt-4o-mini',       // Most cost-effective for general use
-				'gpt-4o',            // Optimized GPT-4
+				'gpt-4o-mini', // Most cost-effective for general use
+				'gpt-4o', // Optimized GPT-4
 
 				// GPT-4 series (Classic)
-				'gpt-4-turbo',       // Fast GPT-4
-				'gpt-4',             // Original GPT-4
+				'gpt-4-turbo', // Fast GPT-4
+				'gpt-4', // Original GPT-4
 
 				// GPT-3.5 series (Legacy)
-				'gpt-3.5-turbo'      // Legacy model
+				'gpt-3.5-turbo' // Legacy model
 			],
 			this.capabilities
 		)
@@ -122,14 +123,11 @@ export class OpenAIStreamingProvider extends StreamingProviderBase {
 
 	/**
 	 * Stream with comprehensive callbacks
-	 * 
+	 *
 	 * This is the MAIN ENTRY POINT that demonstrates callback integration.
 	 * It shows how to invoke callbacks at each stage of the streaming process.
 	 */
-	async *stream(
-		messages: Message[],
-		config: StreamConfig = {}
-	): AsyncGenerator<string, void, unknown> {
+	async *stream(messages: Message[], config: StreamConfig = {}): AsyncGenerator<string, void, unknown> {
 		const callbacks = config.callbacks as ComprehensiveCallbacks | undefined
 		const startTime = Date.now()
 		let chunkCount = 0
@@ -210,12 +208,7 @@ export class OpenAIStreamingProvider extends StreamingProviderBase {
 				providerOptions: finalOptions
 			}
 
-			const completionStream = OpenAICompletionsStream.from(
-				openAIMessages,
-				streamOptions,
-				this.client!,
-				finalTools
-			)
+			const completionStream = OpenAICompletionsStream.from(openAIMessages, streamOptions, this.client!, finalTools)
 
 			// ========================================
 			// 3. STREAM START EVENT
@@ -366,7 +359,6 @@ export class OpenAIStreamingProvider extends StreamingProviderBase {
 				duration: Date.now() - startTime,
 				length: accumulated.length
 			})
-
 		} catch (error) {
 			// ========================================
 			// ERROR HANDLING

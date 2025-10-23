@@ -177,7 +177,7 @@ describe('Simple DI Workflow Tests', () => {
 			const results = commands.map(executeCommand)
 
 			// Verify all commands executed
-			results.forEach(result => {
+			results.forEach((result) => {
 				expect(result.success).toBe(true)
 			})
 		})

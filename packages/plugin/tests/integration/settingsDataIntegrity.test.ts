@@ -1,6 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { PluginSettings } from '../../src/settings'
-import { adaptObsidianToReact, adaptReactToObsidian, mergeReactChanges, validateAdapterTransformation } from '../../src/adapters/reactSettingsAdapter'
+import {
+	adaptObsidianToReact,
+	adaptReactToObsidian,
+	mergeReactChanges,
+	validateAdapterTransformation
+} from '../../src/adapters/reactSettingsAdapter'
 
 describe('Settings Data Integrity - Integration Tests', () => {
 	let comprehensiveSettings: PluginSettings
@@ -136,9 +141,9 @@ describe('Settings Data Integrity - Integration Tests', () => {
 						ports: ['3000:3000', '8080:8080'],
 						volumes: ['/data:/app/data', '/config:/app/config'],
 						environment: {
-							'NODE_ENV': 'production',
-							'LOG_LEVEL': 'debug',
-							'API_KEY': 'file-ops-secret-key'
+							NODE_ENV: 'production',
+							LOG_LEVEL: 'debug',
+							API_KEY: 'file-ops-secret-key'
 						},
 						networks: ['mcp-network', 'default'],
 						restartPolicy: 'unless-stopped'
@@ -156,11 +161,15 @@ describe('Settings Data Integrity - Integration Tests', () => {
 						initialDelay: 1000,
 						maxDelay: 60000
 					},
-					configInput: JSON.stringify({
-						workingDirectory: '/data',
-						maxFileSize: '100MB',
-						allowedExtensions: ['.txt', '.md', '.json', '.csv']
-					}, null, 2)
+					configInput: JSON.stringify(
+						{
+							workingDirectory: '/data',
+							maxFileSize: '100MB',
+							allowedExtensions: ['.txt', '.md', '.json', '.csv']
+						},
+						null,
+						2
+					)
 				},
 				{
 					id: 'web-search',
@@ -171,7 +180,7 @@ describe('Settings Data Integrity - Integration Tests', () => {
 					sseConfig: {
 						url: 'http://localhost:8080/sse',
 						headers: {
-							'Authorization': 'Bearer search-api-key',
+							Authorization: 'Bearer search-api-key',
 							'Content-Type': 'application/json'
 						}
 					},
@@ -181,11 +190,15 @@ describe('Settings Data Integrity - Integration Tests', () => {
 						initialDelay: 500,
 						maxDelay: 10000
 					},
-					configInput: JSON.stringify({
-						apiKey: 'search-service-key',
-						maxResults: 10,
-						safeSearch: 'moderate'
-					}, null, 2)
+					configInput: JSON.stringify(
+						{
+							apiKey: 'search-service-key',
+							maxResults: 10,
+							safeSearch: 'moderate'
+						},
+						null,
+						2
+					)
 				},
 				{
 					id: 'database-query',
@@ -199,9 +212,9 @@ describe('Settings Data Integrity - Integration Tests', () => {
 						ports: ['5432:5432'],
 						volumes: ['/db-data:/var/lib/postgresql/data'],
 						environment: {
-							'POSTGRES_DB': 'app_db',
-							'POSTGRES_USER': 'app_user',
-							'POSTGRES_PASSWORD': 'secure_password_hash'
+							POSTGRES_DB: 'app_db',
+							POSTGRES_USER: 'app_user',
+							POSTGRES_PASSWORD: 'secure_password_hash'
 						}
 					},
 					healthCheckConfig: {
@@ -216,11 +229,15 @@ describe('Settings Data Integrity - Integration Tests', () => {
 						initialDelay: 2000,
 						maxDelay: 120000
 					},
-					configInput: JSON.stringify({
-						connectionString: 'postgresql://app_user:secure_password@localhost:5432/app_db',
-						maxConnections: 10,
-						queryTimeout: 30000
-					}, null, 2)
+					configInput: JSON.stringify(
+						{
+							connectionString: 'postgresql://app_user:secure_password@localhost:5432/app_db',
+							maxConnections: 10,
+							queryTimeout: 30000
+						},
+						null,
+						2
+					)
 				}
 			],
 			mcpConcurrentLimit: 15,
@@ -251,7 +268,7 @@ describe('Settings Data Integrity - Integration Tests', () => {
 			expect(obsidianUpdates.providers).toHaveLength(5)
 
 			// Verify Claude provider
-			const claudeProvider = obsidianUpdates.providers?.find(p => p.vendor === 'Claude')
+			const claudeProvider = obsidianUpdates.providers?.find((p) => p.vendor === 'Claude')
 			expect(claudeProvider?.tag).toBe('claude')
 			expect(claudeProvider?.options.apiKey).toBe('sk-ant-api-test-key-12345')
 			expect(claudeProvider?.options.model).toBe('claude-3-5-sonnet-20241022')
@@ -262,7 +279,7 @@ describe('Settings Data Integrity - Integration Tests', () => {
 			expect(claudeProvider?.options.parameters?.stop).toEqual(['</response>', '<END>'])
 
 			// Verify OpenAI provider
-			const openaiProvider = obsidianUpdates.providers?.find(p => p.vendor === 'OpenAI')
+			const openaiProvider = obsidianUpdates.providers?.find((p) => p.vendor === 'OpenAI')
 			expect(openaiProvider?.tag).toBe('openai')
 			expect(openaiProvider?.options.apiKey).toBe('sk-OpenAI-test-key-67890')
 			expect(openaiProvider?.options.model).toBe('gpt-4-turbo-preview')
@@ -270,7 +287,7 @@ describe('Settings Data Integrity - Integration Tests', () => {
 			expect(openaiProvider?.options.parameters?.project).toBe('project-test-456')
 
 			// Verify Ollama provider
-			const ollamaProvider = obsidianUpdates.providers?.find(p => p.vendor === 'Ollama')
+			const ollamaProvider = obsidianUpdates.providers?.find((p) => p.vendor === 'Ollama')
 			expect(ollamaProvider?.tag).toBe('ollama')
 			expect(ollamaProvider?.options.model).toBe('llama3.2:70b')
 			expect(ollamaProvider?.options.parameters?.mirostat).toBe(2)
@@ -278,13 +295,13 @@ describe('Settings Data Integrity - Integration Tests', () => {
 			expect(ollamaProvider?.options.parameters?.mirostatEta).toBe(0.1)
 
 			// Verify Azure provider
-			const azureProvider = obsidianUpdates.providers?.find(p => p.vendor === 'Azure')
+			const azureProvider = obsidianUpdates.providers?.find((p) => p.vendor === 'Azure')
 			expect(azureProvider?.tag).toBe('azure')
 			expect(azureProvider?.options.parameters?.apiVersion).toBe('2024-02-15-preview')
 			expect(azureProvider?.options.parameters?.endpoint).toBe('https://test-resource.openai.azure.com')
 
 			// Verify DeepSeek provider
-			const deepseekProvider = obsidianUpdates.providers?.find(p => p.vendor === 'DeepSeek')
+			const deepseekProvider = obsidianUpdates.providers?.find((p) => p.vendor === 'DeepSeek')
 			expect(deepseekProvider?.tag).toBe('deepseek')
 			expect(deepseekProvider?.options.parameters?.reasoningEffort).toBe('medium')
 		})
@@ -297,7 +314,7 @@ describe('Settings Data Integrity - Integration Tests', () => {
 			expect(obsidianUpdates.mcpServers).toHaveLength(3)
 
 			// Verify file operations server
-			const fileOpsServer = obsidianUpdates.mcpServers?.find(s => s.id === 'file-operations')
+			const fileOpsServer = obsidianUpdates.mcpServers?.find((s) => s.id === 'file-operations')
 			expect(fileOpsServer?.name).toBe('File Operations Server')
 			expect(fileOpsServer?.enabled).toBe(true)
 			expect(fileOpsServer?.deploymentType).toBe('managed')
@@ -305,9 +322,9 @@ describe('Settings Data Integrity - Integration Tests', () => {
 			expect(fileOpsServer?.dockerConfig?.image).toBe('mcp/file-ops:latest')
 			expect(fileOpsServer?.dockerConfig?.ports).toEqual(['3000:3000', '8080:8080'])
 			expect(fileOpsServer?.dockerConfig?.environment).toEqual({
-				'NODE_ENV': 'production',
-				'LOG_LEVEL': 'debug',
-				'API_KEY': 'file-ops-secret-key'
+				NODE_ENV: 'production',
+				LOG_LEVEL: 'debug',
+				API_KEY: 'file-ops-secret-key'
 			})
 			expect(fileOpsServer?.healthCheckConfig?.enabled).toBe(true)
 			expect(fileOpsServer?.healthCheckConfig?.interval).toBe(30000)
@@ -315,19 +332,19 @@ describe('Settings Data Integrity - Integration Tests', () => {
 			expect(fileOpsServer?.retryConfig?.backoffMultiplier).toBe(2.0)
 
 			// Verify web search server
-			const webSearchServer = obsidianUpdates.mcpServers?.find(s => s.id === 'web-search')
+			const webSearchServer = obsidianUpdates.mcpServers?.find((s) => s.id === 'web-search')
 			expect(webSearchServer?.name).toBe('Web Search Service')
 			expect(webSearchServer?.enabled).toBe(false)
 			expect(webSearchServer?.deploymentType).toBe('external')
 			expect(webSearchServer?.transport).toBe('sse')
 			expect(webSearchServer?.sseConfig?.url).toBe('http://localhost:8080/sse')
 			expect(webSearchServer?.sseConfig?.headers).toEqual({
-				'Authorization': 'Bearer search-api-key',
+				Authorization: 'Bearer search-api-key',
 				'Content-Type': 'application/json'
 			})
 
 			// Verify database query server
-			const dbQueryServer = obsidianUpdates.mcpServers?.find(s => s.id === 'database-query')
+			const dbQueryServer = obsidianUpdates.mcpServers?.find((s) => s.id === 'database-query')
 			expect(dbQueryServer?.name).toBe('Database Query Interface')
 			expect(dbQueryServer?.dockerConfig?.image).toBe('mcp/db-query:v2.1.0')
 			expect(dbQueryServer?.healthCheckConfig?.failureThreshold).toBe(5)
@@ -360,7 +377,9 @@ describe('Settings Data Integrity - Integration Tests', () => {
 
 			// Verify system message
 			expect(obsidianUpdates.enableDefaultSystemMsg).toBe(true)
-			expect(obsidianUpdates.defaultSystemMsg).toBe('You are a helpful AI assistant. Please respond thoughtfully and accurately to user queries.')
+			expect(obsidianUpdates.defaultSystemMsg).toBe(
+				'You are a helpful AI assistant. Please respond thoughtfully and accurately to user queries.'
+			)
 
 			// Verify advanced settings
 			expect(obsidianUpdates.enableInternalLinkForAssistantMsg).toBe(true)
@@ -464,28 +483,28 @@ describe('Settings Data Integrity - Integration Tests', () => {
 			const obsidianUpdates = adaptReactToObsidian(reactState)
 
 			// Verify nested provider parameters are preserved
-			const claudeParams = obsidianUpdates.providers?.find(p => p.vendor === 'Claude')?.options.parameters
+			const claudeParams = obsidianUpdates.providers?.find((p) => p.vendor === 'Claude')?.options.parameters
 			expect(claudeParams?.temperature).toBe(0.7)
 			expect(claudeParams?.stop).toEqual(['</response>', '<END>'])
 
 			// Verify nested Docker configuration is preserved
-			const fileOpsDocker = obsidianUpdates.mcpServers?.find(s => s.id === 'file-operations')?.dockerConfig
+			const fileOpsDocker = obsidianUpdates.mcpServers?.find((s) => s.id === 'file-operations')?.dockerConfig
 			expect(fileOpsDocker?.environment).toEqual({
-				'NODE_ENV': 'production',
-				'LOG_LEVEL': 'debug',
-				'API_KEY': 'file-ops-secret-key'
+				NODE_ENV: 'production',
+				LOG_LEVEL: 'debug',
+				API_KEY: 'file-ops-secret-key'
 			})
 			expect(fileOpsDocker?.ports).toEqual(['3000:3000', '8080:8080'])
 
 			// Verify nested health check configuration is preserved
-			const fileOpsHealth = obsidianUpdates.mcpServers?.find(s => s.id === 'file-operations')?.healthCheckConfig
+			const fileOpsHealth = obsidianUpdates.mcpServers?.find((s) => s.id === 'file-operations')?.healthCheckConfig
 			expect(fileOpsHealth?.successThreshold).toBe(2)
 			expect(fileOpsHealth?.failureThreshold).toBe(3)
 
 			// Verify nested SSE configuration is preserved
-			const webSearchSSE = obsidianUpdates.mcpServers?.find(s => s.id === 'web-search')?.sseConfig
+			const webSearchSSE = obsidianUpdates.mcpServers?.find((s) => s.id === 'web-search')?.sseConfig
 			expect(webSearchSSE?.headers).toEqual({
-				'Authorization': 'Bearer search-api-key',
+				Authorization: 'Bearer search-api-key',
 				'Content-Type': 'application/json'
 			})
 		})
@@ -495,26 +514,44 @@ describe('Settings Data Integrity - Integration Tests', () => {
 			const obsidianUpdates = adaptReactToObsidian(reactState)
 
 			// Verify JSON strings are preserved exactly
-			const fileOpsConfig = obsidianUpdates.mcpServers?.find(s => s.id === 'file-operations')?.configInput
-			expect(fileOpsConfig).toBe(JSON.stringify({
-				workingDirectory: '/data',
-				maxFileSize: '100MB',
-				allowedExtensions: ['.txt', '.md', '.json', '.csv']
-			}, null, 2))
+			const fileOpsConfig = obsidianUpdates.mcpServers?.find((s) => s.id === 'file-operations')?.configInput
+			expect(fileOpsConfig).toBe(
+				JSON.stringify(
+					{
+						workingDirectory: '/data',
+						maxFileSize: '100MB',
+						allowedExtensions: ['.txt', '.md', '.json', '.csv']
+					},
+					null,
+					2
+				)
+			)
 
-			const webSearchConfig = obsidianUpdates.mcpServers?.find(s => s.id === 'web-search')?.configInput
-			expect(webSearchConfig).toBe(JSON.stringify({
-				apiKey: 'search-service-key',
-				maxResults: 10,
-				safeSearch: 'moderate'
-			}, null, 2))
+			const webSearchConfig = obsidianUpdates.mcpServers?.find((s) => s.id === 'web-search')?.configInput
+			expect(webSearchConfig).toBe(
+				JSON.stringify(
+					{
+						apiKey: 'search-service-key',
+						maxResults: 10,
+						safeSearch: 'moderate'
+					},
+					null,
+					2
+				)
+			)
 
-			const dbQueryConfig = obsidianUpdates.mcpServers?.find(s => s.id === 'database-query')?.configInput
-			expect(dbQueryConfig).toBe(JSON.stringify({
-				connectionString: 'postgresql://app_user:secure_password@localhost:5432/app_db',
-				maxConnections: 10,
-				queryTimeout: 30000
-			}, null, 2))
+			const dbQueryConfig = obsidianUpdates.mcpServers?.find((s) => s.id === 'database-query')?.configInput
+			expect(dbQueryConfig).toBe(
+				JSON.stringify(
+					{
+						connectionString: 'postgresql://app_user:secure_password@localhost:5432/app_db',
+						maxConnections: 10,
+						queryTimeout: 30000
+					},
+					null,
+					2
+				)
+			)
 		})
 	})
 
@@ -558,7 +595,7 @@ describe('Settings Data Integrity - Integration Tests', () => {
 			const obsidianUpdates = adaptReactToObsidian(reactState)
 
 			// Verify Claude parameter types
-			const claudeParams = obsidianUpdates.providers?.find(p => p.vendor === 'Claude')?.options.parameters
+			const claudeParams = obsidianUpdates.providers?.find((p) => p.vendor === 'Claude')?.options.parameters
 			expect(typeof claudeParams?.temperature).toBe('number')
 			expect(typeof claudeParams?.max_tokens).toBe('number')
 			expect(typeof claudeParams?.top_p).toBe('number')
@@ -568,7 +605,7 @@ describe('Settings Data Integrity - Integration Tests', () => {
 			expect(Array.isArray(claudeParams?.stop)).toBe(true)
 
 			// Verify Ollama parameter types
-			const ollamaParams = obsidianUpdates.providers?.find(p => p.vendor === 'Ollama')?.options.parameters
+			const ollamaParams = obsidianUpdates.providers?.find((p) => p.vendor === 'Ollama')?.options.parameters
 			expect(typeof ollamaParams?.temperature).toBe('number')
 			expect(typeof ollamaParams?.top_p).toBe('number')
 			expect(typeof ollamaParams?.top_k).toBe('number')

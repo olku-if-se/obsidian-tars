@@ -175,14 +175,14 @@ describe('Settings Persistence - Integration Tests', () => {
 			const backToReact = adaptObsidianToReact(obsidianUpdates)
 
 			// Verify provider configurations are preserved
-			const claudeProvider = obsidianUpdates.providers?.find(p => p.vendor === 'Claude')
+			const claudeProvider = obsidianUpdates.providers?.find((p) => p.vendor === 'Claude')
 			expect(claudeProvider?.options.apiKey).toBe('sk-ant-test-key')
 			expect(claudeProvider?.options.model).toBe('claude-3-5-sonnet-20241022')
 			expect(claudeProvider?.options.parameters?.temperature).toBe(0.7)
 			expect(claudeProvider?.options.parameters?.max_tokens).toBe(4000)
 
 			// Verify MCP server configurations are preserved
-			const fileOpsServer = obsidianUpdates.mcpServers?.find(s => s.id === 'file-operations')
+			const fileOpsServer = obsidianUpdates.mcpServers?.find((s) => s.id === 'file-operations')
 			expect(fileOpsServer?.dockerConfig?.image).toBe('mcp/file-ops:latest')
 			expect(fileOpsServer?.retryConfig?.maxAttempts).toBe(3)
 			expect(fileOpsServer?.configInput).toBe('{"workingDirectory": "/data"}')
@@ -338,7 +338,7 @@ describe('Settings Persistence - Integration Tests', () => {
 						apiKey: `sk-key-${i}`,
 						model: `model-${i}`,
 						parameters: {
-							temperature: i % 10 / 10,
+							temperature: (i % 10) / 10,
 							max_tokens: 1000 + i * 100
 						}
 					}
@@ -376,8 +376,8 @@ describe('Settings Persistence - Integration Tests', () => {
 					transport: i % 2 === 0 ? 'stdio' : 'sse',
 					configInput: JSON.stringify({ serverId: i }),
 					retryConfig: {
-						maxAttempts: 3 + i % 5,
-						backoffMultiplier: 1 + i % 3,
+						maxAttempts: 3 + (i % 5),
+						backoffMultiplier: 1 + (i % 3),
 						initialDelay: 500 + i * 100
 					}
 				})

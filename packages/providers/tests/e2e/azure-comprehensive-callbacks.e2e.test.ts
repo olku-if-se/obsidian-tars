@@ -20,8 +20,8 @@
  * TDD Approach: GIVEN / WHEN / THEN structure
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
 import type { Message } from '@tars/contracts'
+import { beforeEach, describe, expect, it } from 'vitest'
 import type { ComprehensiveCallbacks, ToolDefinition } from '../../src/config/ComprehensiveCallbacks'
 import { AzureStreamingProvider } from '../../src/providers/azure/AzureStreamingProvider'
 import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
@@ -29,8 +29,8 @@ import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
 // Mock logging service for tests (silent unless error)
 const mockLoggingService = {
 	debug: () => {}, // Silent
-	info: () => {},  // Silent
-	warn: () => {},  // Silent
+	info: () => {}, // Silent
+	warn: () => {}, // Silent
 	error: (...args: any[]) => console.error('[ERROR]', ...args) // Only show errors
 }
 
@@ -154,7 +154,7 @@ describe.skipIf(shouldSkipE2E)('Azure OpenAI Provider E2E - Comprehensive Callba
 
 					// Mock tool execution
 					return {
-						responses: toolCalls.map(call => ({
+						responses: toolCalls.map((call) => ({
 							tool_call_id: call.id,
 							content: JSON.stringify({
 								temperature: 72,
@@ -496,7 +496,7 @@ describe.skipIf(shouldSkipE2E)('Azure OpenAI Provider E2E - Comprehensive Callba
 			const messages: Message[] = [
 				{
 					role: 'system',
-					content: 'You have access to a test_tool. You may use it if you want, but you don\'t have to.'
+					content: "You have access to a test_tool. You may use it if you want, but you don't have to."
 				},
 				{
 					role: 'user',
@@ -533,7 +533,7 @@ describe.skipIf(shouldSkipE2E)('Azure OpenAI Provider E2E - Comprehensive Callba
 					console.log(`🔧 Azure received ${toolCalls.length} tool call(s)`)
 
 					// Return mock responses
-					const responses = toolCalls.map(call => ({
+					const responses = toolCalls.map((call) => ({
 						tool_call_id: call.id,
 						content: JSON.stringify({ result: 'Tool executed successfully' }),
 						success: true
@@ -607,8 +607,8 @@ describe.skipIf(shouldSkipE2E)('Azure OpenAI Provider E2E - Comprehensive Callba
 			expect(events).toContain('before_stream_start')
 			expect(events).toContain('stream_start')
 			expect(events).toContain('stream_end')
-			expect(events.filter(e => e.startsWith('before_chunk')).length).toBeGreaterThan(0)
-			expect(events.filter(e => e === 'after_chunk').length).toBeGreaterThan(0)
+			expect(events.filter((e) => e.startsWith('before_chunk')).length).toBeGreaterThan(0)
+			expect(events.filter((e) => e === 'after_chunk').length).toBeGreaterThan(0)
 
 			expect(response).toBeTruthy()
 			expect(response.length).toBeGreaterThan(3)
@@ -630,10 +630,8 @@ describe.skipIf(shouldSkipE2E)('Azure OpenAI Provider E2E - Comprehensive Callba
 			expect(displayName).toBe('Azure OpenAI')
 			expect(models.length).toBeGreaterThan(0)
 			// Check if any model matches our deployment or is a common Azure model
-			const hasValidModel = models.some(model =>
-				model.id === 'gpt-oss-120b' ||
-				model.id === 'gpt-4o' ||
-				model.id.includes('gpt')
+			const hasValidModel = models.some(
+				(model) => model.id === 'gpt-oss-120b' || model.id === 'gpt-4o' || model.id.includes('gpt')
 			)
 			expect(hasValidModel).toBe(true)
 			expect(capabilities).toContain('Text Generation')
@@ -706,8 +704,8 @@ describe.skipIf(shouldSkipE2E)('Azure OpenAI Provider E2E - Comprehensive Callba
 			expect(callbackLog).toContain('beforeStreamStart')
 			expect(callbackLog).toContain('onStreamStart')
 			expect(callbackLog).toContain('onStreamEnd')
-			expect(callbackLog.filter(log => log.startsWith('beforeChunk')).length).toBeGreaterThan(0)
-			expect(callbackLog.filter(log => log.startsWith('afterChunk')).length).toBeGreaterThan(0)
+			expect(callbackLog.filter((log) => log.startsWith('beforeChunk')).length).toBeGreaterThan(0)
+			expect(callbackLog.filter((log) => log.startsWith('afterChunk')).length).toBeGreaterThan(0)
 
 			// Silent on success
 		})

@@ -53,7 +53,7 @@ export function createSimpleTestContainer(): Container {
 		resolveEmbedAsBinary: vi.fn(),
 		createPlainText: vi.fn(),
 		getDocumentWriteLock: vi.fn(),
-		normalizePath: vi.fn().mockImplementation(path => path),
+		normalizePath: vi.fn().mockImplementation((path) => path),
 		getFileBasename: vi.fn().mockReturnValue('test'),
 		getFileExtension: vi.fn().mockReturnValue('md'),
 		getFolderPath: vi.fn().mockReturnValue(''),

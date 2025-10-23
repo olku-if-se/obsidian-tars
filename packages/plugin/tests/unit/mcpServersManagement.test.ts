@@ -124,8 +124,8 @@ describe('MCP Servers Management - Unit Tests', () => {
 					ports: ['3000:3000', '8080:8080'],
 					volumes: ['/data:/app/data', '/config:/app/config'],
 					environment: {
-						'NODE_ENV': 'production',
-						'LOG_LEVEL': 'debug'
+						NODE_ENV: 'production',
+						LOG_LEVEL: 'debug'
 					},
 					networks: ['mcp-network'],
 					restartPolicy: 'unless-stopped'
@@ -142,13 +142,17 @@ describe('MCP Servers Management - Unit Tests', () => {
 					initialDelay: 2000,
 					maxDelay: 60000
 				},
-				configInput: JSON.stringify({
-					command: 'complex',
-					args: ['--verbose', '--port', '3000'],
-					environment: {
-						'DEBUG': 'true'
-					}
-				}, null, 2)
+				configInput: JSON.stringify(
+					{
+						command: 'complex',
+						args: ['--verbose', '--port', '3000'],
+						environment: {
+							DEBUG: 'true'
+						}
+					},
+					null,
+					2
+				)
 			}
 
 			const settingsWithComplexMCP = {
@@ -321,8 +325,8 @@ describe('MCP Servers Management - Unit Tests', () => {
 					ports: ['3000:3000'],
 					volumes: ['/data:/app/data'],
 					environment: {
-						'NODE_ENV': 'production',
-						'API_KEY': 'secret-key'
+						NODE_ENV: 'production',
+						API_KEY: 'secret-key'
 					},
 					networks: ['mcp-network'],
 					restartPolicy: 'always'
@@ -340,14 +344,18 @@ describe('MCP Servers Management - Unit Tests', () => {
 					initialDelay: 1000,
 					maxDelay: 30000
 				},
-				configInput: JSON.stringify({
-					command: 'roundtrip',
-					args: ['--port', '3000'],
-					config: {
-						timeout: 60000,
-						retries: 3
-					}
-				}, null, 2)
+				configInput: JSON.stringify(
+					{
+						command: 'roundtrip',
+						args: ['--port', '3000'],
+						config: {
+							timeout: 60000,
+							retries: 3
+						}
+					},
+					null,
+					2
+				)
 			}
 
 			const settingsWithComplexServer = {

@@ -1,4 +1,4 @@
-import { toLlmModels, type LlmCapability } from '@tars/contracts/providers'
+import { type LlmCapability, toLlmModels } from '@tars/contracts/providers'
 
 // Simple exports to get the basic structure working
 export const createSimpleVendor = (name: string) => {

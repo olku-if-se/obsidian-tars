@@ -3,6 +3,6 @@
  * Google Generative AI native API format
  */
 
-export { GeminiStreamingProvider } from './GeminiStreamingProvider'
 export { GeminiCompletionsStream } from './GeminiCompletionsStream'
 export type { GeminiProviderOptions } from './GeminiStreamingProvider'
+export { GeminiStreamingProvider } from './GeminiStreamingProvider'

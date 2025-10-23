@@ -1,9 +1,9 @@
 /**
  * OpenAI Models Verification E2E Test
- * 
+ *
  * Verifies that the models we use in tests actually exist in OpenAI's API.
  * This helps us detect when OpenAI adds/removes models and prevents future breakage.
- * 
+ *
  * Features:
  * - Fetches current available models from OpenAI API
  * - Verifies our test models exist
@@ -11,7 +11,7 @@
  * - Auto-skips if no API key
  */
 
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
 
 // Auto-skip if no API key
@@ -44,7 +44,7 @@ interface ModelsListResponse {
 async function fetchAvailableModels(apiKey: string): Promise<string[]> {
 	const response = await fetch('https://api.openai.com/v1/models', {
 		headers: {
-			'Authorization': `Bearer ${apiKey}`,
+			Authorization: `Bearer ${apiKey}`,
 			'Content-Type': 'application/json'
 		}
 	})
@@ -55,23 +55,19 @@ async function fetchAvailableModels(apiKey: string): Promise<string[]> {
 
 	const data: ModelsListResponse = await response.json()
 	return data.data
-		.map(model => model.id)
-		.filter(id => id.startsWith('gpt'))
+		.map((model) => model.id)
+		.filter((id) => id.startsWith('gpt'))
 		.sort()
 }
 
 describe.skipIf(shouldSkipE2E)('OpenAI Models Verification', () => {
 	// Models we rely on in our tests
 	const REQUIRED_MODELS = {
-		primary: 'gpt-5-nano',      // Our cheapest test model
-		fallback: 'gpt-4o-mini',    // Fallback if nano unavailable
+		primary: 'gpt-5-nano', // Our cheapest test model
+		fallback: 'gpt-4o-mini' // Fallback if nano unavailable
 	}
 
-	const EXPECTED_MODEL_SERIES = [
-		'gpt-5',
-		'gpt-4',
-		'gpt-3.5'
-	]
+	const EXPECTED_MODEL_SERIES = ['gpt-5', 'gpt-4', 'gpt-3.5']
 
 	let availableModels: string[] = []
 
@@ -123,7 +119,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Models Verification', () => {
 		}
 
 		// WHEN: Filtering for GPT-5 models
-		const gpt5Models = availableModels.filter(model => model.startsWith('gpt-5'))
+		const gpt5Models = availableModels.filter((model) => model.startsWith('gpt-5'))
 
 		// THEN: Should have multiple GPT-5 variants
 		expect(gpt5Models.length).toBeGreaterThan(0)
@@ -138,7 +134,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Models Verification', () => {
 
 		// WHEN: Checking for each expected series
 		for (const series of EXPECTED_MODEL_SERIES) {
-			const seriesModels = availableModels.filter(model => model.startsWith(series))
+			const seriesModels = availableModels.filter((model) => model.startsWith(series))
 
 			// THEN: Each series should have models
 			expect(seriesModels.length).toBeGreaterThan(0)
@@ -153,9 +149,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Models Verification', () => {
 		}
 
 		// WHEN: Finding all nano/mini models (cheapest)
-		const costEffectiveModels = availableModels.filter(model =>
-			model.includes('nano') || model.includes('mini')
-		)
+		const costEffectiveModels = availableModels.filter((model) => model.includes('nano') || model.includes('mini'))
 
 		// THEN: Should have multiple options
 		expect(costEffectiveModels.length).toBeGreaterThan(0)
@@ -170,10 +164,10 @@ describe.skipIf(shouldSkipE2E)('OpenAI Models Verification', () => {
 
 		// WHEN: Analyzing model names
 		const patterns = {
-			hasVersionDates: availableModels.some(m => /\d{4}-\d{2}-\d{2}/.test(m)),
-			hasNanoVariants: availableModels.some(m => m.includes('nano')),
-			hasMiniVariants: availableModels.some(m => m.includes('mini')),
-			hasProVariants: availableModels.some(m => m.includes('pro')),
+			hasVersionDates: availableModels.some((m) => /\d{4}-\d{2}-\d{2}/.test(m)),
+			hasNanoVariants: availableModels.some((m) => m.includes('nano')),
+			hasMiniVariants: availableModels.some((m) => m.includes('mini')),
+			hasProVariants: availableModels.some((m) => m.includes('pro'))
 		}
 
 		// THEN: Should follow OpenAI naming conventions
@@ -192,7 +186,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Models Verification', () => {
 		// WHEN: Extracting unique series (gpt-X)
 		const seriesSet = new Set(
 			availableModels
-				.map(model => {
+				.map((model) => {
 					const match = model.match(/^gpt-[\d.]+/)
 					return match ? match[0] : null
 				})
@@ -214,11 +208,13 @@ describe.skipIf(shouldSkipE2E)('OpenAI Models Verification', () => {
 
 		// WHEN: Creating categorized list
 		const categorized = {
-			'gpt-5': availableModels.filter(m => m.startsWith('gpt-5')),
-			'gpt-4.1': availableModels.filter(m => m.startsWith('gpt-4.1')),
-			'gpt-4o': availableModels.filter(m => m.startsWith('gpt-4o')),
-			'gpt-4': availableModels.filter(m => m.startsWith('gpt-4') && !m.startsWith('gpt-4o') && !m.startsWith('gpt-4.1')),
-			'gpt-3.5': availableModels.filter(m => m.startsWith('gpt-3.5')),
+			'gpt-5': availableModels.filter((m) => m.startsWith('gpt-5')),
+			'gpt-4.1': availableModels.filter((m) => m.startsWith('gpt-4.1')),
+			'gpt-4o': availableModels.filter((m) => m.startsWith('gpt-4o')),
+			'gpt-4': availableModels.filter(
+				(m) => m.startsWith('gpt-4') && !m.startsWith('gpt-4o') && !m.startsWith('gpt-4.1')
+			),
+			'gpt-3.5': availableModels.filter((m) => m.startsWith('gpt-3.5'))
 		}
 
 		// THEN: Should have comprehensive list

@@ -1088,19 +1088,19 @@ const fetchModels = async (url: string, apiKey?: string): Promise<string[]> => {
 
 // Model fetching configurations for different vendors
 const MODEL_FETCH_CONFIGS = {
-	'SiliconFlow': {
+	SiliconFlow: {
 		url: 'https://api.siliconflow.cn/v1/models?type=text&sub_type=chat',
 		requiresApiKey: true
 	},
-	'OpenRouter': {
+	OpenRouter: {
 		url: 'https://openrouter.ai/api/v1/models',
 		requiresApiKey: false
 	},
-	'Kimi': {
+	Kimi: {
 		url: 'https://api.moonshot.cn/v1/models',
 		requiresApiKey: true
 	},
-	'Grok': {
+	Grok: {
 		url: 'https://api.x.ai/v1/models',
 		requiresApiKey: true
 	}

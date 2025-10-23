@@ -108,13 +108,10 @@ describe('ReactSettingsTab - Unit Tests', () => {
 			tab.display()
 
 			expect(tab.containerEl.empty).toHaveBeenCalled()
-			expect(tab.containerEl.createEl).toHaveBeenCalledWith(
-				'div',
-				{
-					text: 'React settings tab is disabled. Enable it in the React Features section.',
-					cls: 'setting-item-info'
-				}
-			)
+			expect(tab.containerEl.createEl).toHaveBeenCalledWith('div', {
+				text: 'React settings tab is disabled. Enable it in the React Features section.',
+				cls: 'setting-item-info'
+			})
 		})
 
 		it('should initialize React root when enabled', async () => {
@@ -198,11 +195,11 @@ describe('ReactSettingsTab - Unit Tests', () => {
 			tab.handleStateChange(reactState)
 
 			// Should debounce - check that save is not called immediately
-			await new Promise(resolve => setTimeout(resolve, 50))
+			await new Promise((resolve) => setTimeout(resolve, 50))
 			expect(mockPlugin.saveSettings).not.toHaveBeenCalled()
 
 			// Wait for debounce
-			await new Promise(resolve => setTimeout(resolve, 400))
+			await new Promise((resolve) => setTimeout(resolve, 400))
 			expect(mockPlugin.saveSettings).toHaveBeenCalled()
 		})
 

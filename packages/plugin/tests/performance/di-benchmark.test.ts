@@ -35,7 +35,8 @@ describe('DI Performance Benchmarks', () => {
 
 			const startTime = performance.now()
 
-			for (let i = 0; i < 100; i++) { // Fewer iterations for more complex container
+			for (let i = 0; i < 100; i++) {
+				// Fewer iterations for more complex container
 				const container = createPluginContainer(mockOptions)
 				expect(container).toBeDefined()
 			}
@@ -81,21 +82,10 @@ describe('DI Performance Benchmarks', () => {
 		})
 
 		it('should resolve multiple services efficiently', async () => {
-			const {
-				ILoggingService,
-				INotificationService,
-				ISettingsService,
-				IStatusService,
-				IDocumentService
-			} = await import('@tars/contracts')
+			const { ILoggingService, INotificationService, ISettingsService, IStatusService, IDocumentService } =
+				await import('@tars/contracts')
 
-			const services = [
-				ILoggingService,
-				INotificationService,
-				ISettingsService,
-				IStatusService,
-				IDocumentService
-			]
+			const services = [ILoggingService, INotificationService, ISettingsService, IStatusService, IDocumentService]
 
 			const startTime = performance.now()
 

@@ -93,7 +93,7 @@ export class ObsidianStatusService implements IStatusService {
 
 	private notifyStatusChange(): void {
 		const statusCopy = { ...this.currentStatus }
-		this.statusCallbacks.forEach(callback => callback(statusCopy))
+		this.statusCallbacks.forEach((callback) => callback(statusCopy))
 	}
 
 	private updateStatusBar(message: string): void {

@@ -3,23 +3,22 @@
  * EventEmitter-based tool execution for LLM providers
  */
 
-export { ToolManager } from './ToolManager'
-export { ToolExecutor } from './ToolExecutor'
-export type {
-	ToolHandler,
-	ToolDefinition,
-	ToolExecutionResult,
-	ToolExecutionContext,
-	ToolExecutionOptions
-} from './types'
-
+export type { ClaudeTool, GeminiTool, OpenAITool } from './format-converters'
 // Tool format converters for different providers
 export {
-	toOpenAITools,
+	convertToolsForProvider,
+	getToolConverter,
+	ToolFormatConverters,
 	toClaudeTools,
 	toGeminiTools,
-	ToolFormatConverters,
-	getToolConverter,
-	convertToolsForProvider
+	toOpenAITools
 } from './format-converters'
-export type { OpenAITool, ClaudeTool, GeminiTool } from './format-converters'
+export { ToolExecutor } from './ToolExecutor'
+export { ToolManager } from './ToolManager'
+export type {
+	ToolDefinition,
+	ToolExecutionContext,
+	ToolExecutionOptions,
+	ToolExecutionResult,
+	ToolHandler
+} from './types'

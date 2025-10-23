@@ -71,7 +71,7 @@ export function ProviderCard({
 							placeholder={strings.modelPlaceholder}
 							className={styles.settingModels}
 						/>
-						<Button variant="default">{strings.select}</Button>
+						<Button variant='default'>{strings.select}</Button>
 					</div>
 				</SettingRow>
 
@@ -86,7 +86,7 @@ export function ProviderCard({
 
 				<SettingRow name={strings.apiKey} description={strings.apiKeyDescription} layoutRatio={[1, 1]}>
 					<Input
-						type="password"
+						type='password'
 						value={provider.apiKey || ''}
 						onChange={(e) => onUpdateProvider(provider.id, { apiKey: e.target.value })}
 						placeholder={strings.apiKeyPlaceholder}
@@ -104,9 +104,9 @@ export function ProviderCard({
 				</SettingRow>
 
 				<SettingRow name={strings.controlsTitle} layoutRatio={[1, 1]}>
-					<Button variant="primary">{strings.disableButton}</Button>
-					<Button variant="primary">{strings.testButton}</Button>
-					<Button variant="danger" onClick={() => onRemoveProvider(provider.id)}>
+					<Button variant='primary'>{strings.disableButton}</Button>
+					<Button variant='primary'>{strings.testButton}</Button>
+					<Button variant='danger' onClick={() => onRemoveProvider(provider.id)}>
 						{strings.removeButton}
 					</Button>
 				</SettingRow>

@@ -1,12 +1,12 @@
 /**
  * Grok Provider E2E Test - Comprehensive Callbacks
- * 
+ *
  * This is an END-TO-END test that makes REAL API calls to Grok (xAI).
- * 
+ *
  * Setup:
  * 1. Set E2E_GROK_API_KEY: mise run secrets-rotate E2E_GROK_API_KEY xai-your-key
  * 2. Run: mise run test-e2e
- * 
+ *
  * Tests:
  * - Real streaming from Grok API
  * - All comprehensive callback hooks
@@ -14,12 +14,12 @@
  * - Message transformation
  * - Chunk pre/post processing
  * - Lifecycle events
- * 
+ *
  * TDD Approach: GIVEN / WHEN / THEN structure
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
 import type { Message } from '@tars/contracts'
+import { beforeEach, describe, expect, it } from 'vitest'
 import type { ComprehensiveCallbacks } from '../../src/config/ComprehensiveCallbacks'
 import { GrokStreamingProvider } from '../../src/providers/grok/GrokStreamingProvider'
 import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
@@ -28,10 +28,7 @@ import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
 const shouldSkipE2E = shouldSkipE2ETests({
 	envVar: 'E2E_GROK_API_KEY',
 	providerName: 'Grok',
-	setupInstructions: [
-		'Set API key: mise run secrets-rotate E2E_GROK_API_KEY xai-...',
-		'Run tests: mise run test-e2e'
-	]
+	setupInstructions: ['Set API key: mise run secrets-rotate E2E_GROK_API_KEY xai-...', 'Run tests: mise run test-e2e']
 })
 
 const API_KEY = process.env.E2E_GROK_API_KEY
@@ -109,7 +106,7 @@ describe.skipIf(shouldSkipE2E)('Grok Provider E2E - Comprehensive Callbacks', ()
 				onStreamStart: async () => {
 					lifecycle.push('start')
 				},
-				
+
 				onStreamEnd: async () => {
 					lifecycle.push('end')
 				}

@@ -1,24 +1,24 @@
 /**
  * Claude Provider E2E Test - Comprehensive Callbacks
- * 
+ *
  * This is an END-TO-END test that makes REAL API calls to Anthropic (Claude).
- * 
+ *
  * Setup:
  * 1. Set E2E_ANTHROPIC_API_KEY: mise run secrets-rotate E2E_ANTHROPIC_API_KEY sk-ant-...
  * 2. Run: mise run test-e2e
- * 
+ *
  * Tests:
  * - Real streaming from Claude API
  * - All comprehensive callback hooks
  * - Tool calling support
  * - Message transformation
  * - Lifecycle events
- * 
+ *
  * TDD Approach: GIVEN / WHEN / THEN structure
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
 import type { Message } from '@tars/contracts'
+import { beforeEach, describe, expect, it } from 'vitest'
 import type { ComprehensiveCallbacks } from '../../src/config/ComprehensiveCallbacks'
 import { ClaudeStreamingProvider } from '../../src/providers/claude/ClaudeStreamingProvider'
 import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
@@ -108,7 +108,7 @@ describe.skipIf(shouldSkipE2E)('Claude Provider E2E - Comprehensive Callbacks', 
 				onStreamStart: async () => {
 					lifecycle.push('start')
 				},
-				
+
 				onStreamEnd: async () => {
 					lifecycle.push('end')
 				}

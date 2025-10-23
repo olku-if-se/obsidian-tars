@@ -3,12 +3,12 @@
  * OpenAI-compatible with reasoning support
  */
 
-export { DeepseekStreamingProvider } from './DeepseekStreamingProvider'
 export { DeepseekCompletionsStream } from './DeepseekCompletionsStream'
+export { DeepseekStreamingProvider } from './DeepseekStreamingProvider'
 export type {
 	DeepseekMessage,
-	DeepseekToolCall,
+	DeepseekProviderOptions,
 	DeepseekStreamChunk,
-	DeepseekProviderOptions
+	DeepseekToolCall
 } from './types'
-export { toDeepseekMessage, fromDeepseekMessage } from './types'
+export { fromDeepseekMessage, toDeepseekMessage } from './types'

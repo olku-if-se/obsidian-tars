@@ -18,9 +18,7 @@ export interface GrokMessage {
 /**
  * Content item for multi-modal messages
  */
-export type ContentItem =
-	| { type: 'text'; text: string }
-	| { type: 'image_url'; image_url: { url: string } }
+export type ContentItem = { type: 'text'; text: string } | { type: 'image_url'; image_url: { url: string } }
 
 /**
  * Grok tool call format (OpenAI-compatible)

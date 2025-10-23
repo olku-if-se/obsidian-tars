@@ -3,5 +3,5 @@
  * Microsoft's managed OpenAI service
  */
 
-export { AzureStreamingProvider } from './AzureStreamingProvider'
 export type { AzureProviderOptions } from './AzureStreamingProvider'
+export { AzureStreamingProvider } from './AzureStreamingProvider'

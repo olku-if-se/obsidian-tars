@@ -1,23 +1,23 @@
 /**
  * OpenRouter Provider E2E Test - Comprehensive Callbacks
- * 
+ *
  * This is an END-TO-END test that makes REAL API calls to OpenRouter.
- * 
+ *
  * Setup:
  * 1. Set E2E_OPENROUTER_API_KEY: mise run secrets-rotate OPENROUTER_API_KEY sk-or-...
  * 2. Run: mise run test-e2e
- * 
+ *
  * Tests:
  * - Real streaming from OpenRouter API
  * - All comprehensive callback hooks
  * - Multiple model support
  * - Lifecycle events
- * 
+ *
  * TDD Approach: GIVEN / WHEN / THEN structure
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
 import type { Message } from '@tars/contracts'
+import { beforeEach, describe, expect, it } from 'vitest'
 import type { ComprehensiveCallbacks } from '../../src/config/ComprehensiveCallbacks'
 import { OpenRouterStreamingProvider } from '../../src/providers/openrouter/OpenRouterStreamingProvider'
 import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
@@ -107,7 +107,7 @@ describe.skipIf(shouldSkipE2E)('OpenRouter Provider E2E - Comprehensive Callback
 				onStreamStart: async () => {
 					lifecycle.push('start')
 				},
-				
+
 				onStreamEnd: async () => {
 					lifecycle.push('end')
 				}

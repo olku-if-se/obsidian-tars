@@ -477,12 +477,15 @@ class ObsidianNoticeSystem implements NoticeSystem {
 }
 
 class ObsidianRequestSystem implements RequestSystem {
-	async requestUrl(url: string, options?: {
-		method?: string
-		headers?: Record<string, string>
-		body?: string
-		throw?: boolean
-	}): Promise<{
+	async requestUrl(
+		url: string,
+		options?: {
+			method?: string
+			headers?: Record<string, string>
+			body?: string
+			throw?: boolean
+		}
+	): Promise<{
 		status: number
 		text: string
 		json?: unknown

@@ -1,9 +1,6 @@
 import { injectable } from '@needle-di/core'
 import { App, TFile, TFolder, normalizePath } from 'obsidian'
-import {
-	IDocumentService,
-	EmbedCache
-} from '@tars/contracts'
+import { IDocumentService, EmbedCache } from '@tars/contracts'
 import { DocumentWriteLock } from '../utils/documentWriteLock'
 
 @injectable()

@@ -1,5 +1,5 @@
-import Debug from 'debug'
 import { injectable } from '@needle-di/core'
+import Debug from 'debug'
 
 const ROOT_NAMESPACE = 'tars'
 

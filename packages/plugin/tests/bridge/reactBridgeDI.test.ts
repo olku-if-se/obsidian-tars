@@ -7,12 +7,7 @@ import { Container } from '@needle-di/core'
 import { ReactBridge } from '../../src/bridge/ReactBridge'
 import { ReactBridgeManager } from '../../src/bridge/ReactBridgeManagerDI'
 import { ObsidianLoggingService } from '../../src/services/ObsidianLoggingService'
-import {
-	LoggingServiceToken,
-	ReactBridgeToken,
-	ReactBridgeManagerToken,
-	AppToken
-} from '@tars/contracts'
+import { LoggingServiceToken, ReactBridgeToken, ReactBridgeManagerToken, AppToken } from '@tars/contracts'
 
 describe('DI React Bridge', () => {
 	let container: Container
@@ -116,8 +111,6 @@ describe('DI React Bridge', () => {
 	it('should throw error when getting bridge before initialization', () => {
 		const manager = container.get(ReactBridgeManagerToken)
 
-		expect(() => manager.getReactBridge()).toThrow(
-			'React bridge not initialized. Call initialize() first.'
-		)
+		expect(() => manager.getReactBridge()).toThrow('React bridge not initialized. Call initialize() first.')
 	})
 })

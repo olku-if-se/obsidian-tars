@@ -1,14 +1,18 @@
-import { injectable, inject } from '@needle-di/core'
-import { tokens } from '@tars/contracts/tokens'
-import type { Message, ILoggingService, ISettingsService } from '@tars/contracts'
+import { inject, injectable } from '@needle-di/core'
+import type { ILoggingService, ISettingsService, Message } from '@tars/contracts'
 import { type LlmCapability, type LlmModel, toLlmModels } from '@tars/contracts/providers'
+import { tokens } from '@tars/contracts/tokens'
 import OpenAI from 'openai'
 import { StreamingProviderBase } from '../../base/StreamingProviderBase'
 import type { StreamConfig } from '../../config'
-import type { ComprehensiveCallbacks, BeforeStreamStartResult, ToolDefinition } from '../../config/ComprehensiveCallbacks'
+import type {
+	BeforeStreamStartResult,
+	ComprehensiveCallbacks,
+	ToolDefinition
+} from '../../config/ComprehensiveCallbacks'
 import type { ICompletionsStream } from '../../streaming'
 import { DeepseekCompletionsStream } from './DeepseekCompletionsStream'
-import { toDeepseekMessage, type DeepseekProviderOptions } from './types'
+import { type DeepseekProviderOptions, toDeepseekMessage } from './types'
 
 /**
  * Deepseek streaming provider
@@ -24,19 +28,12 @@ export class DeepseekStreamingProvider extends StreamingProviderBase {
 	readonly name = 'deepseek'
 	readonly displayName = 'DeepSeek'
 	readonly websiteToObtainKey = 'https://platform.deepseek.com'
-	readonly capabilities: LlmCapability[] = [
-		'Text Generation',
-		'Tool Calling',
-		'Reasoning'
-	]
+	readonly capabilities: LlmCapability[] = ['Text Generation', 'Tool Calling', 'Reasoning']
 
 	private client: OpenAI | null = null
 	private providerOptions: DeepseekProviderOptions | null = null
 
-	constructor(
-		loggingService = inject(tokens.Logger),
-		settingsService = inject(tokens.Settings)
-	) {
+	constructor(loggingService = inject(tokens.Logger), settingsService = inject(tokens.Settings)) {
 		super(loggingService, settingsService)
 	}
 
@@ -44,10 +41,7 @@ export class DeepseekStreamingProvider extends StreamingProviderBase {
 	 * Get available models
 	 */
 	get models(): LlmModel[] {
-		return toLlmModels(
-			['deepseek-chat', 'deepseek-reasoner'],
-			this.capabilities
-		)
+		return toLlmModels(['deepseek-chat', 'deepseek-reasoner'], this.capabilities)
 	}
 
 	/**
@@ -107,7 +101,11 @@ export class DeepseekStreamingProvider extends StreamingProviderBase {
 				finalOptions = beforeResult.providerOptions || config.providerOptions
 			}
 
-			const completionStream = this.createCompletionStreamWithTools(finalMessages, { ...config, providerOptions: finalOptions }, finalTools)
+			const completionStream = this.createCompletionStreamWithTools(
+				finalMessages,
+				{ ...config, providerOptions: finalOptions },
+				finalTools
+			)
 
 			if (callbacks?.onStreamStart) {
 				await callbacks.onStreamStart({
@@ -202,7 +200,11 @@ export class DeepseekStreamingProvider extends StreamingProviderBase {
 		}
 	}
 
-	private createCompletionStreamWithTools(messages: Message[], config: StreamConfig, tools?: ToolDefinition[]): ICompletionsStream {
+	private createCompletionStreamWithTools(
+		messages: Message[],
+		config: StreamConfig,
+		tools?: ToolDefinition[]
+	): ICompletionsStream {
 		const updatedConfig = {
 			...config,
 			providerOptions: { ...config.providerOptions, tools }

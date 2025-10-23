@@ -137,14 +137,20 @@ describe('ObsidianStatusService', () => {
 		statusService.setError('Error status')
 
 		expect(callback).toHaveBeenCalledTimes(2)
-		expect(callback).toHaveBeenNthCalledWith(1, expect.objectContaining({
-			message: 'New status',
-			state: 'ready'
-		}))
-		expect(callback).toHaveBeenNthCalledWith(2, expect.objectContaining({
-			message: 'Error status',
-			state: 'error'
-		}))
+		expect(callback).toHaveBeenNthCalledWith(
+			1,
+			expect.objectContaining({
+				message: 'New status',
+				state: 'ready'
+			})
+		)
+		expect(callback).toHaveBeenNthCalledWith(
+			2,
+			expect.objectContaining({
+				message: 'Error status',
+				state: 'error'
+			})
+		)
 
 		expect(typeof unsubscribe).toBe('function')
 	})

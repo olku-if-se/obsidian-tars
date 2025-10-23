@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach } from 'vitest'
-import { ToolManager } from '../ToolManager'
+import { beforeEach, describe, expect, it } from 'vitest'
 import type { ToolCall, ToolResponse } from '../../streaming/types'
+import { ToolManager } from '../ToolManager'
 
 describe('ToolManager', () => {
 	describe('GIVEN: A new ToolManager', () => {
@@ -146,7 +146,7 @@ describe('ToolManager', () => {
 
 			// AND: Slow handler
 			toolManager.registerHandler('slow_tool', async () => {
-				await new Promise(resolve => setTimeout(resolve, 200))
+				await new Promise((resolve) => setTimeout(resolve, 200))
 				return {
 					role: 'tool' as const,
 					tool_call_id: '',
@@ -211,7 +211,7 @@ describe('ToolManager', () => {
 		})
 
 		// DISABLED: Edge case test with timing issues in CI
-	it.skip('WHEN: Executing many tools in parallel THEN: Should process concurrently', async () => {
+		it.skip('WHEN: Executing many tools in parallel THEN: Should process concurrently', async () => {
 			// GIVEN: Tool manager with parallel execution
 			const parallelToolManager = new ToolManager({ parallel: true, maxParallel: 2 })
 
@@ -220,7 +220,7 @@ describe('ToolManager', () => {
 
 			parallelToolManager.registerHandler('parallel_1', async (toolCall) => {
 				executionOrder.push(1)
-				await new Promise(resolve => setTimeout(resolve, 50))
+				await new Promise((resolve) => setTimeout(resolve, 50))
 				return {
 					role: 'tool' as const,
 					tool_call_id: toolCall.id,
@@ -230,7 +230,7 @@ describe('ToolManager', () => {
 
 			parallelToolManager.registerHandler('parallel_2', async (toolCall) => {
 				executionOrder.push(2)
-				await new Promise(resolve => setTimeout(resolve, 50))
+				await new Promise((resolve) => setTimeout(resolve, 50))
 				return {
 					role: 'tool' as const,
 					tool_call_id: toolCall.id,

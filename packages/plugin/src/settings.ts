@@ -2,11 +2,7 @@ import type { MCPServerConfig } from '@tars/mcp-hosting'
 import type { PromptTemplate } from './prompt'
 import type { ProviderSettings, Vendor } from '@tars/providers'
 import type { FeatureFlags } from './featureFlags'
-import {
-	allVendors,
-	type ClaudeOptions,
-	type GptImageOptions
-} from '@tars/providers'
+import { allVendors, type ClaudeOptions, type GptImageOptions } from '@tars/providers'
 
 export const APP_FOLDER = 'Tars'
 

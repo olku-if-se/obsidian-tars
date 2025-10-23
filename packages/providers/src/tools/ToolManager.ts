@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 import type { ToolCall, ToolResponse } from '../streaming/types'
-import type { ToolHandler, ToolExecutionResult, ToolExecutionOptions } from './types'
+import type { ToolExecutionOptions, ToolExecutionResult, ToolHandler } from './types'
 
 /**
  * Manages tool execution via an EventEmitter
@@ -44,20 +44,14 @@ export class ToolManager extends EventEmitter {
 		try {
 			// Check if handler exists
 			if (this.listenerCount(eventName) === 0) {
-				return this.createErrorResponse(
-					toolCall.id,
-					`No handler registered for tool '${eventName}'`
-				)
+				return this.createErrorResponse(toolCall.id, `No handler registered for tool '${eventName}'`)
 			}
 
 			// Get the first registered handler
 			const listener = this.listeners(eventName)[0]
 
 			if (typeof listener !== 'function') {
-				return this.createErrorResponse(
-					toolCall.id,
-					`Handler for '${eventName}' is not a function`
-				)
+				return this.createErrorResponse(toolCall.id, `Handler for '${eventName}' is not a function`)
 			}
 
 			// Execute handler with timeout if configured

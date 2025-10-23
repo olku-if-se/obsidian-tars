@@ -1,11 +1,15 @@
-import { injectable, inject } from '@needle-di/core'
-import { tokens } from '@tars/contracts/tokens'
-import type { Message, ILoggingService, ISettingsService } from '@tars/contracts'
+import { inject, injectable } from '@needle-di/core'
+import type { ILoggingService, ISettingsService, Message } from '@tars/contracts'
 import { type LlmCapability, type LlmModel, toLlmModels } from '@tars/contracts/providers'
+import { tokens } from '@tars/contracts/tokens'
 import OpenAI from 'openai'
 import { StreamingProviderBase } from '../../base/StreamingProviderBase'
 import type { StreamConfig } from '../../config'
-import type { ComprehensiveCallbacks, BeforeStreamStartResult, ToolDefinition } from '../../config/ComprehensiveCallbacks'
+import type {
+	BeforeStreamStartResult,
+	ComprehensiveCallbacks,
+	ToolDefinition
+} from '../../config/ComprehensiveCallbacks'
 import type { ICompletionsStream } from '../../streaming'
 import { OpenAICompletionsStream } from '../openai/OpenAICompletionsStream'
 import { toOpenAIMessage } from '../openai/types'
@@ -13,16 +17,16 @@ import { toOpenAIMessage } from '../openai/types'
 export interface AzureProviderOptions {
 	apiKey: string
 	baseURL: string
-	deployment: string  // Azure deployment name
+	deployment: string // Azure deployment name
 	apiVersion?: string
 	temperature?: number
 }
 
 /**
  * Azure OpenAI Streaming Provider
- * 
+ *
  * Microsoft's managed OpenAI service
- * 
+ *
  * Features:
  * - ✅ Enterprise-grade security
  * - ✅ OpenAI-compatible API
@@ -46,10 +50,7 @@ export class AzureStreamingProvider extends StreamingProviderBase {
 	private client: OpenAI | null = null
 	private providerOptions: AzureProviderOptions | null = null
 
-	constructor(
-		loggingService = inject(tokens.Logger),
-		settingsService = inject(tokens.Settings)
-	) {
+	constructor(loggingService = inject(tokens.Logger), settingsService = inject(tokens.Settings)) {
 		super(loggingService, settingsService)
 	}
 
@@ -100,11 +101,11 @@ export class AzureStreamingProvider extends StreamingProviderBase {
 		}
 
 		this.providerOptions = options
-		
+
 		// Azure OpenAI uses a different URL structure
 		// Format: https://{resource}.openai.azure.com/openai/deployments/{deployment}
 		const azureEndpoint = `${options.baseURL}/openai/deployments/${options.deployment}`
-		
+
 		this.client = new OpenAI({
 			apiKey: options.apiKey,
 			baseURL: azureEndpoint,
@@ -123,10 +124,7 @@ export class AzureStreamingProvider extends StreamingProviderBase {
 	 * Stream with comprehensive callbacks (Gold Standard)
 	 * Follows OpenAI reference implementation
 	 */
-	async *stream(
-		messages: Message[],
-		config: StreamConfig = {}
-	): AsyncGenerator<string, void, unknown> {
+	async *stream(messages: Message[], config: StreamConfig = {}): AsyncGenerator<string, void, unknown> {
 		const callbacks = config.callbacks as ComprehensiveCallbacks | undefined
 		const startTime = Date.now()
 		let chunkCount = 0
@@ -170,7 +168,11 @@ export class AzureStreamingProvider extends StreamingProviderBase {
 			}
 
 			// 3. CREATE STREAM
-			const completionStream = this.createCompletionStreamWithTools(finalMessages, { ...config, providerOptions: finalOptions }, finalTools)
+			const completionStream = this.createCompletionStreamWithTools(
+				finalMessages,
+				{ ...config, providerOptions: finalOptions },
+				finalTools
+			)
 
 			// 4. STREAM START
 			if (callbacks?.onStreamStart) {
@@ -273,13 +275,17 @@ export class AzureStreamingProvider extends StreamingProviderBase {
 	/**
 	 * Helper to create stream with tools
 	 */
-	private createCompletionStreamWithTools(messages: Message[], config: StreamConfig, tools?: ToolDefinition[]): ICompletionsStream {
+	private createCompletionStreamWithTools(
+		messages: Message[],
+		config: StreamConfig,
+		tools?: ToolDefinition[]
+	): ICompletionsStream {
 		if (!this.client) {
 			throw new Error('Azure OpenAI provider not initialized')
 		}
 
 		const openAIMessages = messages.map(toOpenAIMessage)
-		
+
 		return OpenAICompletionsStream.from(
 			openAIMessages,
 			{

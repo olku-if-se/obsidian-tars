@@ -3,28 +3,28 @@
  * Provides provider-agnostic stream management based on llm-chat.md
  */
 
+export { CompletionsStream, type CompletionsStreamOptions, NoOpCompletionsStream } from './CompletionsStream'
 export { StreamQueue } from './StreamQueue'
-export { CompletionsStream, NoOpCompletionsStream, type CompletionsStreamOptions } from './CompletionsStream'
 export type {
+	ContentEvent,
+	ErrorEvent,
+	ICompletionsStream,
+	StreamEndEvent,
 	StreamEvent,
 	StreamEventType,
-	ContentEvent,
-	ToolCallsEvent,
-	StreamEndEvent,
-	ErrorEvent,
-	ToolCall,
-	ToolResponse,
-	ICompletionsStream,
 	StreamQueueState,
-	TimeoutConfig
+	TimeoutConfig,
+	ToolCall,
+	ToolCallsEvent,
+	ToolResponse
 } from './types'
 
 // Pure utilities (following code-rules.md)
 export {
-	waitWithAbort,
+	backoffDelay,
 	checkAborted,
 	createAbortError,
-	withTimeout,
-	backoffDelay,
-	isRetryableError
+	isRetryableError,
+	waitWithAbort,
+	withTimeout
 } from './utils'

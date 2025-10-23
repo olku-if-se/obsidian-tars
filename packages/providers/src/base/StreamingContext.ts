@@ -1,5 +1,4 @@
-import type { StreamConfig, ProcessingContext } from '../config'
-import type { StreamEvent } from '../streaming/types'
+import type { ProcessingContext, StreamConfig } from '../config'
 
 /**
  * Streaming context for providers

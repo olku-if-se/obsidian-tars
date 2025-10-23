@@ -4,5 +4,5 @@
  */
 
 export { ConsoleLogger, type ILogger, NoOpLogger } from './ILogger'
-export { type INotificationHandler, DefaultNotificationHandler } from './INotificationHandler'
+export { DefaultNotificationHandler, type INotificationHandler } from './INotificationHandler'
 export { type IStatusReporter, NoOpStatusReporter } from './IStatusReporter'

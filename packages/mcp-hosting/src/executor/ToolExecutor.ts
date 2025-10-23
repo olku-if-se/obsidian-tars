@@ -3,12 +3,6 @@
  * Coordinates tool execution with tracking, limits, and error handling
  */
 
-import type { ILogger } from '../adapters/ILogger'
-import type { INotificationHandler } from '../adapters/INotificationHandler'
-import type { IStatusReporter } from '../adapters/IStatusReporter'
-import { ResultCache } from '../caching/ResultCache'
-import { ExecutionLimitError } from '../errors'
-import type { MCPServerManager } from '../manager/MCPServerManager'
 import type {
 	DocumentSessionState,
 	ExecutionHistoryEntry,
@@ -18,6 +12,12 @@ import type {
 	ToolExecutionResult,
 	ToolExecutionResultWithId
 } from '@tars/contracts/services/mcp-types'
+import type { ILogger } from '../adapters/ILogger'
+import type { INotificationHandler } from '../adapters/INotificationHandler'
+import type { IStatusReporter } from '../adapters/IStatusReporter'
+import { ResultCache } from '../caching/ResultCache'
+import { ExecutionLimitError } from '../errors'
+import type { MCPServerManager } from '../manager/MCPServerManager'
 
 export type {
 	DocumentSessionState,

@@ -14,9 +14,7 @@ import type { IServerConfigManager, ILoggingService, LoggingServiceToken } from 
 export class ServerConfigManager implements IServerConfigManager {
 	private serverConfigs: MCPServerConfig[] = []
 
-	constructor(
-		private loggingService = inject(LoggingServiceToken)
-	) {}
+	constructor(private loggingService = inject(LoggingServiceToken)) {}
 
 	/**
 	 * Get current server configurations
@@ -51,10 +49,10 @@ export class ServerConfigManager implements IServerConfigManager {
 		this.serverConfigs = [...configs] // Store copy to prevent mutation
 
 		// Log enabled servers for debugging
-		const enabledServers = configs.filter(config => config.enabled)
+		const enabledServers = configs.filter((config) => config.enabled)
 		this.loggingService.debug('Server configurations updated', {
 			enabledCount: enabledServers.length,
-			enabledServers: enabledServers.map(config => config.name)
+			enabledServers: enabledServers.map((config) => config.name)
 		})
 	}
 
@@ -73,7 +71,7 @@ export class ServerConfigManager implements IServerConfigManager {
 	 * Get enabled server configurations only
 	 */
 	getEnabledServers(): MCPServerConfig[] {
-		const enabledServers = this.serverConfigs.filter(config => config.enabled)
+		const enabledServers = this.serverConfigs.filter((config) => config.enabled)
 		this.loggingService.debug('Retrieving enabled servers', {
 			enabledCount: enabledServers.length,
 			totalCount: this.serverConfigs.length
@@ -161,7 +159,7 @@ export class ServerConfigManager implements IServerConfigManager {
 	 */
 	removeServerConfig(serverId: string): boolean {
 		const initialLength = this.serverConfigs.length
-		this.serverConfigs = this.serverConfigs.filter(config => config.id !== serverId)
+		this.serverConfigs = this.serverConfigs.filter((config) => config.id !== serverId)
 		const wasRemoved = this.serverConfigs.length < initialLength
 
 		if (wasRemoved) {

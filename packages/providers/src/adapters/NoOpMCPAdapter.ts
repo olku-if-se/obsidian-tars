@@ -20,10 +20,7 @@ export class NoOpMCPAdapter implements IMCPAdapter {
 	/**
 	 * Returns parameters unchanged (no tools injected)
 	 */
-	async injectTools(
-		params: Record<string, unknown>,
-		_providerName: string
-	): Promise<MCPToolInjectionResult> {
+	async injectTools(params: Record<string, unknown>, _providerName: string): Promise<MCPToolInjectionResult> {
 		return {
 			parameters: params,
 			tools: []

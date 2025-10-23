@@ -1,14 +1,18 @@
-import { injectable, inject } from '@needle-di/core'
-import { tokens } from '@tars/contracts/tokens'
-import type { Message, ILoggingService, ISettingsService, ResolveEmbedAsBinary } from '@tars/contracts'
+import { inject, injectable } from '@needle-di/core'
+import type { ILoggingService, ISettingsService, Message, ResolveEmbedAsBinary } from '@tars/contracts'
 import { type LlmCapability, type LlmModel, toLlmModels } from '@tars/contracts/providers'
+import { tokens } from '@tars/contracts/tokens'
 import { StreamingProviderBase } from '../../base/StreamingProviderBase'
 import type { StreamConfig } from '../../config'
-import type { ComprehensiveCallbacks, BeforeStreamStartResult, ToolDefinition } from '../../config/ComprehensiveCallbacks'
+import type {
+	BeforeStreamStartResult,
+	ComprehensiveCallbacks,
+	ToolDefinition
+} from '../../config/ComprehensiveCallbacks'
 import type { ICompletionsStream } from '../../streaming'
 import { convertEmbedToImageUrl } from '../../utils'
 import { GrokCompletionsStream } from './GrokCompletionsStream'
-import { toGrokMessage, type GrokProviderOptions, type GrokMessage, type ContentItem } from './types'
+import { type ContentItem, type GrokMessage, type GrokProviderOptions, toGrokMessage } from './types'
 
 /**
  * Grok (xAI) streaming provider
@@ -25,21 +29,13 @@ export class GrokStreamingProvider extends StreamingProviderBase {
 	readonly name = 'grok'
 	readonly displayName = 'Grok'
 	readonly websiteToObtainKey = 'https://console.x.ai'
-	readonly capabilities: LlmCapability[] = [
-		'Text Generation',
-		'Image Vision',
-		'Tool Calling',
-		'Reasoning'
-	]
+	readonly capabilities: LlmCapability[] = ['Text Generation', 'Image Vision', 'Tool Calling', 'Reasoning']
 
 	private apiKey: string | null = null
 	private providerOptions: GrokProviderOptions | null = null
 	private resolveEmbedAsBinary: ResolveEmbedAsBinary | null = null
 
-	constructor(
-		loggingService = inject(tokens.Logger),
-		settingsService = inject(tokens.Settings)
-	) {
+	constructor(loggingService = inject(tokens.Logger), settingsService = inject(tokens.Settings)) {
 		super(loggingService, settingsService)
 	}
 
@@ -47,10 +43,7 @@ export class GrokStreamingProvider extends StreamingProviderBase {
 	 * Get available models
 	 */
 	get models(): LlmModel[] {
-		return toLlmModels(
-			['grok-beta', 'grok-vision-beta'],
-			this.capabilities
-		)
+		return toLlmModels(['grok-beta', 'grok-vision-beta'], this.capabilities)
 	}
 
 	/**
@@ -113,7 +106,11 @@ export class GrokStreamingProvider extends StreamingProviderBase {
 			}
 
 			// 3. CREATE STREAM
-			const completionStream = this.createCompletionStreamWithTools(finalMessages, { ...config, providerOptions: finalOptions }, finalTools)
+			const completionStream = this.createCompletionStreamWithTools(
+				finalMessages,
+				{ ...config, providerOptions: finalOptions },
+				finalTools
+			)
 
 			// 4. STREAM START
 			if (callbacks?.onStreamStart) {
@@ -216,7 +213,11 @@ export class GrokStreamingProvider extends StreamingProviderBase {
 	/**
 	 * Helper to create stream with tools
 	 */
-	private createCompletionStreamWithTools(messages: Message[], config: StreamConfig, tools?: ToolDefinition[]): ICompletionsStream {
+	private createCompletionStreamWithTools(
+		messages: Message[],
+		config: StreamConfig,
+		tools?: ToolDefinition[]
+	): ICompletionsStream {
 		const updatedConfig = {
 			...config,
 			providerOptions: { ...config.providerOptions, tools }
@@ -285,7 +286,7 @@ export class GrokStreamingProvider extends StreamingProviderBase {
 	 * Handles multi-modal content with image embeds
 	 */
 	private convertMessages(messages: Message[]): GrokMessage[] {
-		return messages.map(msg => {
+		return messages.map((msg) => {
 			// Handle messages with embeds (images)
 			if (msg.embeds && msg.embeds.length > 0 && this.resolveEmbedAsBinary) {
 				const content: ContentItem[] = []

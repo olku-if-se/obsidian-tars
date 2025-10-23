@@ -1,15 +1,6 @@
-import {
-	type App,
-	type Command,
-	type Editor,
-	type MarkdownView
-} from 'obsidian'
+import { type App, type Command, type Editor, type MarkdownView } from 'obsidian'
 import { injectable, inject } from '@needle-di/core'
-import type {
-	ILoggingService,
-	INotificationService,
-	ISettingsService
-} from '@tars/contracts'
+import type { ILoggingService, INotificationService, ISettingsService } from '@tars/contracts'
 import type { PluginSettings } from 'src/settings'
 import type { RequestController } from 'src/editor'
 import type { TagCmdMeta } from '../tagCmd'
@@ -53,7 +44,9 @@ export class SystemTagDICommand {
 					this.loggingService.info(`System tag ${tag} executed successfully`)
 				} catch (error) {
 					this.loggingService.error(`Error executing system tag ${tag}:`, error)
-					this.notificationService.error(`Failed to insert system tag: ${error instanceof Error ? error.message : 'Unknown error'}`)
+					this.notificationService.error(
+						`Failed to insert system tag: ${error instanceof Error ? error.message : 'Unknown error'}`
+					)
 				}
 			}
 		}

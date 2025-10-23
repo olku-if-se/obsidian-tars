@@ -3,13 +3,13 @@
  * OpenAI-compatible Chinese provider with reasoning
  */
 
-export { SiliconFlowStreamingProvider } from './SiliconFlowStreamingProvider'
 export { SiliconFlowCompletionsStream } from './SiliconFlowCompletionsStream'
+export { SiliconFlowStreamingProvider } from './SiliconFlowStreamingProvider'
 export type {
+	ContentItem,
 	SiliconFlowMessage,
-	SiliconFlowToolCall,
-	SiliconFlowStreamChunk,
 	SiliconFlowProviderOptions,
-	ContentItem
+	SiliconFlowStreamChunk,
+	SiliconFlowToolCall
 } from './types'
 export { toSiliconFlowMessage } from './types'

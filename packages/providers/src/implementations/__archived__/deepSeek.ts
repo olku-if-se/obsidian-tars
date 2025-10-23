@@ -1,5 +1,5 @@
 import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '@tars/contracts'
-import { toLlmModels, type LlmCapability } from '@tars/contracts/providers'
+import { type LlmCapability, toLlmModels } from '@tars/contracts/providers'
 import { createLogger } from '@tars/logger'
 import OpenAI from 'openai'
 import { t } from '../i18n'

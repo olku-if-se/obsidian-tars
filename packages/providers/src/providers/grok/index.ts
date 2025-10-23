@@ -3,13 +3,13 @@
  * OpenAI-compatible with reasoning support
  */
 
-export { GrokStreamingProvider } from './GrokStreamingProvider'
 export { GrokCompletionsStream } from './GrokCompletionsStream'
+export { GrokStreamingProvider } from './GrokStreamingProvider'
 export type {
+	ContentItem,
 	GrokMessage,
-	GrokToolCall,
-	GrokStreamChunk,
 	GrokProviderOptions,
-	ContentItem
+	GrokStreamChunk,
+	GrokToolCall
 } from './types'
 export { toGrokMessage } from './types'

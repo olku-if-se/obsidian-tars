@@ -222,10 +222,7 @@ export class GrokCompletionsStream extends CompletionsStream {
 			// Yield error event
 			yield {
 				type: 'error',
-				data: Object.assign(
-					new Error(Errors.stream_failed),
-					{ cause: error }
-				)
+				data: Object.assign(new Error(Errors.stream_failed), { cause: error })
 			}
 		}
 	}

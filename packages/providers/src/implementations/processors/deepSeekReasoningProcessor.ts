@@ -1,6 +1,5 @@
-import { LlmStreamProcessor } from '@tars/contracts'
+import type { LlmStreamProcessor } from '@tars/contracts'
 import { CALLOUT_BLOCK_END, CALLOUT_BLOCK_START } from '../../utils'
-
 
 export class DeepSeekReasoningProcessor implements LlmStreamProcessor {
 	private reasoning = false

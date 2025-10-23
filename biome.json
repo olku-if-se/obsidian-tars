@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.2.6/schema.json",
 	"vcs": {
 		"enabled": true,
 		"clientKind": "git",
@@ -13,13 +13,16 @@
 			"**/*.js",
 			"**/*.jsx",
 			"**/*.mjs",
-			"**/*.json",
-			"!**/node_modules",
-			"!**/dist",
-			"!**/.turbo",
-			"!**/main.js",
-			"!**/version-bump.mjs",
-			"!**/coverage"
+			"**/*.json"
+		],
+		"experimentalScannerIgnores": [
+			"**/node_modules",
+			"**/dist",
+			"**/.turbo",
+			"**/main.js",
+			"**/version-bump.mjs",
+			"**/coverage",
+			"**/__archived__/**"
 		]
 	},
 	"formatter": {
@@ -60,6 +63,9 @@
 			"quoteStyle": "single",
 			"trailingCommas": "none",
 			"semicolons": "asNeeded"
+		},
+		"parser": {
+			"unsafeParameterDecoratorsEnabled": true
 		}
 	}
 }

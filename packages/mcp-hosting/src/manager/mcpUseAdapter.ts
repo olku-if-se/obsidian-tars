@@ -5,8 +5,8 @@
  * with the mcp-use library's expected format.
  */
 
-import { parseConfigInput, toMCPUseFormat } from '../config'
 import type { MCPServerConfig } from '@tars/contracts/services/mcp-types'
+import { parseConfigInput, toMCPUseFormat } from '../config'
 
 /**
  * mcp-use server configuration format

@@ -1,12 +1,7 @@
-import type { ILoggingService, ISettingsService } from '@tars/contracts'
-import type { Message } from '@tars/contracts'
-import { StreamQueue, type ICompletionsStream, type StreamEvent } from '../streaming'
-import type { StreamConfig, RetryConfig } from '../config'
-import {
-	DEFAULT_ERROR_HANDLING_CONFIG,
-	DEFAULT_PROCESSING_CONFIG,
-	DEFAULT_STREAM_CONFIG
-} from '../config'
+import type { ILoggingService, ISettingsService, Message } from '@tars/contracts'
+import type { RetryConfig, StreamConfig } from '../config'
+import { DEFAULT_ERROR_HANDLING_CONFIG, DEFAULT_PROCESSING_CONFIG, DEFAULT_STREAM_CONFIG } from '../config'
+import { StreamQueue } from '../streaming'
 import { StreamingContext } from './StreamingContext'
 
 /**
@@ -37,7 +32,7 @@ import { StreamingContext } from './StreamingContext'
  *   }
  * }
  * ```
- * 
+ *
  * Note: Do not apply @injectable() to this abstract class.
  * Apply it to concrete implementations instead.
  */
@@ -59,10 +54,7 @@ export abstract class StreamingProviderBase {
 	 * Create a completion stream for the given messages
 	 * Provider-specific implementation
 	 */
-	protected abstract createCompletionStream(
-		messages: Message[],
-		config: StreamConfig
-	): ICompletionsStream
+	protected abstract createCompletionStream(messages: Message[], config: StreamConfig): ICompletionsStream
 
 	/**
 	 * Stream with full error handling, retries, and callbacks
@@ -144,10 +136,7 @@ export abstract class StreamingProviderBase {
 	/**
 	 * Wrap iterable with timeout support
 	 */
-	protected withTimeout<T>(
-		iterable: AsyncIterable<T>,
-		config: StreamConfig
-	): AsyncIterable<T> {
+	protected withTimeout<T>(iterable: AsyncIterable<T>, config: StreamConfig): AsyncIterable<T> {
 		const timeoutMs = config.errorHandling?.timeout?.chunkTimeout
 
 		if (!timeoutMs) {
@@ -185,28 +174,19 @@ export abstract class StreamingProviderBase {
 	/**
 	 * Create stream with retry logic
 	 */
-	protected async createStreamWithRetry(
-		messages: Message[],
-		config: StreamConfig
-	): Promise<ICompletionsStream> {
+	protected async createStreamWithRetry(messages: Message[], config: StreamConfig): Promise<ICompletionsStream> {
 		const retryConfig = {
 			...DEFAULT_ERROR_HANDLING_CONFIG.retry,
 			...config.errorHandling?.retry
 		}
 
-		return this.withRetry(
-			() => Promise.resolve(this.createCompletionStream(messages, config)),
-			retryConfig
-		)
+		return this.withRetry(() => Promise.resolve(this.createCompletionStream(messages, config)), retryConfig)
 	}
 
 	/**
 	 * Retry logic wrapper
 	 */
-	protected async withRetry<T>(
-		fn: () => Promise<T>,
-		retryConfig: RetryConfig
-	): Promise<T> {
+	protected async withRetry<T>(fn: () => Promise<T>, retryConfig: RetryConfig): Promise<T> {
 		let lastError: Error | null = null
 
 		for (let attempt = 0; attempt <= retryConfig.maxRetries; attempt++) {
@@ -224,12 +204,12 @@ export abstract class StreamingProviderBase {
 
 				// Calculate delay with exponential backoff
 				const delay = Math.min(
-					retryConfig.retryDelay * Math.pow(retryConfig.backoffMultiplier, attempt),
+					retryConfig.retryDelay * retryConfig.backoffMultiplier ** attempt,
 					retryConfig.maxRetryDelay
 				)
 
 				// Wait before retry
-				await new Promise(resolve => setTimeout(resolve, delay))
+				await new Promise((resolve) => setTimeout(resolve, delay))
 			}
 		}
 
@@ -247,7 +227,7 @@ export abstract class StreamingProviderBase {
 
 		// Check error name/message
 		return retryConfig.retryableErrors.some(
-			pattern => error.name.includes(pattern) || error.message.includes(pattern)
+			(pattern) => error.name.includes(pattern) || error.message.includes(pattern)
 		)
 	}
 
@@ -265,18 +245,12 @@ export abstract class StreamingProviderBase {
 
 		// Apply preprocessor
 		if (config.processing?.preprocessor) {
-			processedContent = await config.processing.preprocessor(
-				processedContent,
-				context.getProcessingContext()
-			)
+			processedContent = await config.processing.preprocessor(processedContent, context.getProcessingContext())
 		}
 
 		// Apply postprocessor
 		if (config.processing?.postprocessor) {
-			processedContent = await config.processing.postprocessor(
-				processedContent,
-				context.getProcessingContext()
-			)
+			processedContent = await config.processing.postprocessor(processedContent, context.getProcessingContext())
 		}
 
 		// Invoke onContent callback

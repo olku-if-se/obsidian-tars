@@ -1,9 +1,9 @@
 /**
  * TEMPLATE: Provider E2E Test with Auto-Skip
- * 
+ *
  * Copy this template to create E2E tests for other providers.
  * Replace PROVIDER_NAME with actual provider (e.g., Anthropic, Grok, etc.)
- * 
+ *
  * Features:
  * - Auto-skips if API key not set
  * - Helpful console messages
@@ -11,8 +11,8 @@
  * - Tests comprehensive callbacks
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
 import type { Message } from '@tars/contracts'
+import { beforeEach, describe, expect, it } from 'vitest'
 import type { ComprehensiveCallbacks } from '../../src/config/ComprehensiveCallbacks'
 import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
 
@@ -41,8 +41,8 @@ const mockSettingsService = {
 
 // Auto-skip if API key not set
 const shouldSkipE2E = shouldSkipE2ETests({
-	envVar: 'E2E_PROVIDER_NAME_API_KEY',  // e.g., 'E2E_ANTHROPIC_API_KEY'
-	providerName: 'ProviderName',         // e.g., 'Anthropic'
+	envVar: 'E2E_PROVIDER_NAME_API_KEY', // e.g., 'E2E_ANTHROPIC_API_KEY'
+	providerName: 'ProviderName', // e.g., 'Anthropic'
 	setupInstructions: [
 		'Set API key: mise run secrets-init && mise run secrets-edit',
 		'Run tests:   mise run test-e2e',
@@ -53,7 +53,7 @@ const shouldSkipE2E = shouldSkipE2ETests({
 const API_KEY = process.env.E2E_PROVIDER_NAME_API_KEY
 
 describe.skipIf(shouldSkipE2E)('ProviderName E2E - Comprehensive Callbacks', () => {
-	let provider: any  // Replace with: YourProviderStreamingProvider
+	let provider: any // Replace with: YourProviderStreamingProvider
 
 	beforeEach(() => {
 		// GIVEN: Fresh provider instance
@@ -88,7 +88,7 @@ describe.skipIf(shouldSkipE2E)('ProviderName E2E - Comprehensive Callbacks', () 
 			// THEN: Should receive response
 			expect(fullResponse).toContain('Hello')
 			expect(chunkCount).toBeGreaterThan(0)
-			
+
 			console.log(`✅ Received ${chunkCount} chunks`)
 			console.log(`📝 Response: ${fullResponse}`)
 		})
@@ -111,7 +111,7 @@ describe.skipIf(shouldSkipE2E)('ProviderName E2E - Comprehensive Callbacks', () 
 					lifecycle.push('start')
 					console.log(`🚀 Stream started: ${provider}/${model}`)
 				},
-				
+
 				onStreamEnd: async ({ provider, totalChunks, duration }) => {
 					lifecycle.push('end')
 					console.log(`✅ Stream ended: ${provider} - ${totalChunks} chunks in ${duration}ms`)
@@ -147,7 +147,7 @@ describe.skipIf(shouldSkipE2E)('ProviderName E2E - Comprehensive Callbacks', () 
 					// Transform to uppercase
 					return { chunk: chunk.toUpperCase() }
 				},
-				
+
 				afterChunk: async ({ processedChunk, index }) => {
 					console.log(`➡️  Processed ${index}: "${processedChunk}"`)
 					processedChunks.push(processedChunk)
@@ -163,8 +163,8 @@ describe.skipIf(shouldSkipE2E)('ProviderName E2E - Comprehensive Callbacks', () 
 
 			// THEN: Should have processed chunks
 			expect(processedChunks.length).toBeGreaterThan(0)
-			expect(fullResponse).toMatch(/[A-Z]/)  // Should be uppercase
-			
+			expect(fullResponse).toMatch(/[A-Z]/) // Should be uppercase
+
 			console.log(`✅ Processed ${processedChunks.length} chunks`)
 		})
 	})

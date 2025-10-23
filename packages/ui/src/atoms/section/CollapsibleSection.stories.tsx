@@ -77,7 +77,7 @@ export const Default: Story = {
 						Set the minimum log level to display
 					</div>
 					<Input
-						value="info"
+						value='info'
 						onChange={() => {
 							/* Demo placeholder */
 						}}
@@ -99,8 +99,8 @@ export const OpenByDefault: Story = {
 					<div style={{ fontWeight: '500' }}>Cache size</div>
 					<div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>Maximum cache size in megabytes</div>
 					<Input
-						type="number"
-						value="512"
+						type='number'
+						value='512'
 						onChange={() => {
 							/* Demo placeholder */
 						}}
@@ -135,8 +135,8 @@ export const WithForm: Story = {
 					<div style={{ fontWeight: '500' }}>API Endpoint</div>
 					<div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>The base URL for API requests</div>
 					<Input
-						placeholder="https://api.example.com"
-						value="https://api.example.com"
+						placeholder='https://api.example.com'
+						value='https://api.example.com'
 						onChange={() => {
 							/* Demo placeholder */
 						}}
@@ -147,8 +147,8 @@ export const WithForm: Story = {
 					<div style={{ fontWeight: '500' }}>API Key</div>
 					<div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>Your secret API key</div>
 					<Input
-						type="password"
-						value="sk-..."
+						type='password'
+						value='sk-...'
 						onChange={() => {
 							/* Demo placeholder */
 						}}
@@ -156,8 +156,8 @@ export const WithForm: Story = {
 				</div>
 
 				<div style={{ display: 'flex', gap: '12px' }}>
-					<Button variant="primary">Save Configuration</Button>
-					<Button variant="default">Test Connection</Button>
+					<Button variant='primary'>Save Configuration</Button>
+					<Button variant='default'>Test Connection</Button>
 				</div>
 			</form>
 		)
@@ -207,8 +207,8 @@ export const InteractiveDemo: Story = {
 		}
 
 		return (
-			<div className="interactive-demo">
-				<div className="demo-info">
+			<div className='interactive-demo'>
+				<div className='demo-info'>
 					<strong>Interactive Demo:</strong>
 					<br />
 					Toggle count: {toggleCount}
@@ -216,9 +216,9 @@ export const InteractiveDemo: Story = {
 					Last state: {lastToggleState ? 'Open' : 'Closed'}
 				</div>
 
-				<CollapsibleSection title="Interactive Section" defaultOpen={false} onToggle={handleToggle}>
-					<div className="demo-content">
-						<div className="demo-text">
+				<CollapsibleSection title='Interactive Section' defaultOpen={false} onToggle={handleToggle}>
+					<div className='demo-content'>
+						<div className='demo-text'>
 							This section tracks when it's opened and closed. Try toggling it multiple times!
 						</div>
 						<Toggle
@@ -228,7 +228,7 @@ export const InteractiveDemo: Story = {
 							}}
 						/>
 						<Input
-							value="Interactive content"
+							value='Interactive content'
 							onChange={() => {
 								/* Demo placeholder */
 							}}
@@ -248,7 +248,7 @@ export const Controlled: Story = {
 			<div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
 				<div>This section is controlled by parent state.</div>
 				<Input
-					value="Some value"
+					value='Some value'
 					onChange={() => {
 						/* Demo placeholder */
 					}}
@@ -261,7 +261,7 @@ export const Controlled: Story = {
 		return (
 			<div>
 				<div style={{ marginBottom: 12 }}>
-					<Button variant="default" onClick={() => setOpen((v) => !v)}>
+					<Button variant='default' onClick={() => setOpen((v) => !v)}>
 						Toggle from parent (current: {open ? 'open' : 'closed'})
 					</Button>
 				</div>
@@ -279,19 +279,19 @@ export const NestedSections: Story = {
 		children: null
 	},
 	render: () => (
-		<CollapsibleSection title="Parent Section" defaultOpen={true}>
-			<div className="nested-content">
-				<div className="nested-text">This is the parent section content with nested sections inside.</div>
+		<CollapsibleSection title='Parent Section' defaultOpen={true}>
+			<div className='nested-content'>
+				<div className='nested-text'>This is the parent section content with nested sections inside.</div>
 
-				<CollapsibleSection title="Nested Section 1" defaultOpen={false}>
-					<div className="nested-section">Content for the first nested section.</div>
+				<CollapsibleSection title='Nested Section 1' defaultOpen={false}>
+					<div className='nested-section'>Content for the first nested section.</div>
 				</CollapsibleSection>
 
-				<CollapsibleSection title="Nested Section 2" defaultOpen={false}>
-					<div className="nested-section">Content for the second nested section.</div>
+				<CollapsibleSection title='Nested Section 2' defaultOpen={false}>
+					<div className='nested-section'>Content for the second nested section.</div>
 				</CollapsibleSection>
 
-				<div className="nested-text">More parent section content after the nested sections.</div>
+				<div className='nested-text'>More parent section content after the nested sections.</div>
 			</div>
 		</CollapsibleSection>
 	)
@@ -307,7 +307,7 @@ export const WithActions: Story = {
 				<div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
 					<div style={{ fontWeight: '500' }}>Account type</div>
 					<div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>Your current subscription tier</div>
-					<Input value="Premium" disabled />
+					<Input value='Premium' disabled />
 				</div>
 
 				<div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -316,8 +316,8 @@ export const WithActions: Story = {
 						Irreversible actions that affect your account
 					</div>
 					<div style={{ display: 'flex', gap: '12px' }}>
-						<Button variant="default">Export Data</Button>
-						<Button variant="danger">Delete Account</Button>
+						<Button variant='default'>Export Data</Button>
+						<Button variant='danger'>Delete Account</Button>
 					</div>
 				</div>
 			</div>

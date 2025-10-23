@@ -1,14 +1,23 @@
-import { injectable, inject } from '@needle-di/core'
-import { tokens } from '@tars/contracts/tokens'
-import type { Message, ILoggingService, ISettingsService, ResolveEmbedAsBinary } from '@tars/contracts'
+import { inject, injectable } from '@needle-di/core'
+import type { ILoggingService, ISettingsService, Message, ResolveEmbedAsBinary } from '@tars/contracts'
 import { type LlmCapability, type LlmModel, toLlmModels } from '@tars/contracts/providers'
+import { tokens } from '@tars/contracts/tokens'
 import OpenAI from 'openai'
 import { StreamingProviderBase } from '../../base/StreamingProviderBase'
 import type { StreamConfig } from '../../config'
-import type { ComprehensiveCallbacks, BeforeStreamStartResult, ToolDefinition } from '../../config/ComprehensiveCallbacks'
+import type {
+	BeforeStreamStartResult,
+	ComprehensiveCallbacks,
+	ToolDefinition
+} from '../../config/ComprehensiveCallbacks'
 import type { ICompletionsStream } from '../../streaming'
 import { SiliconFlowCompletionsStream } from './SiliconFlowCompletionsStream'
-import { toSiliconFlowMessage, type SiliconFlowProviderOptions, type SiliconFlowMessage, type ContentItem } from './types'
+import {
+	type ContentItem,
+	type SiliconFlowMessage,
+	type SiliconFlowProviderOptions,
+	toSiliconFlowMessage
+} from './types'
 
 /**
  * SiliconFlow streaming provider
@@ -25,21 +34,13 @@ export class SiliconFlowStreamingProvider extends StreamingProviderBase {
 	readonly name = 'siliconflow'
 	readonly displayName = 'SiliconFlow'
 	readonly websiteToObtainKey = 'https://siliconflow.cn'
-	readonly capabilities: LlmCapability[] = [
-		'Text Generation',
-		'Image Vision',
-		'Tool Calling',
-		'Reasoning'
-	]
+	readonly capabilities: LlmCapability[] = ['Text Generation', 'Image Vision', 'Tool Calling', 'Reasoning']
 
 	private client: OpenAI | null = null
 	private providerOptions: SiliconFlowProviderOptions | null = null
 	private resolveEmbedAsBinary: ResolveEmbedAsBinary | null = null
 
-	constructor(
-		loggingService = inject(tokens.Logger),
-		settingsService = inject(tokens.Settings)
-	) {
+	constructor(loggingService = inject(tokens.Logger), settingsService = inject(tokens.Settings)) {
 		super(loggingService, settingsService)
 	}
 
@@ -48,11 +49,7 @@ export class SiliconFlowStreamingProvider extends StreamingProviderBase {
 	 */
 	get models(): LlmModel[] {
 		return toLlmModels(
-			[
-				'Qwen/Qwen2.5-72B-Instruct',
-				'deepseek-ai/DeepSeek-V3',
-				'Pro/Qwen/Qwen2.5-72B-Instruct'
-			],
+			['Qwen/Qwen2.5-72B-Instruct', 'deepseek-ai/DeepSeek-V3', 'Pro/Qwen/Qwen2.5-72B-Instruct'],
 			this.capabilities
 		)
 	}
@@ -114,7 +111,11 @@ export class SiliconFlowStreamingProvider extends StreamingProviderBase {
 				finalOptions = beforeResult.providerOptions || config.providerOptions
 			}
 
-			const completionStream = this.createCompletionStreamWithTools(finalMessages, { ...config, providerOptions: finalOptions }, finalTools)
+			const completionStream = this.createCompletionStreamWithTools(
+				finalMessages,
+				{ ...config, providerOptions: finalOptions },
+				finalTools
+			)
 
 			if (callbacks?.onStreamStart) {
 				await callbacks.onStreamStart({
@@ -209,7 +210,11 @@ export class SiliconFlowStreamingProvider extends StreamingProviderBase {
 		}
 	}
 
-	private createCompletionStreamWithTools(messages: Message[], config: StreamConfig, tools?: ToolDefinition[]): ICompletionsStream {
+	private createCompletionStreamWithTools(
+		messages: Message[],
+		config: StreamConfig,
+		tools?: ToolDefinition[]
+	): ICompletionsStream {
 		const updatedConfig = {
 			...config,
 			providerOptions: { ...config.providerOptions, tools }
@@ -276,7 +281,7 @@ export class SiliconFlowStreamingProvider extends StreamingProviderBase {
 	 * Handles multi-modal content with images
 	 */
 	private convertMessages(messages: Message[]): SiliconFlowMessage[] {
-		return messages.map(msg => {
+		return messages.map((msg) => {
 			// Handle messages with embeds (images)
 			if (msg.embeds && msg.embeds.length > 0 && this.resolveEmbedAsBinary) {
 				const content: ContentItem[] = []

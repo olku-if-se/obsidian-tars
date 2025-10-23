@@ -134,7 +134,7 @@ describe('React Settings Adapter - Unit Tests', () => {
 	describe('Provider Configuration Transformation', () => {
 		it('should transform Claude provider correctly', () => {
 			const reactState = adaptObsidianToReact(mockObsidianSettings)
-			const claudeProvider = reactState.providers.find(p => p.name === 'Claude')
+			const claudeProvider = reactState.providers.find((p) => p.name === 'Claude')
 
 			expect(claudeProvider).toBeDefined()
 			expect(claudeProvider?.id).toMatch(/claude-\d+-\d+/)
@@ -153,7 +153,7 @@ describe('React Settings Adapter - Unit Tests', () => {
 
 		it('should transform OpenAI provider correctly', () => {
 			const reactState = adaptObsidianToReact(mockObsidianSettings)
-			const openaiProvider = reactState.providers.find(p => p.name === 'OpenAI')
+			const openaiProvider = reactState.providers.find((p) => p.name === 'OpenAI')
 
 			expect(openaiProvider).toBeDefined()
 			expect(openaiProvider?.id).toMatch(/openai-\d+-\d+/)
@@ -192,7 +192,7 @@ describe('React Settings Adapter - Unit Tests', () => {
 			}
 
 			const reactState = adaptObsidianToReact(azureSettings)
-			const azureProvider = reactState.providers.find(p => p.name === 'Azure')
+			const azureProvider = reactState.providers.find((p) => p.name === 'Azure')
 
 			expect(azureProvider).toBeDefined()
 			expect(azureProvider?.vendorConfig?.azure).toEqual({
@@ -214,13 +214,13 @@ describe('React Settings Adapter - Unit Tests', () => {
 			const mergedSettings = mergeReactChanges(mockObsidianSettings, reactState)
 
 			// Check that changes are applied
-			const updatedClaude = mergedSettings.providers.find(p => p.tag === 'claude')
+			const updatedClaude = mergedSettings.providers.find((p) => p.tag === 'claude')
 			expect(updatedClaude?.options.apiKey).toBe('updated-claude-key')
 			expect(updatedClaude?.options.parameters.thinkingMode).toBe('enabled')
 			expect(mergedSettings.userTags).toEqual(['#User', '#Human'])
 
 			// Check that original values are preserved
-			const unchangedOpenAI = mergedSettings.providers.find(p => p.vendor === 'OpenAI')
+			const unchangedOpenAI = mergedSettings.providers.find((p) => p.vendor === 'OpenAI')
 			expect(unchangedOpenAI?.options.apiKey).toBe('test-openai-key')
 		})
 
@@ -246,7 +246,7 @@ describe('React Settings Adapter - Unit Tests', () => {
 			const mergedSettings = mergeReactChanges(mockObsidianSettings, reactState)
 
 			expect(mergedSettings.providers).toHaveLength(3)
-			const newProvider = mergedSettings.providers.find(p => p.tag === 'ollama')
+			const newProvider = mergedSettings.providers.find((p) => p.tag === 'ollama')
 			expect(newProvider).toBeDefined()
 			expect(newProvider?.vendor).toBe('Ollama')
 			expect(newProvider?.options.model).toBe('llama3.1')
@@ -261,7 +261,7 @@ describe('React Settings Adapter - Unit Tests', () => {
 
 			// Check that critical fields are preserved
 			const originalClaude = mockObsidianSettings.providers[0]
-			const finalClaude = backToReact.providers.find(p => p.name === 'Claude')
+			const finalClaude = backToReact.providers.find((p) => p.name === 'Claude')
 
 			expect(finalClaude?.tag).toBe(originalClaude.tag)
 			expect(finalClaude?.apiKey).toBe(originalClaude.options.apiKey)

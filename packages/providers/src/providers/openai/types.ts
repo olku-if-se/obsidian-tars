@@ -74,7 +74,7 @@ export interface OpenAIProviderOptions {
 export function toOpenAIMessage(message: Message): OpenAIMessage {
 	return {
 		role: message.role as any,
-		content: message.content,
+		content: message.content
 		// Embeds handled separately in the provider
 	}
 }

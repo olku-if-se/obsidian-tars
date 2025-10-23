@@ -11,7 +11,7 @@ export default defineConfig({
 			'@tars/mcp-hosting': path.resolve(__dirname, '../mcp-hosting/dist/index.js'),
 			'@tars/streams': path.resolve(__dirname, '../streams/dist/index.js'),
 			'@tars/ui': path.resolve(__dirname, '../ui/dist/index.js'),
-			'obsidian': path.resolve(__dirname, 'tests/mocks/obsidian.js')
+			obsidian: path.resolve(__dirname, 'tests/mocks/obsidian.js')
 		}
 	},
 	test: {

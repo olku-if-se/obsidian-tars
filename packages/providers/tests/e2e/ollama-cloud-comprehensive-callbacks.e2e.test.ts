@@ -1,28 +1,28 @@
 /**
  * Ollama Cloud Provider E2E Test - Comprehensive Callbacks
- * 
+ *
  * This is an END-TO-END test that makes REAL API calls to Ollama Cloud.
- * 
+ *
  * Ollama Cloud API:
  * - Endpoint: https://ollama.com/api/v1 (OpenAI-compatible)
  * - Models: gpt-oss:120b, etc.
  * - Auth: Bearer token
- * 
+ *
  * Setup:
  * 1. Set E2E_OLLAMA_CLOUD_API_KEY: mise run secrets-rotate OLLAMA_CLOUD_API_KEY your-key
  * 2. Run: mise run test-e2e
- * 
+ *
  * Tests:
  * - Real streaming from Ollama Cloud API
  * - All comprehensive callback hooks
  * - OpenAI-compatible API
  * - Lifecycle events
- * 
+ *
  * TDD Approach: GIVEN / WHEN / THEN structure
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
 import type { Message } from '@tars/contracts'
+import { beforeEach, describe, expect, it } from 'vitest'
 import type { ComprehensiveCallbacks } from '../../src/config/ComprehensiveCallbacks'
 import { OllamaStreamingProvider } from '../../src/providers/ollama/OllamaStreamingProvider'
 import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
@@ -113,7 +113,7 @@ describe.skipIf(shouldSkipE2E)('Ollama Cloud Provider E2E - Comprehensive Callba
 				onStreamStart: async () => {
 					lifecycle.push('start')
 				},
-				
+
 				onStreamEnd: async () => {
 					lifecycle.push('end')
 				}

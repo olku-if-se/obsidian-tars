@@ -1,5 +1,5 @@
 import type { ToolCall, ToolResponse } from '../streaming/types'
-import { ToolManager } from './ToolManager'
+import type { ToolManager } from './ToolManager'
 import type { ToolExecutionOptions } from './types'
 
 /**

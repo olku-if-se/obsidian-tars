@@ -240,11 +240,7 @@ export interface ToolDiscoveryCache {
 
 export interface MCPServerClient {
 	listTools(): Promise<ToolDefinition[]>
-	callTool(
-		toolName: string,
-		parameters: Record<string, unknown>,
-		timeout?: number
-	): Promise<ToolExecutionResult>
+	callTool(toolName: string, parameters: Record<string, unknown>, timeout?: number): Promise<ToolExecutionResult>
 	isConnected?(): boolean
 	connect?(): Promise<void>
 	disconnect?(): Promise<void>

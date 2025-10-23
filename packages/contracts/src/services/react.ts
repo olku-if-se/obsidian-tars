@@ -5,9 +5,7 @@
 import type { App } from 'obsidian'
 
 // Generic React component type to avoid direct React dependency
-export type ReactComponentType<T extends Record<string, unknown> = Record<string, unknown>> = (
-	props: T
-) => unknown
+export type ReactComponentType<T extends Record<string, unknown> = Record<string, unknown>> = (props: T) => unknown
 
 export interface IReactBridge {
 	/**

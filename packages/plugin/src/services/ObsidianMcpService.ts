@@ -9,10 +9,7 @@ import type {
 	ILoggingService
 } from '@tars/contracts'
 import { CodeBlockProcessorToken, MCPServerManagerToken, ToolExecutorToken } from '@tars/contracts'
-import {
-	ILoggingServiceToken,
-	IStatusServiceToken
-} from '../container/tokens'
+import { ILoggingServiceToken, IStatusServiceToken } from '../container/tokens'
 
 @injectable()
 export class ObsidianMcpService implements IMcpService {
@@ -133,7 +130,7 @@ export class ObsidianMcpService implements IMcpService {
 		}
 
 		const servers = this.serverManager.getServers()
-		return servers.filter(server => server.enabled && server.status === 'running').length
+		return servers.filter((server) => server.enabled && server.status === 'running').length
 	}
 
 	private getActiveExecutionCount(): number {

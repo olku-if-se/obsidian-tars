@@ -12,12 +12,7 @@ export class OpenAICompletionsStream extends CompletionsStream {
 	private openAIMessages: OpenAIMessage[]
 	private tools?: any[]
 
-	constructor(
-		messages: OpenAIMessage[],
-		options: CompletionsStreamOptions,
-		client: OpenAI,
-		tools?: any[]
-	) {
+	constructor(messages: OpenAIMessage[], options: CompletionsStreamOptions, client: OpenAI, tools?: any[]) {
 		super(messages, options)
 		this.client = client
 		this.openAIMessages = messages

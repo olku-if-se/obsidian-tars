@@ -5,24 +5,26 @@ describe('Debug top_k parameter issue', () => {
 	it('should preserve top_k parameter through round-trip conversion', () => {
 		// Create test settings with top_k parameter - exactly matching the comprehensive test
 		const testSettings = {
-			providers: [{
-				tag: 'claude',
-				vendor: 'Claude',
-				options: {
-					apiKey: 'sk-ant-api-test-key-12345',
-					model: 'claude-3-5-sonnet-20241022',
-					baseURL: 'https://api.anthropic.com',
-					parameters: {
-						temperature: 0.7,
-						max_tokens: 4000,
-						top_p: 0.9,
-						top_k: 250,  // This is the parameter that's getting lost
-						thinkingMode: 'auto',
-						budget_tokens: 8000,
-						stop: ['</response>', '<END>']
+			providers: [
+				{
+					tag: 'claude',
+					vendor: 'Claude',
+					options: {
+						apiKey: 'sk-ant-api-test-key-12345',
+						model: 'claude-3-5-sonnet-20241022',
+						baseURL: 'https://api.anthropic.com',
+						parameters: {
+							temperature: 0.7,
+							max_tokens: 4000,
+							top_p: 0.9,
+							top_k: 250, // This is the parameter that's getting lost
+							thinkingMode: 'auto',
+							budget_tokens: 8000,
+							stop: ['</response>', '<END>']
+						}
 					}
 				}
-			}],
+			],
 			newChatTags: ['#NewChat', '#Start', '#Fresh', '#Begin'],
 			userTags: ['#User', '#Human', '#Person', '#Individual', '#Me'],
 			systemTags: ['#System', '#Instructions', '#Setup', '#Context'],
@@ -69,7 +71,7 @@ describe('Debug top_k parameter issue', () => {
 		console.log('Converted back top_k value:', obsidianUpdates.providers[0].options.parameters.top_k)
 
 		// Replicate the exact check from the failing test
-		const claudeParams = obsidianUpdates.providers?.find(p => p.vendor === 'Claude')?.options.parameters
+		const claudeParams = obsidianUpdates.providers?.find((p) => p.vendor === 'Claude')?.options.parameters
 		console.log('Claude params from find():', claudeParams)
 		console.log('typeof claudeParams?.top_k:', typeof claudeParams?.top_k)
 		console.log('claudeParams?.top_k value:', claudeParams?.top_k)

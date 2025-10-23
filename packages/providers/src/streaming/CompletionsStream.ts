@@ -44,7 +44,10 @@ export abstract class CompletionsStream implements ICompletionsStream {
 	protected readonly model: string
 	protected readonly options: CompletionsStreamOptions
 
-	constructor(protected messages: any[], options?: CompletionsStreamOptions) {
+	constructor(
+		protected messages: any[],
+		options?: CompletionsStreamOptions
+	) {
 		this.options = options || {}
 		this.signal = options?.signal
 		this.model = options?.model || 'default-model'

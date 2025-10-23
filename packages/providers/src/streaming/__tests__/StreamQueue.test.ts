@@ -1,6 +1,6 @@
-import { describe, it, expect, beforeEach } from 'vitest'
-import { StreamQueue } from '../StreamQueue'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { NoOpCompletionsStream } from '../CompletionsStream'
+import { StreamQueue } from '../StreamQueue'
 import type { StreamEvent } from '../types'
 
 describe('StreamQueue', () => {
@@ -36,8 +36,8 @@ describe('StreamQueue', () => {
 
 			// THEN: Should receive content and stream_end events
 			expect(events.length).toBeGreaterThan(0)
-			expect(events.some(e => e.type === 'content')).toBe(true)
-			expect(events.some(e => e.type === 'stream_end')).toBe(true)
+			expect(events.some((e) => e.type === 'content')).toBe(true)
+			expect(events.some((e) => e.type === 'stream_end')).toBe(true)
 		})
 
 		it('WHEN: Processing multiple streams sequentially THEN: Should handle all streams', async () => {
@@ -57,15 +57,15 @@ describe('StreamQueue', () => {
 			}
 
 			// THEN: Should receive events from both streams
-			const contentEvents = events.filter(e => e.type === 'content')
-			const endEvents = events.filter(e => e.type === 'stream_end')
+			const contentEvents = events.filter((e) => e.type === 'content')
+			const endEvents = events.filter((e) => e.type === 'stream_end')
 
 			expect(contentEvents.length).toBeGreaterThan(0)
 			expect(endEvents.length).toBeGreaterThan(0)
 		})
 
 		// DISABLED: Edge case test with inconsistent error message
-	it.skip('WHEN: Using abort signal THEN: Should abort processing', async () => {
+		it.skip('WHEN: Using abort signal THEN: Should abort processing', async () => {
 			// GIVEN: Abort controller
 			const controller = new AbortController()
 			const queueWithSignal = new StreamQueue(undefined, controller.signal)

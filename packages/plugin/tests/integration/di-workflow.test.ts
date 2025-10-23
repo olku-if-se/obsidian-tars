@@ -245,7 +245,7 @@ describe('DI Workflow Integration Tests', () => {
 			const results = commands.map(executeCommand)
 
 			// Verify all commands executed successfully
-			results.forEach(result => {
+			results.forEach((result) => {
 				expect(result.success).toBe(true)
 			})
 

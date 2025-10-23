@@ -6,15 +6,8 @@
 import { injectable, inject } from '@needle-di/core'
 import type { App } from 'obsidian'
 import { ReactBridge } from './ReactBridge'
-import type {
-	IReactBridge,
-	IReactBridgeManager,
-	ILoggingService
-} from '@tars/contracts'
-import {
-	LoggingServiceToken,
-	AppToken
-} from '@tars/contracts'
+import type { IReactBridge, IReactBridgeManager, ILoggingService } from '@tars/contracts'
+import { LoggingServiceToken, AppToken } from '@tars/contracts'
 
 /**
  * DI-enabled React Bridge Manager implementation

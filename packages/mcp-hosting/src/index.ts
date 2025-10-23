@@ -1,4 +1,23 @@
 // Abstract interfaces for host integration
+
+// Types
+export type {
+	AIToolContext,
+	ConnectionState,
+	ErrorInfo,
+	ExecutionHistoryEntry,
+	ExecutionStatus,
+	ExecutionTracker,
+	MCPServerConfig,
+	RetryPolicy,
+	RetryState,
+	ServerHealthStatus,
+	ToolDefinition,
+	ToolExecutionResult,
+	ToolInvocationRequest,
+	ToolServerInfo
+} from '@tars/contracts/services/mcp-types'
+export { TransportProtocol } from '@tars/contracts/services/mcp-types'
 export type { ILogger } from './adapters/ILogger'
 // Default implementations
 export { ConsoleLogger, NoOpLogger } from './adapters/ILogger'
@@ -96,24 +115,6 @@ export {
 	updateRetryState,
 	withRetry
 } from './retry'
-// Types
-export type {
-	AIToolContext,
-	ConnectionState,
-	ErrorInfo,
-	ExecutionHistoryEntry,
-	ExecutionStatus,
-	ExecutionTracker,
-	MCPServerConfig,
-	RetryPolicy,
-	RetryState,
-	ServerHealthStatus,
-	ToolDefinition,
-	ToolExecutionResult,
-	ToolInvocationRequest,
-	ToolServerInfo
-} from '@tars/contracts/services/mcp-types'
-export { TransportProtocol } from '@tars/contracts/services/mcp-types'
 
 // Utility functions
 export {

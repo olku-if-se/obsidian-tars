@@ -1,8 +1,8 @@
 import type {
-	MCPServerConfig,
-	ToolDefinition,
 	ToolDiscoveryMetrics as ContractsToolDiscoveryMetrics,
 	ToolDiscoverySnapshot as ContractsToolDiscoverySnapshot,
+	MCPServerConfig,
+	ToolDefinition,
 	ToolServerInfo
 } from '@tars/contracts/services/mcp-types'
 import { logWarning } from '../utils'

@@ -104,7 +104,7 @@ const StatusBar = ({ state, onStateChange, onClick, onOpenModal }: StatusBarProp
 
 	return (
 		<button
-			type="button"
+			type='button'
 			className={`${styles.statusBar} ${statusIndicator.className}`}
 			onClick={handleClick}
 			title={state.content.tooltip}

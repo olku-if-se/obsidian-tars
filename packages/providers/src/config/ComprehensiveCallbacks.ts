@@ -1,6 +1,6 @@
 /**
  * Comprehensive Callback System for LLM Streaming
- * 
+ *
  * Design Principles:
  * 1. Allow tool injection into provider setup
  * 2. Allow message transformation before/after processing
@@ -312,53 +312,53 @@ export interface OnTimeoutHook {
  */
 export interface ComprehensiveCallbacks {
 	// ===== Lifecycle Hooks =====
-	
+
 	/** Called BEFORE streaming starts - allows message/tool modification */
 	beforeStreamStart?: (hook: BeforeStreamStartHook) => Promise<BeforeStreamStartResult> | BeforeStreamStartResult
-	
+
 	/** Called AFTER stream starts successfully */
 	onStreamStart?: (hook: OnStreamStartHook) => Promise<void> | void
-	
+
 	/** Called when stream completes successfully */
 	onStreamEnd?: (hook: OnStreamEndHook) => Promise<void> | void
-	
+
 	// ===== Chunk Hooks =====
-	
+
 	/** Called BEFORE processing each chunk */
 	beforeChunk?: (hook: BeforeChunkHook) => Promise<BeforeChunkResult> | BeforeChunkResult
-	
+
 	/** Called AFTER processing each chunk */
 	afterChunk?: (hook: AfterChunkHook) => Promise<void> | void
-	
+
 	// ===== Tool Hooks =====
-	
+
 	/** Called when provider needs tools */
 	onToolsRequest?: (hook: OnToolsRequestHook) => Promise<OnToolsRequestResult> | OnToolsRequestResult
-	
+
 	/** Called when LLM requests tool execution */
 	onToolCall?: (hook: OnToolCallHook) => Promise<OnToolCallResult> | OnToolCallResult
-	
+
 	// ===== Error & Retry Hooks =====
-	
+
 	/** Called when error occurs */
 	onError?: (hook: OnErrorHook) => Promise<OnErrorResult> | OnErrorResult
-	
+
 	/** Called before retry attempt */
 	onBeforeRetry?: (hook: OnBeforeRetryHook) => Promise<void> | void
-	
+
 	/** Called after successful retry */
 	onRetrySuccess?: (hook: OnRetrySuccessHook) => Promise<void> | void
-	
+
 	// ===== Timeout & Performance Hooks =====
-	
+
 	/** Called at 75% of timeout duration */
 	onLongWaiting?: (hook: OnLongWaitingHook) => Promise<OnLongWaitingResult> | OnLongWaitingResult
-	
+
 	/** Called on timeout */
 	onTimeout?: (hook: OnTimeoutHook) => Promise<void> | void
-	
+
 	// ===== Generic Event Hook =====
-	
+
 	/** Called for every stream event (low-level) */
 	onStreamEvent?: (event: StreamEvent) => Promise<void> | void
 }

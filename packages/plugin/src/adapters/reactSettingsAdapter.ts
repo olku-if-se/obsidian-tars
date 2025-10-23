@@ -106,7 +106,10 @@ export function adaptObsidianToReact(obsidianSettings: PluginSettings): Settings
 			case 'Azure':
 				provider.vendorConfig = {
 					azure: {
-						endpoint: (providerSettings.options as any).endpoint || providerSettings.options.baseURL || parameters.endpoint as string,
+						endpoint:
+							(providerSettings.options as any).endpoint ||
+							providerSettings.options.baseURL ||
+							(parameters.endpoint as string),
 						apiVersion: parameters.apiVersion as string
 					}
 				}
@@ -193,7 +196,7 @@ export function adaptObsidianToReact(obsidianSettings: PluginSettings): Settings
 	})
 
 	// Get available vendor names
-	const availableVendors = obsidianSettings.providers.map(p => p.vendor)
+	const availableVendors = obsidianSettings.providers.map((p) => p.vendor)
 
 	// Transform message tags
 	const messageTags: MessageTagsData = {
@@ -435,10 +438,7 @@ export function adaptReactToObsidian(reactState: SettingsState): Partial<PluginS
  * Merge React changes with existing Obsidian settings
  * Preserves fields not managed by React (like provider options details)
  */
-export function mergeReactChanges(
-	originalSettings: PluginSettings,
-	reactState: SettingsState
-): PluginSettings {
+export function mergeReactChanges(originalSettings: PluginSettings, reactState: SettingsState): PluginSettings {
 	const reactUpdates = adaptReactToObsidian(reactState)
 
 	// Create deep copy of original settings
@@ -587,10 +587,7 @@ export function mergeReactChanges(
 	if (reactUpdates.mcpServers && reactUpdates.mcpServers.length > (originalSettings.mcpServers?.length || 0)) {
 		const existingCount = originalSettings.mcpServers?.length || 0
 		const newServers = reactUpdates.mcpServers.slice(existingCount)
-		mergedSettings.mcpServers = [
-			...(mergedSettings.mcpServers || []),
-			...newServers
-		]
+		mergedSettings.mcpServers = [...(mergedSettings.mcpServers || []), ...newServers]
 	}
 
 	return mergedSettings
@@ -599,9 +596,10 @@ export function mergeReactChanges(
 /**
  * Validate adapter transformation by checking round-trip conversion
  */
-export function validateAdapterTransformation(
-	obsidianSettings: PluginSettings
-): { isValid: boolean; errors: string[] } {
+export function validateAdapterTransformation(obsidianSettings: PluginSettings): {
+	isValid: boolean
+	errors: string[]
+} {
 	const errors: string[] = []
 
 	try {
@@ -636,7 +634,6 @@ export function validateAdapterTransformation(
 		if (obsidianSettings.mcpServers.length !== backToObsidian.mcpServers?.length) {
 			errors.push('MCP server count mismatch in round-trip conversion')
 		}
-
 	} catch (error) {
 		errors.push(`Adapter validation failed: ${error instanceof Error ? error.message : String(error)}`)
 	}

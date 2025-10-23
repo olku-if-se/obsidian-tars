@@ -22,12 +22,7 @@ export class SiliconFlowCompletionsStream extends CompletionsStream {
 	private siliconflowMessages: SiliconFlowMessage[]
 	private tools?: any[]
 
-	constructor(
-		messages: SiliconFlowMessage[],
-		options: CompletionsStreamOptions,
-		client: OpenAI,
-		tools?: any[]
-	) {
+	constructor(messages: SiliconFlowMessage[], options: CompletionsStreamOptions, client: OpenAI, tools?: any[]) {
 		super(messages, options)
 
 		if (!client) {
@@ -74,10 +69,7 @@ export class SiliconFlowCompletionsStream extends CompletionsStream {
 			}
 
 			// Create stream
-			const stream = await this.client.chat.completions.create(
-				requestParams as any,
-				{ signal: this.signal }
-			)
+			const stream = await this.client.chat.completions.create(requestParams as any, { signal: this.signal })
 
 			// Accumulate tool calls and track reasoning state
 			const toolCalls: Map<number, ToolCall> = new Map()
@@ -172,10 +164,7 @@ export class SiliconFlowCompletionsStream extends CompletionsStream {
 			// Yield error event
 			yield {
 				type: 'error',
-				data: Object.assign(
-					new Error(Errors.stream_failed),
-					{ cause: error }
-				)
+				data: Object.assign(new Error(Errors.stream_failed), { cause: error })
 			}
 		}
 	}

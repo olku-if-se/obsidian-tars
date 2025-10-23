@@ -1,24 +1,24 @@
 /**
  * Gemini Provider E2E Test - Comprehensive Callbacks
- * 
+ *
  * This is an END-TO-END test that makes REAL API calls to Google Gemini.
- * 
+ *
  * Setup:
  * 1. Set E2E_GEMINI_API_KEY: mise run secrets-rotate GEMINI_API_KEY your-key
  * 2. Run: mise run test-e2e
- * 
+ *
  * Tests:
  * - Real streaming from Gemini API
  * - All comprehensive callback hooks
  * - Tool calling support
  * - Message transformation
  * - Lifecycle events
- * 
+ *
  * TDD Approach: GIVEN / WHEN / THEN structure
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
 import type { Message } from '@tars/contracts'
+import { beforeEach, describe, expect, it } from 'vitest'
 import type { ComprehensiveCallbacks } from '../../src/config/ComprehensiveCallbacks'
 import { GeminiStreamingProvider } from '../../src/providers/gemini/GeminiStreamingProvider'
 import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
@@ -27,10 +27,7 @@ import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
 const shouldSkipE2E = shouldSkipE2ETests({
 	envVar: 'E2E_GEMINI_API_KEY',
 	providerName: 'Gemini',
-	setupInstructions: [
-		'Set API key: mise run secrets-rotate GEMINI_API_KEY your-key',
-		'Run tests: mise run test-e2e'
-	]
+	setupInstructions: ['Set API key: mise run secrets-rotate GEMINI_API_KEY your-key', 'Run tests: mise run test-e2e']
 })
 
 const API_KEY = process.env.E2E_GEMINI_API_KEY
@@ -108,7 +105,7 @@ describe.skipIf(shouldSkipE2E)('Gemini Provider E2E - Comprehensive Callbacks', 
 				onStreamStart: async () => {
 					lifecycle.push('start')
 				},
-				
+
 				onStreamEnd: async () => {
 					lifecycle.push('end')
 				}

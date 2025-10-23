@@ -68,13 +68,8 @@ export class ReactSettingsTab extends PluginSettingTab {
 			// Render React settings with provider
 			this.reactRoot.render(
 				<StrictMode>
-					<SettingsProvider
-						initialState={initialReactState}
-						onStateChange={this.handleStateChange}
-					>
-						<SettingsTab
-							onTestMCPConnection={this.handleTestMCPConnection}
-						/>
+					<SettingsProvider initialState={initialReactState} onStateChange={this.handleStateChange}>
+						<SettingsTab onTestMCPConnection={this.handleTestMCPConnection} />
 					</SettingsProvider>
 				</StrictMode>
 			)
@@ -117,7 +112,9 @@ export class ReactSettingsTab extends PluginSettingTab {
 	/**
 	 * Handle MCP connection testing from React components
 	 */
-	private handleTestMCPConnection = async (serverId: string): Promise<{ success: boolean; message: string; latency?: number }> => {
+	private handleTestMCPConnection = async (
+		serverId: string
+	): Promise<{ success: boolean; message: string; latency?: number }> => {
 		try {
 			// Import MCP manager dynamically to avoid circular dependencies
 			const { MCPServerManager } = await import('@tars/mcp-hosting')

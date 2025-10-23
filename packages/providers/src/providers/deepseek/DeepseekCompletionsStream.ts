@@ -22,12 +22,7 @@ export class DeepseekCompletionsStream extends CompletionsStream {
 	private deepseekMessages: DeepseekMessage[]
 	private tools?: any[]
 
-	constructor(
-		messages: DeepseekMessage[],
-		options: CompletionsStreamOptions,
-		client: OpenAI,
-		tools?: any[]
-	) {
+	constructor(messages: DeepseekMessage[], options: CompletionsStreamOptions, client: OpenAI, tools?: any[]) {
 		super(messages, options)
 
 		if (!client) {
@@ -74,10 +69,7 @@ export class DeepseekCompletionsStream extends CompletionsStream {
 			}
 
 			// Create stream
-			const stream = await this.client.chat.completions.create(
-				requestParams as any,
-				{ signal: this.signal }
-			)
+			const stream = await this.client.chat.completions.create(requestParams as any, { signal: this.signal })
 
 			// Accumulate tool calls and track reasoning state
 			const toolCalls: Map<number, ToolCall> = new Map()
@@ -178,10 +170,7 @@ export class DeepseekCompletionsStream extends CompletionsStream {
 			// Yield error event
 			yield {
 				type: 'error',
-				data: Object.assign(
-					new Error(Errors.stream_failed),
-					{ cause: error }
-				)
+				data: Object.assign(new Error(Errors.stream_failed), { cause: error })
 			}
 		}
 	}

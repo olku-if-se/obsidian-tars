@@ -6,10 +6,10 @@
  */
 
 import { EventEmitter } from 'events'
-import { StreamQueue, NoOpCompletionsStream } from '../streaming'
-import { ToolManager, ToolExecutor } from '../tools'
 import type { StreamConfig } from '../config'
+import { NoOpCompletionsStream, StreamQueue } from '../streaming'
 import type { ToolCall } from '../streaming/types'
+import { ToolExecutor, ToolManager } from '../tools'
 
 /**
  * Mock streaming provider for testing
@@ -140,7 +140,7 @@ async function demoToolManager() {
 		console.log(`🔧 Executing get_weather for ${args.location}`)
 
 		// Simulate API call
-		await new Promise(resolve => setTimeout(resolve, 100))
+		await new Promise((resolve) => setTimeout(resolve, 100))
 
 		return {
 			role: 'tool' as const,
@@ -197,9 +197,9 @@ async function demoErrorHandling() {
 					throw error
 				}
 
-				const delay = 100 * Math.pow(2, attempt)
+				const delay = 100 * 2 ** attempt
 				console.log(`   ⏳ Retrying in ${delay}ms...`)
-				await new Promise(resolve => setTimeout(resolve, delay))
+				await new Promise((resolve) => setTimeout(resolve, delay))
 			}
 		}
 	} catch (error) {

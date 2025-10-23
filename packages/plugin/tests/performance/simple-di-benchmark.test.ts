@@ -101,7 +101,7 @@ describe('Simple DI Performance Benchmarks', () => {
 		}
 
 		// Use all services
-		services.forEach(service => {
+		services.forEach((service) => {
 			service.method()
 		})
 
@@ -125,7 +125,9 @@ describe('Simple DI Performance Benchmarks', () => {
 	it('should demonstrate DI benefits for complex scenarios', () => {
 		// Simulate a complex service graph
 		class DatabaseService {
-			query() { return Promise.resolve(['data1', 'data2']) }
+			query() {
+				return Promise.resolve(['data1', 'data2'])
+			}
 		}
 
 		class CacheService {

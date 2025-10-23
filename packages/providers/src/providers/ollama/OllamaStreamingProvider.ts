@@ -1,11 +1,15 @@
-import { injectable, inject } from '@needle-di/core'
-import { tokens } from '@tars/contracts/tokens'
-import type { Message, ILoggingService, ISettingsService } from '@tars/contracts'
+import { inject, injectable } from '@needle-di/core'
+import type { ILoggingService, ISettingsService, Message } from '@tars/contracts'
 import { type LlmCapability, type LlmModel, toLlmModels } from '@tars/contracts/providers'
+import { tokens } from '@tars/contracts/tokens'
 import OpenAI from 'openai'
 import { StreamingProviderBase } from '../../base/StreamingProviderBase'
 import type { StreamConfig } from '../../config'
-import type { ComprehensiveCallbacks, BeforeStreamStartResult, ToolDefinition } from '../../config/ComprehensiveCallbacks'
+import type {
+	BeforeStreamStartResult,
+	ComprehensiveCallbacks,
+	ToolDefinition
+} from '../../config/ComprehensiveCallbacks'
 import type { ICompletionsStream } from '../../streaming'
 import { OpenAICompletionsStream } from '../openai/OpenAICompletionsStream'
 import { toOpenAIMessage } from '../openai/types'
@@ -19,20 +23,20 @@ export interface OllamaProviderOptions {
 
 /**
  * Ollama Streaming Provider - OpenAI-Compatible
- * 
+ *
  * Supports both local Ollama and Ollama Cloud
- * 
+ *
  * Features:
  * - ✅ OpenAI-compatible API
  * - ✅ Local model hosting OR cloud-hosted
  * - ✅ Privacy-focused (local mode)
  * - ✅ Multiple open-source models
  * - ✅ Comprehensive callbacks
- * 
+ *
  * Usage:
  * - Local: baseURL: 'http://localhost:11434/v1' (no API key needed)
  * - Cloud: baseURL: 'https://ollama.com/api/v1' (requires API key)
- * 
+ *
  * Note: Ollama Cloud uses OpenAI-compatible v1 endpoint
  * Their native /api/chat endpoint is different - we use v1 for compatibility
  */
@@ -41,18 +45,12 @@ export class OllamaStreamingProvider extends StreamingProviderBase {
 	readonly name = 'ollama'
 	readonly displayName = 'Ollama'
 	readonly websiteToObtainKey = 'https://ollama.ai'
-	readonly capabilities: LlmCapability[] = [
-		'Text Generation',
-		'Tool Calling'
-	]
+	readonly capabilities: LlmCapability[] = ['Text Generation', 'Tool Calling']
 
 	private client: OpenAI | null = null
 	private providerOptions: OllamaProviderOptions | null = null
 
-	constructor(
-		loggingService = inject(tokens.Logger),
-		settingsService = inject(tokens.Settings)
-	) {
+	constructor(loggingService = inject(tokens.Logger), settingsService = inject(tokens.Settings)) {
 		super(loggingService, settingsService)
 	}
 
@@ -65,13 +63,13 @@ export class OllamaStreamingProvider extends StreamingProviderBase {
 		return toLlmModels(
 			[
 				// Ollama Cloud models (require API key)
-				'gpt-oss:20b-cloud',          // Smallest cloud model
-				'gpt-oss:120b-cloud',         // Larger cloud model
-				'glm-4.6:cloud',              // GLM model
-				'deepseek-v3.1:671b-cloud',   // DeepSeek massive model
-				'kimi-k2:1t-cloud',           // Kimi 1 trillion params
-				'qwen3-coder:480b-cloud',     // Qwen coder model
-				
+				'gpt-oss:20b-cloud', // Smallest cloud model
+				'gpt-oss:120b-cloud', // Larger cloud model
+				'glm-4.6:cloud', // GLM model
+				'deepseek-v3.1:671b-cloud', // DeepSeek massive model
+				'kimi-k2:1t-cloud', // Kimi 1 trillion params
+				'qwen3-coder:480b-cloud', // Qwen coder model
+
 				// Local Ollama models (no API key needed)
 				'llama3.2:latest',
 				'llama3.2:3b',
@@ -121,10 +119,7 @@ export class OllamaStreamingProvider extends StreamingProviderBase {
 	 * Stream with comprehensive callbacks (Gold Standard)
 	 * Follows OpenAI reference implementation
 	 */
-	async *stream(
-		messages: Message[],
-		config: StreamConfig = {}
-	): AsyncGenerator<string, void, unknown> {
+	async *stream(messages: Message[], config: StreamConfig = {}): AsyncGenerator<string, void, unknown> {
 		const callbacks = config.callbacks as ComprehensiveCallbacks | undefined
 		const startTime = Date.now()
 		let chunkCount = 0
@@ -168,7 +163,11 @@ export class OllamaStreamingProvider extends StreamingProviderBase {
 			}
 
 			// 3. CREATE STREAM
-			const completionStream = this.createCompletionStreamWithTools(finalMessages, { ...config, providerOptions: finalOptions }, finalTools)
+			const completionStream = this.createCompletionStreamWithTools(
+				finalMessages,
+				{ ...config, providerOptions: finalOptions },
+				finalTools
+			)
 
 			// 4. STREAM START
 			if (callbacks?.onStreamStart) {
@@ -271,13 +270,17 @@ export class OllamaStreamingProvider extends StreamingProviderBase {
 	/**
 	 * Helper to create stream with tools
 	 */
-	private createCompletionStreamWithTools(messages: Message[], config: StreamConfig, tools?: ToolDefinition[]): ICompletionsStream {
+	private createCompletionStreamWithTools(
+		messages: Message[],
+		config: StreamConfig,
+		tools?: ToolDefinition[]
+	): ICompletionsStream {
 		if (!this.client) {
 			throw new Error('Ollama provider not initialized')
 		}
 
 		const openAIMessages = messages.map(toOpenAIMessage)
-		
+
 		return OpenAICompletionsStream.from(
 			openAIMessages,
 			{

@@ -1,10 +1,5 @@
 import type { EmbedCache } from '../providers/base'
-import type {
-	DocumentWriteLock,
-	IDocumentService,
-	INotificationService,
-	ISettingsService
-} from '../services'
+import type { DocumentWriteLock, IDocumentService, INotificationService, ISettingsService } from '../services'
 
 class NoopDocumentWriteLock implements DocumentWriteLock {
 	async runExclusive<T>(fn: () => T | Promise<T>): Promise<T> {

@@ -1,12 +1,12 @@
 /**
  * OpenAI Provider E2E Test - Comprehensive Callbacks
- * 
+ *
  * This is an END-TO-END test that makes REAL API calls to OpenAI.
- * 
+ *
  * Setup:
  * 1. Set E2E_OPENAI_API_KEY environment variable
  * 2. Run: E2E_OPENAI_API_KEY=sk-... npm test -- openai-comprehensive-callbacks.e2e.test.ts
- * 
+ *
  * Tests:
  * - Real streaming from OpenAI API
  * - All 13 comprehensive callback hooks
@@ -15,12 +15,12 @@
  * - Chunk pre/post processing
  * - Error handling
  * - Lifecycle events
- * 
+ *
  * TDD Approach: GIVEN / WHEN / THEN structure
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
 import type { Message } from '@tars/contracts'
+import { beforeEach, describe, expect, it } from 'vitest'
 import type { ComprehensiveCallbacks, ToolDefinition } from '../../src/config/ComprehensiveCallbacks'
 import { OpenAIStreamingProvider } from '../../src/providers/openai/OpenAIStreamingProvider'
 import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
@@ -28,8 +28,8 @@ import { shouldSkipE2ETests } from './helpers/skip-if-no-env'
 // Mock logging service for tests (silent unless error)
 const mockLoggingService = {
 	debug: () => {}, // Silent
-	info: () => {},  // Silent
-	warn: () => {},  // Silent
+	info: () => {}, // Silent
+	warn: () => {}, // Silent
 	error: (...args: any[]) => console.error('[ERROR]', ...args) // Only show errors
 }
 
@@ -95,7 +95,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 			// THEN: Should receive response
 			expect(fullResponse).toContain('Hello')
 			expect(chunkCount).toBeGreaterThan(0)
-			
+
 			// Silent on success
 		})
 	})
@@ -117,7 +117,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 				// Tool injection
 				onToolsRequest: async ({ provider, model }) => {
 					// Silent
-					
+
 					const tools: ToolDefinition[] = [
 						{
 							type: 'function',
@@ -141,18 +141,18 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 							}
 						}
 					]
-					
+
 					toolsProvided = tools
 					return { tools }
 				},
-				
+
 				// Tool execution
 				onToolCall: async ({ toolCalls }) => {
 					// Silent
-					
+
 					// Mock tool execution
 					return {
-						responses: toolCalls.map(call => ({
+						responses: toolCalls.map((call) => ({
 							tool_call_id: call.id,
 							content: JSON.stringify({
 								temperature: 72,
@@ -196,7 +196,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 				beforeStreamStart: async ({ messages, provider }) => {
 					// Silent
 					originalMessageCount = messages.length
-					
+
 					// Add system message
 					const enhancedMessages: Message[] = [
 						{
@@ -205,12 +205,12 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 						},
 						...messages
 					]
-					
+
 					finalMessageCount = enhancedMessages.length
 					messagesTransformed = true
-					
+
 					// Silent
-					
+
 					return {
 						messages: enhancedMessages
 					}
@@ -228,7 +228,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 			expect(messagesTransformed).toBe(true)
 			expect(originalMessageCount).toBe(1)
 			expect(finalMessageCount).toBe(2)
-			
+
 			// Silent on success
 		})
 	})
@@ -250,20 +250,20 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 				// Pre-process chunks
 				beforeChunk: async ({ chunk, index, accumulated }) => {
 					// Silent
-					
+
 					// Transform: convert to uppercase
 					const transformed = chunk.toUpperCase()
-					
+
 					return {
 						chunk: transformed,
 						metadata: { originalLength: chunk.length }
 					}
 				},
-				
+
 				// Post-process chunks
 				afterChunk: async ({ originalChunk, processedChunk, index, accumulated, duration }) => {
 					// Silent
-					
+
 					processedChunks.push(processedChunk)
 					chunkMetrics.push({
 						index,
@@ -283,10 +283,10 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 			// THEN: Should have processed chunks
 			expect(processedChunks.length).toBeGreaterThan(0)
 			expect(chunkMetrics.length).toBeGreaterThan(0)
-			
+
 			// Response should be uppercase due to beforeChunk transformation
 			expect(fullResponse).toMatch(/[A-Z]/)
-			
+
 			// Silent on success
 		})
 
@@ -306,7 +306,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 				beforeChunk: async ({ chunk, index }) => {
 					// Skip every other chunk
 					const shouldSkip = index % 2 === 0
-					
+
 					if (shouldSkip) {
 						skippedCount++
 						// Silent
@@ -314,7 +314,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 						yieldedCount++
 						// Silent
 					}
-					
+
 					return { skip: shouldSkip }
 				}
 			}
@@ -328,7 +328,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 
 			// THEN: Should have skipped some chunks
 			expect(skippedCount).toBeGreaterThan(0)
-			
+
 			// Silent on success
 		})
 	})
@@ -350,7 +350,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 					lifecycle.push('start')
 					// Silent
 				},
-				
+
 				onStreamEnd: async ({ provider, model, totalChunks, duration, timestamp }) => {
 					lifecycle.push('end')
 					// Silent
@@ -364,7 +364,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 
 			// THEN: Should have called lifecycle events in order
 			expect(lifecycle).toEqual(['start', 'end'])
-			
+
 			// Silent on success
 		})
 	})
@@ -386,13 +386,13 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 				beforeStreamStart: async () => {
 					// Silent
 					streamCancelled = true
-					
+
 					return {
 						cancel: true,
 						cancelReason: 'Quota exceeded'
 					}
 				},
-				
+
 				onStreamStart: async () => {
 					streamStarted = true
 				}
@@ -409,7 +409,7 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 			expect(streamCancelled).toBe(true)
 			expect(streamStarted).toBe(false)
 			expect(chunkReceived).toBe(false)
-			
+
 			// Silent on success
 		})
 	})
@@ -432,29 +432,29 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 					// Silent
 					return { tools: [] }
 				},
-				
+
 				beforeStreamStart: async ({ messages }) => {
 					callbackLog.push('beforeStreamStart')
 					// Silent
 					return { messages }
 				},
-				
+
 				onStreamStart: async ({ provider, model }) => {
 					callbackLog.push('onStreamStart')
 					// Silent
 				},
-				
+
 				beforeChunk: async ({ chunk, index }) => {
 					callbackLog.push(`beforeChunk-${index}`)
 					// Silent
 					return { chunk }
 				},
-				
+
 				afterChunk: async ({ index, accumulated }) => {
 					callbackLog.push(`afterChunk-${index}`)
 					// Silent
 				},
-				
+
 				onStreamEnd: async ({ totalChunks, duration }) => {
 					callbackLog.push('onStreamEnd')
 					// Silent
@@ -475,9 +475,9 @@ describe.skipIf(shouldSkipE2E)('OpenAI Provider E2E - Comprehensive Callbacks', 
 			expect(callbackLog).toContain('beforeStreamStart')
 			expect(callbackLog).toContain('onStreamStart')
 			expect(callbackLog).toContain('onStreamEnd')
-			expect(callbackLog.filter(log => log.startsWith('beforeChunk')).length).toBeGreaterThan(0)
-			expect(callbackLog.filter(log => log.startsWith('afterChunk')).length).toBeGreaterThan(0)
-			
+			expect(callbackLog.filter((log) => log.startsWith('beforeChunk')).length).toBeGreaterThan(0)
+			expect(callbackLog.filter((log) => log.startsWith('afterChunk')).length).toBeGreaterThan(0)
+
 			// Silent on success
 		})
 	})

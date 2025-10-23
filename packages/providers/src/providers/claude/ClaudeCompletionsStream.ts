@@ -22,10 +22,10 @@ export class ClaudeCompletionsStream extends CompletionsStream {
 		super(messages, options)
 		this.client = client
 		this.maxTokens = options.maxTokens || 4096
-		
+
 		// Convert messages to Claude format
 		this.claudeMessages = this.convertMessages(messages)
-		
+
 		// Convert tools to Claude format if provided
 		this.tools = tools ? this.convertTools(tools) : undefined
 	}
@@ -47,8 +47,8 @@ export class ClaudeCompletionsStream extends CompletionsStream {
 	 */
 	private convertMessages(messages: Message[]): Anthropic.MessageParam[] {
 		return messages
-			.filter(msg => msg.role !== 'system') // Claude handles system separately
-			.map(msg => ({
+			.filter((msg) => msg.role !== 'system') // Claude handles system separately
+			.map((msg) => ({
 				role: msg.role as 'user' | 'assistant',
 				content: msg.content
 			}))
@@ -58,7 +58,7 @@ export class ClaudeCompletionsStream extends CompletionsStream {
 	 * Extract system message if present
 	 */
 	private extractSystemMessage(messages: Message[]): string | undefined {
-		const systemMsg = messages.find(msg => msg.role === 'system')
+		const systemMsg = messages.find((msg) => msg.role === 'system')
 		return systemMsg?.content
 	}
 
@@ -66,14 +66,15 @@ export class ClaudeCompletionsStream extends CompletionsStream {
 	 * Convert tools to Claude format
 	 */
 	private convertTools(tools: any[]): Anthropic.Tool[] {
-		return tools.map(tool => ({
+		return tools.map((tool) => ({
 			name: tool.function?.name || tool.name,
 			description: tool.function?.description || tool.description,
-			input_schema: tool.function?.parameters || tool.input_schema || {
-				type: 'object',
-				properties: {},
-				required: []
-			}
+			input_schema: tool.function?.parameters ||
+				tool.input_schema || {
+					type: 'object',
+					properties: {},
+					required: []
+				}
 		}))
 	}
 
@@ -134,7 +135,7 @@ export class ClaudeCompletionsStream extends CompletionsStream {
 							// Text content delta
 							const textChunk = event.delta.text
 							contentAccumulator += textChunk
-							
+
 							yield {
 								type: 'content',
 								data: textChunk
@@ -172,7 +173,7 @@ export class ClaudeCompletionsStream extends CompletionsStream {
 
 			// Yield tool calls if any were collected
 			if (toolUseBlocks.length > 0) {
-				const toolCalls: ToolCall[] = toolUseBlocks.map(block => ({
+				const toolCalls: ToolCall[] = toolUseBlocks.map((block) => ({
 					id: block.id,
 					type: 'function',
 					function: {

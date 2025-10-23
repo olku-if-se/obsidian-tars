@@ -3,6 +3,6 @@
  * Native Anthropic API format
  */
 
-export { ClaudeStreamingProvider } from './ClaudeStreamingProvider'
 export { ClaudeCompletionsStream } from './ClaudeCompletionsStream'
 export type { ClaudeProviderOptions } from './ClaudeStreamingProvider'
+export { ClaudeStreamingProvider } from './ClaudeStreamingProvider'

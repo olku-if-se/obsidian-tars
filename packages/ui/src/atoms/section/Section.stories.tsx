@@ -90,7 +90,7 @@ export const WithInputs: Story = {
 						Your unique username for the platform
 					</div>
 					<Input
-						value="john_doe"
+						value='john_doe'
 						onChange={() => {
 							/* Demo placeholder */
 						}}
@@ -101,8 +101,8 @@ export const WithInputs: Story = {
 					<div style={{ fontWeight: '500' }}>Email</div>
 					<div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>Contact email for notifications</div>
 					<Input
-						type="email"
-						value="john@example.com"
+						type='email'
+						value='john@example.com'
 						onChange={() => {
 							/* Demo placeholder */
 						}}
@@ -137,14 +137,14 @@ export const MixedContent: Story = {
 					</div>
 					<div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
 						<Input
-							type="password"
-							value="sk-test123..."
+							type='password'
+							value='sk-test123...'
 							onChange={() => {
 								/* Demo placeholder */
 							}}
 							style={{ flex: 1 }}
 						/>
-						<Button variant="default" size="sm">
+						<Button variant='default' size='sm'>
 							Regenerate
 						</Button>
 					</div>
@@ -155,7 +155,7 @@ export const MixedContent: Story = {
 					<div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>
 						Download all your data in JSON format
 					</div>
-					<Button variant="primary">Export Data</Button>
+					<Button variant='primary'>Export Data</Button>
 				</div>
 			</div>
 		)
@@ -218,8 +218,8 @@ export const FormLayout: Story = {
 					<div style={{ fontWeight: '500' }}>Server URL</div>
 					<div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>The URL of your server instance</div>
 					<Input
-						placeholder="https://api.example.com"
-						value="https://api.example.com"
+						placeholder='https://api.example.com'
+						value='https://api.example.com'
 						onChange={() => {
 							/* Demo placeholder */
 						}}
@@ -230,9 +230,9 @@ export const FormLayout: Story = {
 					<div style={{ fontWeight: '500' }}>Port</div>
 					<div style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>Server port number (default: 443)</div>
 					<Input
-						type="number"
-						placeholder="443"
-						value="443"
+						type='number'
+						placeholder='443'
+						value='443'
 						onChange={() => {
 							/* Demo placeholder */
 						}}
@@ -240,8 +240,8 @@ export const FormLayout: Story = {
 				</div>
 
 				<div style={{ display: 'flex', gap: '12px', marginTop: '12px' }}>
-					<Button variant="primary">Test Connection</Button>
-					<Button variant="default">Save</Button>
+					<Button variant='primary'>Test Connection</Button>
+					<Button variant='default'>Save</Button>
 				</div>
 			</form>
 		)

@@ -390,7 +390,7 @@ export function getModelById(models: LlmModel[], modelId: string): LlmModel | un
 }
 
 export function toLlmModels(ids: string[], capabilities: LlmCapability[]): LlmModel[] {
-	return ids.map((id) => ({ id, capabilities }))
+	return ids.map(id => ({ id, capabilities }))
 }
 
 // === New Universal Provider Interfaces ===

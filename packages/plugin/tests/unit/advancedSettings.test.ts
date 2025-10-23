@@ -256,8 +256,12 @@ describe('Advanced Settings - Unit Tests', () => {
 			const backToReact = adaptObsidianToReact(obsidianUpdates)
 
 			// Check that advanced settings are preserved
-			expect(backToReact.advancedSettings.enableInternalLinkForAssistantMsg).toBe(mockObsidianSettings.enableInternalLinkForAssistantMsg)
-			expect(backToReact.advancedSettings.answerDelayInMilliseconds).toBe(mockObsidianSettings.answerDelayInMilliseconds)
+			expect(backToReact.advancedSettings.enableInternalLinkForAssistantMsg).toBe(
+				mockObsidianSettings.enableInternalLinkForAssistantMsg
+			)
+			expect(backToReact.advancedSettings.answerDelayInMilliseconds).toBe(
+				mockObsidianSettings.answerDelayInMilliseconds
+			)
 			expect(backToReact.advancedSettings.enableReplaceTag).toBe(mockObsidianSettings.enableReplaceTag)
 			expect(backToReact.advancedSettings.enableExportToJSONL).toBe(mockObsidianSettings.enableExportToJSONL)
 			expect(backToReact.advancedSettings.enableTagSuggest).toBe(mockObsidianSettings.enableTagSuggest)
@@ -265,22 +269,102 @@ describe('Advanced Settings - Unit Tests', () => {
 
 		it('should preserve boolean values correctly', () => {
 			const booleanCombinations = [
-				{ enableInternalLinkForAssistantMsg: true, enableReplaceTag: true, enableExportToJSONL: true, enableTagSuggest: true },
-				{ enableInternalLinkForAssistantMsg: true, enableReplaceTag: true, enableExportToJSONL: true, enableTagSuggest: false },
-				{ enableInternalLinkForAssistantMsg: true, enableReplaceTag: true, enableExportToJSONL: false, enableTagSuggest: true },
-				{ enableInternalLinkForAssistantMsg: true, enableReplaceTag: true, enableExportToJSONL: false, enableTagSuggest: false },
-				{ enableInternalLinkForAssistantMsg: true, enableReplaceTag: false, enableExportToJSONL: true, enableTagSuggest: true },
-				{ enableInternalLinkForAssistantMsg: true, enableReplaceTag: false, enableExportToJSONL: true, enableTagSuggest: false },
-				{ enableInternalLinkForAssistantMsg: true, enableReplaceTag: false, enableExportToJSONL: false, enableTagSuggest: true },
-				{ enableInternalLinkForAssistantMsg: true, enableReplaceTag: false, enableExportToJSONL: false, enableTagSuggest: false },
-				{ enableInternalLinkForAssistantMsg: false, enableReplaceTag: true, enableExportToJSONL: true, enableTagSuggest: true },
-				{ enableInternalLinkForAssistantMsg: false, enableReplaceTag: true, enableExportToJSONL: true, enableTagSuggest: false },
-				{ enableInternalLinkForAssistantMsg: false, enableReplaceTag: true, enableExportToJSONL: false, enableTagSuggest: true },
-				{ enableInternalLinkForAssistantMsg: false, enableReplaceTag: true, enableExportToJSONL: false, enableTagSuggest: false },
-				{ enableInternalLinkForAssistantMsg: false, enableReplaceTag: false, enableExportToJSONL: true, enableTagSuggest: true },
-				{ enableInternalLinkForAssistantMsg: false, enableReplaceTag: false, enableExportToJSONL: true, enableTagSuggest: false },
-				{ enableInternalLinkForAssistantMsg: false, enableReplaceTag: false, enableExportToJSONL: false, enableTagSuggest: true },
-				{ enableInternalLinkForAssistantMsg: false, enableReplaceTag: false, enableExportToJSONL: false, enableTagSuggest: false }
+				{
+					enableInternalLinkForAssistantMsg: true,
+					enableReplaceTag: true,
+					enableExportToJSONL: true,
+					enableTagSuggest: true
+				},
+				{
+					enableInternalLinkForAssistantMsg: true,
+					enableReplaceTag: true,
+					enableExportToJSONL: true,
+					enableTagSuggest: false
+				},
+				{
+					enableInternalLinkForAssistantMsg: true,
+					enableReplaceTag: true,
+					enableExportToJSONL: false,
+					enableTagSuggest: true
+				},
+				{
+					enableInternalLinkForAssistantMsg: true,
+					enableReplaceTag: true,
+					enableExportToJSONL: false,
+					enableTagSuggest: false
+				},
+				{
+					enableInternalLinkForAssistantMsg: true,
+					enableReplaceTag: false,
+					enableExportToJSONL: true,
+					enableTagSuggest: true
+				},
+				{
+					enableInternalLinkForAssistantMsg: true,
+					enableReplaceTag: false,
+					enableExportToJSONL: true,
+					enableTagSuggest: false
+				},
+				{
+					enableInternalLinkForAssistantMsg: true,
+					enableReplaceTag: false,
+					enableExportToJSONL: false,
+					enableTagSuggest: true
+				},
+				{
+					enableInternalLinkForAssistantMsg: true,
+					enableReplaceTag: false,
+					enableExportToJSONL: false,
+					enableTagSuggest: false
+				},
+				{
+					enableInternalLinkForAssistantMsg: false,
+					enableReplaceTag: true,
+					enableExportToJSONL: true,
+					enableTagSuggest: true
+				},
+				{
+					enableInternalLinkForAssistantMsg: false,
+					enableReplaceTag: true,
+					enableExportToJSONL: true,
+					enableTagSuggest: false
+				},
+				{
+					enableInternalLinkForAssistantMsg: false,
+					enableReplaceTag: true,
+					enableExportToJSONL: false,
+					enableTagSuggest: true
+				},
+				{
+					enableInternalLinkForAssistantMsg: false,
+					enableReplaceTag: true,
+					enableExportToJSONL: false,
+					enableTagSuggest: false
+				},
+				{
+					enableInternalLinkForAssistantMsg: false,
+					enableReplaceTag: false,
+					enableExportToJSONL: true,
+					enableTagSuggest: true
+				},
+				{
+					enableInternalLinkForAssistantMsg: false,
+					enableReplaceTag: false,
+					enableExportToJSONL: true,
+					enableTagSuggest: false
+				},
+				{
+					enableInternalLinkForAssistantMsg: false,
+					enableReplaceTag: false,
+					enableExportToJSONL: false,
+					enableTagSuggest: true
+				},
+				{
+					enableInternalLinkForAssistantMsg: false,
+					enableReplaceTag: false,
+					enableExportToJSONL: false,
+					enableTagSuggest: false
+				}
 			]
 
 			for (const combination of booleanCombinations) {
@@ -289,7 +373,9 @@ describe('Advanced Settings - Unit Tests', () => {
 				const obsidianUpdates = adaptReactToObsidian(reactState)
 				const backToReact = adaptObsidianToReact(obsidianUpdates)
 
-				expect(backToReact.advancedSettings.enableInternalLinkForAssistantMsg).toBe(combination.enableInternalLinkForAssistantMsg)
+				expect(backToReact.advancedSettings.enableInternalLinkForAssistantMsg).toBe(
+					combination.enableInternalLinkForAssistantMsg
+				)
 				expect(backToReact.advancedSettings.enableReplaceTag).toBe(combination.enableReplaceTag)
 				expect(backToReact.advancedSettings.enableExportToJSONL).toBe(combination.enableExportToJSONL)
 				expect(backToReact.advancedSettings.enableTagSuggest).toBe(combination.enableTagSuggest)
@@ -530,4 +616,4 @@ describe('Advanced Settings - Unit Tests', () => {
 			expect(obsidianUpdates.defaultSystemMsg).toBe('Custom system message')
 		})
 	})
-	})
+})

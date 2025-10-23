@@ -1,4 +1,3 @@
-
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPluginContainer } from '../plugin-container'
 import { createTestContainer } from './test-container'
@@ -13,7 +12,6 @@ import {
 	ToolExecutor,
 	CodeBlockProcessor
 } from '@tars/contracts'
-
 
 describe('Plugin Container', () => {
 	let mockApp: any

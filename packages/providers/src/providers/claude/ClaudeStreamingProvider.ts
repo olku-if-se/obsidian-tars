@@ -1,11 +1,15 @@
-import { injectable, inject } from '@needle-di/core'
-import { tokens } from '@tars/contracts/tokens'
-import type { Message, ILoggingService, ISettingsService } from '@tars/contracts'
-import { type LlmCapability, type LlmModel, toLlmModels } from '@tars/contracts/providers'
 import Anthropic from '@anthropic-ai/sdk'
+import { inject, injectable } from '@needle-di/core'
+import type { ILoggingService, ISettingsService, Message } from '@tars/contracts'
+import { type LlmCapability, type LlmModel, toLlmModels } from '@tars/contracts/providers'
+import { tokens } from '@tars/contracts/tokens'
 import { StreamingProviderBase } from '../../base/StreamingProviderBase'
 import type { StreamConfig } from '../../config'
-import type { ComprehensiveCallbacks, BeforeStreamStartResult, ToolDefinition } from '../../config/ComprehensiveCallbacks'
+import type {
+	BeforeStreamStartResult,
+	ComprehensiveCallbacks,
+	ToolDefinition
+} from '../../config/ComprehensiveCallbacks'
 import type { ICompletionsStream } from '../../streaming'
 import { ClaudeCompletionsStream } from './ClaudeCompletionsStream'
 
@@ -19,9 +23,9 @@ export interface ClaudeProviderOptions {
 
 /**
  * Claude (Anthropic) Streaming Provider - Comprehensive Callbacks
- * 
+ *
  * Anthropic's Claude models with native API format
- * 
+ *
  * Features:
  * - ✅ Claude 3.5 Sonnet, Opus, Haiku
  * - ✅ Long context (200K tokens)
@@ -34,20 +38,12 @@ export class ClaudeStreamingProvider extends StreamingProviderBase {
 	readonly name = 'claude'
 	readonly displayName = 'Claude'
 	readonly websiteToObtainKey = 'https://console.anthropic.com'
-	readonly capabilities: LlmCapability[] = [
-		'Text Generation',
-		'Image Vision',
-		'Tool Calling',
-		'Reasoning'
-	]
+	readonly capabilities: LlmCapability[] = ['Text Generation', 'Image Vision', 'Tool Calling', 'Reasoning']
 
 	private client: Anthropic | null = null
 	private providerOptions: ClaudeProviderOptions | null = null
 
-	constructor(
-		loggingService = inject(tokens.Logger),
-		settingsService = inject(tokens.Settings)
-	) {
+	constructor(loggingService = inject(tokens.Logger), settingsService = inject(tokens.Settings)) {
 		super(loggingService, settingsService)
 	}
 
@@ -59,22 +55,22 @@ export class ClaudeStreamingProvider extends StreamingProviderBase {
 		return toLlmModels(
 			[
 				// Claude 4.5 series (Latest - Oct 2025)
-				'claude-haiku-4-5',             // CHEAPEST: $1 in / $5 out (fast, near-frontier)
-				'claude-sonnet-4-5',            // Best coding model: $3 in / $15 out
-				
+				'claude-haiku-4-5', // CHEAPEST: $1 in / $5 out (fast, near-frontier)
+				'claude-sonnet-4-5', // Best coding model: $3 in / $15 out
+
 				// Claude 4 series
-				'claude-sonnet-4',              // Previous frontier
-				'claude-opus-4-1',              // High capability
-				
+				'claude-sonnet-4', // Previous frontier
+				'claude-opus-4-1', // High capability
+
 				// Claude 3.5 series (Legacy)
-				'claude-3-5-haiku-20241022',    // $0.25 in / $1.25 out
-				'claude-3-5-sonnet-20241022',   // $3 in / $15 out
-				'claude-3-5-sonnet-20240620',   // Previous version
-				
+				'claude-3-5-haiku-20241022', // $0.25 in / $1.25 out
+				'claude-3-5-sonnet-20241022', // $3 in / $15 out
+				'claude-3-5-sonnet-20240620', // Previous version
+
 				// Claude 3 series (Legacy)
-				'claude-3-haiku-20240307',      // $0.25 in / $1.25 out
-				'claude-3-sonnet-20240229',     // $3 in / $15 out
-				'claude-3-opus-20240229',       // $15 in / $75 out
+				'claude-3-haiku-20240307', // $0.25 in / $1.25 out
+				'claude-3-sonnet-20240229', // $3 in / $15 out
+				'claude-3-opus-20240229' // $15 in / $75 out
 			],
 			this.capabilities
 		)
@@ -119,10 +115,7 @@ export class ClaudeStreamingProvider extends StreamingProviderBase {
 	 * Stream with comprehensive callbacks (Gold Standard)
 	 * Follows OpenAI reference implementation
 	 */
-	async *stream(
-		messages: Message[],
-		config: StreamConfig = {}
-	): AsyncGenerator<string, void, unknown> {
+	async *stream(messages: Message[], config: StreamConfig = {}): AsyncGenerator<string, void, unknown> {
 		const callbacks = config.callbacks as ComprehensiveCallbacks | undefined
 		const startTime = Date.now()
 		let chunkCount = 0
@@ -166,7 +159,11 @@ export class ClaudeStreamingProvider extends StreamingProviderBase {
 			}
 
 			// 3. CREATE STREAM
-			const completionStream = this.createCompletionStreamWithTools(finalMessages, { ...config, providerOptions: finalOptions }, finalTools)
+			const completionStream = this.createCompletionStreamWithTools(
+				finalMessages,
+				{ ...config, providerOptions: finalOptions },
+				finalTools
+			)
 
 			// 4. STREAM START
 			if (callbacks?.onStreamStart) {
@@ -269,7 +266,11 @@ export class ClaudeStreamingProvider extends StreamingProviderBase {
 	/**
 	 * Helper to create stream with tools
 	 */
-	private createCompletionStreamWithTools(messages: Message[], config: StreamConfig, tools?: ToolDefinition[]): ICompletionsStream {
+	private createCompletionStreamWithTools(
+		messages: Message[],
+		config: StreamConfig,
+		tools?: ToolDefinition[]
+	): ICompletionsStream {
 		if (!this.client) {
 			throw new Error('Claude provider not initialized')
 		}

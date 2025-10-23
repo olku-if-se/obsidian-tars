@@ -7,14 +7,8 @@ import { injectable, inject } from '@needle-di/core'
 import { createRoot, type Root } from 'react-dom/client'
 import React from 'react'
 import type { App } from 'obsidian'
-import type {
-	IReactBridge,
-	ILoggingService,
-	ReactComponentType
-} from '@tars/contracts'
-import {
-	LoggingServiceToken
-} from '@tars/contracts'
+import type { IReactBridge, ILoggingService, ReactComponentType } from '@tars/contracts'
+import { LoggingServiceToken } from '@tars/contracts'
 
 export interface BridgeComponentProps {
 	app: App
@@ -164,8 +158,9 @@ export class ReactBridge implements IReactBridge {
 	 * Get information about mounted components for debugging
 	 */
 	getDebugInfo(): { mountedCount: number; containers: string[] } {
-		const containers = Array.from(this.roots.keys()).map(container =>
-			`${container.tagName.toLowerCase()}${container.id ? '#' + container.id : ''}${container.className ? '.' + container.className.split(' ').join('.') : ''}`
+		const containers = Array.from(this.roots.keys()).map(
+			(container) =>
+				`${container.tagName.toLowerCase()}${container.id ? '#' + container.id : ''}${container.className ? '.' + container.className.split(' ').join('.') : ''}`
 		)
 
 		return {

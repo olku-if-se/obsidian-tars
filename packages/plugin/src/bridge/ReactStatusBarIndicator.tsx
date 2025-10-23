@@ -5,9 +5,7 @@ export interface ReactStatusBarIndicatorProps extends BridgeComponentProps {
 	enabledFeatures: string[]
 }
 
-export const ReactStatusBarIndicator: React.FC<ReactStatusBarIndicatorProps> = ({
-	enabledFeatures
-}) => {
+export const ReactStatusBarIndicator: React.FC<ReactStatusBarIndicatorProps> = ({ enabledFeatures }) => {
 	const [mountedTime, setMountedTime] = useState<Date>(new Date())
 
 	useEffect(() => {

@@ -1,5 +1,5 @@
 import type { BaseOptions, Message, ResolveEmbedAsBinary, SendRequest, Vendor } from '@tars/contracts'
-import { toLlmModels, type LlmCapability } from '@tars/contracts/providers'
+import { type LlmCapability, toLlmModels } from '@tars/contracts/providers'
 import { createLogger } from '@tars/logger'
 import OpenAI from 'openai'
 import { t } from '../i18n'
@@ -127,7 +127,13 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 		}
 	}
 
-const openAICapabilities: LlmCapability[] = ['Text Generation', 'Image Vision', 'Image Generation', 'Tool Calling', 'Reasoning']
+const openAICapabilities: LlmCapability[] = [
+	'Text Generation',
+	'Image Vision',
+	'Image Generation',
+	'Tool Calling',
+	'Reasoning'
+]
 const openAIModels = toLlmModels(['gpt-4', 'gpt-4-turbo', 'gpt-3.5-turbo', 'gpt-4o', 'gpt-4o-mini'], openAICapabilities)
 
 export const openAIVendor: Vendor = {

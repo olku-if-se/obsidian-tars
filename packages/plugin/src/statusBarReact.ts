@@ -1,19 +1,19 @@
 import { injectable, inject } from '@needle-di/core'
 import { type App, Notice } from 'obsidian'
-import type { IReactBridge, ISettingsService, LoggingServiceToken, ILoggingService, StatusBarElementToken } from '@tars/contracts'
+import type {
+	IReactBridge,
+	ISettingsService,
+	LoggingServiceToken,
+	ILoggingService,
+	StatusBarElementToken
+} from '@tars/contracts'
 import { StatusBarElementToken } from '@tars/contracts'
 // Import React components from the UI package
 import { StatusBar } from '@tars/ui'
 import { MCPStatusModal } from '@tars/ui'
 import { GenerationStatsModal } from '@tars/ui'
 import type { PluginSettings } from './settings'
-import type {
-	StatusBarState,
-	GenerationStats,
-	ErrorInfo,
-	ErrorLogEntry,
-	MCPStatusInfo
-} from '@tars/ui'
+import type { StatusBarState, GenerationStats, ErrorInfo, ErrorLogEntry, MCPStatusInfo } from '@tars/ui'
 import type { ErrorLogType, StatusBarController } from './statusBarManager'
 import { isFeatureEnabled } from './featureFlags'
 
@@ -77,8 +77,7 @@ export class StatusBarReactManager implements StatusBarController {
 	 */
 	private isReactUIEnabled(): boolean {
 		const settings = this.settingsService.getAll() as PluginSettings
-		return isFeatureEnabled(settings, 'reactStatusBar') ||
-		       isFeatureEnabled(settings, 'reactModals')
+		return isFeatureEnabled(settings, 'reactStatusBar') || isFeatureEnabled(settings, 'reactModals')
 	}
 
 	/**
@@ -139,17 +138,13 @@ export class StatusBarReactManager implements StatusBarController {
 		if (!this.reactRootContainer || !this.isReactUIEnabled()) return
 
 		try {
-			this.reactBridge.mount(
-				this.reactRootContainer,
-				StatusBar,
-				{
-					app: this.app,
-					state: this.state,
-					onStateChange: (newState: StatusBarState) => this.updateState(newState),
-					onClick: () => this.handleStatusClick(),
-					onOpenModal: (type: 'mcp' | 'stats' | 'error') => this.handleOpenModal(type)
-				}
-			)
+			this.reactBridge.mount(this.reactRootContainer, StatusBar, {
+				app: this.app,
+				state: this.state,
+				onStateChange: (newState: StatusBarState) => this.updateState(newState),
+				onClick: () => this.handleStatusClick(),
+				onOpenModal: (type: 'mcp' | 'stats' | 'error') => this.handleOpenModal(type)
+			})
 		} catch (error) {
 			console.error('Failed to refresh React status bar:', error)
 			// Fallback to vanilla implementation
@@ -230,67 +225,55 @@ export class StatusBarReactManager implements StatusBarController {
 		try {
 			switch (type) {
 				case 'mcp':
-					this.reactBridge.mount(
-						modalContainer,
-						MCPStatusModal,
-						{
-							app: this.app,
-							mcpStatus: this.state.mcpStatus!,
-							errorLog: this.getErrorLog(),
-							currentError: this.state.type === 'error' ? this.state.data as ErrorInfo : undefined,
-							onClearLogs: () => this.clearErrorLog(),
-							onRemoveLog: (id: string) => this.removeErrorLogEntry(id),
-							onRefresh: this.onRefreshMCPStatus,
-							onClose: () => {
-								this.reactBridge?.unmount(modalContainer)
-								modalContainer.remove()
-							}
+					this.reactBridge.mount(modalContainer, MCPStatusModal, {
+						app: this.app,
+						mcpStatus: this.state.mcpStatus!,
+						errorLog: this.getErrorLog(),
+						currentError: this.state.type === 'error' ? (this.state.data as ErrorInfo) : undefined,
+						onClearLogs: () => this.clearErrorLog(),
+						onRemoveLog: (id: string) => this.removeErrorLogEntry(id),
+						onRefresh: this.onRefreshMCPStatus,
+						onClose: () => {
+							this.reactBridge?.unmount(modalContainer)
+							modalContainer.remove()
 						}
-					)
+					})
 					break
 
 				case 'stats':
-					this.reactBridge.mount(
-						modalContainer,
-						GenerationStatsModal,
-						{
-							app: this.app,
-							stats: this.state.data as GenerationStats,
-							errorLog: this.getErrorLog(),
-							onClearLogs: () => this.clearErrorLog(),
-							onRemoveLog: (id: string) => this.removeErrorLogEntry(id),
-							onClose: () => {
-								this.reactBridge?.unmount(modalContainer)
-								modalContainer.remove()
-							}
+					this.reactBridge.mount(modalContainer, GenerationStatsModal, {
+						app: this.app,
+						stats: this.state.data as GenerationStats,
+						errorLog: this.getErrorLog(),
+						onClearLogs: () => this.clearErrorLog(),
+						onRemoveLog: (id: string) => this.removeErrorLogEntry(id),
+						onClose: () => {
+							this.reactBridge?.unmount(modalContainer)
+							modalContainer.remove()
 						}
-					)
+					})
 					break
 
 				case 'error':
 					// For error modal, we can reuse the MCP modal with error tab active
-					this.reactBridge.mount(
-						modalContainer,
-						MCPStatusModal,
-						{
-							app: this.app,
-							mcpStatus: {
-								runningServers: 0,
-								totalServers: 0,
-								availableTools: 0,
-								retryingServers: 0,
-								servers: []
-							},
-							errorLog: this.getErrorLog(),
-							currentError: this.state.data as ErrorInfo,
-							onClearLogs: () => this.clearErrorLog(),
-							onRemoveLog: (id: string) => this.removeErrorLogEntry(id),
-							onClose: () => {
-								this.reactBridge?.unmount(modalContainer)
-								modalContainer.remove()
-							}
+					this.reactBridge.mount(modalContainer, MCPStatusModal, {
+						app: this.app,
+						mcpStatus: {
+							runningServers: 0,
+							totalServers: 0,
+							availableTools: 0,
+							retryingServers: 0,
+							servers: []
+						},
+						errorLog: this.getErrorLog(),
+						currentError: this.state.data as ErrorInfo,
+						onClearLogs: () => this.clearErrorLog(),
+						onRemoveLog: (id: string) => this.removeErrorLogEntry(id),
+						onClose: () => {
+							this.reactBridge?.unmount(modalContainer)
+							modalContainer.remove()
 						}
-					)
+					})
 					break
 			}
 

@@ -1,5 +1,10 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { adaptObsidianToReact, adaptReactToObsidian, mergeReactChanges, validateAdapterTransformation } from '../../src/adapters/reactSettingsAdapter'
+import {
+	adaptObsidianToReact,
+	adaptReactToObsidian,
+	mergeReactChanges,
+	validateAdapterTransformation
+} from '../../src/adapters/reactSettingsAdapter'
 import { DEFAULT_SETTINGS } from '../../src/settings'
 // Mock available vendors for testing
 const availableVendors = [
@@ -89,7 +94,7 @@ describe('React Settings Adapter Integration', () => {
 			expect(reactState.availableVendors).toEqual(['Claude', 'OpenAI', 'Azure', 'Ollama'])
 
 			// Check Claude provider transformation
-			const claudeProvider = reactState.providers.find(p => p.name === 'Claude')
+			const claudeProvider = reactState.providers.find((p) => p.name === 'Claude')
 			expect(claudeProvider).toBeDefined()
 			expect(claudeProvider.id).toMatch(/claude-\d+-\d+/)
 			expect(claudeProvider.tag).toBe('claude')
@@ -104,7 +109,7 @@ describe('React Settings Adapter Integration', () => {
 			})
 
 			// Check Azure provider transformation
-			const azureProvider = reactState.providers.find(p => p.name === 'Azure')
+			const azureProvider = reactState.providers.find((p) => p.name === 'Azure')
 			expect(azureProvider).toBeDefined()
 			expect(azureProvider.vendorConfig?.azure).toEqual({
 				endpoint: 'https://test.openai.azure.com/',
@@ -112,7 +117,7 @@ describe('React Settings Adapter Integration', () => {
 			})
 
 			// Check Ollama provider transformation
-			const ollamaProvider = reactState.providers.find(p => p.name === 'Ollama')
+			const ollamaProvider = reactState.providers.find((p) => p.name === 'Ollama')
 			expect(ollamaProvider).toBeDefined()
 			expect(ollamaProvider.vendorConfig?.ollama).toEqual({
 				baseURL: 'http://127.0.0.1:11434',
@@ -158,7 +163,7 @@ describe('React Settings Adapter Integration', () => {
 			expect(obsidianUpdates.providers).toHaveLength(4)
 
 			// Check Claude provider
-			const claudeUpdate = obsidianUpdates.providers.find(p => p.vendor === 'Claude')
+			const claudeUpdate = obsidianUpdates.providers.find((p) => p.vendor === 'Claude')
 			expect(claudeUpdate).toBeDefined()
 			expect(claudeUpdate.tag).toBe('claude')
 			expect(claudeUpdate.options.apiKey).toBe('test-claude-key')
@@ -171,7 +176,7 @@ describe('React Settings Adapter Integration', () => {
 			})
 
 			// Check Azure provider with endpoint mapping
-			const azureUpdate = obsidianUpdates.providers.find(p => p.vendor === 'Azure')
+			const azureUpdate = obsidianUpdates.providers.find((p) => p.vendor === 'Azure')
 			expect(azureUpdate).toBeDefined()
 			expect(azureUpdate.options.baseURL).toBe('https://test.openai.azure.com/')
 			expect(azureUpdate.options.parameters).toEqual({
@@ -205,12 +210,12 @@ describe('React Settings Adapter Integration', () => {
 			const mergedSettings = mergeReactChanges(mockObsidianSettings, reactState)
 
 			// Check that changes are applied
-			const updatedClaude = mergedSettings.providers.find(p => p.tag === 'claude')
+			const updatedClaude = mergedSettings.providers.find((p) => p.tag === 'claude')
 			expect(updatedClaude?.options.apiKey).toBe('updated-claude-key')
 			expect(updatedClaude?.options.parameters.thinkingMode).toBe('enabled')
 
-				// Check that original values are preserved
-			const unchangedOpenAI = mergedSettings.providers.find(p => p.vendor === 'OpenAI')
+			// Check that original values are preserved
+			const unchangedOpenAI = mergedSettings.providers.find((p) => p.vendor === 'OpenAI')
 			expect(unchangedOpenAI?.options.apiKey).toBe('test-openai-key')
 		})
 
@@ -223,7 +228,7 @@ describe('React Settings Adapter Integration', () => {
 
 			const mergedSettings = mergeReactChanges(mockObsidianSettings, reactState)
 
-			const claudeProvider = mergedSettings.providers.find(p => p.tag === 'claude')
+			const claudeProvider = mergedSettings.providers.find((p) => p.tag === 'claude')
 			expect(claudeProvider?.options.parameters.budget_tokens).toBe(2000)
 			expect(claudeProvider?.options.parameters.temperature).toBe(0.8)
 		})
@@ -265,7 +270,7 @@ describe('React Settings Adapter Integration', () => {
 
 			// Check that critical fields are preserved
 			const originalClaude = mockObsidianSettings.providers[0]
-			const finalClaude = backToReact.providers.find(p => p.name === 'Claude')
+			const finalClaude = backToReact.providers.find((p) => p.name === 'Claude')
 
 			expect(finalClaude?.tag).toBe(originalClaude.tag)
 			expect(finalClaude?.apiKey).toBe(originalClaude.options.apiKey)
@@ -279,17 +284,17 @@ describe('React Settings Adapter Integration', () => {
 			expect(validation.isValid).toBe(true)
 			expect(validation.errors).toHaveLength(0)
 
-				// Verify round-trip for each vendor
+			// Verify round-trip for each vendor
 			const reactState = adaptObsidianToReact(mockObsidianSettings)
 			const obsidianUpdates = adaptReactToObsidian(reactState)
 			const backToReact = adaptObsidianToReact(obsidianUpdates)
 
 			// Check Azure specific configuration
-			const azureProvider = backToReact.providers.find(p => p.name === 'Azure')
+			const azureProvider = backToReact.providers.find((p) => p.name === 'Azure')
 			expect(azureProvider?.vendorConfig?.azure?.endpoint).toBe('https://test.openai.azure.com/')
 
 			// Check Ollama specific configuration
-			const ollamaProvider = backToReact.providers.find(p => p.name === 'Ollama')
+			const ollamaProvider = backToReact.providers.find((p) => p.name === 'Ollama')
 			expect(ollamaProvider?.vendorConfig?.ollama?.keepAlive).toBe('5m')
 		})
 	})
@@ -311,7 +316,7 @@ describe('React Settings Adapter Integration', () => {
 
 			const reactState = adaptObsidianToReact(invalidSettings)
 			expect(reactState.providers).toHaveLength(1)
-				})
+		})
 
 		it('should handle missing vendor configurations', () => {
 			const minimalSettings = {
@@ -405,7 +410,7 @@ describe('React Settings Adapter Integration', () => {
 			const obsidianUpdates = adaptReactToObsidian(reactState)
 			const backToReact = adaptObsidianToReact(obsidianUpdates)
 
-			const claudeProvider = backToReact.providers.find(p => p.name === 'Claude')
+			const claudeProvider = backToReact.providers.find((p) => p.name === 'Claude')
 			expect(typeof claudeProvider?.vendorConfig?.claude?.budgetTokens).toBe('number')
 			expect(typeof claudeProvider?.vendorConfig?.claude?.temperature).toBe('number')
 			expect(claudeProvider?.vendorConfig?.claude?.topK).toBe('undefined')

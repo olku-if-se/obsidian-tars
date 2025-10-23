@@ -1,5 +1,5 @@
 import type { StreamEvent, StreamQueueState } from './types'
-import { waitWithAbort, checkAborted, createAbortError } from './utils'
+import { checkAborted, createAbortError, waitWithAbort } from './utils'
 
 // Error Messages (i18n-ready)
 const Errors = {
@@ -100,10 +100,7 @@ export class StreamQueue implements AsyncIterable<StreamEvent> {
 				} catch (error) {
 					// Stream error - emit error event but continue processing
 					this.state = 'error'
-					const wrappedError = Object.assign(
-						new Error(Errors.stream_error),
-						{ cause: error }
-					)
+					const wrappedError = Object.assign(new Error(Errors.stream_error), { cause: error })
 					yield {
 						type: 'error',
 						data: wrappedError

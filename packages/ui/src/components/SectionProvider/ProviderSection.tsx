@@ -65,7 +65,7 @@ export const ProviderSection = ({
 			<div className={styles.sectionHeader}>
 				<h2>{strings.title}</h2>
 				<div className={styles.addProviderButton}>
-					<Button variant="primary" onClick={handleAddProvider}>
+					<Button variant='primary' onClick={handleAddProvider}>
 						{strings.addProvider}
 					</Button>
 				</div>

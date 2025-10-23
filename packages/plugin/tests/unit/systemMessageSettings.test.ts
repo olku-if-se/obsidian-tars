@@ -34,7 +34,9 @@ describe('System Message Settings - Unit Tests', () => {
 
 			expect(reactState.systemMessage).toBeDefined()
 			expect(reactState.systemMessage.enabled).toBe(true)
-			expect(reactState.systemMessage.message).toBe('You are a helpful AI assistant. Please provide clear and concise responses.')
+			expect(reactState.systemMessage.message).toBe(
+				'You are a helpful AI assistant. Please provide clear and concise responses.'
+			)
 		})
 
 		it('should handle disabled system message', () => {
@@ -96,12 +98,15 @@ Your role is to assist with various tasks including writing, analysis, and probl
 		it('should handle system messages with special characters', () => {
 			const specialCharSettings = {
 				...mockObsidianSettings,
-				defaultSystemMsg: 'Act as a "professional assistant" with these traits: • Punctual • Accurate • Helpful. Use markdown **formatting** and `code snippets` when needed.'
+				defaultSystemMsg:
+					'Act as a "professional assistant" with these traits: • Punctual • Accurate • Helpful. Use markdown **formatting** and `code snippets` when needed.'
 			}
 
 			const reactState = adaptObsidianToReact(specialCharSettings)
 
-			expect(reactState.systemMessage.message).toBe('Act as a "professional assistant" with these traits: • Punctual • Accurate • Helpful. Use markdown **formatting** and `code snippets` when needed.')
+			expect(reactState.systemMessage.message).toBe(
+				'Act as a "professional assistant" with these traits: • Punctual • Accurate • Helpful. Use markdown **formatting** and `code snippets` when needed.'
+			)
 		})
 	})
 
@@ -111,7 +116,9 @@ Your role is to assist with various tasks including writing, analysis, and probl
 			const obsidianUpdates = adaptReactToObsidian(reactState)
 
 			expect(obsidianUpdates.enableDefaultSystemMsg).toBe(true)
-			expect(obsidianUpdates.defaultSystemMsg).toBe('You are a helpful AI assistant. Please provide clear and concise responses.')
+			expect(obsidianUpdates.defaultSystemMsg).toBe(
+				'You are a helpful AI assistant. Please provide clear and concise responses.'
+			)
 		})
 
 		it('should handle updated system message from React', () => {
@@ -215,13 +222,16 @@ Your role is to assist with various tasks including writing, analysis, and probl
 		it('should handle Unicode and emoji characters in system messages', () => {
 			const unicodeSettings = {
 				...mockObsidianSettings,
-				defaultSystemMsg: '🤖 You are an AI assistant! 🎯 Be precise • accurate • helpful. Use proper formatting: 📚 documentation, 💻 code, 🧪 testing.'
+				defaultSystemMsg:
+					'🤖 You are an AI assistant! 🎯 Be precise • accurate • helpful. Use proper formatting: 📚 documentation, 💻 code, 🧪 testing.'
 			}
 
 			const reactState = adaptObsidianToReact(unicodeSettings)
 			const obsidianUpdates = adaptReactToObsidian(reactState)
 
-			expect(obsidianUpdates.defaultSystemMsg).toBe('🤖 You are an AI assistant! 🎯 Be precise • accurate • helpful. Use proper formatting: 📚 documentation, 💻 code, 🧪 testing.')
+			expect(obsidianUpdates.defaultSystemMsg).toBe(
+				'🤖 You are an AI assistant! 🎯 Be precise • accurate • helpful. Use proper formatting: 📚 documentation, 💻 code, 🧪 testing.'
+			)
 		})
 	})
 
@@ -301,7 +311,7 @@ function respond(userQuery) {
 
 			expect(obsidianUpdates.defaultSystemMsg).toBe(formattedMessage)
 			expect(obsidianUpdates.defaultSystemMsg).toContain('# System Instructions')
-			expect(obsidianUpdates.defaultSystemMsg).toContain('## Don\'ts:')
+			expect(obsidianUpdates.defaultSystemMsg).toContain("## Don'ts:")
 			expect(obsidianUpdates.defaultSystemMsg).toContain('```javascript')
 		})
 	})

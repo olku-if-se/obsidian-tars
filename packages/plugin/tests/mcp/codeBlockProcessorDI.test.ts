@@ -89,7 +89,9 @@ describe('DI CodeBlockProcessor', () => {
 		const result = processor.parseToolInvocationExtended('tool: test_tool', 'NonExistentServer')
 
 		expect(result).toBeNull()
-		expect(mockLoggingService.debug).toHaveBeenCalledWith('No server configuration found for language: NonExistentServer')
+		expect(mockLoggingService.debug).toHaveBeenCalledWith(
+			'No server configuration found for language: NonExistentServer'
+		)
 	})
 
 	it('should validate tool invocations', () => {

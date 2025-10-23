@@ -1,17 +1,6 @@
-import {
-	type App,
-	type Command,
-	type Editor,
-	type MarkdownView,
-	Notice
-} from 'obsidian'
+import { type App, type Command, type Editor, type MarkdownView, Notice } from 'obsidian'
 import { injectable, inject } from '@needle-di/core'
-import type {
-	ILoggingService,
-	INotificationService,
-	ISettingsService,
-	IStatusService
-} from '@tars/contracts'
+import type { ILoggingService, INotificationService, ISettingsService, IStatusService } from '@tars/contracts'
 
 // Runtime tokens for dependency injection (interfaces can't be used as tokens with isolatedModules)
 const ILoggingServiceToken = Symbol('ILoggingService')
@@ -71,11 +60,7 @@ export class AssistantTagDICommand {
 					this.statusService.updateStatus(`Generating response with ${provider.vendor}...`)
 
 					// Insert assistant tag
-					const insertResult = insertMarkToBegin(
-						editor,
-						range,
-						mark
-					)
+					const insertResult = insertMarkToBegin(editor, range, mark)
 
 					if (isEmptyLines(tagContent)) {
 						insertMarkToEmptyLines(editor, insertResult, defaultUserMark)
@@ -102,7 +87,9 @@ export class AssistantTagDICommand {
 					this.loggingService.info(`Assistant tag ${tag} executed successfully`)
 				} catch (error) {
 					this.loggingService.error(`Error executing assistant tag ${tag}:`, error)
-					this.notificationService.error(`Failed to generate response: ${error instanceof Error ? error.message : 'Unknown error'}`)
+					this.notificationService.error(
+						`Failed to generate response: ${error instanceof Error ? error.message : 'Unknown error'}`
+					)
 					this.statusService.setError()
 				}
 			}
