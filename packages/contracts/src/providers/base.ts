@@ -23,7 +23,7 @@ export interface EmbedCache {
 
 // DocumentWriteLock implementation is in services/document.ts
 
-export type MsgRole = 'user' | 'assistant' | 'system'
+export type MsgRole = 'user' | 'assistant' | 'system' | 'tool'
 
 export type SaveAttachment = (fileName: string, data: ArrayBuffer) => Promise<void>
 

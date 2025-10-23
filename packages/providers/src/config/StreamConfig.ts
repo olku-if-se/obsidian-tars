@@ -1,5 +1,5 @@
 import type { StreamEvent } from '../streaming/types'
-import type { CallbackConfig } from './CallbackConfig'
+import type { ComprehensiveCallbacks } from './ComprehensiveCallbacks'
 import type { ErrorHandlingConfig } from './ErrorHandlingConfig'
 
 /**
@@ -79,7 +79,7 @@ export interface StreamConfig {
 	errorHandling?: Partial<ErrorHandlingConfig>
 
 	/** Callback configuration */
-	callbacks?: CallbackConfig
+	callbacks?: ComprehensiveCallbacks
 
 	/** Processing configuration */
 	processing?: ProcessingConfig

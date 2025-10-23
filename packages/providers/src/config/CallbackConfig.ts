@@ -1,6 +1,7 @@
 import type { StreamEvent, ToolCall } from '../streaming/types'
 
 /**
+ * @deprecated Use ComprehensiveCallbacks instead. CallbackConfig is deprecated and will be removed in a future version.
  * Callback configuration for runtime stream events
  * Allows external code to react to streaming events
  */
