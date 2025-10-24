@@ -1,0 +1,17 @@
+{
+  "$schema": "https://raw.githubusercontent.com/webpro/knip/main/packages/knip/schemas/knip-schema.json",
+  "entry": ["src/index.ts", "src/**/*.ts"],
+  "project": ["src/**/*.ts"],
+  "ignore": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/coverage/**",
+    "main.js",
+    "*.map"
+  ],
+  "ignoreBinaries": ["turbo", "vitest", "tsup", "tsx", "pnpm"],
+  "ignoreDependencies": ["obsidian"],
+  "workspaces": {
+    "packages": ["apps/*", "packages/*", "tools/*"]
+  }
+}

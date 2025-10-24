@@ -1,17 +1,57 @@
 {
-	"compilerOptions": {
-		"baseUrl": ".",
-		"inlineSourceMap": true,
-		"inlineSources": true,
-		"module": "NodeNext",
-		"target": "ES6",
-		"allowJs": true,
-		"noImplicitAny": true,
-		"moduleResolution": "nodenext",
-		"importHelpers": true,
-		"isolatedModules": true,
-		"strictNullChecks": true,
-		"lib": ["DOM", "ES5", "ES6", "ES7", "ES2023"]
-	},
-	"include": ["src/**/*.ts"]
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@tars/types": ["packages/types/src"],
+      "@tars/types/*": ["packages/types/src/*"],
+      "@tars/core": ["packages/core/src"],
+      "@tars/core/*": ["packages/core/src/*"],
+      "@tars/providers": ["packages/providers/src"],
+      "@tars/providers/*": ["packages/providers/src/*"],
+      "@tars/mcp": ["packages/mcp/src"],
+      "@tars/mcp/*": ["packages/mcp/src/*"],
+      "@tars/shared": ["packages/shared/src"],
+      "@tars/shared/*": ["packages/shared/src/*"],
+      "@tars/testing": ["packages/testing/src"],
+      "@tars/testing/*": ["packages/testing/src/*"]
+    },
+    "lib": ["DOM", "ES2022"]
+  },
+  "include": [
+    "packages/*/src/**/*",
+    "apps/*/src/**/*",
+    "tools/*/src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "main.js",
+    "*.map"
+  ],
+  "references": [
+    { "path": "./packages/types" },
+    { "path": "./packages/shared" },
+    { "path": "./packages/core" },
+    { "path": "./packages/providers" },
+    { "path": "./packages/mcp" },
+    { "path": "./packages/testing" },
+    { "path": "./apps/obsidian-plugin" }
+  ]
 }

@@ -1,5 +1,5 @@
-import { PromptTemplate } from './prompt'
-import { ProviderSettings, Vendor } from './providers'
+import type { PromptTemplate } from './prompt'
+import type { ProviderSettings, Vendor } from './providers'
 import { azureVendor } from './providers/azure'
 import { claudeVendor } from './providers/claude'
 import { deepSeekVendor } from './providers/deepSeek'
@@ -19,76 +19,76 @@ import { zhipuVendor } from './providers/zhipu'
 export const APP_FOLDER = 'Tars'
 
 export interface EditorStatus {
-	isTextInserting: boolean
+  isTextInserting: boolean
 }
 
 export interface PluginSettings {
-	editorStatus: EditorStatus
-	providers: ProviderSettings[]
-	systemTags: string[]
-	newChatTags: string[]
-	userTags: string[]
-	roleEmojis: {
-		assistant: string
-		system: string
-		newChat: string
-		user: string
-	}
-	promptTemplates: PromptTemplate[]
-	enableInternalLink: boolean // For user messages and system messages
-	enableInternalLinkForAssistantMsg: boolean
-	confirmRegenerate: boolean
-	enableTagSuggest: boolean
-	tagSuggestMaxLineLength: number
-	answerDelayInMilliseconds: number
-	enableExportToJSONL: boolean
-	enableReplaceTag: boolean
-	enableDefaultSystemMsg: boolean
-	defaultSystemMsg: string
-	enableStreamLog: boolean
+  editorStatus: EditorStatus
+  providers: ProviderSettings[]
+  systemTags: string[]
+  newChatTags: string[]
+  userTags: string[]
+  roleEmojis: {
+    assistant: string
+    system: string
+    newChat: string
+    user: string
+  }
+  promptTemplates: PromptTemplate[]
+  enableInternalLink: boolean // For user messages and system messages
+  enableInternalLinkForAssistantMsg: boolean
+  confirmRegenerate: boolean
+  enableTagSuggest: boolean
+  tagSuggestMaxLineLength: number
+  answerDelayInMilliseconds: number
+  enableExportToJSONL: boolean
+  enableReplaceTag: boolean
+  enableDefaultSystemMsg: boolean
+  defaultSystemMsg: string
+  enableStreamLog: boolean
 }
 
 export const DEFAULT_SETTINGS: PluginSettings = {
-	editorStatus: { isTextInserting: false },
-	providers: [],
-	systemTags: ['System', '系统'],
-	newChatTags: ['NewChat', '新对话'],
-	userTags: ['User', '我'],
-	roleEmojis: {
-		assistant: '✨',
-		system: '🔧',
-		newChat: '🚀',
-		user: '💬'
-	},
-	promptTemplates: [],
-	enableInternalLink: true,
-	enableInternalLinkForAssistantMsg: false,
-	answerDelayInMilliseconds: 2000,
-	confirmRegenerate: true,
-	enableTagSuggest: true,
-	tagSuggestMaxLineLength: 20,
-	enableExportToJSONL: false,
-	enableReplaceTag: false,
-	enableDefaultSystemMsg: false,
-	defaultSystemMsg: '',
-	enableStreamLog: false
+  editorStatus: { isTextInserting: false },
+  providers: [],
+  systemTags: ['System', '系统'],
+  newChatTags: ['NewChat', '新对话'],
+  userTags: ['User', '我'],
+  roleEmojis: {
+    assistant: '✨',
+    system: '🔧',
+    newChat: '🚀',
+    user: '💬',
+  },
+  promptTemplates: [],
+  enableInternalLink: true,
+  enableInternalLinkForAssistantMsg: false,
+  answerDelayInMilliseconds: 2000,
+  confirmRegenerate: true,
+  enableTagSuggest: true,
+  tagSuggestMaxLineLength: 20,
+  enableExportToJSONL: false,
+  enableReplaceTag: false,
+  enableDefaultSystemMsg: false,
+  defaultSystemMsg: '',
+  enableStreamLog: false,
 }
 
 export const availableVendors: Vendor[] = [
-	openAIVendor,
-	// The following are arranged in alphabetical order
-	azureVendor,
-	claudeVendor,
-	deepSeekVendor,
-	doubaoVendor,
-	geminiVendor,
-	gptImageVendor,
-	grokVendor,
-	kimiVendor,
-	ollamaVendor,
-	openRouterVendor,
-	qianFanVendor,
-	qwenVendor,
-	siliconFlowVendor,
-	zhipuVendor
+  openAIVendor,
+  // The following are arranged in alphabetical order
+  azureVendor,
+  claudeVendor,
+  deepSeekVendor,
+  doubaoVendor,
+  geminiVendor,
+  gptImageVendor,
+  grokVendor,
+  kimiVendor,
+  ollamaVendor,
+  openRouterVendor,
+  qianFanVendor,
+  qwenVendor,
+  siliconFlowVendor,
+  zhipuVendor,
 ]

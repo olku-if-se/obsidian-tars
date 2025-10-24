@@ -1,0 +1,59 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": ["**/.env.*local", "**/tsconfig.json", "**/biome.json"],
+  "globalEnv": ["NODE_ENV", "OBSIDIAN_VERSION"],
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "main.js", "manifest.json"],
+      "inputs": ["src/**/*.ts", "package.json", "tsconfig.json", "tsup.config.ts"]
+    },
+    "build:esm": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**/*.js", "dist/**/*.d.ts"],
+      "inputs": ["src/**/*.ts", "tsconfig.json", "tsup.config.ts"]
+    },
+    "build:iife": {
+      "dependsOn": ["^build"],
+      "outputs": ["main.js", "manifest.json"],
+      "inputs": ["src/**/*.ts", "tsconfig.json", "tsup.config.ts"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["^build"]
+    },
+    "test": {
+      "dependsOn": ["build"],
+      "outputs": ["coverage/**"],
+      "inputs": ["src/**/*.ts", "src/**/*.test.ts", "vitest.config.ts"]
+    },
+    "lint": {
+      "outputs": [],
+      "inputs": ["src/**/*.ts", "*.json", "biome.json"]
+    },
+    "type-check": {
+      "dependsOn": ["^build"],
+      "outputs": [],
+      "inputs": ["src/**/*.ts", "tsconfig.json"]
+    },
+    "cli": {
+      "cache": false,
+      "dependsOn": ["^build"]
+    },
+    "demo": {
+      "cache": false,
+      "dependsOn": ["^build"]
+    },
+    "quality-check": {
+      "dependsOn": ["build"],
+      "outputs": [],
+      "inputs": ["src/**/*.ts", "package.json", "biome.json", "knip.json"],
+      "cache": false
+    },
+    "knip": {
+      "outputs": [],
+      "inputs": ["src/**/*.ts", "package.json", "knip.json", "tsconfig.json"]
+    }
+  }
+}
