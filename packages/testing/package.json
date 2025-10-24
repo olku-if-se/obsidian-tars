@@ -1,0 +1,59 @@
+{
+  "name": "@tars/testing",
+  "version": "3.6.0",
+  "description": "Testing utilities and mocks for Tars packages",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./mocks": {
+      "import": "./dist/mocks.js",
+      "types": "./dist/mocks.d.ts"
+    },
+    "./fixtures": {
+      "import": "./dist/fixtures.js",
+      "types": "./dist/fixtures.d.ts"
+    },
+    "./helpers": {
+      "import": "./dist/helpers.js",
+      "types": "./dist/helpers.d.ts"
+    },
+    "./cli": {
+      "import": "./src/cli/test-runner.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx --watch src/index.ts",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test-runner": "tsx src/cli/test-runner.ts",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@tars/types": "workspace:*",
+    "@tars/shared": "workspace:*",
+    "vitest": "^2.1.9"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "workspace:*",
+    "tsx": "workspace:*",
+    "tsup": "workspace:*",
+    "typescript": "workspace:*"
+  },
+  "bin": {
+    "tars-test": "./bin/test-runner.ts"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "@tars/plugin",
+  "version": "3.6.0",
+  "description": "Tars Obsidian Plugin - AI-powered text generation",
+  "type": "commonjs",
+  "main": "main.js",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf main.js manifest.json"
+  },
+  "dependencies": {
+    "@tars/core": "workspace:*",
+    "@tars/providers": "workspace:*",
+    "@tars/mcp": "workspace:*",
+    "@tars/shared": "workspace:*",
+    "@tars/types": "workspace:*",
+    "obsidian": "latest"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "workspace:*",
+    "@tars/testing": "workspace:*",
+    "builtin-modules": "3.3.0",
+    "esbuild": "^0.25.8",
+    "tslib": "2.4.0",
+    "tsup": "workspace:*",
+    "typescript": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

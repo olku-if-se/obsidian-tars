@@ -38,3 +38,9 @@ archive/
 *.~*~
 *.orig
 *.old
+
+# Output folders
+dist/
+build/
+out/
+.turbo/

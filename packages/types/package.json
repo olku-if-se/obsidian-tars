@@ -1,0 +1,39 @@
+{
+  "name": "@tars/types",
+  "version": "3.6.0",
+  "description": "TypeScript type definitions for Tars Obsidian plugin",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types.js",
+      "types": "./dist/types.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx --watch src/index.ts",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "workspace:*",
+    "tsx": "workspace:*",
+    "tsup": "workspace:*",
+    "typescript": "workspace:*",
+    "vitest": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

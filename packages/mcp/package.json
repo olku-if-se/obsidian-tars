@@ -1,0 +1,63 @@
+{
+  "name": "@tars/mcp",
+  "version": "3.6.0",
+  "description": "MCP (Model Context Protocol) server integration for Tars",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./client": {
+      "import": "./dist/client.js",
+      "types": "./dist/client.d.ts"
+    },
+    "./server": {
+      "import": "./dist/server.js",
+      "types": "./dist/server.d.ts"
+    },
+    "./registry": {
+      "import": "./dist/registry.js",
+      "types": "./dist/registry.d.ts"
+    },
+    "./cli": {
+      "import": "./src/cli/mcp-cli.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx --watch src/index.ts",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "list-servers": "tsx src/cli/mcp-cli.ts --list",
+    "test-server": "tsx src/test/mcp-test.ts",
+    "demo": "tsx src/demo/mcp-demo.ts",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@tars/types": "workspace:*",
+    "@tars/core": "workspace:*",
+    "@tars/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "workspace:*",
+    "@tars/testing": "workspace:*",
+    "tsx": "workspace:*",
+    "tsup": "workspace:*",
+    "typescript": "workspace:*",
+    "vitest": "workspace:*"
+  },
+  "bin": {
+    "tars-mcp": "./bin/mcp-cli.ts"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

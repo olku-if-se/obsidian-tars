@@ -1,0 +1,36 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./",
+    "rootDir": "./src",
+    "composite": true,
+    "declaration": false,
+    "sourceMap": true,
+    "target": "ES2020",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "paths": {
+      "~": ["./src"],
+      "src": ["./src"],
+      "@tars/types": ["../../packages/types/src"],
+      "@tars/core": ["../../packages/core/src"],
+      "@tars/providers": ["../../packages/providers/src"],
+      "@tars/mcp": ["../../packages/mcp/src"],
+      "@tars/shared": ["../../packages/shared/src"]
+    }
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "main.js",
+    "node_modules"
+  ],
+  "references": [
+    { "path": "../../packages/types" },
+    { "path": "../../packages/core" },
+    { "path": "../../packages/providers" },
+    { "path": "../../packages/mcp" },
+    { "path": "../../packages/shared" }
+  ]
+}

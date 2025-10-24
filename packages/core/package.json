@@ -1,0 +1,64 @@
+{
+  "name": "@tars/core",
+  "version": "3.6.0",
+  "description": "Core plugin logic and business rules for Tars",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./plugin": {
+      "import": "./dist/plugin.js",
+      "types": "./dist/plugin.d.ts"
+    },
+    "./registry": {
+      "import": "./dist/registry.js",
+      "types": "./dist/registry.d.ts"
+    },
+    "./settings": {
+      "import": "./dist/settings.js",
+      "types": "./dist/settings.d.ts"
+    },
+    "./events": {
+      "import": "./dist/events.js",
+      "types": "./dist/events.d.ts"
+    },
+    "./cli": {
+      "import": "./src/cli/tars-cli.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx --watch src/index.ts",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "cli": "tsx src/cli/tars-cli.ts",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@tars/types": "workspace:*",
+    "@tars/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "workspace:*",
+    "@tars/testing": "workspace:*",
+    "tsx": "workspace:*",
+    "tsup": "workspace:*",
+    "typescript": "workspace:*",
+    "vitest": "workspace:*"
+  },
+  "bin": {
+    "tars-core": "./bin/tars-cli.ts"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

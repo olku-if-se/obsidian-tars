@@ -1,0 +1,68 @@
+{
+  "name": "@tars/providers",
+  "version": "3.6.0",
+  "description": "AI provider implementations for Tars",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./base": {
+      "import": "./dist/base.js",
+      "types": "./dist/base.d.ts"
+    },
+    "./openai": {
+      "import": "./dist/openai.js",
+      "types": "./dist/openai.d.ts"
+    },
+    "./claude": {
+      "import": "./dist/claude.js",
+      "types": "./dist/claude.d.ts"
+    },
+    "./demo": {
+      "import": "./src/demo/provider-demo.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx --watch src/index.ts",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "demo": "tsx src/demo/provider-demo.ts",
+    "test:openai": "tsx src/test/openai-test.ts",
+    "test:claude": "tsx src/test/claude-test.ts",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@tars/types": "workspace:*",
+    "@tars/core": "workspace:*",
+    "@tars/shared": "workspace:*",
+    "@anthropic-ai/sdk": "^0.56.0",
+    "@google/generative-ai": "^0.21.0",
+    "axios": "^1.8.3",
+    "openai": "^5.0.1",
+    "ollama": "^0.5.16"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "workspace:*",
+    "@tars/testing": "workspace:*",
+    "tsx": "workspace:*",
+    "tsup": "workspace:*",
+    "typescript": "workspace:*",
+    "vitest": "workspace:*"
+  },
+  "bin": {
+    "tars-providers": "./bin/provider-demo.ts"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

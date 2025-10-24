@@ -118,3 +118,6 @@ When working with AI providers, ensure proper handling of:
 
 ## Recent Changes
 - 002-migrate-to-monorepo-structure: Added TypeScript 5.7+ with strict mode enabled + pnpm 9.x, turbo 2.x, tsup 8.x, vitest 2.x, biome 1.x, knip 5.x, latest Obsidian API, modern AI provider SDKs
+- by default all monorepo packages should allow vitest to passWithNoTests, ref: https://vitest.dev/config/#passwithnotests
+- in all packages enable aliases: `~` that should point on `{package}/src` folder, and `src` - points on the same folder as tilde.
+- vitest should by default execute one-run mode, not continues watching. `pnpm test`
