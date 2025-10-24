@@ -157,6 +157,17 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX Security hardening
 - [ ] TXXX Run quickstart.md validation
 
+### Constitution Compliance Tasks (REQUIRED)
+
+- [ ] TXXX [P] Constitutional compliance review for Plugin Architecture Excellence
+- [ ] TXXX [P] Constitutional compliance review for Provider Abstraction
+- [ ] TXXX [P] Constitutional compliance review for Test-First Development (TDD)
+- [ ] TXXX [P] Constitutional compliance review for Cross-Platform Compatibility
+- [ ] TXXX [P] Constitutional compliance review for Performance & Responsiveness
+- [ ] TXXX [P] Constitutional compliance review for MCP Integration Capability
+- [ ] TXXX [P] Constitutional compliance review for Security & Privacy
+- [ ] TXXX Update constitution version if amendments were needed
+
 ---
 
 ## Dependencies & Execution Order

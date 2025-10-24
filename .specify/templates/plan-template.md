@@ -17,21 +17,52 @@
   the iteration process.
 -->
 
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
-**Project Type**: [single/web/mobile - determines source structure]  
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
+**Language/Version**: TypeScript 5.5+ with strict mode enabled
+**Primary Dependencies**: Obsidian API, esbuild, ESLint, Prettier, various AI provider SDKs
+**Storage**: Obsidian's encrypted settings for configuration, file system for notes
+**Testing**: Jest/Vitest for unit tests, custom test framework for Obsidian integration
+**Target Platform**: Obsidian plugin (desktop + mobile)
+**Project Type**: Single TypeScript project with modular provider architecture
+**Performance Goals**: Responsive UI during streaming responses, <100ms UI response time
+**Constraints**: Must work within Obsidian's security sandbox and API limitations
+**Scale/Scope**: Plugin supporting 10+ AI providers, multiple MCP servers, global user base
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+All features MUST pass these constitutional gates:
+
+**Gate 1: Plugin Architecture Excellence**
+- Feature integrates cleanly with Obsidian APIs (file cache, editor, suggestions)
+- Clear separation between provider logic and Obsidian-specific code
+- Self-contained and independently testable implementation
+
+**Gate 2: Provider Abstraction**
+- Uses existing `Vendor` interface without modifications (unless explicitly justified)
+- No provider-specific logic leaks into core plugin code
+- Supports streaming responses with proper AbortController handling
+
+**Gate 3: Cross-Platform Compatibility**
+- Works on both desktop and mobile Obsidian clients
+- Supports both mouse/keyboard and touch interfaces
+- Uses Obsidian's cross-platform file system abstraction
+
+**Gate 4: Performance & Responsiveness**
+- UI remains responsive during AI operations
+- Uses streaming responses for long operations
+- No blocking operations in the main thread
+
+**Gate 5: MCP Integration Capability**
+- MCP server integrations follow same abstraction patterns as AI providers
+- Clean separation between core plugin logic and MCP server implementations
+- MCP functionality is independently testable
+
+**Gate 6: Security & Privacy**
+- API keys stored in Obsidian's encrypted settings
+- No sensitive data exposed in logs or error messages
+- Content only transmitted to configured AI provider or MCP server
+- MCP server connections have appropriate security controls and user consent
 
 ## Project Structure
 
@@ -56,43 +87,35 @@ specs/[###-feature]/
 -->
 
 ```text
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
+# Obsidian Plugin Project Structure
 src/
-├── models/
-├── services/
-├── cli/
-└── lib/
+├── main.ts                    # Plugin entry point
+├── settings.ts                # Settings management
+├── editor.ts                  # Core text processing and AI request handling
+├── suggest.ts                 # Tag-based autocomplete system
+├── providers/                 # AI provider implementations
+│   ├── base.ts               # Base vendor interface
+│   ├── openai.ts             # OpenAI provider
+│   ├── claude.ts             # Claude provider
+│   └── [other-providers].ts  # Other AI providers
+├── commands/                  # Tag-based command system
+├── prompt/                    # Prompt template management
+├── lang/                      # Internationalization support
+└── mcp/                       # MCP server integrations (NEW)
+    ├── base.ts               # MCP server interface
+    └── [server-implementations].ts
 
 tests/
-├── contract/
-├── integration/
-└── unit/
+├── unit/                     # Unit tests for core logic
+├── integration/              # Integration tests for providers/MCP
+└── contract/                 # Contract tests for interface compliance
 
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
-backend/
-├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
-
-frontend/
-├── src/
-│   ├── components/
-│   ├── pages/
-│   └── services/
-└── tests/
-
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
-
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
+# Build Output
+main.js                      # Compiled plugin bundle
+styles.css                   # Plugin-specific styles
 ```
 
-**Structure Decision**: [Document the selected structure and reference the real
-directories captured above]
+**Structure Decision**: Obsidian plugin architecture with modular provider and MCP integration patterns
 
 ## Complexity Tracking
 
