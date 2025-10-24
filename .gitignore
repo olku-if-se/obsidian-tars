@@ -25,3 +25,16 @@ data.json
 quokka.ts
 Makefile
 archive/
+
+# claude local MCP configuration
+.mcp.json
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.bak
+*.swp
+*.~*~
+*.orig
+*.old
