@@ -1,0 +1,363 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Tars Provider API",
+    "description": "Internal API for AI provider abstraction layer",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/providers": {
+      "get": {
+        "summary": "List all available providers",
+        "tags": ["Providers"],
+        "responses": {
+          "200": {
+            "description": "List of providers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProviderInfo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Register a new provider",
+        "tags": ["Providers"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProviderConfig"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Provider registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid provider configuration"
+          }
+        }
+      }
+    },
+    "/providers/{providerId}": {
+      "get": {
+        "summary": "Get provider details",
+        "tags": ["Providers"],
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Provider details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Provider not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Unregister a provider",
+        "tags": ["Providers"],
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Provider unregistered successfully"
+          },
+          "404": {
+            "description": "Provider not found"
+          }
+        }
+      }
+    },
+    "/providers/{providerId}/chat": {
+      "post": {
+        "summary": "Send chat completion request",
+        "tags": ["Chat"],
+        "parameters": [
+          {
+            "name": "providerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChatRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Chat completion response",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication failed"
+          },
+          "404": {
+            "description": "Provider not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ProviderInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique provider identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable provider name"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ProviderType"
+          },
+          "capabilities": {
+            "$ref": "#/components/schemas/ProviderCapabilities"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "inactive", "error"],
+            "description": "Current provider status"
+          },
+          "config": {
+            "$ref": "#/components/schemas/ProviderConfig"
+          }
+        }
+      },
+      "ProviderConfig": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ProviderType"
+          },
+          "name": {
+            "type": "string"
+          },
+          "apiKey": {
+            "type": "string",
+            "format": "password"
+          },
+          "baseUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "model": {
+            "type": "string"
+          },
+          "parameters": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "enabled": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": ["id", "type", "name"]
+      },
+      "ProviderType": {
+        "type": "string",
+        "enum": [
+          "openai",
+          "claude",
+          "deepseek",
+          "gemini",
+          "ollama",
+          "openrouter",
+          "siliconflow",
+          "zhipu",
+          "qwen",
+          "doubao",
+          "kimi",
+          "xai",
+          "mock"
+        ]
+      },
+      "ProviderCapabilities": {
+        "type": "object",
+        "properties": {
+          "textGeneration": {
+            "type": "boolean"
+          },
+          "vision": {
+            "type": "boolean"
+          },
+          "imageGeneration": {
+            "type": "boolean"
+          },
+          "webSearch": {
+            "type": "boolean"
+          },
+          "streaming": {
+            "type": "boolean"
+          },
+          "multimodal": {
+            "type": "boolean"
+          }
+        },
+        "required": ["textGeneration", "streaming"]
+      },
+      "ChatRequest": {
+        "type": "object",
+        "properties": {
+          "messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Message"
+            }
+          },
+          "model": {
+            "type": "string"
+          },
+          "maxTokens": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "temperature": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 2
+          },
+          "stream": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": ["messages"]
+      },
+      "Message": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "$ref": "#/components/schemas/MessageRole"
+          },
+          "content": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ContentPart"
+                }
+              }
+            ]
+          }
+        },
+        "required": ["role", "content"]
+      },
+      "MessageRole": {
+        "type": "string",
+        "enum": ["system", "user", "assistant", "newChat"]
+      },
+      "ContentPart": {
+        "type": "object",
+        "discriminator": {
+          "propertyName": "type"
+        },
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["text"]
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": ["type", "text"]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["image_url"]
+              },
+              "image_url": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "uri"
+                  }
+                },
+                "required": ["url"]
+              }
+            },
+            "required": ["type", "image_url"]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,716 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Tars MCP Server API",
+    "description": "Internal API for MCP (Model Context Protocol) server integration",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/mcp/servers": {
+      "get": {
+        "summary": "List all registered MCP servers",
+        "tags": ["MCP Servers"],
+        "responses": {
+          "200": {
+            "description": "List of MCP servers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MCPServerInfo"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Register a new MCP server",
+        "tags": ["MCP Servers"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MCPServerConfig"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "MCP server registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MCPServerInfo"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid server configuration"
+          }
+        }
+      }
+    },
+    "/mcp/servers/{serverId}": {
+      "get": {
+        "summary": "Get MCP server details",
+        "tags": ["MCP Servers"],
+        "parameters": [
+          {
+            "name": "serverId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "MCP server details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MCPServerInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "MCP server not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Unregister MCP server",
+        "tags": ["MCP Servers"],
+        "parameters": [
+          {
+            "name": "serverId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "MCP server unregistered successfully"
+          },
+          "404": {
+            "description": "MCP server not found"
+          }
+        }
+      }
+    },
+    "/mcp/servers/{serverId}/tools": {
+      "get": {
+        "summary": "List available tools from MCP server",
+        "tags": ["MCP Tools"],
+        "parameters": [
+          {
+            "name": "serverId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of available tools",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tool"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "MCP server not found"
+          }
+        }
+      },
+      "post": {
+        "summary": "Execute a tool from MCP server",
+        "tags": ["MCP Tools"],
+        "parameters": [
+          {
+            "name": "serverId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ToolCallRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tool execution result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ToolResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid tool call request"
+          },
+          "404": {
+            "description": "Tool or server not found"
+          }
+        }
+      }
+    },
+    "/mcp/servers/{serverId}/resources": {
+      "get": {
+        "summary": "List available resources from MCP server",
+        "tags": ["MCP Resources"],
+        "parameters": [
+          {
+            "name": "serverId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of available resources",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Resource"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "MCP server not found"
+          }
+        }
+      }
+    },
+    "/mcp/servers/{serverId}/resources/{uri}": {
+      "get": {
+        "summary": "Read resource content from MCP server",
+        "tags": ["MCP Resources"],
+        "parameters": [
+          {
+            "name": "serverId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "uri",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resource content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceContent"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Resource or server not found"
+          }
+        }
+      }
+    },
+    "/mcp/servers/{serverId}/prompts": {
+      "get": {
+        "summary": "List available prompts from MCP server",
+        "tags": ["MCP Prompts"],
+        "parameters": [
+          {
+            "name": "serverId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of available prompts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Prompt"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "MCP server not found"
+          }
+        }
+      },
+      "post": {
+        "summary": "Get prompt template from MCP server",
+        "tags": ["MCP Prompts"],
+        "parameters": [
+          {
+            "name": "serverId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PromptGetRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Prompt template",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PromptResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid prompt request"
+          },
+          "404": {
+            "description": "Prompt or server not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "MCPServerInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique server identifier"
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable server name"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["connected", "disconnected", "error"],
+            "description": "Current server status"
+          },
+          "capabilities": {
+            "$ref": "#/components/schemas/MCPCapabilities"
+          },
+          "config": {
+            "$ref": "#/components/schemas/MCPServerConfig"
+          },
+          "connectedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MCPServerConfig": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "command": {
+            "type": "string",
+            "description": "Command to start the MCP server"
+          },
+          "args": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Arguments to pass to the command"
+          },
+          "env": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Environment variables for the server process"
+          },
+          "enabled": {
+            "type": "boolean",
+            "default": true
+          },
+          "capabilities": {
+            "$ref": "#/components/schemas/MCPCapabilities"
+          }
+        },
+        "required": ["id", "name", "command"]
+      },
+      "MCPCapabilities": {
+        "type": "object",
+        "properties": {
+          "tools": {
+            "type": "boolean",
+            "description": "Server supports tool calls"
+          },
+          "resources": {
+            "type": "boolean",
+            "description": "Server supports resource access"
+          },
+          "prompts": {
+            "type": "boolean",
+            "description": "Server supports prompt templates"
+          },
+          "sampling": {
+            "type": "boolean",
+            "description": "Server supports language model sampling"
+          }
+        }
+      },
+      "Tool": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Tool name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Tool description"
+          },
+          "inputSchema": {
+            "type": "object",
+            "description": "JSON schema for tool input parameters"
+          }
+        },
+        "required": ["name", "description", "inputSchema"]
+      },
+      "ToolCallRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Tool name to call"
+          },
+          "arguments": {
+            "type": "object",
+            "description": "Arguments to pass to the tool"
+          }
+        },
+        "required": ["name", "arguments"]
+      },
+      "ToolResult": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ToolContent"
+            },
+            "description": "Tool execution result content"
+          },
+          "isError": {
+            "type": "boolean",
+            "description": "Whether the tool execution resulted in an error"
+          }
+        },
+        "required": ["content", "isError"]
+      },
+      "ToolContent": {
+        "type": "object",
+        "discriminator": {
+          "propertyName": "type"
+        },
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["text"]
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": ["type", "text"]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["image"]
+              },
+              "data": {
+                "type": "string",
+                "description": "Base64 encoded image data"
+              },
+              "mimeType": {
+                "type": "string"
+              }
+            },
+            "required": ["type", "data", "mimeType"]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["resource"]
+              },
+              "resource": {
+                "$ref": "#/components/schemas/ResourceReference"
+              }
+            },
+            "required": ["type", "resource"]
+          }
+        ]
+      },
+      "Resource": {
+        "type": "object",
+        "properties": {
+          "uri": {
+            "type": "string",
+            "description": "Resource URI"
+          },
+          "name": {
+            "type": "string",
+            "description": "Resource name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Resource description"
+          },
+          "mimeType": {
+            "type": "string",
+            "description": "Resource MIME type"
+          }
+        },
+        "required": ["uri", "name", "mimeType"]
+      },
+      "ResourceReference": {
+        "type": "object",
+        "properties": {
+          "uri": {
+            "type": "string",
+            "description": "Resource URI"
+          }
+        },
+        "required": ["uri"]
+      },
+      "ResourceContent": {
+        "type": "object",
+        "properties": {
+          "uri": {
+            "type": "string",
+            "description": "Resource URI"
+          },
+          "mimeType": {
+            "type": "string",
+            "description": "Resource MIME type"
+          },
+          "text": {
+            "type": "string",
+            "description": "Text content (for text resources)"
+          },
+          "blob": {
+            "type": "string",
+            "format": "byte",
+            "description": "Binary content (for binary resources)"
+          }
+        },
+        "required": ["uri", "mimeType"]
+      },
+      "Prompt": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Prompt name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Prompt description"
+          },
+          "arguments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PromptArgument"
+            },
+            "description": "Prompt arguments/parameters"
+          }
+        },
+        "required": ["name", "description", "arguments"]
+      },
+      "PromptArgument": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Argument name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Argument description"
+          },
+          "required": {
+            "type": "boolean",
+            "description": "Whether this argument is required"
+          }
+        },
+        "required": ["name", "description", "required"]
+      },
+      "PromptGetRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Prompt name"
+          },
+          "arguments": {
+            "type": "object",
+            "description": "Argument values for the prompt"
+          }
+        },
+        "required": ["name"]
+      },
+      "PromptResult": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "Resulting prompt description"
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PromptMessage"
+            },
+            "description": "Resulting prompt messages"
+          }
+        },
+        "required": ["description", "messages"]
+      },
+      "PromptMessage": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "$ref": "#/components/schemas/MessageRole"
+          },
+          "content": {
+            "type": "object",
+            "discriminator": {
+              "propertyName": "type"
+            },
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["text"]
+                  },
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": ["type", "text"]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["image"]
+                  },
+                  "data": {
+                    "type": "string"
+                  },
+                  "mimeType": {
+                    "type": "string"
+                  }
+                },
+                "required": ["type", "data", "mimeType"]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": ["resource"]
+                  },
+                  "resource": {
+                    "$ref": "#/components/schemas/ResourceReference"
+                  }
+                },
+                "required": ["type", "resource"]
+              }
+            ]
+          }
+        },
+        "required": ["role", "content"]
+      },
+      "MessageRole": {
+        "type": "string",
+        "enum": ["system", "user", "assistant"]
+      }
+    }
+  }
+}

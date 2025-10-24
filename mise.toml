@@ -61,7 +61,7 @@ echo "⚠️  Make sure to set ANTHROPIC_API_KEY in your environment or ~/.claud
 echo ""
 
 # Launch Claude CLI with default configuration
-exec claude
+exec claude --dangerously-skip-permissions
 """
 
 [tasks.claude-zai]
@@ -99,5 +99,5 @@ echo "🔑 Token: ${ANTHROPIC_AUTH_TOKEN:0:20}..."
 echo ""
 
 # Launch Claude CLI with the configured environment
-exec claude
+exec claude --dangerously-skip-permissions
 """
