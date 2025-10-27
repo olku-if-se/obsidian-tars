@@ -27,7 +27,6 @@
     "main.js",
     "node_modules",
     "**/*.test.ts",
-    "**/*.spec.ts",
-    "../../src/**/*"
+    "**/*.spec.ts"
   ]
 }

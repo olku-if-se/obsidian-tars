@@ -12,48 +12,15 @@ importers:
         specifier: latest
         version: 1.10.0(@codemirror/state@6.5.0)(@codemirror/view@6.38.1)
     devDependencies:
-      '@anthropic-ai/sdk':
-        specifier: ^0.56.0
-        version: 0.56.0
       '@biomejs/biome':
         specifier: 2.3.0
         version: 2.3.0
-      '@google/generative-ai':
-        specifier: ^0.21.0
-        version: 0.21.0
       '@types/node':
         specifier: ^22.18.12
         version: 22.18.12
-      axios:
-        specifier: ^1.8.3
-        version: 1.12.2
-      builtin-modules:
-        specifier: 3.3.0
-        version: 3.3.0
-      esbuild:
-        specifier: 0.25.11
-        version: 0.25.11
-      handlebars:
-        specifier: ^4.7.8
-        version: 4.7.8
-      jose:
-        specifier: ^5.2.4
-        version: 5.10.0
       knip:
         specifier: ^5.66.2
         version: 5.66.2(@types/node@22.18.12)(typescript@5.9.3)
-      ollama:
-        specifier: ^0.5.16
-        version: 0.5.18
-      openai:
-        specifier: ^5.0.1
-        version: 5.23.2
-      tslib:
-        specifier: 2.8.1
-        version: 2.8.1
-      tsup:
-        specifier: 8.5.0
-        version: 8.5.0(jiti@2.6.1)(postcss@8.5.6)(tsx@4.20.6)(typescript@5.9.3)
       tsx:
         specifier: 4.20.6
         version: 4.20.6
@@ -63,12 +30,15 @@ importers:
       typescript:
         specifier: 5.9.3
         version: 5.9.3
-      vitest:
-        specifier: 4.0.3
-        version: 4.0.3(@types/node@22.18.12)(jiti@2.6.1)(tsx@4.20.6)
 
   apps/obsidian-plugin:
     dependencies:
+      '@anthropic-ai/sdk':
+        specifier: ^0.56.0
+        version: 0.56.0
+      '@google/generative-ai':
+        specifier: ^0.21.0
+        version: 0.21.0
       '@tars/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -78,6 +48,24 @@ importers:
       '@tars/types':
         specifier: workspace:*
         version: link:../../packages/types
+      axios:
+        specifier: ^1.8.3
+        version: 1.12.2
+      handlebars:
+        specifier: ^4.7.8
+        version: 4.7.8
+      jose:
+        specifier: ^5.2.4
+        version: 5.10.0
+      obsidian:
+        specifier: latest
+        version: 1.10.0(@codemirror/state@6.5.0)(@codemirror/view@6.38.1)
+      ollama:
+        specifier: ^0.5.16
+        version: 0.5.18
+      openai:
+        specifier: ^5.0.1
+        version: 5.23.2
     devDependencies:
       '@biomejs/biome':
         specifier: 2.3.0

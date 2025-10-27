@@ -6,26 +6,15 @@
   "scripts": {
     "dev": "turbo run dev --parallel",
     "build": "turbo run build",
-    "build:esm": "turbo run build:esm",
-    "build:iife": "turbo run build:iife",
     "test": "turbo run test",
-    "test:coverage": "turbo run test --coverage",
-    "test:watch": "turbo run test --watch",
-    "lint": "biome check .",
-    "lint:fix": "biome check --write .",
-    "format": "biome format --write .",
-    "type-check": "turbo run type-check",
+    "lint": "turbo run lint",
+    "quality": "turbo run quality",
+    "typecheck": "turbo run typecheck",
     "knip": "knip",
-    "quality": "turbo run quality-check",
-    "quality:fix": "turbo run quality-check -- --write",
-    "quality:parallel": "turbo run quality:parallel",
+    "version": "node bin/version-bump.mjs && git add apps/obsidian-plugin/manifest.json apps/obsidian-plugin/versions.json",
     "clean": "turbo run clean && rm -rf node_modules",
-    "cli:core": "tsx packages/core/src/cli/tars-cli.ts",
-    "cli:providers": "tsx packages/providers/src/demo/provider-demo.ts",
-    "cli:mcp": "tsx packages/mcp/src/cli/mcp-cli.ts",
-    "cli:shared": "tsx packages/shared/src/cli/utils-cli.ts",
-    "demo": "tsx packages/shared/src/cli/tui.ts",
-    "version": "node version-bump.mjs && git add manifest.json versions.json"
+    "graph:tasks": "mkdir -p docs/graphs && pnpm dlx turbo run build lint test --dry-run=json --graph docs/graphs/turbo-tasks.jpg",
+    "graph:imports": "mkdir -p docs/graphs && pnpm dlx dependency-cruiser --include-only '^(apps|packages)' --output-type dot apps packages | dot -Tsvg -o docs/graphs/workspace-imports.svg"
   },
   "keywords": [],
   "author": "C Jack<https://github.com/ae86jack>",
@@ -35,23 +24,11 @@
     "obsidian": "latest"
   },
   "devDependencies": {
-    "@anthropic-ai/sdk": "^0.56.0",
     "@biomejs/biome": "2.3.0",
-    "@google/generative-ai": "^0.21.0",
     "@types/node": "^22.18.12",
-    "axios": "^1.8.3",
-    "builtin-modules": "3.3.0",
-    "esbuild": "0.25.11",
-    "handlebars": "^4.7.8",
-    "jose": "^5.2.4",
     "knip": "^5.66.2",
-    "ollama": "^0.5.16",
-    "openai": "^5.0.1",
-    "tslib": "2.8.1",
-    "tsup": "8.5.0",
     "tsx": "4.20.6",
     "turbo": "2.5.8",
-    "typescript": "5.9.3",
-    "vitest": "4.0.3"
+    "typescript": "5.9.3"
   }
 }

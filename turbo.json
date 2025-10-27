@@ -3,25 +3,14 @@
   "globalDependencies": ["**/.env.*local", "**/tsconfig.json", "**/biome.json"],
   "globalEnv": ["NODE_ENV", "OBSIDIAN_VERSION"],
   "tasks": {
+    "clean": {
+      "outputs": ["node_modules", "dist/**", "main.js", "manifest.json"],
+      "cache": false
+    },
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["lint", "test", "^build"],
       "outputs": ["dist/**", "main.js", "manifest.json"],
-      "inputs": [
-        "src/**/*.ts",
-        "package.json",
-        "tsconfig.json",
-        "tsup.config.ts"
-      ]
-    },
-    "build:esm": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**/*.js", "dist/**/*.d.ts"],
-      "inputs": ["src/**/*.ts", "tsconfig.json", "tsup.config.ts"]
-    },
-    "build:iife": {
-      "dependsOn": ["^build"],
-      "outputs": ["main.js", "manifest.json"],
-      "inputs": ["src/**/*.ts", "tsconfig.json", "tsup.config.ts"]
+      "inputs": ["src/**/*", "package.json", "tsconfig.json", "tsup.config.ts", "esbuild.config.mjs"]
     },
     "dev": {
       "cache": false,
@@ -29,24 +18,26 @@
       "dependsOn": ["^build"]
     },
     "test": {
-      "dependsOn": ["build"],
+      "dependsOn": ["^test"],
       "outputs": ["coverage/**"],
-      "inputs": ["src/**/*.ts", "src/**/*.test.ts", "vitest.config.ts"]
+      "inputs": ["packages/*/src/**/*.ts", "packages/*/src/**/*.test.ts", "apps/obsidian-plugin/src/**/*.ts", "apps/obsidian-plugin/src/**/*.test.ts", "vitest.config.ts"]
     },
     "lint": {
+      "dependsOn": ["typecheck", "^lint"],
       "outputs": [],
-      "inputs": ["src/**/*.ts", "*.json", "biome.json"]
+      "inputs": ["packages/*/src/**/*.ts", "apps/obsidian-plugin/src/**/*.ts", "*.json", "biome.json"]
     },
-    "type-check": {
-      "dependsOn": ["^build"],
+    "typecheck": {
+      "dependsOn": ["^typecheck"],
       "outputs": [],
-      "inputs": ["src/**/*.ts", "tsconfig.json"]
+      "inputs": ["packages/*/src/**/*.ts", "apps/obsidian-plugin/src/**/*.ts", "tsconfig.json"]
     },
     "quality": {
       "dependsOn": ["^build"],
       "outputs": [],
       "inputs": [
-        "src/**/*.ts",
+        "packages/*/src/**/*.ts",
+        "apps/obsidian-plugin/src/**/*.ts",
         "package.json",
         "biome.json",
         "knip.json",
@@ -66,19 +57,8 @@
       "dependsOn": ["^build"],
       "outputs": [],
       "inputs": [
-        "src/**/*.ts",
-        "package.json",
-        "biome.json",
-        "knip.json",
-        "vitest.config.ts"
-      ],
-      "cache": false
-    },
-    "quality": {
-      "dependsOn": ["^build"],
-      "outputs": [],
-      "inputs": [
-        "src/**/*.ts",
+        "packages/*/src/**/*.ts",
+        "apps/obsidian-plugin/src/**/*.ts",
         "package.json",
         "biome.json",
         "knip.json",
@@ -90,7 +70,8 @@
       "dependsOn": ["^build"],
       "outputs": [],
       "inputs": [
-        "src/**/*.ts",
+        "packages/*/src/**/*.ts",
+        "apps/obsidian-plugin/src/**/*.ts",
         "package.json",
         "biome.json",
         "knip.json",
@@ -101,7 +82,7 @@
     },
     "knip": {
       "outputs": [],
-      "inputs": ["src/**/*.ts", "package.json", "knip.json", "tsconfig.json"]
+      "inputs": ["packages/*/src/**/*.ts", "apps/obsidian-plugin/src/**/*.ts", "package.json", "knip.json", "tsconfig.json"]
     }
   }
 }
