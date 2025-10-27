@@ -3,6 +3,7 @@ import {
   type Command,
   type Editor,
   type EditorRange,
+  type MarkdownFileInfo,
   type MarkdownView,
   Modal,
   Notice,
@@ -34,7 +35,9 @@ export const asstTagCmd = (
 ): Command => ({
   id,
   name,
-  editorCallback: async (editor: Editor, _view: MarkdownView) => {
+  editorCallback:
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: existing command flow depends on multiple branches
+    async (editor: Editor, _ctx: MarkdownView | MarkdownFileInfo) => {
     try {
       const provider = settings.providers.find(p => p.tag === tag)
       if (!provider) {
@@ -152,15 +155,20 @@ export const asstTagCmd = (
       }
     } catch (error) {
       console.error(error)
-      if (error.name === 'AbortError') {
+      if (
+        (error instanceof DOMException || error instanceof Error) &&
+        error.name === 'AbortError'
+      ) {
         statusBarManager.setCancelledStatus()
         new Notice(t('Generation cancelled'))
         return
       }
 
-      statusBarManager.setErrorStatus(error as Error)
+      const err =
+        error instanceof Error ? error : new Error(String(error ?? ''))
+      statusBarManager.setErrorStatus(err)
       new Notice(
-        `🔴 ${Platform.isDesktopApp ? t('Click status bar for error details. ') : ''}${error}`,
+        `🔴 ${Platform.isDesktopApp ? t('Click status bar for error details. ') : ''}${err.message}`,
         10 * 1000
       )
     }

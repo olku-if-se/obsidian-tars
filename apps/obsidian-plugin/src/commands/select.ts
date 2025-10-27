@@ -2,6 +2,7 @@ import {
   type App,
   type Command,
   type Editor,
+  type MarkdownFileInfo,
   type MarkdownView,
   Notice,
 } from 'obsidian'
@@ -15,7 +16,10 @@ export const selectMsgAtCursorCmd = (
 ): Command => ({
   id: 'select-message-at-cursor',
   name: t('Select message at cursor'),
-  editorCallback: async (editor: Editor, _view: MarkdownView) => {
+  editorCallback: async (
+    editor: Editor,
+    _ctx: MarkdownView | MarkdownFileInfo
+  ) => {
     const env = await buildRunEnv(app, settings)
     const currentLine = editor.getCursor('to').line
     const [startOffset, endOffset] = getMsgPositionByLine(env, currentLine)

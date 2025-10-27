@@ -2,6 +2,7 @@ import {
   type App,
   type Command,
   type Editor,
+  type MarkdownFileInfo,
   type MarkdownView,
   Notice,
   Platform,
@@ -25,7 +26,9 @@ export const systemTagCmd = (
 ): Command => ({
   id,
   name,
-  editorCallback: async (editor: Editor, _view: MarkdownView) => {
+  editorCallback:
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: preserving existing branching logic
+    async (editor: Editor, _ctx: MarkdownView | MarkdownFileInfo) => {
     try {
       const mark = toSpeakMark(tag)
       const { range, role, tagContent, tagRange } = fetchTagMeta(
@@ -59,8 +62,10 @@ export const systemTagCmd = (
       }
     } catch (error) {
       console.error(error)
+      const err =
+        error instanceof Error ? error : new Error(String(error ?? ''))
       new Notice(
-        `🔴 ${Platform.isDesktopApp ? t('Check the developer console for error details. ') : ''}${error}`,
+        `🔴 ${Platform.isDesktopApp ? t('Check the developer console for error details. ') : ''}${err.message}`,
         10 * 1000
       )
     }

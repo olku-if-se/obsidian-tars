@@ -6,7 +6,6 @@ import type {
   Message,
   ResolveEmbedAsBinary,
   SaveAttachment,
-  SendRequest,
   Vendor,
 } from '.'
 import { getMimeTypeFromFilename } from './utils'
@@ -33,15 +32,19 @@ export interface GptImageOptions extends BaseOptions {
   size: 'auto' | '1024x1024' | '1536x1024' | '1024x1536'
 }
 
-const sendRequestFunc = (settings: GptImageOptions): SendRequest =>
-  async function* (
-    messages: Message[],
-    controller: AbortController,
-    resolveEmbedAsBinary: ResolveEmbedAsBinary,
-    saveAttachment?: SaveAttachment
-  ) {
+const sendRequestFunc: Vendor['sendRequestFunc'] = options => {
+  const settings = options as GptImageOptions
+
+  const generator =
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: handles multiple image generation branches and validations
+    async function* (
+      messages: readonly Message[],
+      controller: AbortController,
+      resolveEmbedAsBinary: ResolveEmbedAsBinary,
+      saveAttachment?: SaveAttachment
+    ) {
     const { parameters, ...optionsExcludingParams } = settings
-    const options = { ...optionsExcludingParams, ...parameters }
+    const mergedOptions = { ...optionsExcludingParams, ...parameters }
     const {
       apiKey,
       baseURL,
@@ -53,20 +56,21 @@ const sendRequestFunc = (settings: GptImageOptions): SendRequest =>
       output_format,
       quality,
       size,
-    } = options
+    } = mergedOptions
     if (!apiKey) throw new Error(t('API key is required'))
     if (!saveAttachment) throw new Error('saveAttachment is required')
 
-    console.debug('messages:', messages)
-    console.debug('options:', options)
-    if (messages.length > 1) {
+    const messageList = Array.from(messages)
+    console.debug('messages:', messageList)
+    console.debug('options:', mergedOptions)
+    if (messageList.length > 1) {
       new Notice(
         t(
           'Only the last user message is used for image generation. Other messages are ignored.'
         )
       )
     }
-    const lastMsg = messages.last()
+    const lastMsg = messageList[messageList.length - 1]
     if (!lastMsg) {
       throw new Error('No user message found in the conversation')
     }
@@ -147,14 +151,21 @@ const sendRequestFunc = (settings: GptImageOptions): SendRequest =>
         continue
       }
       const imageBuffer = Buffer.from(imageBase64, 'base64')
+      const arrayBuffer = imageBuffer.buffer.slice(
+        imageBuffer.byteOffset,
+        imageBuffer.byteOffset + imageBuffer.byteLength
+      )
       const indexFlag = n > 1 ? `-${i + 1}` : ''
       const filename = `gptImage-${formatTime}${indexFlag}.${output_format}`
       console.debug(`Saving image as ${filename}`)
-      await saveAttachment(filename, imageBuffer)
+      await saveAttachment(filename, arrayBuffer)
 
       yield `![[${filename}|${displayWidth}]]\n\n`
     }
   }
+
+  return generator
+}
 
 export const gptImageVendor: Vendor = {
   name: 'GptImage',

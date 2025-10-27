@@ -38,7 +38,7 @@ export const withStreamLogging = (
       }
     } finally {
       const lastMsg = messages[messages.length - 1]
-      // eslint-disable-next-line no-control-regex
+      // biome-ignore lint/suspicious/noControlCharactersInRegex: allow explicit control character range when sanitizing filenames
       const ILLEGAL_FILENAME_CHARS = /[<>:"/\\|?*\u0000-\u001F\u007F-\u009F]/g
       const brief =
         lastMsg.content

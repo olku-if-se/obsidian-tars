@@ -6,7 +6,6 @@ import type {
   Message,
   Optional,
   ResolveEmbedAsBinary,
-  SendRequest,
   Vendor,
 } from '.'
 
@@ -90,14 +89,18 @@ const getLines = (buffer: string[], text: string): string[] => {
   return lines
 }
 
-const sendRequestFunc = (settings: QianFanOptions): SendRequest =>
-  async function* (
-    messages: Message[],
-    controller: AbortController,
-    _resolveEmbedAsBinary: ResolveEmbedAsBinary
-  ) {
+const sendRequestFunc: Vendor['sendRequestFunc'] = options => {
+  const settings = options as QianFanOptions
+
+  const generator =
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: needs to branch for desktop vs mobile streaming flows
+    async function* (
+      messages: readonly Message[],
+      controller: AbortController,
+      _resolveEmbedAsBinary: ResolveEmbedAsBinary
+    ) {
     const { parameters, ...optionsExcludingParams } = settings
-    const options = { ...optionsExcludingParams, ...parameters }
+    const mergedOptions = { ...optionsExcludingParams, ...parameters }
     const {
       apiKey,
       apiSecret,
@@ -105,7 +108,7 @@ const sendRequestFunc = (settings: QianFanOptions): SendRequest =>
       model,
       token: currentToken,
       ...remains
-    } = options
+    } = mergedOptions
     if (!apiKey) throw new Error(t('API key is required'))
     if (!apiSecret) throw new Error(t('API secret is required'))
     if (!model) throw new Error(t('Model is required'))
@@ -113,9 +116,11 @@ const sendRequestFunc = (settings: QianFanOptions): SendRequest =>
     const { token } = await validOrCreate(currentToken, apiKey, apiSecret)
     settings.token = token
 
+    const messageList = Array.from(messages)
+
     if (Platform.isDesktopApp) {
       const data = {
-        messages,
+        messages: messageList,
         stream: true,
         ...remains,
       }
@@ -151,7 +156,7 @@ const sendRequestFunc = (settings: QianFanOptions): SendRequest =>
       }
     } else {
       const data = {
-        messages,
+        messages: messageList,
         stream: false,
         ...remains,
       }
@@ -171,6 +176,9 @@ const sendRequestFunc = (settings: QianFanOptions): SendRequest =>
       yield response.json.result
     }
   }
+
+  return generator
+}
 
 const models = [
   'ernie-4.0-8k-latest',

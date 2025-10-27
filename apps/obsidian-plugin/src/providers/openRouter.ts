@@ -1,28 +1,27 @@
 import type { EmbedCache } from 'obsidian'
 import { t } from '../lang/helper'
-import type {
-  BaseOptions,
-  Message,
-  ResolveEmbedAsBinary,
-  SendRequest,
-  Vendor,
-} from '.'
+import type { BaseOptions, Message, ResolveEmbedAsBinary, Vendor } from '.'
 import { arrayBufferToBase64, getMimeTypeFromFilename } from './utils'
 
-const sendRequestFunc = (settings: BaseOptions): SendRequest =>
-  async function* (
-    messages: Message[],
-    controller: AbortController,
-    resolveEmbedAsBinary: ResolveEmbedAsBinary
-  ) {
+const sendRequestFunc: Vendor['sendRequestFunc'] = options => {
+  const settings = options as BaseOptions
+
+  const generator =
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: streaming response parsing requires multiple control paths
+    async function* (
+      messages: readonly Message[],
+      controller: AbortController,
+      resolveEmbedAsBinary: ResolveEmbedAsBinary
+    ) {
     const { parameters, ...optionsExcludingParams } = settings
-    const options = { ...optionsExcludingParams, ...parameters }
-    const { apiKey, baseURL, model, ...remains } = options
+    const mergedOptions = { ...optionsExcludingParams, ...parameters }
+    const { apiKey, baseURL, model, ...remains } = mergedOptions
     if (!apiKey) throw new Error(t('API key is required'))
     if (!model) throw new Error(t('Model is required'))
 
+    const messageList = Array.from(messages)
     const formattedMessages = await Promise.all(
-      messages.map(msg => formatMsg(msg, resolveEmbedAsBinary))
+      messageList.map(msg => formatMsg(msg, resolveEmbedAsBinary))
     )
     const data = {
       model,
@@ -78,6 +77,9 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
       reader.cancel()
     }
   }
+
+  return generator
+}
 
 type ContentItem =
   | {

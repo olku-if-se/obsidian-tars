@@ -410,32 +410,34 @@ export class TarsSettingTab extends PluginSettingTab {
                 ? settings.options.model
                 : t('Select the model to use')
             )
-            .onClick(async () => {
-              // Check if API key is required but not provided
-              if (modelConfig.requiresApiKey && !settings.options.apiKey) {
-                new Notice(t('Please input API key first'))
-                return
-              }
-              try {
-                const models = await fetchModels(
-                  modelConfig.url,
-                  modelConfig.requiresApiKey
-                    ? settings.options.apiKey
-                    : undefined
-                )
-                const onChoose = async (selectedModel: string) => {
-                  settings.options.model = selectedModel
-                  await this.plugin.saveSettings()
-                  btn.setButtonText(selectedModel)
+            .onClick(
+              // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: UI handler orchestrates validations and modal flow
+              async () => {
+                // Check if API key is required but not provided
+                if (modelConfig.requiresApiKey && !settings.options.apiKey) {
+                  new Notice(t('Please input API key first'))
+                  return
                 }
-                new SelectModelModal(this.app, models, onChoose).open()
-              } catch (error) {
-                if (error instanceof Error) {
-                  const errorMessage = error.message.toLowerCase()
-                  if (
-                    errorMessage.includes('401') ||
-                    errorMessage.includes('unauthorized')
-                  ) {
+                try {
+                  const models = await fetchModels(
+                    modelConfig.url,
+                    modelConfig.requiresApiKey
+                      ? settings.options.apiKey
+                      : undefined
+                  )
+                  const onChoose = async (selectedModel: string) => {
+                    settings.options.model = selectedModel
+                    await this.plugin.saveSettings()
+                    btn.setButtonText(selectedModel)
+                  }
+                  new SelectModelModal(this.app, models, onChoose).open()
+                } catch (error) {
+                  if (error instanceof Error) {
+                    const errorMessage = error.message.toLowerCase()
+                    if (
+                      errorMessage.includes('401') ||
+                      errorMessage.includes('unauthorized')
+                    ) {
                     new Notice(
                       '🔑 ' +
                         t(

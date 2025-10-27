@@ -1,32 +1,31 @@
 import axios from 'axios'
 import { t } from '../lang/helper'
-import type {
-  BaseOptions,
-  Message,
-  ResolveEmbedAsBinary,
-  SendRequest,
-  Vendor,
-} from '.'
+import type { BaseOptions, Message, ResolveEmbedAsBinary, Vendor } from '.'
 import {
   CALLOUT_BLOCK_END,
   CALLOUT_BLOCK_START,
   convertEmbedToImageUrl,
 } from './utils'
 
-const sendRequestFunc = (settings: BaseOptions): SendRequest =>
-  async function* (
-    messages: Message[],
-    controller: AbortController,
-    resolveEmbedAsBinary: ResolveEmbedAsBinary
-  ) {
+const sendRequestFunc: Vendor['sendRequestFunc'] = options => {
+  const settings = options as BaseOptions
+
+  const generator =
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: streaming pipeline interacts with multiple data shapes
+    async function* (
+      messages: readonly Message[],
+      controller: AbortController,
+      resolveEmbedAsBinary: ResolveEmbedAsBinary
+    ) {
     const { parameters, ...optionsExcludingParams } = settings
-    const options = { ...optionsExcludingParams, ...parameters }
-    const { apiKey, baseURL, model, ...remains } = options
+    const mergedOptions = { ...optionsExcludingParams, ...parameters }
+    const { apiKey, baseURL, model, ...remains } = mergedOptions
     if (!apiKey) throw new Error(t('API key is required'))
     if (!model) throw new Error(t('Model is required'))
 
+    const messageList = Array.from(messages)
     const formattedMessages = await Promise.all(
-      messages.map(msg => formatMsg(msg, resolveEmbedAsBinary))
+      messageList.map(msg => formatMsg(msg, resolveEmbedAsBinary))
     )
     const data = {
       model,
@@ -74,23 +73,28 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
             const reasonContent = delta.reasoning_content
 
             if (reasonContent) {
-              const prefix = !startReasoning
-                ? ((startReasoning = true), CALLOUT_BLOCK_START)
-                : ''
-              yield prefix + reasonContent.replace(/\n/g, '\n> ') // Each line of the callout needs to have '>' at the beginning
-            } else {
-              const prefix = startReasoning
-                ? ((startReasoning = false), CALLOUT_BLOCK_END)
-                : ''
-              if (delta.content) {
-                yield prefix + delta.content
+              let prefix = ''
+              if (!startReasoning) {
+                startReasoning = true
+                prefix = CALLOUT_BLOCK_START
               }
+              yield prefix + reasonContent.replace(/\n/g, '\n> ') // Each line of the callout needs to have '>' at the beginning
+            } else if (delta.content) {
+              let prefix = ''
+              if (startReasoning) {
+                startReasoning = false
+                prefix = CALLOUT_BLOCK_END
+              }
+              yield prefix + delta.content
             }
           }
         }
       }
     }
   }
+
+  return generator
+}
 
 type ContentItem =
   | {

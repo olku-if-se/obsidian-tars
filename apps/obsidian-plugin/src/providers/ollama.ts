@@ -1,26 +1,22 @@
 import { Ollama } from 'ollama/browser'
-import type {
-  BaseOptions,
-  Message,
-  ResolveEmbedAsBinary,
-  SendRequest,
-  Vendor,
-} from '.'
+import type { BaseOptions, Message, ResolveEmbedAsBinary, Vendor } from '.'
 
-const sendRequestFunc = (settings: BaseOptions): SendRequest =>
-  async function* (
-    messages: Message[],
+const sendRequestFunc: Vendor['sendRequestFunc'] = options => {
+  const settings = options as BaseOptions
+
+  return async function* (
+    messages: readonly Message[],
     controller: AbortController,
     _resolveEmbedAsBinary: ResolveEmbedAsBinary
   ) {
     const { parameters, ...optionsExcludingParams } = settings
-    const options = { ...optionsExcludingParams, ...parameters }
-    const { baseURL, model, ...remains } = options
+    const mergedOptions = { ...optionsExcludingParams, ...parameters }
+    const { baseURL, model, ...remains } = mergedOptions
 
     const ollama = new Ollama({ host: baseURL })
     const response = await ollama.chat({
       model,
-      messages,
+      messages: Array.from(messages),
       stream: true,
       ...remains,
     })
@@ -32,6 +28,7 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
       yield part.message.content
     }
   }
+}
 
 export const ollamaVendor: Vendor = {
   name: 'Ollama',

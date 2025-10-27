@@ -41,11 +41,12 @@ export const getPromptTemplatesFromFile = async (
       (acc, section) => {
         if (section.type === 'thematicBreak') {
           // Start a new group when encountering a thematic break
-          return [...acc, []]
+          acc.push([])
+          return acc
         }
         // Add current section to the last group
         const lastGroupIndex = acc.length - 1
-        acc[lastGroupIndex] = [...acc[lastGroupIndex], section]
+        acc[lastGroupIndex].push(section)
         return acc
       },
       [[]] // Start with an empty group
@@ -67,7 +68,11 @@ export const getPromptTemplatesFromFile = async (
       }
       promptTemplates.push(template)
     } catch (error) {
-      reporter.push(error.message)
+      if (error instanceof Error) {
+        reporter.push(error.message)
+      } else {
+        reporter.push(String(error))
+      }
     }
   }
   console.debug('promptTemplates', promptTemplates)

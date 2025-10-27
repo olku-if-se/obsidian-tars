@@ -1,13 +1,7 @@
 import * as jose from 'jose'
 import OpenAI from 'openai'
 import { t } from '../lang/helper'
-import type {
-  BaseOptions,
-  Message,
-  ResolveEmbedAsBinary,
-  SendRequest,
-  Vendor,
-} from '.'
+import type { BaseOptions, Message, ResolveEmbedAsBinary, Vendor } from '.'
 
 interface Token {
   id: string
@@ -21,14 +15,16 @@ export interface ZhipuOptions extends BaseOptions {
   enableWebSearch: boolean
 }
 
-const sendRequestFunc = (settings: ZhipuOptions): SendRequest =>
-  async function* (
-    messages: Message[],
+const sendRequestFunc: Vendor['sendRequestFunc'] = options => {
+  const settings = options as ZhipuOptions
+
+  return async function* (
+    messages: readonly Message[],
     controller: AbortController,
     _resolveEmbedAsBinary: ResolveEmbedAsBinary
   ) {
     const { parameters, ...optionsExcludingParams } = settings
-    const options = { ...optionsExcludingParams, ...parameters }
+    const mergedOptions = { ...optionsExcludingParams, ...parameters }
     const {
       apiKey,
       baseURL,
@@ -37,7 +33,7 @@ const sendRequestFunc = (settings: ZhipuOptions): SendRequest =>
       tokenExpireInMinutes,
       enableWebSearch,
       ...remains
-    } = options
+    } = mergedOptions
     if (!apiKey) throw new Error(t('API key is required'))
     console.debug('zhipu options', {
       baseURL,
@@ -72,10 +68,11 @@ const sendRequestFunc = (settings: ZhipuOptions): SendRequest =>
         ]
       : []) as object[] as OpenAI.Chat.Completions.ChatCompletionTool[] // hack, because the zhipu-ai function call type definition is different from openai's type definition
 
+    const messageList = Array.from(messages)
     const stream = await client.chat.completions.create(
       {
         model,
-        messages,
+        messages: messageList,
         stream: true,
         tools: tools,
         ...remains,
@@ -91,6 +88,7 @@ const sendRequestFunc = (settings: ZhipuOptions): SendRequest =>
       yield text
     }
   }
+}
 
 const createToken = async (apiKeySecret: string, expireInMinutes: number) => {
   const [apiKey, apiSecret] = apiKeySecret.split('.')

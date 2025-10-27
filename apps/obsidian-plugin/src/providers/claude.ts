@@ -1,13 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { type EmbedCache, Notice } from 'obsidian'
 import { t } from '../lang/helper'
-import type {
-  BaseOptions,
-  Message,
-  ResolveEmbedAsBinary,
-  SendRequest,
-  Vendor,
-} from '.'
+import type { BaseOptions, Message, ResolveEmbedAsBinary, Vendor } from '.'
 import {
   arrayBufferToBase64,
   CALLOUT_BLOCK_END,
@@ -86,14 +80,27 @@ const formatEmbed = async (
   }
 }
 
-const sendRequestFunc = (settings: ClaudeOptions): SendRequest =>
-  async function* (
-    messages: Message[],
-    controller: AbortController,
-    resolveEmbedAsBinary: ResolveEmbedAsBinary
-  ) {
+const models = [
+  'claude-sonnet-4-0',
+  'claude-opus-4-0',
+  'claude-3-7-sonnet-latest',
+  'claude-3-5-sonnet-latest',
+  'claude-3-opus-latest',
+  'claude-3-5-haiku-latest',
+]
+
+const sendRequestFunc: Vendor['sendRequestFunc'] = options => {
+  const settings = options as ClaudeOptions
+
+  const generator =
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: handles complex stream events
+    async function* (
+      messages: readonly Message[],
+      controller: AbortController,
+      resolveEmbedAsBinary: ResolveEmbedAsBinary
+    ) {
     const { parameters, ...optionsExcludingParams } = settings
-    const options = { ...optionsExcludingParams, ...parameters }
+    const optionsWithOverrides = { ...optionsExcludingParams, ...parameters }
     const {
       apiKey,
       baseURL: originalBaseURL,
@@ -102,7 +109,7 @@ const sendRequestFunc = (settings: ClaudeOptions): SendRequest =>
       enableWebSearch = false,
       enableThinking = false,
       budget_tokens = 1600,
-    } = options
+    } = optionsWithOverrides
     let baseURL = originalBaseURL
     if (!apiKey) throw new Error(t('API key is required'))
 
@@ -113,12 +120,14 @@ const sendRequestFunc = (settings: ClaudeOptions): SendRequest =>
       baseURL = baseURL.slice(0, -'/v1/messages'.length)
     }
 
-    const [system_msg, messagesWithoutSys] =
-      messages[0].role === 'system'
-        ? [messages[0], messages.slice(1)]
-        : [null, messages]
+    const messageList = Array.from(messages)
+    const systemMsgCandidate = messageList[0]
+    const isSystemPrefixed = systemMsgCandidate?.role === 'system'
+    const system_msg = isSystemPrefixed ? systemMsgCandidate : null
+    const messagesWithoutSys = isSystemPrefixed
+      ? messageList.slice(1)
+      : messageList
 
-    // Check if messagesWithoutSys only contains user or assistant roles
     messagesWithoutSys.forEach(msg => {
       if (msg.role === 'system') {
         throw new Error('System messages are only allowed as the first message')
@@ -179,11 +188,15 @@ const sendRequestFunc = (settings: ClaudeOptions): SendRequest =>
           }
         }
         if (messageStreamEvent.delta.type === 'thinking_delta') {
-          const prefix = !startReasoning
-            ? ((startReasoning = true), CALLOUT_BLOCK_START)
-            : ''
-          yield prefix +
-            messageStreamEvent.delta.thinking.replace(/\n/g, '\n> ') // Each line of the callout needs to have '>' at the beginning
+          let prefix = ''
+          if (!startReasoning) {
+            startReasoning = true
+            prefix = CALLOUT_BLOCK_START
+          }
+          yield (
+            prefix +
+            messageStreamEvent.delta.thinking.replace(/\n/g, '\n> ')
+          ) // Each line of the callout needs to have '>' at the beginning
         }
       } else if (messageStreamEvent.type === 'content_block_start') {
         // Handle content block start events, including tool usage
@@ -208,14 +221,8 @@ const sendRequestFunc = (settings: ClaudeOptions): SendRequest =>
     }
   }
 
-const models = [
-  'claude-sonnet-4-0',
-  'claude-opus-4-0',
-  'claude-3-7-sonnet-latest',
-  'claude-3-5-sonnet-latest',
-  'claude-3-opus-latest',
-  'claude-3-5-haiku-latest',
-]
+  return generator
+}
 
 export const claudeVendor: Vendor = {
   name: 'Claude',

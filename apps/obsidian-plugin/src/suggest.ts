@@ -62,7 +62,7 @@ const extractWords = (input: string): string[] => {
   // Use regex to match up to two words and return them directly
   const matches = []
   const regex = /[^\s#:：]+/g
-  let match
+  let match: RegExpExecArray | null
 
   // Only search for a maximum of 3 matches
   for (let i = 0; i < 3; i++) {
@@ -104,6 +104,7 @@ export class TagEditorSuggest extends EditorSuggest<TagEntry> {
 
   /** Based on the editor line and cursor position, determine if this EditorSuggest should be triggered at this moment. Typically, you would run a regular expression on the current line text before the cursor. Return null to indicate that this editor suggest is not supposed to be triggered.
 	Please be mindful of performance when implementing this function, as it will be triggered very often (on each keypress). Keep it simple, and return null as early as possible if you determine that it is not the right time. **/
+  // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: suggestion trigger requires multiple early exits for correctness
   onTrigger(
     cursor: EditorPosition,
     editor: Editor,
@@ -238,15 +239,20 @@ export class TagEditorSuggest extends EditorSuggest<TagEntry> {
       )
     } catch (error) {
       console.error('error', error)
-      if (error.name === 'AbortError') {
+      if (
+        (error instanceof DOMException || error instanceof Error) &&
+        error.name === 'AbortError'
+      ) {
         this.statusBarManager.setCancelledStatus()
         new Notice(t('Generation cancelled'))
         return
       }
 
-      this.statusBarManager.setErrorStatus(error as Error)
+      const err =
+        error instanceof Error ? error : new Error(String(error ?? ''))
+      this.statusBarManager.setErrorStatus(err)
       new Notice(
-        `🔴 ${Platform.isDesktopApp ? t('Click status bar for error details. ') : ''}${error}`,
+        `🔴 ${Platform.isDesktopApp ? t('Click status bar for error details. ') : ''}${err.message}`,
         10 * 1000
       )
     }

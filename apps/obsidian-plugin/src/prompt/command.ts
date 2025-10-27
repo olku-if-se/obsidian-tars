@@ -4,6 +4,7 @@ import {
   type Command,
   type Editor,
   type EditorSelection,
+  type MarkdownFileInfo,
   type MarkdownView,
   Notice,
   normalizePath,
@@ -114,7 +115,10 @@ export const promptTemplateCmd = (
 ): Command => ({
   id,
   name,
-  editorCallback: async (editor: Editor, _view: MarkdownView) => {
+  editorCallback: async (
+    editor: Editor,
+    _ctx: MarkdownView | MarkdownFileInfo
+  ) => {
     try {
       const template = settings.promptTemplates.find(t => t.title === name)
       if (!template) {
@@ -128,8 +132,10 @@ export const promptTemplateCmd = (
       applyTemplate(editor, template.template)
     } catch (error) {
       console.error(error)
+      const err =
+        error instanceof Error ? error : new Error(String(error ?? ''))
       new Notice(
-        `🔴 ${Platform.isDesktopApp ? t('Check the developer console for error details. ') : ''}${error}`,
+        `🔴 ${Platform.isDesktopApp ? t('Check the developer console for error details. ') : ''}${err.message}`,
         10 * 1000
       )
     }

@@ -1,12 +1,6 @@
 import { AzureOpenAI } from 'openai'
 import { t } from '../lang/helper'
-import type {
-  BaseOptions,
-  Message,
-  ResolveEmbedAsBinary,
-  SendRequest,
-  Vendor,
-} from '.'
+import type { BaseOptions, Message, ResolveEmbedAsBinary, Vendor } from '.'
 import { CALLOUT_BLOCK_END, CALLOUT_BLOCK_START } from './utils'
 
 interface AzureOptions extends BaseOptions {
@@ -14,12 +8,16 @@ interface AzureOptions extends BaseOptions {
   apiVersion: string
 }
 
-const sendRequestFunc = (settings: AzureOptions): SendRequest =>
-  async function* (
-    messages: Message[],
-    controller: AbortController,
-    _resolveEmbedAsBinary: ResolveEmbedAsBinary
-  ) {
+const sendRequestFunc: Vendor['sendRequestFunc'] = options => {
+  const settings = options as AzureOptions
+
+  const generator =
+    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: stream lifecycle requires multiple branches
+    async function* (
+      messages: readonly Message[],
+      controller: AbortController,
+      _resolveEmbedAsBinary: ResolveEmbedAsBinary
+    ) {
     const { parameters, ...optionsExcludingParams } = settings
     const options = { ...optionsExcludingParams, ...parameters } // 这样的设计，让parameters 可以覆盖掉前面的设置 optionsExcludingParams
     const { apiKey, model, endpoint, apiVersion, ...remains } = options
@@ -34,7 +32,7 @@ const sendRequestFunc = (settings: AzureOptions): SendRequest =>
     })
 
     // 添加系统提示，要求模型在每次输出前加入 <think>，解决 Azure DeepSeek-R1 不推理的问题
-    messages = [
+    const messagesWithReasoningPrefix: Message[] = [
       {
         role: 'system',
         content: `Initiate your response with "<think>\n嗯" at the beginning of every output.`,
@@ -45,7 +43,7 @@ const sendRequestFunc = (settings: AzureOptions): SendRequest =>
     const stream = await client.chat.completions.create(
       {
         model,
-        messages,
+        messages: messagesWithReasoningPrefix,
         stream: true,
         ...remains,
       },
@@ -88,6 +86,9 @@ const sendRequestFunc = (settings: AzureOptions): SendRequest =>
         : text
     }
   }
+
+  return generator
+}
 
 const models = [
   'o3-mini',

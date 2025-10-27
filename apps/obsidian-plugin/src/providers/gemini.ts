@@ -1,29 +1,33 @@
 import { type Content, GoogleGenerativeAI } from '@google/generative-ai'
 import { t } from '../lang/helper'
-import type {
-  BaseOptions,
-  Message,
-  ResolveEmbedAsBinary,
-  SendRequest,
-  Vendor,
-} from '.'
+import type { BaseOptions, Message, ResolveEmbedAsBinary, Vendor } from '.'
 
-const sendRequestFunc = (settings: BaseOptions): SendRequest =>
-  async function* (
-    messages: Message[],
+const sendRequestFunc: Vendor['sendRequestFunc'] = options => {
+  const settings = options as BaseOptions
+
+  return async function* (
+    messages: readonly Message[],
     controller: AbortController,
     _resolveEmbedAsBinary: ResolveEmbedAsBinary
   ) {
     const { parameters, ...optionsExcludingParams } = settings
-    const options = { ...optionsExcludingParams, ...parameters }
-    const { apiKey, baseURL: baseUrl, model } = options
+    const mergedOptions = { ...optionsExcludingParams, ...parameters }
+    const { apiKey, baseURL: baseUrl, model } = mergedOptions
     if (!apiKey) throw new Error(t('API key is required'))
 
-    const [system_msg, messagesWithoutSys, lastMsg] =
-      messages[0].role === 'system'
-        ? [messages[0], messages.slice(1, -1), messages[messages.length - 1]]
-        : [null, messages.slice(0, -1), messages[messages.length - 1]]
-    const systemInstruction = system_msg?.content
+    const messageList = Array.from(messages)
+    if (messageList.length === 0) {
+      return
+    }
+
+    const systemMsgCandidate = messageList[0]
+    const hasSystem = systemMsgCandidate.role === 'system'
+    const systemInstruction = hasSystem ? systemMsgCandidate.content : undefined
+    const messagesWithoutSys = hasSystem
+      ? messageList.slice(1, -1)
+      : messageList.slice(0, -1)
+    const lastMsg = messageList[messageList.length - 1]
+
     const history: Content[] = messagesWithoutSys.map(m => ({
       role: m.role === 'assistant' ? 'model' : m.role,
       parts: [{ text: m.content }],
@@ -45,6 +49,7 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
       yield chunkText
     }
   }
+}
 
 export const geminiVendor: Vendor = {
   name: 'Gemini',

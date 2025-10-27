@@ -370,12 +370,18 @@ const extractConversation = async (
     options: { newChatTags },
   } = env
 
-  const lastNewChatTag = tagsInMeta.findLast(
-    t =>
-      newChatTags.some(n => t.tag.slice(1).toLowerCase() === n.toLowerCase()) &&
-      startOffset <= t.position.start.offset &&
-      t.position.end.offset <= endOffset
-  )
+  let lastNewChatTag: TagCache | undefined
+  for (let i = tagsInMeta.length - 1; i >= 0; i -= 1) {
+    const tag = tagsInMeta[i]
+    const match =
+      newChatTags.some(n => tag.tag.slice(1).toLowerCase() === n.toLowerCase()) &&
+      startOffset <= tag.position.start.offset &&
+      tag.position.end.offset <= endOffset
+    if (match) {
+      lastNewChatTag = tag
+      break
+    }
+  }
   const conversationStart = lastNewChatTag
     ? lastNewChatTag.position.end.offset
     : startOffset
@@ -508,11 +514,17 @@ export const getMsgPositionByLine = (env: RunEnv, line: number) => {
       ? msgTagsInMeta[nextMsgIndex].position.start.offset
       : Infinity
   console.debug('nextTag', msgTagsInMeta[nextMsgIndex])
-  const lastSection = sections.findLast(
-    section =>
+  let lastSection: SectionCache | undefined
+  for (let i = sections.length - 1; i >= 0; i -= 1) {
+    const section = sections[i]
+    if (
       section.position.end.offset <= nextMsgStartOffset &&
       section.position.start.line >= line
-  )
+    ) {
+      lastSection = section
+      break
+    }
+  }
   if (!lastSection) return [-1, -1]
 
   const endOffset = lastSection.position.end.offset

@@ -1,27 +1,24 @@
 import OpenAI from 'openai'
 import { t } from '../lang/helper'
-import type {
-  BaseOptions,
-  Message,
-  ResolveEmbedAsBinary,
-  SendRequest,
-  Vendor,
-} from '.'
+import type { BaseOptions, Message, ResolveEmbedAsBinary, Vendor } from '.'
 import { convertEmbedToImageUrl } from './utils'
 
-const sendRequestFunc = (settings: BaseOptions): SendRequest =>
-  async function* (
-    messages: Message[],
+const sendRequestFunc: Vendor['sendRequestFunc'] = options => {
+  const settings = options as BaseOptions
+
+  return async function* (
+    messages: readonly Message[],
     controller: AbortController,
     resolveEmbedAsBinary: ResolveEmbedAsBinary
   ) {
     const { parameters, ...optionsExcludingParams } = settings
-    const options = { ...optionsExcludingParams, ...parameters }
-    const { apiKey, baseURL, model, ...remains } = options
+    const mergedOptions = { ...optionsExcludingParams, ...parameters }
+    const { apiKey, baseURL, model, ...remains } = mergedOptions
     if (!apiKey) throw new Error(t('API key is required'))
 
+    const messageList = Array.from(messages)
     const formattedMessages = await Promise.all(
-      messages.map(msg => formatMsg(msg, resolveEmbedAsBinary))
+      messageList.map(msg => formatMsg(msg, resolveEmbedAsBinary))
     )
     const client = new OpenAI({
       apiKey,
@@ -47,6 +44,7 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
       yield text
     }
   }
+}
 
 type ContentItem =
   | {

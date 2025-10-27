@@ -171,7 +171,9 @@ export default class TarsPlugin extends Plugin {
     const toRemove = this.promptCmdIds.filter(
       cmdId => !newPromptCmdIds.includes(cmdId)
     )
-    toRemove.forEach(cmdId => this.removeCommand(cmdId))
+    toRemove.forEach(cmdId => {
+      this.removeCommand(cmdId)
+    })
 
     const toAdd = this.settings.promptTemplates.filter(
       t => !this.promptCmdIds.includes(templateToCmdId(t))
