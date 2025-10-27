@@ -6,4 +6,7 @@ export default defineConfig({
   dts: false,
   clean: true,
   external: ['@tars/types', '@tars/shared'],
+  splitting: false,
+  sourcemap: false,
+  minify: false,
 })

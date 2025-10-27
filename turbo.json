@@ -8,7 +8,7 @@
       "cache": false
     },
     "build": {
-      "dependsOn": ["lint", "test", "^build"],
+      "dependsOn": ["^build"],
       "outputs": ["dist/**", "main.js", "manifest.json"],
       "inputs": ["src/**/*", "package.json", "tsconfig.json", "tsup.config.ts", "esbuild.config.mjs"]
     },
@@ -18,17 +18,17 @@
       "dependsOn": ["^build"]
     },
     "test": {
-      "dependsOn": ["^test"],
-      "outputs": ["coverage/**"],
+      "dependsOn": ["^build"],
+      "outputs": ["test-results.json"],
       "inputs": ["packages/*/src/**/*.ts", "packages/*/src/**/*.test.ts", "apps/obsidian-plugin/src/**/*.ts", "apps/obsidian-plugin/src/**/*.test.ts", "vitest.config.ts"]
     },
     "lint": {
-      "dependsOn": ["typecheck", "^lint"],
+      "dependsOn": ["^lint"],
       "outputs": [],
       "inputs": ["packages/*/src/**/*.ts", "apps/obsidian-plugin/src/**/*.ts", "*.json", "biome.json"]
     },
     "typecheck": {
-      "dependsOn": ["^typecheck"],
+      "dependsOn": ["^build"],
       "outputs": [],
       "inputs": ["packages/*/src/**/*.ts", "apps/obsidian-plugin/src/**/*.ts", "tsconfig.json"]
     },

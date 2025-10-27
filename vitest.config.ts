@@ -5,10 +5,13 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
-    run: 'once', // One-run mode, not continuous watching
     passWithNoTests: true, // Allow packages with no tests to pass
+    reporters: [
+      ['json', { outputFile: './test-results.json' }],
+      'verbose'
+    ],
     coverage: {
-      provider: 'c8',
+      provider: 'v8',
       reporter: ['text', 'json', 'html'],
       exclude: [
         '**/node_modules/**',

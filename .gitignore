@@ -50,3 +50,5 @@ build/
 out/
 .turbo/
 tsconfig.tsbuildinfo
+test-results.json
+coverage/
