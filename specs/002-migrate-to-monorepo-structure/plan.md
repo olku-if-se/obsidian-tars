@@ -7,22 +7,22 @@
 
 ## Summary
 
-Migrate the Tars Obsidian plugin from a single-package structure to a modern monorepo using pnpm workspaces, turbo for build orchestration, tsup for bundling, and the latest stable SDK versions. The migration must maintain 100% functional compatibility while significantly improving build performance and developer experience.
+Migrate the Tars Obsidian plugin from a single-package structure to a modern monorepo focusing **exclusively on infrastructure setup**: build tools configuration, workspace management, and development workflow optimization. The scope is deliberately bounded to infrastructure-only tasks, excluding code refactoring and feature development which belong to separate specifications. The migration must maintain 100% functional compatibility while significantly improving build performance and developer experience.
 
 ## Technical Context
 
 **Language/Version**: TypeScript 5.7+ with strict mode enabled
-**Primary Dependencies**: pnpm 9.x, turbo 2.x, tsup 8.x, vitest 2.x, biome 1.x, knip 5.x, tsx latest, latest Obsidian API, modern AI provider SDKs
-**Storage**: Obsidian's encrypted settings for configuration, file system for notes, monorepo package management
-**Testing**: Vitest for unit tests, custom test framework for Obsidian integration, turbo test orchestration, comprehensive coverage reporting
-**Target Platform**: Obsidian plugin (desktop + mobile) with monorepo build system
-**Project Type**: Monorepo with multiple TypeScript packages and shared dependencies
-**Performance Goals**: 50%+ faster builds, <5s incremental builds, <30s full test suite execution
-**Quality Standards**: All packages must compile without warnings/errors, pass TypeScript checks, pass Biome formatting/lint, pass Knip dependency analysis
-**Bundle Strategy**: Only plugin package produces bundled JavaScript (IIFE), all other packages remain ESM modules
-**TSX Support**: Code should be executable via TSX for TUI interfaces, demo, and testing purposes
-**Constraints**: Must maintain identical plugin functionality and Obsidian compatibility
-**Scale/Scope**: Monorepo supporting 10+ AI providers, multiple MCP servers, shared packages, global developer community
+**Primary Dependencies**: pnpm 9.x, turbo 2.x, tsup 8.x, vitest 2.x, biome 1.x, knip 5.x, tsx latest
+**Storage**: Monorepo package management with workspace protocol
+**Testing**: Vitest for unit tests with parallel execution and turbo orchestration
+**Target Platform**: Build system and development workflow (agnostic to application domain)
+**Project Type**: Infrastructure setup for existing monorepo structure
+**Performance Goals**: Full repository build <60s, incremental builds <5s, cache hit rate >80%, quality checks <30s
+**Quality Standards**: All packages build without warnings/errors, pass TypeScript checks, pass Biome formatting/lint, pass Knip dependency analysis
+**Bundle Strategy**: Final plugin produces optimized IIFE bundle with treeshaking (main.js, manifest.json, styles.css in dist/), packages produce ESM modules for development
+**TSX Support**: CLI tools and development utilities executable via TSX
+**Constraints**: Infrastructure-only scope, no application code changes, maintain existing functionality
+**Scale/Scope**: Build tools configuration and development workflow optimization
 
 ## Constitution Check
 
@@ -31,60 +31,64 @@ Migrate the Tars Obsidian plugin from a single-package structure to a modern mon
 All features MUST pass these constitutional gates:
 
 **Gate 1: Plugin Architecture Excellence** ✅
-- Feature integrates cleanly with Obsidian APIs (file cache, editor, suggestions)
-- Clear separation between provider logic and Obsidian-specific code
-- Self-contained and independently testable implementation
-- **Monorepo Impact**: Enhanced architecture with clear package boundaries and separation of concerns
+- Infrastructure changes do not affect plugin architecture
+- Build system supports clean separation of concerns
+- Self-contained and independently testable build configuration
 
 **Gate 2: Provider Abstraction** ✅
-- Uses existing `Vendor` interface without modifications (unless explicitly justified)
-- No provider-specific logic leaks into core plugin code
-- Supports streaming responses with proper AbortController handling
-- **Monorepo Impact**: Provider isolation enhanced through dedicated packages with proper abstraction
+- Infrastructure changes do not modify `Vendor` interface
+- Build system supports existing provider patterns
+- No provider-specific logic impact from infrastructure changes
 
 **Gate 3: Test-First Development (TDD)** ✅
-- Red-Green-Refactor cycle strictly enforced
-- Tests MUST be written before implementation, MUST fail initially
-- All provider implementations MUST include contract tests
-- **Monorepo Impact**: Vitest integration with comprehensive testing strategy and quality gates
+- Infrastructure setup follows TDD principles
+- Build configuration tested before implementation
+- All build tools MUST include validation tests
+- Infrastructure MUST achieve 85%+ test coverage for build scripts
 
 **Gate 4: Cross-Platform Compatibility** ✅
-- Works on both desktop and mobile Obsidian clients
-- Supports both mouse/keyboard and touch interfaces
-- Uses Obsidian's cross-platform file system abstraction
-- **Monorepo Impact**: No impact - compatibility maintained through consistent package structure
+- Build tools work across all development platforms
+- No platform-specific build configurations
+- Supports both desktop and mobile development workflows
 
 **Gate 5: Performance & Responsiveness** ✅
-- UI remains responsive during AI operations
-- Uses streaming responses for long operations
-- No blocking operations in the main thread
-- **Monorepo Impact**: 60-85% build performance improvements with turbo caching and parallel builds
+- Build system provides responsive development experience
+- Incremental builds complete rapidly
+- No blocking operations in build pipeline
 
 **Gate 6: MCP Integration Capability** ✅
-- MCP server integrations follow same abstraction patterns as AI providers
-- Clean separation between core plugin logic and MCP server implementations
-- MCP functionality is independently testable
-- **Monorepo Impact**: Enhanced MCP integration through dedicated MCP package with clear interfaces
+- Infrastructure supports MCP integration patterns
+- Build system accommodates MCP server implementations
+- MCP functionality independently testable through build system
 
-**Gate 7: Security & Privacy** ✅
-- API keys stored in Obsidian's encrypted settings
-- No sensitive data exposed in logs or error messages
-- Content only transmitted to configured AI provider or MCP server
-- MCP server connections have appropriate security controls and user consent
-- **Monorepo Impact**: Security enhanced through package boundaries and controlled dependencies
+**Gate 7: Development Standards & Tooling** ✅
+- **MANDATORY**: Uses PNPM for package management and workspaces
+- **MANDATORY**: Uses TURBO for build orchestration and caching
+- **MANDATORY**: Uses BIOME for linting and formatting
+- **MANDATORY**: Uses KNIP for dependency analysis
+- **MANDATORY**: Uses TSX for TypeScript execution
+- **MANDATORY**: Uses TSUP for bundling
+- **MANDATORY**: Follows monorepo architecture requirements
+
+**Gate 8: Security & Privacy** ✅
+- Infrastructure does not affect API key storage
+- Build system prevents sensitive data exposure
+- No security impact from build tool migration
 
 ### Constitution Compliance Summary
 
 **Status**: ✅ ALL GATES PASSED
 
-**Constitutional Enhancements Through Monorepo**:
-- **Enhanced Test-First Development**: Vitest integration with comprehensive coverage
-- **Improved Performance**: Turbo orchestration with intelligent caching
-- **Better Separation of Concerns**: Clear package boundaries and interfaces
-- **Enhanced Quality Standards**: Biome, Knip, and comprehensive quality gates
-- **Improved Developer Experience**: Modern tooling with fast iteration cycles
+**Constitutional Compliance Through Infrastructure Migration**:
+- **Enhanced Development Standards**: Full compliance with mandatory tooling requirements (PNPM, TURBO, BIOME, KNIP, TSX, TSUP, VITEST)
+- **Improved Performance**: Build orchestration with intelligent caching meeting performance targets (<60s full build, <5s incremental, >80% cache hit rate)
+- **Infrastructure Test Coverage**: 85%+ coverage for build scripts and configuration with Given/When/Then standards
+- **Quality Standards**: Comprehensive validation and dependency analysis through modern tooling
+- **Developer Experience**: Fast iteration cycles with optimized build performance
+- **Optimized Bundle Strategy**: Treeshaking for plugin bundle, ESM modules for package development
+- **Standardized Output Structure**: Final plugin distribution in root `dist/` (main.js, manifest.json, styles.css only)
 
-**No Constitutional Violations**: All gates passed with monorepo structure providing enhanced compliance with existing principles.
+**No Constitutional Violations**: Infrastructure-only scope ensures no impact on existing architectural principles while enhancing compliance with development standards.
 
 ## Project Structure
 
@@ -96,8 +100,7 @@ specs/002-migrate-to-monorepo-structure/
 ├── research.md          # Phase 0 output (/speckit.plan command)
 ├── data-model.md        # Phase 1 output (/speckit.plan command)
 ├── quickstart.md        # Phase 1 output (/speckit.plan command)
-├── contracts/           # Phase 1 output (/speckit.plan command)
-└── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
+└── contracts/           # Phase 1 output (/speckit.plan command)
 ```
 
 ### Source Code (repository root)
@@ -191,10 +194,14 @@ specs/002-migrate-to-monorepo-structure/
     ├── architecture/          # Architecture documentation
     └── migration/             # Migration guides
 
-# Build Output
-apps/obsidian-plugin/main.js  # Final IIFE bundle (plugin only)
-apps/obsidian-plugin/styles.css # Plugin styles
-dist/                         # ESM outputs for packages (development/testing)
+# Final Plugin Distribution
+dist/                      # Optimized plugin bundle
+├── main.js               # IIFE bundle with treeshaking + optimizations
+├── manifest.json         # Plugin manifest
+└── styles.css            # Plugin styles
+
+# Development Artifacts (for development workflow)
+packages/*/dist/          # ESM modules for development and testing (internal use only)
 
 # TSX Executable Examples
 tsx packages/core/src/cli/tars-cli.ts --help
@@ -203,7 +210,7 @@ tsx packages/mcp/src/cli/mcp-cli.ts --list-servers
 tsx packages/shared/src/cli/utils-cli.ts --validate-config
 ```
 
-**Structure Decision**: Monorepo with pnpm workspaces, turbo orchestration, TSX support, and strategic bundling (IIFE for plugin, ESM for packages)
+**Structure Decision**: Monorepo with pnpm workspaces, turbo orchestration, TSX support for CLI tools, and strategic bundling (IIFE for plugin, ESM for packages)
 
 ## Complexity Tracking
 

@@ -115,6 +115,8 @@ When working with AI providers, ensure proper handling of:
 - TypeScript 5.7+ with strict mode enabled + pnpm 9.x, turbo 2.x, tsup 8.x, vitest 2.x, biome 1.x, knip 5.x, latest Obsidian API, modern AI provider SDKs (002-migrate-to-monorepo-structure)
 - Obsidian's encrypted settings for configuration, file system for notes, monorepo package management (002-migrate-to-monorepo-structure)
 - TypeScript 5.7+ with strict mode enabled + pnpm 9.x, turbo 2.x, tsup 8.x, vitest 2.x, biome 1.x, knip 5.x, tsx latest, latest Obsidian API, modern AI provider SDKs (002-migrate-to-monorepo-structure)
+- TypeScript 5.7+ with strict mode enabled + PNPM 9.x, TURBO 2.x, BIOME 1.x, KNIP 5.x, TSX latest, TSUP 8.x, VITEST 2.x (001-monorepo-scope)
+- Monorepo package management with workspace protocol (001-monorepo-scope)
 
 ## Recent Changes
 - 002-migrate-to-monorepo-structure: Added TypeScript 5.7+ with strict mode enabled + pnpm 9.x, turbo 2.x, tsup 8.x, vitest 2.x, biome 1.x, knip 5.x, latest Obsidian API, modern AI provider SDKs

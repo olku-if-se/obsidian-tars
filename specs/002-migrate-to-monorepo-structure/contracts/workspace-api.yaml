@@ -1,0 +1,593 @@
+openapi: 3.0.3
+info:
+  title: Tars Monorepo Workspace API
+  description: API contracts for internal package communication in the Tars monorepo
+  version: 1.0.0
+  contact:
+    name: Tars Development Team
+    email: dev@tars.ai
+
+# Workspace Package API Contracts
+
+paths:
+  # Core Package APIs
+  /core/providers:
+    get:
+      summary: List available providers
+      operationId: listProviders
+      tags:
+        - Core
+      responses:
+        '200':
+          description: List of available providers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProviderInfo'
+
+  /core/providers/{providerId}:
+    get:
+      summary: Get provider details
+      operationId: getProvider
+      tags:
+        - Core
+      parameters:
+        - name: providerId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Provider details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderInfo'
+        '404':
+          description: Provider not found
+
+  /core/conversations:
+    post:
+      summary: Process conversation
+      operationId: processConversation
+      tags:
+        - Core
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConversationRequest'
+      responses:
+        '200':
+          description: Conversation processed successfully
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Invalid request
+        '500':
+          description: Processing error
+
+  # MCP Server APIs
+  /mcp/servers:
+    get:
+      summary: List MCP servers
+      operationId: listMCPServers
+      tags:
+        - MCP
+      responses:
+        '200':
+          description: List of MCP servers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MCPServerInfo'
+
+  /mcp/servers/{serverId}/tools:
+    get:
+      summary: List available tools
+      operationId: listTools
+      tags:
+        - MCP
+      parameters:
+        - name: serverId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of available tools
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tool'
+
+  /mcp/servers/{serverId}/tools/call:
+    post:
+      summary: Call tool
+      operationId: callTool
+      tags:
+        - MCP
+      parameters:
+        - name: serverId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ToolCallRequest'
+      responses:
+        '200':
+          description: Tool executed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToolResult'
+
+components:
+  schemas:
+    # Provider System Schemas
+    ProviderInfo:
+      type: object
+      required:
+        - id
+        - name
+        - type
+        - capabilities
+        - enabled
+      properties:
+        id:
+          type: string
+          description: Unique provider identifier
+          example: "openai"
+        name:
+          type: string
+          description: Human-readable provider name
+          example: "OpenAI"
+        type:
+          $ref: '#/components/schemas/ProviderType'
+        capabilities:
+          $ref: '#/components/schemas/ProviderCapabilities'
+        enabled:
+          type: boolean
+          description: Whether the provider is enabled
+        model:
+          type: string
+          description: Default model for this provider
+          example: "gpt-4"
+        config:
+          type: object
+          description: Provider-specific configuration
+          additionalProperties: true
+
+    ProviderType:
+      type: string
+      enum:
+        - openai
+        - claude
+        - deepseek
+        - gemini
+        - ollama
+        - mock
+      description: Supported provider types
+
+    ProviderCapabilities:
+      type: object
+      required:
+        - textGeneration
+        - streaming
+      properties:
+        textGeneration:
+          type: boolean
+          description: Supports text generation
+        vision:
+          type: boolean
+          description: Supports image analysis
+        imageGeneration:
+          type: boolean
+          description: Supports image generation
+        webSearch:
+          type: boolean
+          description: Supports web search
+        streaming:
+          type: boolean
+          description: Supports streaming responses
+        multimodal:
+          type: boolean
+          description: Supports multimodal inputs
+
+    # Conversation System Schemas
+    ConversationRequest:
+      type: object
+      required:
+        - conversation
+        - providerId
+      properties:
+        conversation:
+          $ref: '#/components/schemas/Conversation'
+        providerId:
+          type: string
+          description: Target provider ID
+        options:
+          type: object
+          description: Processing options
+          properties:
+            stream:
+              type: boolean
+              default: true
+            temperature:
+              type: number
+              minimum: 0
+              maximum: 2
+              default: 1
+            maxTokens:
+              type: integer
+              minimum: 1
+
+    Conversation:
+      type: object
+      required:
+        - id
+        - messages
+      properties:
+        id:
+          type: string
+          description: Conversation identifier
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
+        context:
+          type: object
+          description: Additional conversation context
+          additionalProperties: true
+        metadata:
+          $ref: '#/components/schemas/ConversationMetadata'
+
+    Message:
+      type: object
+      required:
+        - id
+        - role
+        - content
+        - timestamp
+      properties:
+        id:
+          type: string
+          description: Message identifier
+        role:
+          $ref: '#/components/schemas/MessageRole'
+        content:
+          $ref: '#/components/schemas/MessageContent'
+        timestamp:
+          type: string
+          format: date-time
+          description: Message timestamp
+        metadata:
+          $ref: '#/components/schemas/MessageMetadata'
+
+    MessageRole:
+      type: string
+      enum:
+        - system
+        - user
+        - assistant
+        - newChat
+      description: Message roles
+
+    MessageContent:
+      type: object
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          enum:
+            - text
+            - image
+            - file
+            - multimodal
+        text:
+          type: string
+          description: Text content
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageContent'
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileContent'
+
+    ImageContent:
+      type: object
+      required:
+        - data
+        - mimeType
+      properties:
+        data:
+          type: string
+          description: Base64 image data
+        mimeType:
+          type: string
+          description: MIME type
+          enum:
+            - image/jpeg
+            - image/png
+            - image/gif
+            - image/webp
+        filename:
+          type: string
+          description: Original filename
+
+    FileContent:
+      type: object
+      required:
+        - data
+        - mimeType
+      properties:
+        data:
+          type: string
+          description: Base64 file data
+        mimeType:
+          type: string
+          description: MIME type
+        filename:
+          type: string
+          description: Original filename
+        size:
+          type: integer
+          description: File size in bytes
+
+    MessageMetadata:
+      type: object
+      properties:
+        provider:
+          type: string
+          description: Provider that generated this message
+        model:
+          type: string
+          description: Model used
+        tokens:
+          type: object
+          properties:
+            prompt:
+              type: integer
+            completion:
+              type: integer
+            total:
+              type: integer
+        processingTime:
+          type: number
+          description: Processing time in milliseconds
+
+    ConversationMetadata:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Conversation title
+        tags:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    # MCP System Schemas
+    MCPServerInfo:
+      type: object
+      required:
+        - id
+        - name
+        - capabilities
+        - status
+      properties:
+        id:
+          type: string
+          description: Server identifier
+        name:
+          type: string
+          description: Server name
+        capabilities:
+          $ref: '#/components/schemas/MCPCapabilities'
+        status:
+          $ref: '#/components/schemas/MCPServerStatus'
+        command:
+          type: string
+          description: Server command
+        args:
+          type: array
+          items:
+            type: string
+          description: Server arguments
+        env:
+          type: object
+          description: Server environment variables
+          additionalProperties:
+            type: string
+
+    MCPCapabilities:
+      type: object
+      required:
+        - tools
+        - resources
+        - prompts
+      properties:
+        tools:
+          type: boolean
+          description: Supports tools
+        resources:
+          type: boolean
+          description: Supports resources
+        prompts:
+          type: boolean
+          description: Supports prompts
+        sampling:
+          type: boolean
+          description: Supports sampling
+
+    MCPServerStatus:
+      type: string
+      enum:
+        - connected
+        - disconnected
+        - error
+        - connecting
+      description: Server connection status
+
+    Tool:
+      type: object
+      required:
+        - name
+        - description
+        - inputSchema
+      properties:
+        name:
+          type: string
+          description: Tool name
+        description:
+          type: string
+          description: Tool description
+        inputSchema:
+          type: object
+          description: JSON schema for tool input
+        serverId:
+          type: string
+          description: Server that provides this tool
+
+    ToolCallRequest:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Tool name
+        arguments:
+          type: object
+          description: Tool arguments
+          additionalProperties: true
+
+    ToolResult:
+      type: object
+      required:
+        - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the tool execution was successful
+        result:
+          type: object
+          description: Tool result data
+          additionalProperties: true
+        error:
+          type: object
+          description: Error information (if unsuccessful)
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+
+    # Error Schemas
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: Error code
+          example: "PROVIDER_NOT_FOUND"
+        message:
+          type: string
+          description: Error message
+          example: "Provider with ID 'unknown' not found"
+        details:
+          type: object
+          description: Additional error details
+          additionalProperties: true
+        timestamp:
+          type: string
+          format: date-time
+          description: Error timestamp
+        provider:
+          type: string
+          description: Provider that generated the error (if applicable)
+
+  # Common Parameters
+  parameters:
+    ProviderId:
+      name: providerId
+      in: path
+      required: true
+      description: Provider identifier
+      schema:
+        type: string
+      example: "openai"
+
+    ServerId:
+      name: serverId
+      in: path
+      required: true
+      description: MCP server identifier
+      schema:
+        type: string
+      example: "filesystem"
+
+  # Response Objects
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+tags:
+  - name: Core
+    description: Core plugin functionality
+  - name: MCP
+    description: MCP server integration
+  - name: Providers
+    description: AI provider management
+  - name: Conversations
+    description: Conversation processing
