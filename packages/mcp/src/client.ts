@@ -2,7 +2,10 @@
  * MCP client functionality
  */
 
+import { createPluginLogger } from '@tars/shared'
 import type { MCPMessage, MCPResponse, MCPServer } from '@tars/types'
+
+const mcpLogger = createPluginLogger('tars-mcp')
 
 export interface MCPClientOptions {
   serverUrl?: string
@@ -27,17 +30,17 @@ export class MCPClient {
     try {
       this.server = server
       // Mock connection logic
-      console.log(`Connecting to MCP server: ${server.name}`)
+      mcpLogger.info(`Connecting to MCP server: ${server.name}`)
       this.isConnected = true
     } catch (error) {
-      console.error('Failed to connect to MCP server:', error)
+      mcpLogger.error('Failed to connect to MCP server:', error)
       throw error
     }
   }
 
   async disconnect(): Promise<void> {
     if (this.server && this.isConnected) {
-      console.log(`Disconnecting from MCP server: ${this.server.name}`)
+      mcpLogger.info(`Disconnecting from MCP server: ${this.server.name}`)
       this.isConnected = false
       this.server = null
     }
@@ -50,7 +53,7 @@ export class MCPClient {
 
     try {
       // Mock request logic
-      console.log('Sending MCP request:', message)
+      mcpLogger.debug('Sending MCP request', message)
 
       return {
         id: message.id || Date.now().toString(),
@@ -60,7 +63,7 @@ export class MCPClient {
         },
       }
     } catch (error) {
-      console.error('Failed to send MCP request:', error)
+      mcpLogger.error('Failed to send MCP request', error)
       throw error
     }
   }

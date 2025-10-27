@@ -26,6 +26,7 @@ import {
   TagEditorSuggest,
   type TagEntry,
 } from './suggest'
+import { ensureWorkspacePackageUsage } from './workspace-usage'
 
 export default class TarsPlugin extends Plugin {
   settings!: PluginSettings
@@ -39,6 +40,7 @@ export default class TarsPlugin extends Plugin {
     await this.loadSettings()
 
     console.debug('loading Tars plugin...')
+    ensureWorkspacePackageUsage()
 
     const statusBarItem = this.addStatusBarItem()
     this.statusBarManager = new StatusBarManager(this.app, statusBarItem)

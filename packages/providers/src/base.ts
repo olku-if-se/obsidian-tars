@@ -2,6 +2,7 @@
  * Base provider functionality
  */
 
+import { createPluginLogger } from '@tars/shared'
 import type {
   Message,
   ProviderType,
@@ -9,6 +10,8 @@ import type {
   Vendor,
   VendorCapabilities,
 } from '@tars/types'
+
+const providerLogger = createPluginLogger('tars-providers')
 
 export interface BaseVendorOptions {
   apiKey?: string
@@ -27,6 +30,7 @@ export abstract class BaseVendor implements Vendor {
   protected options: BaseVendorOptions
 
   constructor(options: BaseVendorOptions = {}) {
+    providerLogger.debug('Initializing vendor base with options', options)
     this.options = {
       maxTokens: 4000,
       temperature: 0.7,
@@ -39,6 +43,7 @@ export abstract class BaseVendor implements Vendor {
 
   updateOptions(newOptions: Partial<BaseVendorOptions>): void {
     this.options = { ...this.options, ...newOptions }
+    providerLogger.info('Updated vendor options', this.options)
   }
 
   getOptions(): Readonly<BaseVendorOptions> {
@@ -59,5 +64,10 @@ export abstract class BaseVendor implements Vendor {
         throw new Error('Each message must have a role and content')
       }
     }
+
+    providerLogger.debug('Validated message batch', {
+      count: messages.length,
+      preview: this.formatMessages(messages.slice(0, 1)),
+    })
   }
 }

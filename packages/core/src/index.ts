@@ -1,5 +1,8 @@
 // Core plugin logic for Tars Obsidian Plugin
 // This will be expanded with proper plugin logic as migration progresses
+import { createPluginLogger } from '@tars/shared'
+
+const coreLogger = createPluginLogger('tars-core')
 
 // Re-export from plugin.ts
 export { TarsCorePlugin } from './plugin'
@@ -28,7 +31,7 @@ export class TarsPlugin {
     // Given: plugin instance
     // When: initializing plugin
     // Then: setup plugin functionality
-    console.log(`Initializing ${this.name} plugin`)
+    coreLogger.info(`Initializing ${this.name} plugin`)
   }
 }
 
@@ -36,6 +39,7 @@ export function createPlugin(name: string): TarsPlugin {
   // Given: plugin name
   // When: creating new plugin
   // Then: return plugin instance
+  coreLogger.debug('Creating core plugin scaffold', { name })
   return new TarsPlugin(name)
 }
 

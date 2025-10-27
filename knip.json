@@ -1,17 +1,29 @@
 {
   "$schema": "https://raw.githubusercontent.com/webpro/knip/main/packages/knip/schemas/knip-schema.json",
-  "entry": ["src/index.ts", "src/**/*.ts"],
-  "project": ["src/**/*.ts"],
-  "ignore": [
+  "entry": [],
+  "exclude": ["unlisted", "binaries"],
+  "ignoreFiles": [
     "**/node_modules/**",
     "**/dist/**",
     "**/coverage/**",
     "main.js",
-    "*.map"
+    "*.map",
+    ".dependency-cruiser.cjs",
+    ".syncpackrc.cjs",
+    "vitest.config.ts"
   ],
-  "ignoreBinaries": ["turbo", "vitest", "tsup", "tsx", "pnpm"],
-  "ignoreDependencies": ["obsidian"],
   "workspaces": {
-    "packages": ["apps/*", "packages/*", "tools/*"]
+    "apps/*": {
+      "entry": ["src/**/*.ts"],
+      "ignore": ["dist/**", "**/*.test.ts", "**/*.spec.ts"]
+    },
+    "packages/*": {
+      "entry": ["src/**/*.ts"],
+      "ignore": ["dist/**", "**/*.test.ts", "**/*.spec.ts"]
+    },
+    "tools/*": {
+      "entry": ["src/**/*.ts"],
+      "ignore": ["dist/**"]
+    }
   }
 }

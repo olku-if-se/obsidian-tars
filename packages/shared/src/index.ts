@@ -1,5 +1,6 @@
 // Shared utilities for Tars Obsidian Plugin
 // This will be expanded with proper utilities as migration progresses
+import type { Message } from '@tars/types'
 
 export function sanitizeMarkdown(text: string): string {
   // Given: raw text input
@@ -34,6 +35,14 @@ export function createPluginLogger(prefix: string) {
       console.error(`[${prefix}] ${message}`, ...args)
     },
   }
+}
+
+export function summarizeMessage(message: Message): string {
+  const snippet =
+    message.content.length > 60
+      ? `${message.content.slice(0, 57)}...`
+      : message.content
+  return `${message.role.toUpperCase()}: ${snippet}`
 }
 
 // Re-export utilities

@@ -19,30 +19,31 @@
     "knip": "knip"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.67.0",
+    "@google/generative-ai": "^0.24.1",
     "@tars/core": "workspace:*",
+    "@tars/mcp": "workspace:*",
+    "@tars/providers": "workspace:*",
     "@tars/shared": "workspace:*",
+    "@tars/testing": "workspace:*",
     "@tars/types": "workspace:*",
-    "@anthropic-ai/sdk": "^0.56.0",
-    "@google/generative-ai": "^0.21.0",
-    "axios": "^1.8.3",
+    "axios": "^1.12.2",
     "handlebars": "^4.7.8",
-    "jose": "^5.2.4",
-    "obsidian": "latest",
-    "ollama": "^0.5.16",
-    "openai": "^5.0.1"
+    "jose": "^6.1.0",
+    "obsidian": "^1.10.0",
+    "ollama": "^0.6.0",
+    "openai": "^6.7.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.0",
-    "@types/node": "^22.0.0",
-    "builtin-modules": "3.3.0",
-    "esbuild": "0.25.11",
-    "knip": "^5.66.2",
+    "@biomejs/biome": "^2.3.1",
+    "@types/node": "^24.9.1",
+    "builtin-modules": "^5.0.0",
+    "esbuild": "^0.25.11",
+    "knip": "^5.66.3",
     "rimraf": "^6.0.1",
-    "tslib": "2.8.1",
-    "tsup": "8.5.0",
-    "tsx": "4.20.6",
-    "typescript": "5.9.3",
-    "vitest": "4.0.3"
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.4"
   },
   "publishConfig": {
     "access": "public"
@@ -63,5 +64,6 @@
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
-  }
+  },
+  "packageManager": "pnpm@10.19.0"
 }

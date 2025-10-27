@@ -28,7 +28,8 @@
   },
   "files": [
     "dist",
-    "src"
+    "src",
+    "bin"
   ],
   "scripts": {
     "build": "tsup",
@@ -45,23 +46,23 @@
     "knip": "knip"
   },
   "dependencies": {
-    "@tars/types": "workspace:*",
     "@tars/core": "workspace:*",
-    "@tars/shared": "workspace:*"
+    "@tars/shared": "workspace:*",
+    "@tars/types": "workspace:*"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.0",
-    "tsx": "4.20.6",
-    "tsup": "8.5.0",
-    "typescript": "5.9.3",
-    "vitest": "4.0.3",
+    "@biomejs/biome": "^2.3.1",
+    "knip": "^5.66.3",
     "rimraf": "^6.0.1",
-    "knip": "^5.66.2"
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.4"
   },
   "bin": {
     "tars-mcp": "./bin/mcp-cli.ts"
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "packageManager": "pnpm@10.19.0"
 }

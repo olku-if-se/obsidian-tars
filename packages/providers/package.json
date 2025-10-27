@@ -28,7 +28,8 @@
   },
   "files": [
     "dist",
-    "src"
+    "src",
+    "bin"
   ],
   "scripts": {
     "build": "tsup",
@@ -44,28 +45,28 @@
     "knip": "knip"
   },
   "dependencies": {
-    "@tars/types": "workspace:*",
+    "@anthropic-ai/sdk": "^0.67.0",
+    "@google/generative-ai": "^0.24.1",
     "@tars/core": "workspace:*",
     "@tars/shared": "workspace:*",
-    "@anthropic-ai/sdk": "^0.56.0",
-    "@google/generative-ai": "^0.21.0",
-    "axios": "^1.8.3",
-    "openai": "^5.0.1",
-    "ollama": "^0.5.16"
+    "@tars/types": "workspace:*",
+    "axios": "^1.12.2",
+    "ollama": "^0.6.0",
+    "openai": "^6.7.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.0",
-    "tsx": "4.20.6",
-    "tsup": "8.5.0",
-    "typescript": "5.9.3",
-    "vitest": "4.0.3",
+    "@biomejs/biome": "^2.3.1",
+    "knip": "^5.66.3",
     "rimraf": "^6.0.1",
-    "knip": "^5.66.2"
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.4"
   },
   "bin": {
     "tars-providers": "./bin/provider-demo.ts"
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "packageManager": "pnpm@10.19.0"
 }
