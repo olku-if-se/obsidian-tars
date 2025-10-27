@@ -78,7 +78,7 @@ export const asstTagCmd = (
           line: range.to.line,
           ch: editor.getLine(range.to.line).length,
         })
-        insertText(editor, HARD_LINE_BREAK + '\n')
+        insertText(editor, `${HARD_LINE_BREAK}\n`)
         const lnToWrite = await insertMarkSlowMo(
           editor,
           mark,
@@ -133,7 +133,7 @@ export const asstTagCmd = (
           line: range.to.line,
           ch: editor.getLine(range.to.line).length,
         })
-        const lnToWrite = insertText(editor, HARD_LINE_BREAK + '\n' + mark)
+        const lnToWrite = insertText(editor, `${HARD_LINE_BREAK}\n${mark}`)
 
         const messagesEndOffset = editor.posToOffset({
           line: lnToWrite,

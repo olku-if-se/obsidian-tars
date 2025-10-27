@@ -2,11 +2,16 @@
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": ["**/.env.*local", "**/tsconfig.json", "**/biome.json"],
   "globalEnv": ["NODE_ENV", "OBSIDIAN_VERSION"],
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", "main.js", "manifest.json"],
-      "inputs": ["src/**/*.ts", "package.json", "tsconfig.json", "tsup.config.ts"]
+      "inputs": [
+        "src/**/*.ts",
+        "package.json",
+        "tsconfig.json",
+        "tsup.config.ts"
+      ]
     },
     "build:esm": {
       "dependsOn": ["^build"],
@@ -37,6 +42,18 @@
       "outputs": [],
       "inputs": ["src/**/*.ts", "tsconfig.json"]
     },
+    "quality": {
+      "dependsOn": ["^build"],
+      "outputs": [],
+      "inputs": [
+        "src/**/*.ts",
+        "package.json",
+        "biome.json",
+        "knip.json",
+        "vitest.config.ts"
+      ],
+      "cache": false
+    },
     "cli": {
       "cache": false,
       "dependsOn": ["^build"]
@@ -46,10 +63,41 @@
       "dependsOn": ["^build"]
     },
     "quality-check": {
-      "dependsOn": ["build"],
+      "dependsOn": ["^build"],
       "outputs": [],
-      "inputs": ["src/**/*.ts", "package.json", "biome.json", "knip.json"],
+      "inputs": [
+        "src/**/*.ts",
+        "package.json",
+        "biome.json",
+        "knip.json",
+        "vitest.config.ts"
+      ],
       "cache": false
+    },
+    "quality": {
+      "dependsOn": ["^build"],
+      "outputs": [],
+      "inputs": [
+        "src/**/*.ts",
+        "package.json",
+        "biome.json",
+        "knip.json",
+        "vitest.config.ts"
+      ],
+      "cache": false
+    },
+    "quality:parallel": {
+      "dependsOn": ["^build"],
+      "outputs": [],
+      "inputs": [
+        "src/**/*.ts",
+        "package.json",
+        "biome.json",
+        "knip.json",
+        "vitest.config.ts"
+      ],
+      "cache": false,
+      "passThroughEnv": ["NODE_ENV"]
     },
     "knip": {
       "outputs": [],

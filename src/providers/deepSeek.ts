@@ -42,11 +42,7 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
 
     let startReasoning = false
     for await (const part of stream) {
-      if (
-        part.usage &&
-        part.usage.prompt_tokens &&
-        part.usage.completion_tokens
-      )
+      if (part.usage?.prompt_tokens && part.usage.completion_tokens)
         console.debug(
           `Prompt tokens: ${part.usage.prompt_tokens}, completion tokens: ${part.usage.completion_tokens}`
         )

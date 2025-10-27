@@ -1,0 +1,28 @@
+/* Tars Obsidian Plugin Styles */
+/* Basic styles for the Tars plugin */
+
+.tars-plugin {
+  /* Plugin container styles */
+}
+
+.tars-suggestion {
+  /* Tag suggestion styles */
+  color: var(--text-accent);
+  font-weight: 500;
+}
+
+.tars-response {
+  /* AI response styles */
+  padding: 1em;
+  border-left: 3px solid var(--text-accent);
+  margin: 0.5em 0;
+}
+
+.tars-error {
+  /* Error message styles */
+  color: var(--text-error);
+  background-color: var(--background-error);
+  padding: 0.5em;
+  border-radius: 4px;
+  margin: 0.5em 0;
+}

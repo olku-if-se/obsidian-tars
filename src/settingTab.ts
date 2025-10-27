@@ -96,7 +96,7 @@ export class TarsSettingTab extends PluginSettingTab {
     let newChatTagsInput: HTMLInputElement | null = null
     new Setting(containerEl)
       .setName(
-        this.plugin.settings.roleEmojis.newChat + ' ' + t('New chat tags')
+        `${this.plugin.settings.roleEmojis.newChat} ${t('New chat tags')}`
       )
       .addExtraButton(btn => {
         btn
@@ -127,7 +127,7 @@ export class TarsSettingTab extends PluginSettingTab {
     let userTagsInput: HTMLInputElement | null = null
     new Setting(containerEl)
       .setName(
-        this.plugin.settings.roleEmojis.user + ' ' + t('User message tags')
+        `${this.plugin.settings.roleEmojis.user} ${t('User message tags')}`
       )
       .addExtraButton(btn => {
         btn
@@ -157,7 +157,7 @@ export class TarsSettingTab extends PluginSettingTab {
     let systemTagsInput: HTMLInputElement | null = null
     new Setting(containerEl)
       .setName(
-        this.plugin.settings.roleEmojis.system + ' ' + t('System message tags')
+        `${this.plugin.settings.roleEmojis.system} ${t('System message tags')}`
       )
       .addExtraButton(btn => {
         btn
@@ -378,7 +378,7 @@ export class TarsSettingTab extends PluginSettingTab {
     isOpen: boolean = false
   ) => {
     const vendor = availableVendors.find(v => v.name === settings.vendor)
-    if (!vendor) throw new Error('No vendor found ' + settings.vendor)
+    if (!vendor) throw new Error(`No vendor found ${settings.vendor}`)
     const { containerEl } = this
     const details = containerEl.createEl('details')
     details.createEl('summary', {
@@ -451,10 +451,10 @@ export class TarsSettingTab extends PluginSettingTab {
                         t('Access denied. Please check your API permissions.')
                     )
                   } else {
-                    new Notice('🔴 ' + error.message)
+                    new Notice(`🔴 ${error.message}`)
                   }
                 } else {
-                  new Notice('🔴 ' + String(error))
+                  new Notice(`🔴 ${String(error)}`)
                 }
               }
             })
@@ -529,7 +529,7 @@ export class TarsSettingTab extends PluginSettingTab {
     this.addParametersSection(details, settings.options)
 
     new Setting(details)
-      .setName(t('Remove') + ' ' + vendor.name)
+      .setName(`${t('Remove')} ${vendor.name}`)
       .addButton(btn => {
         btn
           .setWarning()
@@ -549,7 +549,7 @@ export class TarsSettingTab extends PluginSettingTab {
     defaultTag: string
   ) =>
     new Setting(details)
-      .setName('✨ ' + t('Assistant message tag'))
+      .setName(`✨ ${t('Assistant message tag')}`)
       .setDesc(t('Tag used to trigger AI text generation'))
       .addText(text =>
         text
@@ -561,7 +561,7 @@ export class TarsSettingTab extends PluginSettingTab {
             if (trimmed.length === 0) return
             if (!validateTag(trimmed)) return
             const otherTags = this.plugin.settings.providers
-              .filter((e, i) => i !== index)
+              .filter((_e, i) => i !== index)
               .map(e => e.tag.toLowerCase())
             if (otherTags.includes(trimmed.toLowerCase())) {
               new Notice(t('Keyword for tag must be unique'))
@@ -584,7 +584,7 @@ export class TarsSettingTab extends PluginSettingTab {
     let textInput: HTMLInputElement | null = null
     new Setting(details)
       .setName('baseURL')
-      .setDesc(t('Default:') + ' ' + defaultValue)
+      .setDesc(`${t('Default:')} ${defaultValue}`)
       .addExtraButton(btn => {
         btn
           .setIcon('reset')
@@ -711,8 +711,8 @@ export class TarsSettingTab extends PluginSettingTab {
             options.budget_tokens ? options.budget_tokens.toString() : '1600'
           )
           .onChange(async value => {
-            const number = parseInt(value)
-            if (isNaN(number)) {
+            const number = parseInt(value, 10)
+            if (Number.isNaN(number)) {
               new Notice(t('Please enter a number'))
               return
             }
@@ -733,8 +733,8 @@ export class TarsSettingTab extends PluginSettingTab {
           .setPlaceholder('')
           .setValue(options.max_tokens.toString())
           .onChange(async value => {
-            const number = parseInt(value)
-            if (isNaN(number)) {
+            const number = parseInt(value, 10)
+            if (Number.isNaN(number)) {
               new Notice(t('Please enter a number'))
               return
             }
@@ -857,8 +857,8 @@ export class TarsSettingTab extends PluginSettingTab {
         .addOptions({
           auto: 'Auto',
           '1024x1024': '1024x1024',
-          '1536x1024': '1536x1024 ' + t('landscape'),
-          '1024x1536': '1024x1536 ' + t('portrait'),
+          '1536x1024': `1536x1024 ${t('landscape')}`,
+          '1024x1536': `1024x1536 ${t('portrait')}`,
         })
         .setValue(options.size)
         .onChange(async value => {
@@ -933,7 +933,7 @@ export class TarsSettingTab extends PluginSettingTab {
 }
 
 const getSummary = (tag: string, defaultTag: string) =>
-  tag === defaultTag ? defaultTag : tag + ' (' + defaultTag + ')'
+  tag === defaultTag ? defaultTag : `${tag} (${defaultTag})`
 
 const validateTag = (tag: string) => {
   if (tag.includes('#')) {

@@ -31,7 +31,7 @@ export const loadTemplateFileCommand = (
   buildPromptCommands: () => void
 ): Command => ({
   id: 'LoadTemplateFile',
-  name: t('Load template file: ') + `${APP_FOLDER}/${t('promptFileName')}.md`,
+  name: `${t('Load template file: ')}${APP_FOLDER}/${t('promptFileName')}.md`,
   callback: async () => {
     try {
       const filePath = normalizePath(`${APP_FOLDER}/${t('promptFileName')}.md`)
@@ -101,7 +101,7 @@ const createPromptFileIfNotExists = async (app: App) => {
 }
 
 const workspaceOpenFile = async (app: App, filePath: string) => {
-  if (app.workspace.getActiveFile()?.path != filePath) {
+  if (app.workspace.getActiveFile()?.path !== filePath) {
     await app.workspace.openLinkText('', filePath, true)
   }
 }

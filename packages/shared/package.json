@@ -9,45 +9,34 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
-    },
-    "./utils": {
-      "import": "./dist/utils.js",
-      "types": "./dist/utils.d.ts"
-    },
-    "./constants": {
-      "import": "./dist/constants.js",
-      "types": "./dist/constants.d.ts"
-    },
-    "./cli": {
-      "import": "./src/cli/utils-cli.ts"
     }
   },
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "scripts": {
     "build": "tsup",
-    "dev": "tsx --watch src/index.ts",
-    "type-check": "tsc --noEmit",
+    "dev": "tsup --watch",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "cli": "tsx src/cli/utils-cli.ts",
-    "clean": "rm -rf dist"
+    "test:watch": "vitest --watch --coverage --ui",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "check": "biome check --write .",
+    "clean": "rimraf dist",
+    "quality": "pnpm run typecheck && pnpm run lint && pnpm run test && pnpm run build",
+    "knip": "knip"
   },
   "dependencies": {
     "@tars/types": "workspace:*"
   },
   "devDependencies": {
-    "@biomejs/biome": "workspace:*",
-    "@tars/testing": "workspace:*",
-    "tsx": "workspace:*",
-    "tsup": "workspace:*",
-    "typescript": "workspace:*",
-    "vitest": "workspace:*"
-  },
-  "bin": {
-    "tars-shared": "./bin/utils-cli.ts"
+    "@biomejs/biome": "2.3.0",
+    "rimraf": "^6.0.1",
+    "tsup": "8.5.0",
+    "typescript": "5.9.3",
+    "vitest": "4.0.3",
+    "knip": "^5.66.2"
   },
   "publishConfig": {
     "access": "public"

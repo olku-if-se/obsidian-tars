@@ -13,7 +13,7 @@ export const getPromptTemplatesFromFile = async (
   const promptFile = app.vault.getFileByPath(promptFilePath)
 
   if (!promptFile) {
-    throw new Error('No prompt file found. ' + promptFilePath)
+    throw new Error(`No prompt file found. ${promptFilePath}`)
   }
 
   const appMeta = app.metadataCache
@@ -26,11 +26,11 @@ export const getPromptTemplatesFromFile = async (
 
   const sections = fileMeta.sections
   if (!sections) {
-    throw new Error('No sections found. ' + promptFilePath)
+    throw new Error(`No sections found. ${promptFilePath}`)
   }
   const headings = fileMeta.headings
   if (!headings) {
-    throw new Error('No headings found. ' + promptFilePath)
+    throw new Error(`No headings found. ${promptFilePath}`)
   }
 
   const fileText = await app.vault.cachedRead(promptFile)

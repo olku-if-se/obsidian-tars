@@ -33,18 +33,8 @@
     },
     "lib": ["DOM", "ES2022"]
   },
-  "include": [
-    "packages/*/src/**/*",
-    "apps/*/src/**/*",
-    "tools/*/src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "coverage",
-    "main.js",
-    "*.map"
-  ],
+  "include": ["packages/*/src/**/*", "apps/*/src/**/*", "tools/*/src/**/*"],
+  "exclude": ["node_modules", "dist", "coverage", "main.js", "*.map"],
   "references": [
     { "path": "./packages/types" },
     { "path": "./packages/shared" },

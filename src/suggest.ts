@@ -221,7 +221,7 @@ export class TagEditorSuggest extends EditorSuggest<TagEntry> {
     try {
       const provider = this.settings.providers.find(p => p.tag === element.tag)
       if (!provider) {
-        throw new Error('No provider found ' + element.tag)
+        throw new Error(`No provider found ${element.tag}`)
       }
 
       const env = await buildRunEnv(this.app, this.settings)

@@ -69,7 +69,7 @@ const sendRequestFunc = (settings: BaseOptions): SendRequest =>
         const trimmedPart = part.replace(/^data: /, '').trim()
         if (trimmedPart) {
           const data = JSON.parse(trimmedPart)
-          if (data.choices && data.choices[0].delta) {
+          if (data.choices?.[0].delta) {
             const delta = data.choices[0].delta
             const reasonContent = delta.reasoning_content
 

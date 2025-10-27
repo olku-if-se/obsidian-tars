@@ -6,5 +6,4 @@ export default defineConfig({
   dts: true,
   clean: true,
   external: [],
-  onSuccess: 'echo "Types package built (ESM)"'
 })

@@ -126,7 +126,7 @@ export const buildRunEnv = async (
     console.debug('resolveEmbed path', path, 'subpath', subpath)
     const targetFile = appMeta.getFirstLinkpathDest(path, filePath)
     if (targetFile === null) {
-      throw new Error('LinkText broken: ' + embed.link.substring(0, 20))
+      throw new Error(`LinkText broken: ${embed.link.substring(0, 20)}`)
     }
     return await vault.readBinary(targetFile)
   }
@@ -160,7 +160,7 @@ const resolveLinkedContent = async (env: RunEnv, linkText: string) => {
   const targetFile = appMeta.getFirstLinkpathDest(path, filePath)
 
   if (targetFile === null) {
-    throw new Error('LinkText broken: ' + linkText.substring(0, 20))
+    throw new Error(`LinkText broken: ${linkText.substring(0, 20)}`)
   }
 
   const fileMeta = appMeta.getFileCache(targetFile)
@@ -558,7 +558,7 @@ export const generate = async (
   try {
     const vendor = availableVendors.find(v => v.name === provider.vendor)
     if (!vendor) {
-      throw new Error('No vendor found ' + provider.vendor)
+      throw new Error(`No vendor found ${provider.vendor}`)
     }
 
     const conversation = await extractConversation(env, 0, endOffset)
@@ -642,7 +642,7 @@ export const generate = async (
       throw new Error(t('No text generated'))
     }
 
-    console.debug('✨ ' + t('AI generate') + ' ✨ ', llmResponse)
+    console.debug(`✨ ${t('AI generate')} ✨ `, llmResponse)
     if (startPos) {
       const endPos = editor.getCursor('to')
       const insertedText = editor.getRange(startPos, endPos)
@@ -666,11 +666,11 @@ const formatTextWithLeadingBreaks = (text: string) => {
   const firstLine = text.split('\n')[0]
   if (firstLine.startsWith('#') || firstLine.startsWith('```')) {
     // Markdown header or code block
-    return ' \n' + text
+    return ` \n${text}`
   }
   if (firstLine.startsWith('| ')) {
     // Markdown table
-    return ' \n\n' + text
+    return ` \n\n${text}`
   }
   return text
 }

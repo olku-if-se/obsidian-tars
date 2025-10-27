@@ -18,6 +18,7 @@
     "knip": "knip",
     "quality": "turbo run quality-check",
     "quality:fix": "turbo run quality-check -- --write",
+    "quality:parallel": "turbo run quality:parallel",
     "clean": "turbo run clean && rm -rf node_modules",
     "cli:core": "tsx packages/core/src/cli/tars-cli.ts",
     "cli:providers": "tsx packages/providers/src/demo/provider-demo.ts",
@@ -29,25 +30,28 @@
   "keywords": [],
   "author": "C Jack<https://github.com/ae86jack>",
   "license": "MIT",
+  "packageManager": "pnpm@10.19.0",
+  "dependencies": {
+    "obsidian": "latest"
+  },
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.56.0",
-    "@biomejs/biome": "workspace:*",
+    "@biomejs/biome": "2.3.0",
     "@google/generative-ai": "^0.21.0",
     "@types/node": "^22.18.12",
     "axios": "^1.8.3",
     "builtin-modules": "3.3.0",
-    "esbuild": "^0.25.8",
+    "esbuild": "0.25.11",
     "handlebars": "^4.7.8",
     "jose": "^5.2.4",
     "knip": "^5.66.2",
-    "obsidian": "latest",
     "ollama": "^0.5.16",
     "openai": "^5.0.1",
-    "tslib": "^2.4.0",
-    "tsup": "workspace:*",
-    "tsx": "workspace:*",
-    "turbo": "workspace:*",
-    "typescript": "workspace:*",
-    "vitest": "workspace:*"
+    "tslib": "2.8.1",
+    "tsup": "8.5.0",
+    "tsx": "4.20.6",
+    "turbo": "2.5.8",
+    "typescript": "5.9.3",
+    "vitest": "4.0.3"
   }
 }

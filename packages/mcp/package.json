@@ -32,14 +32,17 @@
   ],
   "scripts": {
     "build": "tsup",
-    "dev": "tsx --watch src/index.ts",
-    "type-check": "tsc --noEmit",
+    "dev": "tsup --watch",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "list-servers": "tsx src/cli/mcp-cli.ts --list",
-    "test-server": "tsx src/test/mcp-test.ts",
-    "demo": "tsx src/demo/mcp-demo.ts",
-    "clean": "rm -rf dist"
+    "test:watch": "vitest --watch --coverage --ui",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "check": "biome check --write .",
+    "clean": "rimraf dist",
+    "quality": "pnpm run typecheck && pnpm run lint && pnpm run test && pnpm run build",
+    "quality-check": "pnpm run typecheck && pnpm run lint && pnpm run test",
+    "knip": "knip"
   },
   "dependencies": {
     "@tars/types": "workspace:*",
@@ -47,12 +50,13 @@
     "@tars/shared": "workspace:*"
   },
   "devDependencies": {
-    "@biomejs/biome": "workspace:*",
-    "@tars/testing": "workspace:*",
-    "tsx": "workspace:*",
-    "tsup": "workspace:*",
-    "typescript": "workspace:*",
-    "vitest": "workspace:*"
+    "@biomejs/biome": "2.3.0",
+    "tsx": "4.20.6",
+    "tsup": "8.5.0",
+    "typescript": "5.9.3",
+    "vitest": "4.0.3",
+    "rimraf": "^6.0.1",
+    "knip": "^5.66.2"
   },
   "bin": {
     "tars-mcp": "./bin/mcp-cli.ts"

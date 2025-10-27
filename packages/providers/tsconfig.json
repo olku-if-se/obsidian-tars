@@ -14,16 +14,6 @@
       "@tars/shared": ["../shared/src"]
     }
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "dist",
-    "node_modules"
-  ],
-  "references": [
-    { "path": "../types" },
-    { "path": "../core" },
-    { "path": "../shared" }
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["dist", "node_modules"]
 }

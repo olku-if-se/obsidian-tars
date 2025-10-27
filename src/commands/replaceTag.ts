@@ -36,7 +36,7 @@ const convertToTag = (speaker: string) => {
     return speaker
   }
   // Tags can't contain blank spaces. To separate two or more words, use a hyphen (-) , #kebab-case
-  return '#' + speaker.trim().replace(/\s(?!:)/g, '-') // Replace spaces in the middle with a hyphen (-)
+  return `#${speaker.trim().replace(/\s(?!:)/g, '-')}` // Replace spaces in the middle with a hyphen (-)
 }
 
 class ReplaceTagModal extends Modal {
@@ -62,7 +62,7 @@ class ReplaceTagModal extends Modal {
     })
     for (const tag of this.recommendTags) {
       new Setting(contentEl)
-        .setName(tag.original + ` (${tag.count})`)
+        .setName(`${tag.original} (${tag.count})`)
         .addText(text =>
           text
             .setPlaceholder(tag.newTag)

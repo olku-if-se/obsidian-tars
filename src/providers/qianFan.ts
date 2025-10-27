@@ -120,7 +120,7 @@ const sendRequestFunc = (settings: QianFanOptions): SendRequest =>
         ...remains,
       }
       const response = await axios.post(
-        baseURL + `/${model}?access_token=${token.accessToken}`,
+        `${baseURL}/${model}?access_token=${token.accessToken}`,
         data,
         {
           headers: {
@@ -159,7 +159,7 @@ const sendRequestFunc = (settings: QianFanOptions): SendRequest =>
       new Notice(t('This is a non-streaming request, please wait...'), 5 * 1000)
 
       const response = await requestUrl({
-        url: baseURL + `/${model}?access_token=${token.accessToken}`,
+        url: `${baseURL}/${model}?access_token=${token.accessToken}`,
         method: 'POST',
         body: JSON.stringify(data),
         headers: {

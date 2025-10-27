@@ -1,7 +1,7 @@
 {
   "name": "@tars/testing",
   "version": "3.6.0",
-  "description": "Testing utilities and mocks for Tars packages",
+  "description": "Testing utilities and fixtures for Tars",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -9,49 +9,36 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
-    },
-    "./mocks": {
-      "import": "./dist/mocks.js",
-      "types": "./dist/mocks.d.ts"
-    },
-    "./fixtures": {
-      "import": "./dist/fixtures.js",
-      "types": "./dist/fixtures.d.ts"
-    },
-    "./helpers": {
-      "import": "./dist/helpers.js",
-      "types": "./dist/helpers.d.ts"
-    },
-    "./cli": {
-      "import": "./src/cli/test-runner.ts"
     }
   },
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "scripts": {
     "build": "tsup",
-    "dev": "tsx --watch src/index.ts",
-    "type-check": "tsc --noEmit",
+    "dev": "tsup --watch",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "test-runner": "tsx src/cli/test-runner.ts",
-    "clean": "rm -rf dist"
+    "test:watch": "vitest --watch --coverage --ui",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "check": "biome check --write .",
+    "clean": "rimraf dist",
+    "quality": "pnpm run typecheck && pnpm run lint && pnpm run test && pnpm run build",
+    "knip": "knip"
   },
   "dependencies": {
     "@tars/types": "workspace:*",
     "@tars/shared": "workspace:*",
-    "vitest": "^2.1.9"
+    "@tars/core": "workspace:*",
+    "vitest": "4.0.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "workspace:*",
-    "tsx": "workspace:*",
-    "tsup": "workspace:*",
-    "typescript": "workspace:*"
-  },
-  "bin": {
-    "tars-test": "./bin/test-runner.ts"
+    "@biomejs/biome": "2.3.0",
+    "rimraf": "^6.0.1",
+    "tsup": "8.5.0",
+    "typescript": "5.9.3",
+    "knip": "^5.66.2"
   },
   "publishConfig": {
     "access": "public"

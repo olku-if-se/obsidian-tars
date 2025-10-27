@@ -26,6 +26,11 @@ quokka.ts
 Makefile
 archive/
 
+# secrets
+.env.local
+.env.*.local
+.secrets/
+
 # claude local MCP configuration
 .mcp.json
 
@@ -44,3 +49,4 @@ dist/
 build/
 out/
 .turbo/
+tsconfig.tsbuildinfo

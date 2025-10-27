@@ -192,7 +192,7 @@ const sendRequestFunc = (settings: ClaudeOptions): SendRequest =>
           messageStreamEvent.content_block.type === 'server_tool_use' &&
           messageStreamEvent.content_block.name === 'web_search'
         ) {
-          new Notice(getCapabilityEmoji('Web Search') + 'Web Search')
+          new Notice(`${getCapabilityEmoji('Web Search')}Web Search`)
         }
       } else if (messageStreamEvent.type === 'message_delta') {
         // Handle message-level incremental updates

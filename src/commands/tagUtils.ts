@@ -111,7 +111,7 @@ export const insertMarkToEmptyLines = (
   let insertText = ''
   if (from.line > 0 && editor.getLine(from.line - 1).trim().length > 0) {
     // Previous line is not empty, add a blank line
-    insertText = '\n' + mark
+    insertText = `\n${mark}`
     toLine += 1
   } else {
     insertText = mark
@@ -142,7 +142,7 @@ export const insertMarkToBegin = (
     from.ch === 0
   ) {
     // If the previous line is not empty and 'from' is at the beginning of a line, add an empty line
-    insertText = '\n' + mark
+    insertText = `\n${mark}`
     toLine += 1
   } else {
     insertText = mark
@@ -164,7 +164,7 @@ export const replaceTag = (
 ) => {
   const { to } = range
   if (tagRange) {
-    editor.replaceRange('#' + newTag, tagRange.from, tagRange.to)
+    editor.replaceRange(`#${newTag}`, tagRange.from, tagRange.to)
     editor.setSelection({
       line: to.line,
       ch: editor.getLine(to.line).length,

@@ -17,10 +17,16 @@ jobs:
         with:
           node-version: '20.x'
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: latest
+
       - name: Build plugin
         run: |
-          npm install
-          npm run build
+          pnpm install
+          cd apps/obsidian-plugin
+          pnpm run build
 
       - name: Create release
         env:
@@ -31,4 +37,4 @@ jobs:
           gh release create "$tag" \
             --title="$tag" \
             --draft \
-            main.js styles.css manifest.json
+            apps/obsidian-plugin/dist/main.js apps/obsidian-plugin/dist/styles.css apps/obsidian-plugin/dist/manifest.json

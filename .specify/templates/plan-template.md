@@ -17,15 +17,15 @@
   the iteration process.
 -->
 
-**Language/Version**: TypeScript 5.5+ with strict mode enabled
-**Primary Dependencies**: Obsidian API, esbuild, ESLint, Prettier, various AI provider SDKs
-**Storage**: Obsidian's encrypted settings for configuration, file system for notes
-**Testing**: Jest/Vitest for unit tests, custom test framework for Obsidian integration
-**Target Platform**: Obsidian plugin (desktop + mobile)
-**Project Type**: Single TypeScript project with modular provider architecture
-**Performance Goals**: Responsive UI during streaming responses, <100ms UI response time
-**Constraints**: Must work within Obsidian's security sandbox and API limitations
-**Scale/Scope**: Plugin supporting 10+ AI providers, multiple MCP servers, global user base
+**Language/Version**: TypeScript 5.7+ with strict mode enabled
+**Primary Dependencies**: PNPM 9.x, TURBO 2.x, BIOME 1.x, KNIP 5.x, TSX latest, TSUP 8.x, ESBUILD latest, Obsidian API, various AI provider SDKs
+**Storage**: Obsidian's encrypted settings for configuration, file system for notes, monorepo package management
+**Testing**: Vitest 2.x for unit tests, custom test framework for Obsidian integration, turbo test orchestration
+**Target Platform**: Obsidian plugin (desktop + mobile) with monorepo build system
+**Project Type**: Monorepo with multiple TypeScript packages and shared dependencies
+**Performance Goals**: 50%+ faster builds with turbo caching, <5s incremental builds, <30s full test suite, responsive UI during streaming responses
+**Constraints**: Must work within Obsidian's security sandbox and API limitations, maintain monorepo package boundaries
+**Scale/Scope**: Monorepo supporting 10+ AI providers, multiple MCP servers, shared packages, global developer community
 
 ## Constitution Check
 
@@ -43,22 +43,39 @@ All features MUST pass these constitutional gates:
 - No provider-specific logic leaks into core plugin code
 - Supports streaming responses with proper AbortController handling
 
-**Gate 3: Cross-Platform Compatibility**
+**Gate 3: Test-First Development (TDD)**
+- Red-Green-Refactor cycle strictly enforced
+- Tests MUST be written before implementation, MUST fail initially
+- All provider implementations MUST include contract tests
+- Code and branch coverage MUST exceed 85%
+- All unit tests MUST include Given/When/Then comments in format `// {GIVEN|WHEN|THEN}: {description}`
+- Test comments MUST focus on business value, not implementation details
+
+**Gate 4: Cross-Platform Compatibility**
 - Works on both desktop and mobile Obsidian clients
 - Supports both mouse/keyboard and touch interfaces
 - Uses Obsidian's cross-platform file system abstraction
 
-**Gate 4: Performance & Responsiveness**
+**Gate 5: Performance & Responsiveness**
 - UI remains responsive during AI operations
 - Uses streaming responses for long operations
 - No blocking operations in the main thread
 
-**Gate 5: MCP Integration Capability**
+**Gate 6: MCP Integration Capability**
 - MCP server integrations follow same abstraction patterns as AI providers
 - Clean separation between core plugin logic and MCP server implementations
 - MCP functionality is independently testable
 
-**Gate 6: Security & Privacy**
+**Gate 7: Development Standards & Tooling**
+- Uses PNPM for package management and workspaces
+- Uses TURBO for build orchestration and caching
+- Uses BIOME for linting and formatting (replaces ESLint/Prettier)
+- Uses KNIP for dependency analysis
+- Uses TSX for TypeScript execution
+- Uses TSUP/ESBUILD for bundling
+- Follows monorepo architecture requirements
+
+**Gate 8: Security & Privacy**
 - API keys stored in Obsidian's encrypted settings
 - No sensitive data exposed in logs or error messages
 - Content only transmitted to configured AI provider or MCP server

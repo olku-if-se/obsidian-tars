@@ -1,9 +1,11 @@
 # Feature Specification: [FEATURE NAME]
 
-**Feature Branch**: `[###-feature-name]`  
-**Created**: [DATE]  
-**Status**: Draft  
+**Feature Branch**: `[###-feature-name]`
+**Created**: [DATE]
+**Status**: Draft
 **Input**: User description: "$ARGUMENTS"
+**Tooling**: PNPM, TURBO, BIOME, KNIP, TSX, TSUP, ESBUILD (as per constitution)
+**Testing**: TDD with 85%+ coverage, Given/When/Then comments in unit tests, business-value focused test descriptions
 
 ## User Scenarios & Testing *(mandatory)*
 

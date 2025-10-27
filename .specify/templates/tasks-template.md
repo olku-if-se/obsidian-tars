@@ -162,9 +162,13 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX [P] Constitutional compliance review for Plugin Architecture Excellence
 - [ ] TXXX [P] Constitutional compliance review for Provider Abstraction
 - [ ] TXXX [P] Constitutional compliance review for Test-First Development (TDD)
+- [ ] TXXX [P] Verify 85%+ code and branch coverage for all tests
+- [ ] TXXX [P] Verify Given/When/Then comment format in unit tests
+- [ ] TXXX [P] Verify test comments focus on business value, not implementation details
 - [ ] TXXX [P] Constitutional compliance review for Cross-Platform Compatibility
 - [ ] TXXX [P] Constitutional compliance review for Performance & Responsiveness
 - [ ] TXXX [P] Constitutional compliance review for MCP Integration Capability
+- [ ] TXXX [P] Constitutional compliance review for Development Standards & Tooling
 - [ ] TXXX [P] Constitutional compliance review for Security & Privacy
 - [ ] TXXX Update constitution version if amendments were needed
 

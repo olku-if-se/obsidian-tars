@@ -1,0 +1,11 @@
+{
+  "id": "obsidian-tars",
+  "name": "Tars",
+  "version": "3.6.0",
+  "minAppVersion": "0.15.0",
+  "description": "Text generation based on tag suggestions, using DeepSeek, Claude, OpenAI, OpenRouter, SiliconFlow, Gemini, Qwen & more.",
+  "author": "C Jack<https://github.com/ae86jack>",
+  "authorUrl": "https://github.com/ae86jack",
+  "fundingUrl": "https://github.com/sponsors/ae86jack",
+  "isDesktopOnly": false
+}

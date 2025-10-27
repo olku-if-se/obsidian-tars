@@ -1,10 +1,9 @@
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
-  entry: ['src/index.ts', 'src/plugin.ts', 'src/registry.ts', 'src/settings.ts', 'src/events.ts'],
+  entry: ['src/index.ts'],
   format: ['esm'],
-  dts: true,
+  dts: false,
   clean: true,
-  external: ['@tars/types', '@tars/shared', 'obsidian'],
-  onSuccess: 'echo "Core package built (ESM)"'
+  external: ['@tars/types', '@tars/shared'],
 })

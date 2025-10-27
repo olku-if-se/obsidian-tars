@@ -1,33 +1,59 @@
 {
-  "name": "@tars/plugin",
+  "name": "@tars/obsidian-plugin",
   "version": "3.6.0",
   "description": "Tars Obsidian Plugin - AI-powered text generation",
-  "type": "commonjs",
+  "type": "module",
   "main": "main.js",
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch",
-    "type-check": "tsc --noEmit",
-    "clean": "rm -rf main.js manifest.json"
+    "build": "node esbuild.config.mjs production && pnpm run copy-files",
+    "dev": "node esbuild.config.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest --watch --coverage --ui",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome lint .",
+    "format": "biome format --write .",
+    "check": "biome check --write .",
+    "copy-files": "cp manifest.json dist/ && cp styles.css dist/",
+    "clean": "rimraf dist main.js",
+    "quality": "pnpm run typecheck && pnpm run lint && pnpm run test && pnpm run build",
+    "knip": "knip"
   },
   "dependencies": {
     "@tars/core": "workspace:*",
-    "@tars/providers": "workspace:*",
-    "@tars/mcp": "workspace:*",
     "@tars/shared": "workspace:*",
-    "@tars/types": "workspace:*",
-    "obsidian": "latest"
+    "@tars/types": "workspace:*"
   },
   "devDependencies": {
-    "@biomejs/biome": "workspace:*",
-    "@tars/testing": "workspace:*",
+    "@biomejs/biome": "2.3.0",
+    "@types/node": "^22.0.0",
     "builtin-modules": "3.3.0",
-    "esbuild": "^0.25.8",
-    "tslib": "2.4.0",
-    "tsup": "workspace:*",
-    "typescript": "workspace:*"
+    "esbuild": "0.25.11",
+    "knip": "^5.66.2",
+    "rimraf": "^6.0.1",
+    "tslib": "2.8.1",
+    "tsup": "8.5.0",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3",
+    "vitest": "4.0.3"
   },
   "publishConfig": {
     "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TarsLab/obsidian-tars.git",
+    "directory": "apps/obsidian-plugin"
+  },
+  "keywords": [
+    "obsidian",
+    "plugin",
+    "ai",
+    "assistant",
+    "tars"
+  ],
+  "author": "TarsLab",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

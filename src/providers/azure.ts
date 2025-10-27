@@ -59,11 +59,7 @@ const sendRequestFunc = (settings: AzureOptions): SendRequest =>
     let thinkEnd = false // 过滤掉重复的 </think>
 
     for await (const part of stream) {
-      if (
-        part.usage &&
-        part.usage.prompt_tokens &&
-        part.usage.completion_tokens
-      )
+      if (part.usage?.prompt_tokens && part.usage.completion_tokens)
         console.debug(
           `Prompt tokens: ${part.usage.prompt_tokens}, completion tokens: ${part.usage.completion_tokens}`
         )
