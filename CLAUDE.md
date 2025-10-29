@@ -9,13 +9,13 @@ Tars is an Obsidian plugin for AI-powered text generation using tag-based conver
 ## Development Commands
 
 ### Building and Development
-- `npm run dev` - Start development build with file watching and inline sourcemaps
-- `npm run build` - Production build with minification and no sourcemaps
-- `npm run version` - Update version numbers in manifest.json and versions.json
+- `pnpm run dev` - Start development build with file watching and inline sourcemaps
+- `pnpm run build` - Production build with minification and no sourcemaps
+- `pnpm run version` - Update version numbers in manifest.json and versions.json
 
 ### Code Quality
-- `npm run lint` - Run ESLint on the codebase
-- `npm run format` - Format code with Prettier
+- `pnpm run lint` - Run ESLint on the codebase
+- `pnpm run format` - Format code with Prettier
 
 ### Build System
 - Uses esbuild for bundling (configured in `esbuild.config.mjs`)
@@ -26,39 +26,39 @@ Tars is an Obsidian plugin for AI-powered text generation using tag-based conver
 
 ### Core Components
 
-**Plugin Entry (`src/main.ts`)**
+**Plugin Entry (`apps/obsidian-plugin/src/main.ts`)**
 - Main plugin class extending Obsidian's Plugin
 - Manages settings, commands, status bar, and editor suggestions
 - Handles dynamic tag command building and prompt template management
 
-**Settings Management (`src/settings.ts`)**
+**Settings Management (`apps/obsidian-plugin/src/settings.ts`)**
 - Centralized settings interface and defaults
 - Vendor registry with all supported AI providers
 - Plugin configuration for tags, templates, and features
 
-**AI Provider System (`src/providers/`)**
+**AI Provider System (`apps/obsidian-plugin/src/providers/`)**
 - Unified vendor interface for different AI services
 - Individual provider implementations (OpenAI, Claude, DeepSeek, etc.)
 - Support for streaming responses and multimodal capabilities
 - Provider-specific capabilities (text generation, vision, image generation, web search)
 
-**Editor Integration (`src/editor.ts`)**
+**Editor Integration (`apps/obsidian-plugin/src/editor.ts`)**
 - Core text processing and AI request handling
 - Manages conversation parsing and message extraction
 - Handles embedded files, internal links, and attachments
 - Integrates with Obsidian's cache system for file resolution
 
-**Command System (`src/commands/`)**
+**Command System (`apps/obsidian-plugin/src/commands/`)**
 - Tag-based commands for different message roles (user, assistant, system, newChat)
 - Dynamic command registration based on settings
 - Selection and replacement operations for text editing
 
-**Tag Suggestion (`src/suggest.ts`)**
+**Tag Suggestion (`apps/obsidian-plugin/src/suggest.ts`)**
 - Autocomplete system for tag-based conversation triggers
 - Real-time tag suggestions as users type
 - Integration with Obsidian's editor suggest API
 
-**Prompt Templates (`src/prompt/`)**
+**Prompt Templates (`apps/obsidian-plugin/src/prompt/`)**
 - Customizable prompt template system
 - Template loading and management commands
 - Dynamic command generation for templates
@@ -85,7 +85,7 @@ Tars is an Obsidian plugin for AI-powered text generation using tag-based conver
 - Configurable tags, templates, and provider options
 - Real-time updates when settings change
 
-## File Structure Notes
+## File Structure Notes inside `apps/obsidian-plugin`
 
 - `src/` - Main TypeScript source code
 - `src/providers/` - AI provider implementations (one per vendor)
@@ -112,14 +112,18 @@ When working with AI providers, ensure proper handling of:
 - Error handling and user feedback
 
 ## Active Technologies
-- TypeScript 5.7+ with strict mode enabled + pnpm 9.x, turbo 2.x, tsup 8.x, vitest 2.x, biome 1.x, knip 5.x, latest Obsidian API, modern AI provider SDKs (002-migrate-to-monorepo-structure)
 - Obsidian's encrypted settings for configuration, file system for notes, monorepo package management (002-migrate-to-monorepo-structure)
 - TypeScript 5.7+ with strict mode enabled + pnpm 9.x, turbo 2.x, tsup 8.x, vitest 2.x, biome 1.x, knip 5.x, tsx latest, latest Obsidian API, modern AI provider SDKs (002-migrate-to-monorepo-structure)
-- TypeScript 5.7+ with strict mode enabled + PNPM 9.x, TURBO 2.x, BIOME 1.x, KNIP 5.x, TSX latest, TSUP 8.x, VITEST 2.x (001-monorepo-scope)
-- Monorepo package management with workspace protocol (001-monorepo-scope)
 
 ## Recent Changes
 - 002-migrate-to-monorepo-structure: Added TypeScript 5.7+ with strict mode enabled + pnpm 9.x, turbo 2.x, tsup 8.x, vitest 2.x, biome 1.x, knip 5.x, latest Obsidian API, modern AI provider SDKs
 - by default all monorepo packages should allow vitest to passWithNoTests, ref: https://vitest.dev/config/#passwithnotests
 - in all packages enable aliases: `~` that should point on `{package}/src` folder, and `src` - points on the same folder as tilde.
 - vitest should by default execute one-run mode, not continues watching. `pnpm test`
+
+## Scope Clarifications (2025-10-29)
+- **Version Management**: Out of scope for current migration - deferred to separate specification
+- **CI/CD Pipeline Updates**: Required for completion - tasks to be added to Phase 5 or 6
+- **Optional Tasks**: 18 tasks (TSX CLI tools, additional extractions) are optional/deferred, not blocking migration
+- **Performance Validation**: 50%+ improvement target is aspirational, validation deferred to post-migration
+- **Multi-Target Builds**: Existing tasks (T049, T054) provide sufficient IIFE and ESM validation

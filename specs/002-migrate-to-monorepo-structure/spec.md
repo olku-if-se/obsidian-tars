@@ -18,6 +18,13 @@
 - Q: Single version management implementation → A: Skip for now
 - Q: TSX execution requirements → A: CLI tools, demo scripts, and development utilities need TSX execution
 
+### Session 2025-10-29 - Specification Refinement
+- Q: Should single version number management be in scope for this migration (conflicting signals between "Skip for now" and FR-011/SC-011)? → A: Completely out of scope - remove FR-011 and SC-011, defer entire feature to separate specification
+- Q: Should CI/CD pipeline updates be included in this migration scope (FR-011 requires it but tasks.md has no CI/CD tasks)? → A: Fully in scope - Add CI/CD update tasks to Phase 5 or 6 (required for completion)
+- Q: What is the completion status for 18 incomplete tasks (T064, T068-T070, T073-T076, T079-T086) including TSX CLI tools and additional extractions? → A: Optional/deferred - Nice-to-have developer utilities, not blocking core migration completion
+- Q: How should build performance improvement be validated (FR-006 requires 50%+ faster builds but no baseline defined)? → A: Defer performance validation to post-migration analysis (not part of acceptance criteria)
+- Q: Should multi-target build validation be added (FR-010 requires IIFE and ESM targets but tasks don't explicitly validate both)? → A: Existing build tasks (T049, T054) are sufficient validation for multi-target builds
+
 ### Session 2025-10-27 - Scope Clarification
 **Scope Boundary Definition**:
 The monorepo migration scope is **explicitly bounded to infrastructure setup only**, excluding code refactoring and feature development which belong to separate specifications.
@@ -28,6 +35,7 @@ The monorepo migration scope is **explicitly bounded to infrastructure setup onl
 - Development workflow automation and optimization
 - Build performance optimization and caching
 - Quality gate setup and validation
+- CI/CD pipeline configuration updates for new build system and output paths
 
 **Explicitly Excluded from This Scope**:
 - Code refactoring between packages (separate specification needed)
@@ -35,6 +43,11 @@ The monorepo migration scope is **explicitly bounded to infrastructure setup onl
 - Implementation of new CLI tools (separate specification needed)
 - Adding new AI providers or features (separate specification needed)
 - Testing infrastructure expansion (separate specification needed)
+
+**Optional Enhancements (Not Blocking Completion)**:
+- TSX executable CLI tools for development utilities (T064, T069-T070, T075-T076, T080-T081, T086)
+- Additional code extractions beyond core functionality (T068, T073-T074, T079, T082-T085)
+- Advanced developer experience features beyond hot reloading
 
 **Rationale**:
 - Infrastructure migration can be completed independently of code organization
@@ -103,13 +116,12 @@ The monorepo should enable clear separation of concerns between different parts 
 - **FR-003**: System MUST use tsup for bundling TypeScript packages with modern configuration
 - **FR-004**: System MUST upgrade to latest stable Obsidian SDK and all other dependencies
 - **FR-005**: All existing functionality MUST work identically after migration with no user data changes
-- **FR-006**: Build performance MUST improve significantly (target: 50%+ faster builds)
-- **FR-007**: Development experience MUST support hot reloading and fast iteration with TSX executable CLI tools
+- **FR-006**: Build performance expected to improve with modern tooling (aspirational target: 50%+ faster builds, validation deferred to post-migration analysis)
+- **FR-007**: Development experience MUST support hot reloading and fast iteration (TSX executable CLI tools are optional enhancements)
 - **FR-008**: Package boundaries MUST be clear with proper dependency management
 - **FR-009**: All tests MUST pass in the new structure with proper test isolation
 - **FR-010**: Monorepo MUST support multiple build targets - plugin bundle (IIFE), ESM packages for development/testing
-- **FR-011**: All packages MUST use single version number managed through semantic commit messages
-- **FR-012**: CI/CD pipelines MUST be updated to use turbo with new build destination folders
+- **FR-011**: CI/CD pipelines MUST be updated to use turbo with new build destination folders
 
 ### Key Entities
 
@@ -124,8 +136,8 @@ The monorepo should enable clear separation of concerns between different parts 
 
 ### Measurable Outcomes
 
-- **SC-001**: Build time reduced by 50% or more for full rebuild
-- **SC-002**: Incremental builds complete in under 5 seconds for typical changes
+- **SC-001**: Build system successfully migrated with turbo orchestration (performance analysis deferred to post-migration)
+- **SC-002**: Incremental build capability functional with turbo caching (specific timing validation deferred)
 - **SC-003**: All existing tests pass without modification in new structure
 - **SC-004**: Developer setup time reduced to under 5 minutes (npm install + build)
 - **SC-005**: Plugin bundle size remains the same or decreases
@@ -134,13 +146,12 @@ The monorepo should enable clear separation of concerns between different parts 
 - **SC-008**: MCP integration capability maintained and enhanced
 - **SC-009**: Cross-platform compatibility maintained (desktop + mobile)
 - **SC-010**: Current code coverage captured as baseline, all new code must achieve 85%+ coverage
-- **SC-011**: All packages maintain single version number through semantic commit messages
-- **SC-012**: CI/CD pipelines successfully updated to use turbo with new build paths
+- **SC-011**: CI/CD pipelines successfully updated to use turbo with new build paths
 
 ### Technical Metrics
 
 - **TM-001**: Package dependency graph is acyclic and well-structured
-- **TM-002**: Build cache hit rate >80% for incremental builds
-- **TM-003**: Test execution time <30 seconds for full test suite
+- **TM-002**: Build caching functionality operational with turbo (hit rate analysis deferred to post-migration)
+- **TM-003**: Test execution functional with parallel capability (timing validation deferred)
 - **TM-004**: Bundle analysis shows no significant size increases
-- **TM-005**: TypeScript compilation time <10 seconds for full project
+- **TM-005**: TypeScript compilation successful for full project (timing validation deferred)

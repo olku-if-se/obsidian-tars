@@ -1,6 +1,6 @@
 # Implementation Plan: Monorepo Migration with Modern Tooling
 
-**Branch**: `002-migrate-to-monorepo-structure` | **Date**: 2025-01-24 | **Spec**: spec.md
+**Branch**: `002-migrate-to-monorepo-structure` | **Date**: 2025-10-29 (Updated) | **Spec**: spec.md
 **Input**: Feature specification from `/specs/002-migrate-to-monorepo-structure/spec.md`
 
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
@@ -8,6 +8,16 @@
 ## Summary
 
 Migrate the Tars Obsidian plugin from a single-package structure to a modern monorepo focusing **exclusively on infrastructure setup**: build tools configuration, workspace management, and development workflow optimization. The scope is deliberately bounded to infrastructure-only tasks, excluding code refactoring and feature development which belong to separate specifications. The migration must maintain 100% functional compatibility while significantly improving build performance and developer experience.
+
+### Clarifications Update (2025-10-29)
+
+Based on specification refinement session 2025-10-29, the following scope adjustments have been confirmed:
+
+1. **Version Management**: Removed from scope (FR-011/SC-011 deleted) - deferred to separate specification
+2. **CI/CD Pipeline Updates**: Confirmed as fully in scope - tasks to be added to Phase 5 or 6 (required for completion)
+3. **Optional Tasks**: 18 tasks (T064, T068-T070, T073-T076, T079-T086) marked as optional/deferred developer utilities - not blocking core migration
+4. **Performance Validation**: Build performance improvements are aspirational (50%+ target) with validation deferred to post-migration analysis - not part of acceptance criteria
+5. **Multi-Target Builds**: Existing build tasks (T049, T054) provide sufficient validation for IIFE and ESM targets
 
 ## Technical Context
 
@@ -17,11 +27,12 @@ Migrate the Tars Obsidian plugin from a single-package structure to a modern mon
 **Testing**: Vitest for unit tests with parallel execution and turbo orchestration
 **Target Platform**: Build system and development workflow (agnostic to application domain)
 **Project Type**: Infrastructure setup for existing monorepo structure
-**Performance Goals**: Full repository build <60s, incremental builds <5s, cache hit rate >80%, quality checks <30s
+**Performance Goals**: Full repository build <60s, incremental builds <5s, cache hit rate >80%, quality checks <30s (50%+ improvement target aspirational, validation deferred to post-migration)
 **Quality Standards**: All packages build without warnings/errors, pass TypeScript checks, pass Biome formatting/lint, pass Knip dependency analysis
 **Bundle Strategy**: Final plugin produces optimized IIFE bundle with treeshaking (main.js, manifest.json, styles.css in dist/), packages produce ESM modules for development
-**TSX Support**: CLI tools and development utilities executable via TSX
-**Constraints**: Infrastructure-only scope, no application code changes, maintain existing functionality
+**TSX Support**: CLI tools and development utilities executable via TSX (optional enhancements, not blocking)
+**Constraints**: Infrastructure-only scope, no application code changes, maintain existing functionality, CI/CD pipeline updates required
+**Out of Scope**: Version management automation (deferred to future spec), optional TSX CLI utilities (18 tasks deferred)
 **Scale/Scope**: Build tools configuration and development workflow optimization
 
 ## Constitution Check
