@@ -109,18 +109,17 @@ As a developer troubleshooting dependency injection issues, I need clear error m
 - **FR-005**: System MUST maintain backward compatibility with all existing plugin APIs and settings
 - **FR-006**: System MUST support lazy instantiation of components to minimize plugin load time
 - **FR-007**: System MUST allow dynamic registration and unregistration of AI providers at runtime
-- **FR-008**: System MUST propagate configuration changes to all dependent components
-- **FR-009**: System MUST isolate failures in individual components to prevent cascading failures
-- **FR-010**: System MUST provide clear error messages when dependency resolution fails
-- **FR-011**: System MUST support scoped instances where each request gets a fresh component instance
+- **FR-008**: System MUST propagate configuration changes to affected components within 10ms using callback-based updates
+- **FR-009**: System MUST implement fail-fast termination where any component failure immediately stops plugin operation to prevent inconsistent state
+- **FR-010**: System MUST provide clear error messages when dependency resolution fails with structured error objects for debugging tools
+- **FR-011**: System MUST support transient instances where each injection gets a fresh component instance
 - **FR-012**: System MUST support singleton instances that persist for the plugin's lifetime
 - **FR-013**: System MUST enable developers to register new providers by adding a single registration call
-- **FR-014**: System MUST validate dependency configurations at plugin initialization time
-- **FR-015**: System MUST support child containers for test isolation and mocking
+- **FR-014**: System MUST validate dependency configurations at resolution time with unit test verification
+- **FR-015**: System MUST support child containers per describe block for test isolation and mocking with multiple tests inside each container
 - **FR-016**: System MUST preserve all error context when wrapping exceptions from dependencies
 - **FR-017**: System MUST allow providers to access shared services through the dependency system
 - **FR-018**: System MUST support factory functions for complex component initialization
-- **FR-019**: System MUST enable gradual migration where legacy and DI code coexist safely
 - **FR-020**: System MUST provide facades that delegate to DI-managed instances for backward compatibility
 
 ### Key Entities
@@ -130,7 +129,7 @@ As a developer troubleshooting dependency injection issues, I need clear error m
 - **AI Provider**: Component providing AI service integration with specific capabilities (text generation, vision, image generation)
 - **Service Facade**: Compatibility layer maintaining existing APIs while delegating to DI-managed implementations
 - **Provider Factory**: Component responsible for creating and configuring AI provider instances based on user settings
-- **Lifecycle Scope**: Definition of component lifetime (singleton, transient, scoped) determining when instances are created and destroyed
+- **Lifecycle Scope**: Definition of component lifetime (singleton, transient) determining when instances are created and destroyed
 
 ## Success Criteria *(mandatory)*
 
@@ -141,17 +140,31 @@ As a developer troubleshooting dependency injection issues, I need clear error m
 - **SC-003**: 100% of existing plugin functionality works identically after migration with zero breaking changes
 - **SC-004**: Plugin initialization time increases by no more than 50 milliseconds compared to pre-migration baseline
 - **SC-005**: Test coverage for provider logic reaches 85% or higher using isolated unit tests
-- **SC-006**: Configuration changes reflect in active components within 100 milliseconds without restart
+- **SC-006**: Configuration changes reflect in active components within 10 milliseconds using callback-based propagation without restart
 - **SC-007**: Dependency resolution errors provide actionable error messages identifying the specific missing or misconfigured component
-- **SC-008**: Memory usage during plugin operation remains within 10% of pre-migration baseline
 - **SC-009**: Developers can mock any dependency in tests without modifying production code
 - **SC-010**: All 6 migration phases complete with passing tests and zero regressions
+
+## Clarifications
+
+### Session 2025-10-30
+
+- Q: Configuration Change Propagation Mechanism → A: Event-driven propagation - Configuration changes trigger immediate updates to only affected components through events
+- Q: Component Failure Isolation Strategy → A: Fail-fast termination - Any component failure immediately stops the entire plugin operation
+- Q: Test Isolation Scope for Parallel Testing → A: Child container per describe block - Each describe block gets its own isolated child container with mocked dependencies for multiple tests inside
+- Q: Performance Target for Configuration Changes → A: Immediate (<10ms) - Configuration changes must propagate within 10 milliseconds using callbacks instead of event emitters
+- Q: Dependency Configuration Validation Timing → A: Resolution-time validation - Validate dependencies only when they are first requested/resolved, verified by unit tests
+- Q: Dependency Lifetime Scope Granularity → A: Simplified two-scope model (singleton, transient) - Singletons for plugin lifetime, transients for each request
+- Q: Needle DI Version Compatibility → A: Strict v1.1.0+ requirement with graceful degradation - Plugin fails to load with clear upgrade instructions if incompatible version found
+- Q: Memory Usage Constraint Strategy → A: No explicit memory constraint - Focus on functionality over memory usage, optimize post-migration if needed
+- Q: Error Message Depth and Context → A: Minimal messages with structured objects - Simple console output combined with machine-readable error details for debugging tools
+- Q: Migration Strategy for Provider Registration → A: Big bang migration - All providers converted to DI simultaneously with a single breaking change
 
 ## Assumptions
 
 - The plugin already has a working test suite that will validate backward compatibility
 - Obsidian's plugin API provides sufficient hooks for dependency injection integration
-- The migration can be done gradually without requiring a complete rewrite
+- The migration will be completed as a single big bang change with all providers converted simultaneously
 - The existing provider interfaces are well-defined and stable
 - Plugin settings are already stored in a structured format that can be bound to DI tokens
 - The codebase follows TypeScript best practices and supports modern decorators (ES2022+)
@@ -161,7 +174,7 @@ As a developer troubleshooting dependency injection issues, I need clear error m
 
 ## Dependencies
 
-- **Needle DI Library**: The core dependency injection framework (@needle-di/core v1.1.0 or later)
+- **Needle DI Library**: The core dependency injection framework (@needle-di/core v1.1.0+ with minor version updates, strict requirement with graceful degradation)
 - **TypeScript Compiler**: Must support stage-3 decorators (TypeScript 5.7+)
 - **Build System**: Must support ES2022 target for decorator emission (esbuild/tsup configured correctly)
 - **Test Framework**: Must support container creation and mocking (Vitest with DI support)
