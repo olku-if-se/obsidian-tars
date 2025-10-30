@@ -28,7 +28,7 @@
   "keywords": [],
   "author": "C Jack<https://github.com/ae86jack>",
   "license": "MIT",
-  "packageManager": "pnpm@10.19.0",
+  "packageManager": "pnpm@10.20.0",
   "devDependencies": {
     "@types/node": "^24.9.1",
     "@vitest/coverage-v8": "^4.0.4",
