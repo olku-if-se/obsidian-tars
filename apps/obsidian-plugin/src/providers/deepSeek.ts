@@ -17,55 +17,55 @@ const sendRequestFunc: Vendor['sendRequestFunc'] = options => {
       controller: AbortController,
       _resolveEmbedAsBinary: ResolveEmbedAsBinary
     ) {
-    const { parameters, ...optionsExcludingParams } = settings
-    const mergedOptions = { ...optionsExcludingParams, ...parameters }
-    const { apiKey, baseURL, model, ...remains } = mergedOptions
-    if (!apiKey) throw new Error(t('API key is required'))
+      const { parameters, ...optionsExcludingParams } = settings
+      const mergedOptions = { ...optionsExcludingParams, ...parameters }
+      const { apiKey, baseURL, model, ...remains } = mergedOptions
+      if (!apiKey) throw new Error(t('API key is required'))
 
-    const client = new OpenAI({
-      apiKey,
-      baseURL,
-      dangerouslyAllowBrowser: true,
-    })
+      const client = new OpenAI({
+        apiKey,
+        baseURL,
+        dangerouslyAllowBrowser: true,
+      })
 
-    const messageList = Array.from(messages)
-    const stream = await client.chat.completions.create(
-      {
-        model,
-        messages: messageList,
-        stream: true,
-        ...remains,
-      },
-      { signal: controller.signal }
-    )
+      const messageList = Array.from(messages)
+      const stream = await client.chat.completions.create(
+        {
+          model,
+          messages: messageList,
+          stream: true,
+          ...remains,
+        },
+        { signal: controller.signal }
+      )
 
-    let startReasoning = false
-    for await (const part of stream) {
-      if (part.usage?.prompt_tokens && part.usage.completion_tokens)
-        console.debug(
-          `Prompt tokens: ${part.usage.prompt_tokens}, completion tokens: ${part.usage.completion_tokens}`
-        )
+      let startReasoning = false
+      for await (const part of stream) {
+        if (part.usage?.prompt_tokens && part.usage.completion_tokens)
+          console.debug(
+            `Prompt tokens: ${part.usage.prompt_tokens}, completion tokens: ${part.usage.completion_tokens}`
+          )
 
-      const delta = part.choices[0]?.delta as DeepSeekDelta
-      const reasonContent = delta?.reasoning_content
+        const delta = part.choices[0]?.delta as DeepSeekDelta
+        const reasonContent = delta?.reasoning_content
 
-      if (reasonContent) {
-        let prefix = ''
-        if (!startReasoning) {
-          startReasoning = true
-          prefix = CALLOUT_BLOCK_START
+        if (reasonContent) {
+          let prefix = ''
+          if (!startReasoning) {
+            startReasoning = true
+            prefix = CALLOUT_BLOCK_START
+          }
+          yield prefix + reasonContent.replace(/\n/g, '\n> ') // Each line of the callout needs to have '>' at the beginning
+        } else if (delta?.content) {
+          let prefix = ''
+          if (startReasoning) {
+            startReasoning = false
+            prefix = CALLOUT_BLOCK_END
+          }
+          yield prefix + delta.content
         }
-        yield prefix + reasonContent.replace(/\n/g, '\n> ') // Each line of the callout needs to have '>' at the beginning
-      } else if (delta?.content) {
-        let prefix = ''
-        if (startReasoning) {
-          startReasoning = false
-          prefix = CALLOUT_BLOCK_END
-        }
-        yield prefix + delta.content
       }
     }
-  }
 
   return generator
 }

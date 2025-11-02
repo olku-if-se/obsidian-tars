@@ -3,13 +3,7 @@
  */
 
 import { createPluginLogger } from '@tars/shared'
-import type {
-  Message,
-  ProviderType,
-  SendRequest,
-  Vendor,
-  VendorCapabilities,
-} from '@tars/types'
+import type { Message, ProviderType, SendRequest, Vendor, VendorCapabilities } from '@tars/types'
 
 const providerLogger = createPluginLogger('tars-providers')
 

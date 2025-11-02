@@ -150,10 +150,7 @@ export class StatusBarManager {
       if (this.state.type === 'error') {
         new ErrorDetailModal(this.app, this.state.data as ErrorInfo).open()
       } else if (this.state.type === 'success') {
-        new GenerationStatsModal(
-          this.app,
-          this.state.data as GenerationStats
-        ).open()
+        new GenerationStatsModal(this.app, this.state.data as GenerationStats).open()
       }
     })
 

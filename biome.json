@@ -1,20 +1,14 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.3.0/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.3.1/schema.json",
   "vcs": {
     "enabled": true,
     "clientKind": "git",
-    "useIgnoreFile": true
+    "useIgnoreFile": true,
+    "defaultBranch": "main"
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": [
-      "**",
-      "!**/node_modules",
-      "!**/dist",
-      "!**/coverage",
-      "!**/main.js",
-      "!**/*.map"
-    ]
+    "includes": ["**", "!**/node_modules", "!**/dist", "!**/coverage", "!**/main.js", "!**/*.map"]
   },
   "formatter": {
     "enabled": true,

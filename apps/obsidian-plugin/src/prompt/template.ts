@@ -6,10 +6,7 @@ export interface PromptTemplate {
   readonly template: string
 }
 
-export const getPromptTemplatesFromFile = async (
-  app: App,
-  promptFilePath: string
-) => {
+export const getPromptTemplatesFromFile = async (app: App, promptFilePath: string) => {
   const promptFile = app.vault.getFileByPath(promptFilePath)
 
   if (!promptFile) {
@@ -80,11 +77,7 @@ export const getPromptTemplatesFromFile = async (
   return { promptTemplates, reporter }
 }
 
-const toPromptTemplate = (
-  slide: SectionCache[],
-  headings: HeadingCache[],
-  fileText: string
-): PromptTemplate => {
+const toPromptTemplate = (slide: SectionCache[], headings: HeadingCache[], fileText: string): PromptTemplate => {
   if (slide.length < 2) {
     throw new Error(
       `Line ${slide[0].position.start.line + 1}, ${t('Expected at least 2 sections, heading and content')}`
@@ -95,19 +88,13 @@ const toPromptTemplate = (
       `Line ${slide[0].position.start.line + 1} - ${slide[0].position.end.line + 1}, ${t('Expected heading')}`
     )
   }
-  const heading = headings.find(
-    heading => heading.position.start.line === slide[0].position.start.line
-  )
+  const heading = headings.find(heading => heading.position.start.line === slide[0].position.start.line)
   if (!heading) {
-    throw new Error(
-      `Line ${slide[0].position.start.line + 1}, ${t('Expected heading')}`
-    )
+    throw new Error(`Line ${slide[0].position.start.line + 1}, ${t('Expected heading')}`)
   }
   const title = heading.heading.trim()
   if (!title) {
-    throw new Error(
-      `Line ${heading.position.start.line + 1}, ${t('Expected heading')}`
-    )
+    throw new Error(`Line ${heading.position.start.line + 1}, ${t('Expected heading')}`)
   }
 
   const startOffset = slide[1].position.start.offset

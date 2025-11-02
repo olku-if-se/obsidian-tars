@@ -2,10 +2,7 @@ import type { EmbedCache } from 'obsidian'
 
 export type MsgRole = 'user' | 'assistant' | 'system'
 
-export type SaveAttachment = (
-  fileName: string,
-  data: ArrayBuffer
-) => Promise<void>
+export type SaveAttachment = (fileName: string, data: ArrayBuffer) => Promise<void>
 
 export type ResolveEmbedAsBinary = (embed: EmbedCache) => Promise<ArrayBuffer>
 

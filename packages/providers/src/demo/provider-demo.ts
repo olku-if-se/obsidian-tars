@@ -10,13 +10,12 @@ const providerDemoLogger = createPluginLogger('tars-provider-demo')
  * stay observable for tooling without executing network calls.
  */
 export async function loadProviderSdkSnapshots() {
-  const [anthropicModule, generativeAIModule, openAIModule, ollamaModule] =
-    await Promise.all([
-      import('@anthropic-ai/sdk'),
-      import('@google/generative-ai'),
-      import('openai'),
-      import('ollama'),
-    ])
+  const [anthropicModule, generativeAIModule, openAIModule, ollamaModule] = await Promise.all([
+    import('@anthropic-ai/sdk'),
+    import('@google/generative-ai'),
+    import('openai'),
+    import('ollama'),
+  ])
 
   const plugin = createPlugin('provider-demo')
   const baselineMessage: Message = {

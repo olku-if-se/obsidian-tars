@@ -7,11 +7,9 @@ export default {
   system: 'system',
   assistant: 'assistant',
   newChat: 'newChat',
-  'Conversion failed. Selected sections is a':
-    'Conversion failed. Selected sections is a',
+  'Conversion failed. Selected sections is a': 'Conversion failed. Selected sections is a',
   message: 'message',
-  'Check the developer console for error details. ':
-    'Check the developer console for error details. ',
+  'Check the developer console for error details. ': 'Check the developer console for error details. ',
   'Cancel generation': 'Cancel generation',
 
   // commands/asstTag.ts
@@ -42,10 +40,8 @@ export default {
   'API secret is required': 'API secret is required',
   'Model is required': 'Model is required',
   'API URL is required': 'API URL is required',
-  'API key may be incorrect. Please check your API key.':
-    'API key may be incorrect. Please check your API key.',
-  'Access denied. Please check your API permissions.':
-    'Access denied. Please check your API permissions.',
+  'API key may be incorrect. Please check your API key.': 'API key may be incorrect. Please check your API key.',
+  'Access denied. Please check your API permissions.': 'Access denied. Please check your API permissions.',
   'Text Generation': 'Text Generation',
   'Image Vision': 'Image Vision',
   'PDF Vision': 'PDF Vision',
@@ -53,37 +49,31 @@ export default {
   'Image Editing': 'Image Editing',
   'Web Search': 'Web Search',
   Reasoning: 'Reasoning',
-  'Only PNG, JPEG, GIF, and WebP images are supported.':
-    'Only PNG, JPEG, GIF, and WebP images are supported.',
-  'Only PNG, JPEG, GIF, WebP, and PDF files are supported.':
-    'Only PNG, JPEG, GIF, WebP, and PDF files are supported.',
+  'Only PNG, JPEG, GIF, and WebP images are supported.': 'Only PNG, JPEG, GIF, and WebP images are supported.',
+  'Only PNG, JPEG, GIF, WebP, and PDF files are supported.': 'Only PNG, JPEG, GIF, WebP, and PDF files are supported.',
 
   // providers/gptImage.ts
   'Only the last user message is used for image generation. Other messages are ignored.':
     'Only the last user message is used for image generation. Other messages are ignored.',
-  'Multiple embeds found, only the first one will be used':
-    'Multiple embeds found, only the first one will be used',
+  'Multiple embeds found, only the first one will be used': 'Multiple embeds found, only the first one will be used',
   'Only PNG, JPEG, and WebP images are supported for editing.':
     'Only PNG, JPEG, and WebP images are supported for editing.',
   'Embed data is empty or invalid': 'Embed data is empty or invalid',
-  'Failed to generate image. no data received from API':
-    'Failed to generate image. no data received from API',
+  'Failed to generate image. no data received from API': 'Failed to generate image. no data received from API',
 
   // prompt
   'Load template file: ': 'Load template file: ',
   'Templates have been updated: ': 'Templates have been updated: ',
   'Syntax Error Report': 'Syntax Error Report',
   'Create prompt template file': 'Create prompt template file',
-  'Expected at least 2 sections, heading and content':
-    'Expected at least 2 sections, heading and content',
+  'Expected at least 2 sections, heading and content': 'Expected at least 2 sections, heading and content',
   'Expected heading': 'Expected heading',
   'Duplicate title:': 'Duplicate title:',
 
   // editor.ts
   'Please add a user message first, or wait for the user message to be parsed.':
     'Please add a user message first, or wait for the user message to be parsed.',
-  'Waiting for metadata to be ready. Please try again.':
-    'Waiting for metadata to be ready. Please try again.',
+  'Waiting for metadata to be ready. Please try again.': 'Waiting for metadata to be ready. Please try again.',
   'No text generated': 'No text generated',
   characters: 'characters',
 
@@ -111,18 +101,15 @@ export default {
   'System message tags': 'System message tags',
   'At least one tag is required': 'At least one tag is required',
   'Assistant message tag': 'Assistant message tag',
-  'Tag used to trigger AI text generation':
-    'Tag used to trigger AI text generation',
+  'Tag used to trigger AI text generation': 'Tag used to trigger AI text generation',
   'Obtain key from ': 'Obtain key from ',
   'Web search': 'Web search',
   'Enable web search for AI': 'Enable web search for AI',
   'API key (required)': 'API key (required)',
   'Default:': 'Default:',
-  'Refer to the technical documentation':
-    'Refer to the technical documentation',
+  'Refer to the technical documentation': 'Refer to the technical documentation',
   'Keyword for tag must not contain #': 'Keyword for tag must not contain #',
-  'Keyword for tag must not contain space':
-    'Keyword for tag must not contain space',
+  'Keyword for tag must not contain space': 'Keyword for tag must not contain space',
   'Keyword for tag must be unique': 'Keyword for tag must be unique',
   Model: 'Model',
   'Supported features': 'Supported features',
@@ -148,8 +135,7 @@ export default {
     'Internal links in user and system messages will be replaced with their referenced content. When disabled, only the original text of the links will be used.',
 
   // Advanced settings
-  'Internal links for assistant messages':
-    'Internal links for assistant messages',
+  'Internal links for assistant messages': 'Internal links for assistant messages',
   'Replace internal links in assistant messages with their referenced content. Note: This feature is generally not recommended as assistant-generated content may contain non-existent links.':
     'Replace internal links in assistant messages with their referenced content. Note: This feature is generally not recommended as assistant-generated content may contain non-existent links.',
   'System message': 'System message',
@@ -169,8 +155,7 @@ export default {
 
   // gpt image settings
   'Image Display Width': 'Image Display Width',
-  'Example: 400px width would output as ![[image.jpg|400]]':
-    'Example: 400px width would output as ![[image.jpg|400]]',
+  'Example: 400px width would output as ![[image.jpg|400]]': 'Example: 400px width would output as ![[image.jpg|400]]',
   'Number of images': 'Number of images',
   'Number of images to generate (1-5)': 'Number of images to generate (1-5)',
   'Image size': 'Image size',
@@ -178,15 +163,13 @@ export default {
   portrait: 'portrait',
   'Output format': 'Output format',
   Quality: 'Quality',
-  'Quality level for generated images. default: Auto':
-    'Quality level for generated images. default: Auto',
+  'Quality level for generated images. default: Auto': 'Quality level for generated images. default: Auto',
   Auto: 'Auto',
   High: 'High',
   Medium: 'Medium',
   Low: 'Low',
   Background: 'Background',
-  'Background of the generated image. default: Auto':
-    'Background of the generated image. default: Auto',
+  'Background of the generated image. default: Auto': 'Background of the generated image. default: Auto',
   Transparent: 'Transparent',
   Opaque: 'Opaque',
   'Output compression': 'Output compression',
@@ -196,8 +179,7 @@ export default {
   // suggest.ts
   'AI generate': 'AI generate',
   'Text generated successfully': 'Text generated successfully',
-  'This is a non-streaming request, please wait...':
-    'This is a non-streaming request, please wait...',
+  'This is a non-streaming request, please wait...': 'This is a non-streaming request, please wait...',
 
   promptFileName: 'prompt.en',
   PRESET_PROMPT_TEMPLATES: `# Instructions
@@ -237,8 +219,7 @@ Translate the following content into English：{{s}}
   'When enabled, Claude will show its reasoning process before giving the final answer.':
     'When enabled, Claude will show its reasoning process before giving the final answer.',
   'Budget tokens for thinking': 'Budget tokens for thinking',
-  'Must be ≥1024 and less than max_tokens':
-    'Must be ≥1024 and less than max_tokens',
+  'Must be ≥1024 and less than max_tokens': 'Must be ≥1024 and less than max_tokens',
   'Minimum value is 1024': 'Minimum value is 1024',
 
   // statusBarManager.ts
@@ -259,8 +240,7 @@ Translate the following content into English：{{s}}
   'Generating round': 'Generating round',
   'answer...': 'answer...',
   'Generating...': 'Generating...',
-  'Click status bar for error details. ':
-    'Click status bar for error details. ',
+  'Click status bar for error details. ': 'Click status bar for error details. ',
   Vendor: 'Vendor',
   Characters: 'Characters',
 }

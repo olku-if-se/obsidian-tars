@@ -1,11 +1,4 @@
-import type {
-  App,
-  Editor,
-  EditorPosition,
-  EditorRange,
-  EditorSelection,
-  TagCache,
-} from 'obsidian'
+import type { App, Editor, EditorPosition, EditorRange, EditorSelection, TagCache } from 'obsidian'
 import { t } from '../lang/helper'
 import type { PluginSettings } from '../settings'
 import type { TagRole } from '../suggest'
@@ -23,11 +16,7 @@ export const getEditorSelection = (editor: Editor): EditorSelection => {
   return selection
 }
 
-export const fetchTagMeta = (
-  app: App,
-  editor: Editor,
-  settings: PluginSettings
-): TagMeta => {
+export const fetchTagMeta = (app: App, editor: Editor, settings: PluginSettings): TagMeta => {
   const range = refineRange(app, editor)
   return getTagMeta(app, editor, range, settings)
 }
@@ -56,15 +45,10 @@ export const refineRange = (app: App, editor: Editor): EditorRange => {
   const anchorOffset = editor.posToOffset(selection.anchor)
   const headOffset = editor.posToOffset(selection.head)
 
-  const [frontOffset, backOffset] =
-    anchorOffset < headOffset
-      ? [anchorOffset, headOffset]
-      : [headOffset, anchorOffset]
+  const [frontOffset, backOffset] = anchorOffset < headOffset ? [anchorOffset, headOffset] : [headOffset, anchorOffset]
 
   const overlappingSections = sections.filter(
-    s =>
-      frontOffset <= s.position.end.offset &&
-      s.position.start.offset <= backOffset
+    s => frontOffset <= s.position.end.offset && s.position.start.offset <= backOffset
   )
 
   if (overlappingSections.length === 0) {
@@ -88,8 +72,7 @@ export const refineRange = (app: App, editor: Editor): EditorRange => {
       ch: overlappingSections[0].position.start.col,
     },
     to: {
-      line: overlappingSections[overlappingSections.length - 1].position.end
-        .line,
+      line: overlappingSections[overlappingSections.length - 1].position.end.line,
       ch: overlappingSections[overlappingSections.length - 1].position.end.col,
     },
   }
@@ -102,11 +85,7 @@ export const isEmptyLines = (editor: Editor, range: EditorRange): boolean => {
 }
 
 // Check if line break is needed before
-export const insertMarkToEmptyLines = (
-  editor: Editor,
-  from: EditorPosition,
-  mark: string
-) => {
+export const insertMarkToEmptyLines = (editor: Editor, from: EditorPosition, mark: string) => {
   let toLine = from.line
   let insertText = ''
   if (from.line > 0 && editor.getLine(from.line - 1).trim().length > 0) {
@@ -127,20 +106,12 @@ export const insertMarkToEmptyLines = (
 }
 
 // Determine whether to include an empty line before. If the range's starting position is not at the beginning, ignore this consideration.
-export const insertMarkToBegin = (
-  editor: Editor,
-  range: EditorRange,
-  mark: string
-) => {
+export const insertMarkToBegin = (editor: Editor, range: EditorRange, mark: string) => {
   const { from, to } = range
 
   let insertText = ''
   let toLine = to.line
-  if (
-    from.line > 0 &&
-    editor.getLine(from.line - 1).trim().length > 0 &&
-    from.ch === 0
-  ) {
+  if (from.line > 0 && editor.getLine(from.line - 1).trim().length > 0 && from.ch === 0) {
     // If the previous line is not empty and 'from' is at the beginning of a line, add an empty line
     insertText = `\n${mark}`
     toLine += 1
@@ -156,12 +127,7 @@ export const insertMarkToBegin = (
   })
 }
 
-export const replaceTag = (
-  editor: Editor,
-  range: EditorRange,
-  tagRange: EditorRange,
-  newTag: string
-) => {
+export const replaceTag = (editor: Editor, range: EditorRange, tagRange: EditorRange, newTag: string) => {
   const { to } = range
   if (tagRange) {
     editor.replaceRange(`#${newTag}`, tagRange.from, tagRange.to)
@@ -180,12 +146,7 @@ export interface TagMeta {
 }
 
 // Tags might be in the middle of a paragraph or at the beginning. Middle is also normal, but messages might be different.
-const getTagMeta = (
-  app: App,
-  editor: Editor,
-  range: EditorRange,
-  settings: PluginSettings
-): TagMeta => {
+const getTagMeta = (app: App, editor: Editor, range: EditorRange, settings: PluginSettings): TagMeta => {
   const { tags } = getEnv(app)
   if (!tags) {
     return {
@@ -197,9 +158,7 @@ const getTagMeta = (
   }
   const { from, to } = range
   const firstTag = tags.find(
-    t =>
-      editor.posToOffset(from) <= t.position.start.offset &&
-      t.position.end.offset <= editor.posToOffset(to)
+    t => editor.posToOffset(from) <= t.position.start.offset && t.position.end.offset <= editor.posToOffset(to)
   )
 
   if (firstTag) {
@@ -213,9 +172,7 @@ const getTagMeta = (
 
     if (isNewChat) {
       const secondTag = tags.find(
-        t =>
-          firstTag.position.end.offset <= t.position.start.offset &&
-          t.position.end.offset <= editor.posToOffset(to)
+        t => firstTag.position.end.offset <= t.position.start.offset && t.position.end.offset <= editor.posToOffset(to)
       )
       if (secondTag) {
         // In the case of newChat, return the role of the second tag
@@ -320,10 +277,7 @@ export const insertText = (editor: Editor, text: string) => {
   const lines = text.split('\n')
   const newPos: EditorPosition = {
     line: current.line + lines.length - 1,
-    ch:
-      lines.length === 1
-        ? current.ch + text.length
-        : lines[lines.length - 1].length,
+    ch: lines.length === 1 ? current.ch + text.length : lines[lines.length - 1].length,
   }
   editor.replaceRange(text, current)
   editor.setCursor(newPos)

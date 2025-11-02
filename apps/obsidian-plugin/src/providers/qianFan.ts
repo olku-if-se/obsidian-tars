@@ -1,13 +1,7 @@
 import axios from 'axios'
 import { Notice, Platform, requestUrl } from 'obsidian'
 import { t } from '../lang/helper'
-import type {
-  BaseOptions,
-  Message,
-  Optional,
-  ResolveEmbedAsBinary,
-  Vendor,
-} from '.'
+import type { BaseOptions, Message, Optional, ResolveEmbedAsBinary, Vendor } from '.'
 
 interface TokenResponse {
   access_token: string
@@ -21,8 +15,7 @@ interface Token {
   apiSecret: string
 }
 
-type QianFanOptions = BaseOptions &
-  Pick<Optional, 'apiSecret'> & { token?: Token }
+type QianFanOptions = BaseOptions & Pick<Optional, 'apiSecret'> & { token?: Token }
 
 const createToken = async (apiKey: string, apiSecret: string) => {
   if (!apiKey || !apiSecret) throw new Error('Invalid API key secret')
@@ -33,9 +26,7 @@ const createToken = async (apiKey: string, apiSecret: string) => {
     client_secret: apiSecret,
   }
   const queryString = new URLSearchParams(queryParams).toString()
-  const res = await requestUrl(
-    `https://aip.baidubce.com/oauth/2.0/token?${queryString}`
-  )
+  const res = await requestUrl(`https://aip.baidubce.com/oauth/2.0/token?${queryString}`)
   const result = res.json as TokenResponse
 
   return {
@@ -46,11 +37,7 @@ const createToken = async (apiKey: string, apiSecret: string) => {
   } as Token
 }
 
-const validOrCreate = async (
-  currentToken: Token | undefined,
-  apiKey: string,
-  apiSecret: string
-) => {
+const validOrCreate = async (currentToken: Token | undefined, apiKey: string, apiSecret: string) => {
   const now = Date.now()
   if (
     currentToken &&
@@ -99,35 +86,25 @@ const sendRequestFunc: Vendor['sendRequestFunc'] = options => {
       controller: AbortController,
       _resolveEmbedAsBinary: ResolveEmbedAsBinary
     ) {
-    const { parameters, ...optionsExcludingParams } = settings
-    const mergedOptions = { ...optionsExcludingParams, ...parameters }
-    const {
-      apiKey,
-      apiSecret,
-      baseURL,
-      model,
-      token: currentToken,
-      ...remains
-    } = mergedOptions
-    if (!apiKey) throw new Error(t('API key is required'))
-    if (!apiSecret) throw new Error(t('API secret is required'))
-    if (!model) throw new Error(t('Model is required'))
+      const { parameters, ...optionsExcludingParams } = settings
+      const mergedOptions = { ...optionsExcludingParams, ...parameters }
+      const { apiKey, apiSecret, baseURL, model, token: currentToken, ...remains } = mergedOptions
+      if (!apiKey) throw new Error(t('API key is required'))
+      if (!apiSecret) throw new Error(t('API secret is required'))
+      if (!model) throw new Error(t('Model is required'))
 
-    const { token } = await validOrCreate(currentToken, apiKey, apiSecret)
-    settings.token = token
+      const { token } = await validOrCreate(currentToken, apiKey, apiSecret)
+      settings.token = token
 
-    const messageList = Array.from(messages)
+      const messageList = Array.from(messages)
 
-    if (Platform.isDesktopApp) {
-      const data = {
-        messages: messageList,
-        stream: true,
-        ...remains,
-      }
-      const response = await axios.post(
-        `${baseURL}/${model}?access_token=${token.accessToken}`,
-        data,
-        {
+      if (Platform.isDesktopApp) {
+        const data = {
+          messages: messageList,
+          stream: true,
+          ...remains,
+        }
+        const response = await axios.post(`${baseURL}/${model}?access_token=${token.accessToken}`, data, {
           headers: {
             'Content-Type': 'application/json',
           },
@@ -135,47 +112,46 @@ const sendRequestFunc: Vendor['sendRequestFunc'] = options => {
           responseType: 'stream',
           withCredentials: false,
           signal: controller.signal,
-        }
-      )
+        })
 
-      const buffer: string[] = []
-      const decoder = new TextDecoder('utf-8')
-      for await (const chunk of response.data) {
-        const text = decoder.decode(Buffer.from(chunk))
-        const lines = getLines(buffer, text)
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            const rawStr = line.slice('data: '.length)
-            const data = JSON.parse(rawStr)
-            const content = data.result
-            if (content) {
-              yield content
+        const buffer: string[] = []
+        const decoder = new TextDecoder('utf-8')
+        for await (const chunk of response.data) {
+          const text = decoder.decode(Buffer.from(chunk))
+          const lines = getLines(buffer, text)
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const rawStr = line.slice('data: '.length)
+              const data = JSON.parse(rawStr)
+              const content = data.result
+              if (content) {
+                yield content
+              }
             }
           }
         }
+      } else {
+        const data = {
+          messages: messageList,
+          stream: false,
+          ...remains,
+        }
+
+        new Notice(t('This is a non-streaming request, please wait...'), 5 * 1000)
+
+        const response = await requestUrl({
+          url: `${baseURL}/${model}?access_token=${token.accessToken}`,
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+
+        console.debug('response', response.json)
+        yield response.json.result
       }
-    } else {
-      const data = {
-        messages: messageList,
-        stream: false,
-        ...remains,
-      }
-
-      new Notice(t('This is a non-streaming request, please wait...'), 5 * 1000)
-
-      const response = await requestUrl({
-        url: `${baseURL}/${model}?access_token=${token.accessToken}`,
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-
-      console.debug('response', response.json)
-      yield response.json.result
     }
-  }
 
   return generator
 }
@@ -197,8 +173,7 @@ export const qianFanVendor: Vendor = {
   defaultOptions: {
     apiKey: '',
     apiSecret: '',
-    baseURL:
-      'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat',
+    baseURL: 'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat',
     model: models[0],
     parameters: {},
   } as QianFanOptions,

@@ -13,25 +13,12 @@ interface ResponseWithTime {
   readonly texts: TextWithTime[]
 }
 
-export const withStreamLogging = (
-  originalFunc: SendRequest,
-  createPlainText: CreatePlainText
-): SendRequest => {
-  return async function* (
-    messages,
-    controller,
-    resolveEmbedAsBinary,
-    saveAttachment
-  ) {
+export const withStreamLogging = (originalFunc: SendRequest, createPlainText: CreatePlainText): SendRequest => {
+  return async function* (messages, controller, resolveEmbedAsBinary, saveAttachment) {
     const startTime = Date.now()
     const texts: TextWithTime[] = []
     try {
-      for await (const text of originalFunc(
-        messages,
-        controller,
-        resolveEmbedAsBinary,
-        saveAttachment
-      )) {
+      for await (const text of originalFunc(messages, controller, resolveEmbedAsBinary, saveAttachment)) {
         const currentTime = Date.now()
         texts.push({ text, time: currentTime - startTime })
         yield text
@@ -40,15 +27,9 @@ export const withStreamLogging = (
       const lastMsg = messages[messages.length - 1]
       // biome-ignore lint/suspicious/noControlCharactersInRegex: allow explicit control character range when sanitizing filenames
       const ILLEGAL_FILENAME_CHARS = /[<>:"/\\|?*\u0000-\u001F\u007F-\u009F]/g
-      const brief =
-        lastMsg.content
-          .slice(0, 20)
-          .replace(ILLEGAL_FILENAME_CHARS, '')
-          .trim() || 'untitled'
+      const brief = lastMsg.content.slice(0, 20).replace(ILLEGAL_FILENAME_CHARS, '').trim() || 'untitled'
 
-      const filePath = normalizePath(
-        `${APP_FOLDER}/${formatDate(new Date())}-${brief}.json`
-      )
+      const filePath = normalizePath(`${APP_FOLDER}/${formatDate(new Date())}-${brief}.json`)
       const response: ResponseWithTime = {
         lastMsg: messages[messages.length - 1].content.trim(),
         createdAt: new Date().toISOString(),

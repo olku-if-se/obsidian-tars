@@ -23,9 +23,7 @@ const sendRequestFunc: Vendor['sendRequestFunc'] = options => {
     const systemMsgCandidate = messageList[0]
     const hasSystem = systemMsgCandidate.role === 'system'
     const systemInstruction = hasSystem ? systemMsgCandidate.content : undefined
-    const messagesWithoutSys = hasSystem
-      ? messageList.slice(1, -1)
-      : messageList.slice(0, -1)
+    const messagesWithoutSys = hasSystem ? messageList.slice(1, -1) : messageList.slice(0, -1)
     const lastMsg = messageList[messageList.length - 1]
 
     const history: Content[] = messagesWithoutSys.map(m => ({
@@ -34,10 +32,7 @@ const sendRequestFunc: Vendor['sendRequestFunc'] = options => {
     }))
 
     const genAI = new GoogleGenerativeAI(apiKey)
-    const genModel = genAI.getGenerativeModel(
-      { model, systemInstruction },
-      { baseUrl }
-    )
+    const genModel = genAI.getGenerativeModel({ model, systemInstruction }, { baseUrl })
     const chat = genModel.startChat({ history })
 
     const result = await chat.sendMessageStream(lastMsg.content, {

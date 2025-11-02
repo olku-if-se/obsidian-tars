@@ -27,24 +27,13 @@ export const toSpeakMark = (tag: string) => `#${tag} : `
 
 export const toNewChatMark = (tag: string) => `#${tag} `
 
-export const toMark = (
-  role: TagRole,
-  tag: string,
-  needNewLine: boolean = false
-) =>
-  needNewLine
-    ? `\n#${tag}`
-    : role === 'newChat'
-      ? toNewChatMark(tag)
-      : toSpeakMark(tag)
+export const toMark = (role: TagRole, tag: string, needNewLine: boolean = false) =>
+  needNewLine ? `\n#${tag}` : role === 'newChat' ? toNewChatMark(tag) : toSpeakMark(tag)
 
 const validTagSuffixes = [' ', '  ', ' :', ' ：']
 
 export const getMaxTriggerLineLength = (settings: PluginSettings) => {
-  const maxNewChatLength = Math.max(
-    0,
-    ...settings.newChatTags.map(tag => tag.length)
-  )
+  const maxNewChatLength = Math.max(0, ...settings.newChatTags.map(tag => tag.length))
   const maxOtherLength = Math.max(
     0,
     ...settings.systemTags.map(tag => tag.length),
@@ -105,14 +94,9 @@ export class TagEditorSuggest extends EditorSuggest<TagEntry> {
   /** Based on the editor line and cursor position, determine if this EditorSuggest should be triggered at this moment. Typically, you would run a regular expression on the current line text before the cursor. Return null to indicate that this editor suggest is not supposed to be triggered.
 	Please be mindful of performance when implementing this function, as it will be triggered very often (on each keypress). Keep it simple, and return null as early as possible if you determine that it is not the right time. **/
   // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: suggestion trigger requires multiple early exits for correctness
-  onTrigger(
-    cursor: EditorPosition,
-    editor: Editor,
-    _file: TFile
-  ): EditorSuggestTriggerInfo | null {
+  onTrigger(cursor: EditorPosition, editor: Editor, _file: TFile): EditorSuggestTriggerInfo | null {
     if (this.settings.editorStatus.isTextInserting) return null
-    if (cursor.ch < 1 || cursor.ch > this.settings.tagSuggestMaxLineLength)
-      return null
+    if (cursor.ch < 1 || cursor.ch > this.settings.tagSuggestMaxLineLength) return null
     // console.debug('---- onTrigger ---------')
     const text = editor.getLine(cursor.line)
     if (text.length > cursor.ch) return null // Cursor is not at the end of the line
@@ -154,11 +138,7 @@ export class TagEditorSuggest extends EditorSuggest<TagEntry> {
       end: { line: cursor.line, ch: cursor.ch },
       query: JSON.stringify({
         ...suggestTag,
-        replacement: toMark(
-          suggestTag.role,
-          suggestTag.tag,
-          shouldInsertNewLine
-        ),
+        replacement: toMark(suggestTag.role, suggestTag.tag, shouldInsertNewLine),
       } as TagEntry),
     }
   }
@@ -207,11 +187,7 @@ export class TagEditorSuggest extends EditorSuggest<TagEntry> {
   async selectSuggestion(element: TagEntry, _evt: MouseEvent | KeyboardEvent) {
     if (!this.context) return
     const editor = this.context.editor
-    editor.replaceRange(
-      element.replacement,
-      this.context.start,
-      this.context.end
-    )
+    editor.replaceRange(element.replacement, this.context.start, this.context.end)
 
     if (element.role !== 'assistant' || element.replacement.includes('\n')) {
       this.close()
@@ -239,17 +215,13 @@ export class TagEditorSuggest extends EditorSuggest<TagEntry> {
       )
     } catch (error) {
       console.error('error', error)
-      if (
-        (error instanceof DOMException || error instanceof Error) &&
-        error.name === 'AbortError'
-      ) {
+      if ((error instanceof DOMException || error instanceof Error) && error.name === 'AbortError') {
         this.statusBarManager.setCancelledStatus()
         new Notice(t('Generation cancelled'))
         return
       }
 
-      const err =
-        error instanceof Error ? error : new Error(String(error ?? ''))
+      const err = error instanceof Error ? error : new Error(String(error ?? ''))
       this.statusBarManager.setErrorStatus(err)
       new Notice(
         `🔴 ${Platform.isDesktopApp ? t('Click status bar for error details. ') : ''}${err.message}`,

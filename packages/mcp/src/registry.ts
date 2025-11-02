@@ -51,9 +51,7 @@ export class MCPRegistry {
   }
 
   getAllServers(): MCPServer[] {
-    return Array.from(this.servers.values()).map(server =>
-      server.getServerInfo()
-    )
+    return Array.from(this.servers.values()).map(server => server.getServerInfo())
   }
 
   getOnlineServers(): MCPServer[] {
@@ -79,17 +77,13 @@ export class MCPRegistry {
   }
 
   async startAllServers(): Promise<void> {
-    const startPromises = Array.from(this.servers.values()).map(server =>
-      server.start()
-    )
+    const startPromises = Array.from(this.servers.values()).map(server => server.start())
     await Promise.all(startPromises)
     console.log('All MCP servers started')
   }
 
   async stopAllServers(): Promise<void> {
-    const stopPromises = Array.from(this.servers.values()).map(server =>
-      server.stop()
-    )
+    const stopPromises = Array.from(this.servers.values()).map(server => server.stop())
     await Promise.all(stopPromises)
     console.log('All MCP servers stopped')
   }

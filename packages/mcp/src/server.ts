@@ -2,12 +2,7 @@
  * MCP server functionality
  */
 
-import type {
-  MCPCommand,
-  MCPMessage,
-  MCPResponse,
-  MCPServer,
-} from '@tars/types'
+import type { MCPCommand, MCPMessage, MCPResponse, MCPServer } from '@tars/types'
 
 export interface MCPServerOptions {
   name: string

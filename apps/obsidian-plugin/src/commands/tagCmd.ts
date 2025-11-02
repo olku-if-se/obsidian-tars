@@ -15,22 +15,11 @@ const splitCommandId = (commandId: string) => {
 }
 
 export const getTagCmdIdsFromSettings = (settings: PluginSettings) => {
-  const newChatTagCmdIds = settings.newChatTags.map(tag =>
-    toCommandId('newChat', tag)
-  )
-  const systemTagCmdIds = settings.systemTags.map(tag =>
-    toCommandId('system', tag)
-  )
+  const newChatTagCmdIds = settings.newChatTags.map(tag => toCommandId('newChat', tag))
+  const systemTagCmdIds = settings.systemTags.map(tag => toCommandId('system', tag))
   const userTagCmdIds = settings.userTags.map(tag => toCommandId('user', tag))
-  const asstTagCmdIds = settings.providers.map(tag =>
-    toCommandId('assistant', tag.tag)
-  )
-  return [
-    ...newChatTagCmdIds,
-    ...systemTagCmdIds,
-    ...userTagCmdIds,
-    ...asstTagCmdIds,
-  ]
+  const asstTagCmdIds = settings.providers.map(tag => toCommandId('assistant', tag.tag))
+  return [...newChatTagCmdIds, ...systemTagCmdIds, ...userTagCmdIds, ...asstTagCmdIds]
 }
 
 export const getMeta = (commandId: string): TagCmdMeta => {
@@ -43,5 +32,4 @@ export const getMeta = (commandId: string): TagCmdMeta => {
   }
 }
 
-const toCommandName = (type: TagRole, tag: string) =>
-  type === 'newChat' ? toNewChatMark(tag) : toSpeakMark(tag)
+const toCommandName = (type: TagRole, tag: string) => (type === 'newChat' ? toNewChatMark(tag) : toSpeakMark(tag))

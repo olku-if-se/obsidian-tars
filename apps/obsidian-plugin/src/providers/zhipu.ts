@@ -44,11 +44,7 @@ const sendRequestFunc: Vendor['sendRequestFunc'] = options => {
       enableWebSearch,
     })
 
-    const { token } = await validOrCreate(
-      currentToken,
-      apiKey,
-      tokenExpireInMinutes
-    )
+    const { token } = await validOrCreate(currentToken, apiKey, tokenExpireInMinutes)
     settings.token = token
 
     const client = new OpenAI({
@@ -92,10 +88,7 @@ const sendRequestFunc: Vendor['sendRequestFunc'] = options => {
 
 const createToken = async (apiKeySecret: string, expireInMinutes: number) => {
   const [apiKey, apiSecret] = apiKeySecret.split('.')
-  if (!apiKey || !apiSecret)
-    throw new Error(
-      'Invalid API key secret, must be in the format "apiKey.apiSecret"'
-    )
+  if (!apiKey || !apiSecret) throw new Error('Invalid API key secret, must be in the format "apiKey.apiSecret"')
   const now = Date.now()
   const payload = {
     api_key: apiKey,
@@ -119,17 +112,9 @@ const createToken = async (apiKeySecret: string, expireInMinutes: number) => {
  * @param expireInMinutes - The expiration time for the new token in minutes.
  * @returns An object containing the validity status and the token.
  */
-const validOrCreate = async (
-  currentToken: Token | undefined,
-  apiKeySecret: string,
-  expireInMinutes: number
-) => {
+const validOrCreate = async (currentToken: Token | undefined, apiKeySecret: string, expireInMinutes: number) => {
   const now = Date.now()
-  if (
-    currentToken &&
-    currentToken.apiKeySecret === apiKeySecret &&
-    currentToken.exp > now + 3 * 60 * 1000
-  ) {
+  if (currentToken && currentToken.apiKeySecret === apiKeySecret && currentToken.exp > now + 3 * 60 * 1000) {
     return {
       isValid: true,
       token: currentToken,
@@ -143,14 +128,7 @@ const validOrCreate = async (
   }
 }
 
-const models = [
-  'glm-4-plus',
-  'glm-4-air',
-  'glm-4-airx',
-  'glm-4-long',
-  'glm-4-flash',
-  'glm-4-flashx',
-]
+const models = ['glm-4-plus', 'glm-4-air', 'glm-4-airx', 'glm-4-long', 'glm-4-flash', 'glm-4-flashx']
 
 export const zhipuVendor: Vendor = {
   name: 'Zhipu',

@@ -30,15 +30,29 @@ const context = await esbuild.context({
     '@lezer/common',
     '@lezer/highlight',
     '@lezer/lr',
+    '@needle-di/core',
     ...builtins,
   ],
   format: 'cjs',
-  target: 'es2018',
+  target: 'es2022',
   logLevel: 'info',
-  sourcemap: false,
+  sourcemap: prod ? false : 'inline',
   treeShaking: true,
   outfile: 'dist/main.js',
   minify: prod,
+  inject: [
+    // Inject decorator support shim for stage-3 decorators
+  ],
+  define: {
+    // Define environment variables
+    'process.env.NODE_ENV': `"${prod ? 'production' : 'development'}"`,
+  },
+  loader: {
+    // Support for additional file types if needed
+  },
+  plugins: [
+    // Plugin for decorator support if needed in the future
+  ],
 })
 
 if (prod) {

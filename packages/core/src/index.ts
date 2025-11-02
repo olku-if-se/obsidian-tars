@@ -4,13 +4,12 @@ import { createPluginLogger } from '@tars/shared'
 
 const coreLogger = createPluginLogger('tars-core')
 
+export type { TarsCorePluginOptions } from './plugin'
 // Re-export from plugin.ts
 export { TarsCorePlugin } from './plugin'
-export type { TarsCorePluginOptions } from './plugin'
-
+export type { PluginAdapter } from './settings'
 // Re-export from settings.ts
 export { TarsSettingsManager } from './settings'
-export type { PluginAdapter } from './settings'
 
 // Re-export from types.ts
 export type { EventBus } from './types'

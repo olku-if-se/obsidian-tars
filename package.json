@@ -8,8 +8,12 @@
     "build": "turbo run build",
     "test": "turbo run test",
     "lint": "turbo run lint",
+    "check": "turbo run check",
+    "format": "turbo run format",
     "quality": "turbo run quality",
     "typecheck": "turbo run typecheck",
+    "prepare": "pnpm simple-git-hooks",
+    "lint-staged": "lint-staged",
     "knip": "pnpm dlx knip",
     "check:syncpack": "pnpm dlx syncpack@alpha lint",
     "check:manypkg": "pnpm dlx @manypkg/cli check",
@@ -29,15 +33,23 @@
   "author": "C Jack<https://github.com/ae86jack>",
   "license": "MIT",
   "packageManager": "pnpm@10.20.0",
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*": "biome check --write --no-errors-on-unmatched"
+  },
   "devDependencies": {
-    "@types/node": "^24.9.1",
-    "@vitest/coverage-v8": "^4.0.4",
-    "@vitest/ui": "^4.0.4",
-    "knip": "^5.66.3",
-    "rimraf": "^6.0.1",
+    "@types/node": "^24.9.2",
+    "@vitest/coverage-v8": "^4.0.6",
+    "@vitest/ui": "^4.0.6",
+    "knip": "^5.66.4",
+    "lint-staged": "^15.2.10",
+    "rimraf": "^6.1.0",
+    "simple-git-hooks": "^2.11.1",
     "tsup": "^8.5.0",
-    "turbo": "^2.5.8",
+    "turbo": "^2.6.0",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.4"
+    "vitest": "^4.0.6"
   }
 }

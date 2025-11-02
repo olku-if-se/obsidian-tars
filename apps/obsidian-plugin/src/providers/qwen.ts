@@ -17,9 +17,7 @@ const sendRequestFunc: Vendor['sendRequestFunc'] = options => {
     if (!apiKey) throw new Error(t('API key is required'))
 
     const messageList = Array.from(messages)
-    const formattedMessages = await Promise.all(
-      messageList.map(msg => formatMsg(msg, resolveEmbedAsBinary))
-    )
+    const formattedMessages = await Promise.all(messageList.map(msg => formatMsg(msg, resolveEmbedAsBinary)))
     const client = new OpenAI({
       apiKey,
       baseURL,
@@ -55,16 +53,9 @@ type ContentItem =
     }
   | { type: 'text'; text: string }
 
-const formatMsg = async (
-  msg: Message,
-  resolveEmbedAsBinary: ResolveEmbedAsBinary
-) => {
+const formatMsg = async (msg: Message, resolveEmbedAsBinary: ResolveEmbedAsBinary) => {
   const content: ContentItem[] = msg.embeds
-    ? await Promise.all(
-        msg.embeds.map(embed =>
-          convertEmbedToImageUrl(embed, resolveEmbedAsBinary)
-        )
-      )
+    ? await Promise.all(msg.embeds.map(embed => convertEmbedToImageUrl(embed, resolveEmbedAsBinary)))
     : []
 
   if (msg.content.trim()) {

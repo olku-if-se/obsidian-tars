@@ -14,16 +14,10 @@ import { refineRange } from '../commands/tagUtils'
 import { t } from '../lang/helper'
 import { APP_FOLDER, type PluginSettings } from '../settings'
 import { ReporterModal } from './modal'
-import {
-  findChangedTemplates,
-  getPromptTemplatesFromFile,
-  type PromptTemplate,
-} from './template'
+import { findChangedTemplates, getPromptTemplatesFromFile, type PromptTemplate } from './template'
 
-export const templateToCmdId = (template: PromptTemplate): string =>
-  `Prompt#${template.title}`
-export const getTitleFromCmdId = (id: string): string =>
-  id.slice(id.indexOf('#') + 1)
+export const templateToCmdId = (template: PromptTemplate): string => `Prompt#${template.title}`
+export const getTitleFromCmdId = (id: string): string => id.slice(id.indexOf('#') + 1)
 
 export const loadTemplateFileCommand = (
   app: App,
@@ -43,22 +37,13 @@ export const loadTemplateFileCommand = (
         await new Promise(resolve => setTimeout(resolve, 2000)) // Wait for file metadata to load, 2s
       }
 
-      const { promptTemplates, reporter } = await getPromptTemplatesFromFile(
-        app,
-        filePath
-      )
+      const { promptTemplates, reporter } = await getPromptTemplatesFromFile(app, filePath)
 
       // Find elements in these two arrays that have the same title but different content
-      const changed = findChangedTemplates(
-        settings.promptTemplates,
-        promptTemplates
-      )
+      const changed = findChangedTemplates(settings.promptTemplates, promptTemplates)
       if (changed.length > 0) {
         console.debug('changed', changed)
-        new Notice(
-          t('Templates have been updated: ') +
-            changed.map(t => t.title).join(', ')
-        )
+        new Notice(t('Templates have been updated: ') + changed.map(t => t.title).join(', '))
       }
 
       settings.promptTemplates = promptTemplates
@@ -85,16 +70,10 @@ const createPromptFileIfNotExists = async (app: App) => {
     await app.vault.createFolder(APP_FOLDER)
   }
 
-  const promptFilePath = normalizePath(
-    `${APP_FOLDER}/${t('promptFileName')}.md`
-  )
+  const promptFilePath = normalizePath(`${APP_FOLDER}/${t('promptFileName')}.md`)
   if (!(await app.vault.adapter.exists(promptFilePath))) {
     await app.vault.create(promptFilePath, t('PRESET_PROMPT_TEMPLATES'))
-    new Notice(
-      t('Create prompt template file') +
-        ' ' +
-        `${APP_FOLDER}/${t('promptFileName')}.md`
-    )
+    new Notice(`${t('Create prompt template file')} ${APP_FOLDER}/${t('promptFileName')}.md`)
     isCreated = true
   }
 
@@ -107,18 +86,10 @@ const workspaceOpenFile = async (app: App, filePath: string) => {
   }
 }
 
-export const promptTemplateCmd = (
-  id: string,
-  name: string,
-  app: App,
-  settings: PluginSettings
-): Command => ({
+export const promptTemplateCmd = (id: string, name: string, app: App, settings: PluginSettings): Command => ({
   id,
   name,
-  editorCallback: async (
-    editor: Editor,
-    _ctx: MarkdownView | MarkdownFileInfo
-  ) => {
+  editorCallback: async (editor: Editor, _ctx: MarkdownView | MarkdownFileInfo) => {
     try {
       const template = settings.promptTemplates.find(t => t.title === name)
       if (!template) {
@@ -132,8 +103,7 @@ export const promptTemplateCmd = (
       applyTemplate(editor, template.template)
     } catch (error) {
       console.error(error)
-      const err =
-        error instanceof Error ? error : new Error(String(error ?? ''))
+      const err = error instanceof Error ? error : new Error(String(error ?? ''))
       new Notice(
         `🔴 ${Platform.isDesktopApp ? t('Check the developer console for error details. ') : ''}${err.message}`,
         10 * 1000
@@ -161,9 +131,7 @@ const applyTemplate = (editor: Editor, template: string) => {
   })
   const substitution = templateFn({ s: selectedText })
   // If the selected text is within newPrompt, replace it; otherwise append
-  const newPrompt = substitution.includes(selectedText)
-    ? substitution
-    : selectedText + substitution
+  const newPrompt = substitution.includes(selectedText) ? substitution : selectedText + substitution
   // console.debug('newPrompt', newPrompt)
   const { anchor, head } = getEditorSelection(editor)
   editor.replaceRange(newPrompt, anchor, head)

@@ -9,8 +9,7 @@ export default {
   newChat: '新对话',
   'Conversion failed. Selected sections is a': '转换失败。选中的段落是',
   message: '消息',
-  'Check the developer console for error details. ':
-    '查看开发者控制台了解错误详情。',
+  'Check the developer console for error details. ': '查看开发者控制台了解错误详情。',
   'Cancel generation': '取消生成',
 
   // commands/asstTag.ts
@@ -41,10 +40,8 @@ export default {
   'API secret is required': '请配置对应的 API secret',
   'Model is required': '请配置对应的模型',
   'API URL is required': '请配置对应的 API URL',
-  'API key may be incorrect. Please check your API key.':
-    'API key 可能不正确，请检查您的 API key。',
-  'Access denied. Please check your API permissions.':
-    '访问被拒绝，请检查您的 API 权限。',
+  'API key may be incorrect. Please check your API key.': 'API key 可能不正确，请检查您的 API key。',
+  'Access denied. Please check your API permissions.': '访问被拒绝，请检查您的 API 权限。',
   'Text Generation': '文本生成',
   'Image Vision': '图像视觉',
   'PDF Vision': 'PDF视觉',
@@ -52,37 +49,30 @@ export default {
   'Image Editing': '图像编辑',
   'Web Search': '网络搜索',
   Reasoning: '推理',
-  'Only PNG, JPEG, GIF, and WebP images are supported.':
-    '仅支持 PNG、JPEG、GIF 和 WebP 格式的图片。',
-  'Only PNG, JPEG, GIF, WebP, and PDF files are supported.':
-    '仅支持 PNG、JPEG、GIF、WebP 和 PDF 文件。',
+  'Only PNG, JPEG, GIF, and WebP images are supported.': '仅支持 PNG、JPEG、GIF 和 WebP 格式的图片。',
+  'Only PNG, JPEG, GIF, WebP, and PDF files are supported.': '仅支持 PNG、JPEG、GIF、WebP 和 PDF 文件。',
 
   // providers/gptImage.ts
   'Only the last user message is used for image generation. Other messages are ignored.':
     '仅使用最后一条用户消息进行图片生成，其他消息将被忽略。',
-  'Multiple embeds found, only the first one will be used':
-    '发现多个嵌入内容，仅使用第一个',
-  'Only PNG, JPEG, and WebP images are supported for editing.':
-    '仅支持 PNG、JPEG 和 WebP 格式的图片进行编辑',
+  'Multiple embeds found, only the first one will be used': '发现多个嵌入内容，仅使用第一个',
+  'Only PNG, JPEG, and WebP images are supported for editing.': '仅支持 PNG、JPEG 和 WebP 格式的图片进行编辑',
   'Embed data is empty or invalid': '嵌入数据为空或无效',
-  'Failed to generate image. no data received from API':
-    '生成图片失败。没有从 API 接收到数据',
+  'Failed to generate image. no data received from API': '生成图片失败。没有从 API 接收到数据',
 
   // prompt
   'Load template file: ': '加载模板文件: ',
   'Templates have been updated: ': '模板已更新: ',
   'Syntax Error Report': '语法错误报告',
   'Create prompt template file': '创建提示词模板文件',
-  'Expected at least 2 sections, heading and content':
-    '至少需要 2 个部分，标题和内容',
+  'Expected at least 2 sections, heading and content': '至少需要 2 个部分，标题和内容',
   'Expected heading': '需要标题',
   'Duplicate title:': '重复的标题:',
 
   // editor.ts
   'Please add a user message first, or wait for the user message to be parsed.':
     '请先添加用户消息，或者稍等用户消息解析完成',
-  'Waiting for metadata to be ready. Please try again.':
-    '正在等待元数据准备就绪。请重试。',
+  'Waiting for metadata to be ready. Please try again.': '正在等待元数据准备就绪。请重试。',
   'No text generated': '没有生成文本',
   characters: '个字符',
 
@@ -97,14 +87,11 @@ export default {
   'Restore default': '恢复默认',
   'AI assistants': 'AI 助手',
   'New AI assistant': '新的 AI 助手',
-  'For those compatible with the OpenAI protocol, you can select OpenAI.':
-    '对于兼容 OpenAI 协议的，可以选择 OpenAI.',
+  'For those compatible with the OpenAI protocol, you can select OpenAI.': '对于兼容 OpenAI 协议的，可以选择 OpenAI.',
   'Add AI Provider': '添加 AI 服务商',
-  'Please add at least one AI assistant to start using the plugin.':
-    '请至少添加一个 AI 助手，以便开始使用插件',
+  'Please add at least one AI assistant to start using the plugin.': '请至少添加一个 AI 助手，以便开始使用插件',
   'Message tags': '消息标签',
-  'Keywords for tags in the text box are separated by spaces':
-    '在文本框中的标签关键字用空格分隔',
+  'Keywords for tags in the text box are separated by spaces': '在文本框中的标签关键字用空格分隔',
   'New chat tags': '新对话的标签',
   'User message tags': '用户消息的标签',
   'System message tags': '系统消息的标签',
@@ -165,8 +152,7 @@ export default {
 
   // gpt image settings
   'Image Display Width': '图片显示宽度',
-  'Example: 400px width would output as ![[image.jpg|400]]':
-    '例如: 400px 宽度会输出为 ![[image.jpg|400]]',
+  'Example: 400px width would output as ![[image.jpg|400]]': '例如: 400px 宽度会输出为 ![[image.jpg|400]]',
   'Number of images': '图片数量',
   'Number of images to generate (1-5)': '生成的图片数量 (1-5)',
   'Image size': '图片尺寸',
@@ -174,15 +160,13 @@ export default {
   portrait: '纵向',
   'Output format': '输出格式',
   Quality: '质量',
-  'Quality level for generated images. default: Auto':
-    '生成图片的质量等级。默认: 自动',
+  'Quality level for generated images. default: Auto': '生成图片的质量等级。默认: 自动',
   Auto: '自动',
   High: '高',
   Medium: '中',
   Low: '低',
   Background: '背景',
-  'Background of the generated image. default: Auto':
-    '生成图片的背景。默认: 自动',
+  'Background of the generated image. default: Auto': '生成图片的背景。默认: 自动',
   Transparent: '透明',
   Opaque: '不透明',
   'Output compression': '输出压缩',
@@ -192,8 +176,7 @@ export default {
   // suggest.ts
   'AI generate': 'AI 生成',
   'Text generated successfully': '文本生成成功',
-  'This is a non-streaming request, please wait...':
-    '这是一个非流式请求，请稍候...',
+  'This is a non-streaming request, please wait...': '这是一个非流式请求，请稍候...',
 
   promptFileName: 'prompt.zh',
   PRESET_PROMPT_TEMPLATES: `# 使用说明

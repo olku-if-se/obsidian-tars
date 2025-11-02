@@ -12,20 +12,11 @@ import {
 } from './commands'
 import type { RequestController } from './editor'
 import { t } from './lang/helper'
-import {
-  getTitleFromCmdId,
-  loadTemplateFileCommand,
-  promptTemplateCmd,
-  templateToCmdId,
-} from './prompt'
+import { getTitleFromCmdId, loadTemplateFileCommand, promptTemplateCmd, templateToCmdId } from './prompt'
 import { DEFAULT_SETTINGS, type PluginSettings } from './settings'
 import { TarsSettingTab } from './settingTab'
 import { StatusBarManager } from './statusBarManager'
-import {
-  getMaxTriggerLineLength,
-  TagEditorSuggest,
-  type TagEntry,
-} from './suggest'
+import { getMaxTriggerLineLength, TagEditorSuggest, type TagEntry } from './suggest'
 import { ensureWorkspacePackageUsage } from './workspace-usage'
 
 export default class TarsPlugin extends Plugin {
@@ -91,8 +82,7 @@ export default class TarsPlugin extends Plugin {
     })
 
     if (this.settings.enableReplaceTag) this.addCommand(replaceCmd(this.app))
-    if (this.settings.enableExportToJSONL)
-      this.addCommand(exportCmd(this.app, this.settings))
+    if (this.settings.enableExportToJSONL) this.addCommand(exportCmd(this.app, this.settings))
 
     this.addSettingTab(new TarsSettingTab(this.app, this))
   }
@@ -115,13 +105,7 @@ export default class TarsPlugin extends Plugin {
         break
       case 'assistant':
         this.addCommand(
-          asstTagCmd(
-            tagCmdMeta,
-            this.app,
-            this.settings,
-            this.statusBarManager,
-            this.getRequestController()
-          )
+          asstTagCmd(tagCmdMeta, this.app, this.settings, this.statusBarManager, this.getRequestController())
         )
         break
       default:
@@ -130,15 +114,11 @@ export default class TarsPlugin extends Plugin {
   }
 
   buildTagCommands(suppressNotifications: boolean = false) {
-    this.settings.tagSuggestMaxLineLength = getMaxTriggerLineLength(
-      this.settings
-    )
+    this.settings.tagSuggestMaxLineLength = getMaxTriggerLineLength(this.settings)
 
     const newTagCmdIds = getTagCmdIdsFromSettings(this.settings)
 
-    const toRemove = this.tagCmdIds.filter(
-      cmdId => !newTagCmdIds.includes(cmdId)
-    )
+    const toRemove = this.tagCmdIds.filter(cmdId => !newTagCmdIds.includes(cmdId))
     toRemove.forEach(cmdId => {
       this.removeCommand(cmdId)
       const { tag } = getMeta(cmdId)
@@ -170,20 +150,14 @@ export default class TarsPlugin extends Plugin {
   buildPromptCommands(suppressNotifications: boolean = false) {
     const newPromptCmdIds = this.settings.promptTemplates.map(templateToCmdId)
 
-    const toRemove = this.promptCmdIds.filter(
-      cmdId => !newPromptCmdIds.includes(cmdId)
-    )
+    const toRemove = this.promptCmdIds.filter(cmdId => !newPromptCmdIds.includes(cmdId))
     toRemove.forEach(cmdId => {
       this.removeCommand(cmdId)
     })
 
-    const toAdd = this.settings.promptTemplates.filter(
-      t => !this.promptCmdIds.includes(templateToCmdId(t))
-    )
+    const toAdd = this.settings.promptTemplates.filter(t => !this.promptCmdIds.includes(templateToCmdId(t)))
     toAdd.forEach(t => {
-      this.addCommand(
-        promptTemplateCmd(templateToCmdId(t), t.title, this.app, this.settings)
-      )
+      this.addCommand(promptTemplateCmd(templateToCmdId(t), t.title, this.app, this.settings))
     })
 
     this.promptCmdIds = newPromptCmdIds

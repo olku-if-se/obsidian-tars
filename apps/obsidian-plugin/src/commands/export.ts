@@ -44,9 +44,7 @@ const exportConversation = async (app: App, settings: PluginSettings) => {
     await app.vault.create(filePath, jsonlContent)
   }
   new Notice(
-    t(
-      'Exported to the same directory, Obsidian does not display the JSONL format. Please open with another software.'
-    ),
+    t('Exported to the same directory, Obsidian does not display the JSONL format. Please open with another software.'),
     5 * 1000
   )
 }
@@ -71,10 +69,7 @@ const to_query_response_history = (conversation: readonly Message[]) => {
     if (user?.role !== 'user' || assistant?.role !== 'assistant') {
       throw new Error('Invalid message role')
     }
-    if (
-      user?.content.trim().length === 0 ||
-      assistant?.content.trim().length === 0
-    ) {
+    if (user?.content.trim().length === 0 || assistant?.content.trim().length === 0) {
       throw new Error('Empty message content')
     }
     history.push([user.content, assistant.content])
@@ -93,7 +88,5 @@ const to_query_response_history = (conversation: readonly Message[]) => {
     history: history.length > 0 ? history : null,
   }
 
-  return Object.fromEntries(
-    Object.entries(res).filter(([_key, value]) => value != null)
-  )
+  return Object.fromEntries(Object.entries(res).filter(([_key, value]) => value != null))
 }

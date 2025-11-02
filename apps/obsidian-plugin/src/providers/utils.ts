@@ -60,17 +60,10 @@ export const arrayBufferToBase64 = (buffer: ArrayBuffer) => {
   return window.btoa(binary)
 }
 
-export const convertEmbedToImageUrl = async (
-  embed: EmbedCache,
-  resolveEmbedAsBinary: ResolveEmbedAsBinary
-) => {
+export const convertEmbedToImageUrl = async (embed: EmbedCache, resolveEmbedAsBinary: ResolveEmbedAsBinary) => {
   const mimeType = getMimeTypeFromFilename(embed.link)
 
-  if (
-    ['image/png', 'image/jpeg', 'image/gif', 'image/webp'].includes(
-      mimeType
-    ) === false
-  ) {
+  if (['image/png', 'image/jpeg', 'image/gif', 'image/webp'].includes(mimeType) === false) {
     throw new Error(t('Only PNG, JPEG, GIF, and WebP images are supported.'))
   }
 

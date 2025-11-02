@@ -24,9 +24,7 @@ export const replaceCmd = (app: App): Command => ({
       newTag: convertToTag(speaker.name),
     }))
     new ReplaceTagModal(app, recommendedTags, async recommendedTags => {
-      await app.vault.process(activeFile, fileText =>
-        replace(fileText, recommendedTags)
-      )
+      await app.vault.process(activeFile, fileText => replace(fileText, recommendedTags))
     }).open()
   },
 })
@@ -42,11 +40,7 @@ const convertToTag = (speaker: string) => {
 class ReplaceTagModal extends Modal {
   onSubmit: (tags: ReplaceTag[]) => void
   recommendTags: ReplaceTag[]
-  constructor(
-    app: App,
-    recommendTags: ReplaceTag[],
-    onSubmit: (tags: ReplaceTag[]) => void
-  ) {
+  constructor(app: App, recommendTags: ReplaceTag[], onSubmit: (tags: ReplaceTag[]) => void) {
     super(app)
     this.recommendTags = recommendTags
     this.onSubmit = onSubmit
@@ -56,21 +50,17 @@ class ReplaceTagModal extends Modal {
     const { contentEl } = this
     contentEl.createEl('h2', { text: t('Replace speaker with tag') })
     contentEl.createEl('p', {
-      text: t(
-        'Replace the names of the two most frequently occurring speakers with tag format.'
-      ),
+      text: t('Replace the names of the two most frequently occurring speakers with tag format.'),
     })
     for (const tag of this.recommendTags) {
-      new Setting(contentEl)
-        .setName(`${tag.original} (${tag.count})`)
-        .addText(text =>
-          text
-            .setPlaceholder(tag.newTag)
-            .setValue(tag.newTag)
-            .onChange(async value => {
-              tag.newTag = value
-            })
-        )
+      new Setting(contentEl).setName(`${tag.original} (${tag.count})`).addText(text =>
+        text
+          .setPlaceholder(tag.newTag)
+          .setValue(tag.newTag)
+          .onChange(async value => {
+            tag.newTag = value
+          })
+      )
     }
 
     new Setting(contentEl).addButton(btn =>
@@ -110,9 +100,7 @@ const findTwoMostFrequentSpeakers = (fileText: string) => {
   const matchCounts = countOccurrences(matchResults)
 
   // sort occurrences
-  const sortedMatchFrequencies = Object.entries(matchCounts).sort(
-    (arr1, arr2) => arr2[1] - arr1[1]
-  )
+  const sortedMatchFrequencies = Object.entries(matchCounts).sort((arr1, arr2) => arr2[1] - arr1[1])
   console.debug('sortedMatchFrequencies', sortedMatchFrequencies)
   // Select the two most frequent speakers
   const [mostFrequent, secondMostFrequent] = sortedMatchFrequencies.slice(0, 2)

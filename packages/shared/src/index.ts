@@ -15,9 +15,7 @@ export function extractTags(content: string): string[] {
   // Then: return array of found tags
   const tagPattern = /#(\w+):/g
   const matches = content.match(tagPattern)
-  return matches
-    ? matches.map(match => match.substring(1, match.length - 1))
-    : []
+  return matches ? matches.map(match => match.substring(1, match.length - 1)) : []
 }
 
 export function createPluginLogger(prefix: string) {
@@ -38,10 +36,7 @@ export function createPluginLogger(prefix: string) {
 }
 
 export function summarizeMessage(message: Message): string {
-  const snippet =
-    message.content.length > 60
-      ? `${message.content.slice(0, 57)}...`
-      : message.content
+  const snippet = message.content.length > 60 ? `${message.content.slice(0, 57)}...` : message.content
   return `${message.role.toUpperCase()}: ${snippet}`
 }
 
