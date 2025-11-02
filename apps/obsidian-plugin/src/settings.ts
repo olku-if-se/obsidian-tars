@@ -1,5 +1,9 @@
 import type { PromptTemplate } from './prompt'
 import type { ProviderSettings, Vendor } from './providers'
+
+// Re-export ProviderSettings for DI components
+export type { ProviderSettings }
+
 import { azureVendor } from './providers/azure'
 import { claudeVendor } from './providers/claude'
 import { deepSeekVendor } from './providers/deepSeek'

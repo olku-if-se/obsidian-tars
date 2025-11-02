@@ -1,5 +1,6 @@
-import { injectable } from '@needle-di/core'
+import { injectable, inject } from '@needle-di/core'
 import type { BaseOptions, ProviderSettings, Vendor } from '../providers/index'
+import { Tokens } from './tokens'
 import type { PluginSettings } from '../settings'
 
 // Error messages
@@ -33,9 +34,11 @@ export class ProviderRegistryError extends Error {
  */
 @injectable()
 export class ProviderRegistry {
-  private readonly settings: PluginSettings
+  private settings: PluginSettings
+  private providerCache = new Map<string, Vendor>()
+  private cacheEnabled = true
 
-  constructor(settings: PluginSettings) {
+  constructor(settings = inject(Tokens.AppSettings)) {
     if (!settings) {
       throw new Error('PluginSettings is required')
     }
@@ -43,6 +46,11 @@ export class ProviderRegistry {
   }
 
   // Factory method for DI integration
+  static create(settings: PluginSettings): ProviderRegistry {
+    return new ProviderRegistry(settings)
+  }
+
+  // Keep backward compatibility
   static createWithSettings(settings: PluginSettings): ProviderRegistry {
     return new ProviderRegistry(settings)
   }
@@ -52,6 +60,11 @@ export class ProviderRegistry {
    */
   getProvider(name: string): Vendor | null {
     try {
+      // Check cache first
+      if (this.cacheEnabled && this.providerCache.has(name)) {
+        return this.providerCache.get(name)!
+      }
+
       const providerSettings = this.settings.providers.find(
         provider => provider.tag === name || provider.vendor.toLowerCase() === name.toLowerCase()
       )
@@ -60,9 +73,13 @@ export class ProviderRegistry {
         return null
       }
 
-      // Return the vendor instance from the provider settings
-      // In a real implementation, you might want to cache these instances
-      return this.createVendorInstance(providerSettings)
+      // Create and cache the vendor instance
+      const vendor = this.createVendorInstance(providerSettings)
+      if (vendor && this.cacheEnabled) {
+        this.providerCache.set(name, vendor)
+      }
+
+      return vendor
     } catch (error) {
       console.error(`Failed to get provider ${name}:`, error)
       return null
@@ -191,18 +208,76 @@ export class ProviderRegistry {
   }
 
   /**
+   * Update the settings reference and clear cache
+   */
+  updateSettings(newSettings: PluginSettings): void {
+    this.settings = newSettings
+    this.clearCache()
+  }
+
+  /**
+   * Update a specific provider
+   */
+  updateProvider(tag: string): void {
+    // Remove from cache to force recreation on next access
+    this.providerCache.delete(tag)
+  }
+
+  /**
+   * Remove a provider
+   */
+  removeProvider(tag: string): void {
+    // Remove from cache
+    this.providerCache.delete(tag)
+
+    // Remove from settings (if mutable)
+    const index = this.settings.providers.findIndex(p => p.tag === tag)
+    if (index !== -1) {
+      this.settings.providers.splice(index, 1)
+    }
+  }
+
+  /**
+   * Clear provider cache
+   */
+  clearCache(): void {
+    this.providerCache.clear()
+  }
+
+  /**
+   * Enable or disable provider caching
+   */
+  setCacheEnabled(enabled: boolean): void {
+    this.cacheEnabled = enabled
+    if (!enabled) {
+      this.clearCache()
+    }
+  }
+
+  /**
+   * Get cache status
+   */
+  getCacheStatus(): { enabled: boolean; size: number; cachedProviders: string[] } {
+    return {
+      enabled: this.cacheEnabled,
+      size: this.providerCache.size,
+      cachedProviders: Array.from(this.providerCache.keys()),
+    }
+  }
+
+  /**
+   * Force refresh of all providers
+   */
+  refreshAllProviders(): void {
+    this.clearCache()
+  }
+
+  /**
    * Register a new provider (for dynamic provider addition)
    */
   registerProvider(provider: Vendor, tag?: string): void {
     // This would be used for dynamic provider registration
     // In a full implementation, you would add this to the settings and save
     console.log('Registering provider:', provider.name, 'with tag:', tag || provider.name.toLowerCase())
-  }
-
-  /**
-   * Factory method for creating instances (useful for testing)
-   */
-  static create(settings: PluginSettings): ProviderRegistry {
-    return new ProviderRegistry(settings)
   }
 }

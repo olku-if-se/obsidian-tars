@@ -320,10 +320,7 @@ export class TarsSettingTab extends PluginSettingTab {
     })
     details.open = isOpen
 
-    const capabilities =
-      t('Supported features') +
-      ' : ' +
-      vendor.capabilities.map(cap => `${getCapabilityEmoji(cap)} ${t(cap)}`).join('    ')
+    const capabilities = `${t('Supported features')} : ${vendor.capabilities.map(cap => `${getCapabilityEmoji(cap)} ${cap}`).join('    ')}`
 
     this.addTagSection(details, settings, index, vendor.name)
 

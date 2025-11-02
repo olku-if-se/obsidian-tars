@@ -1,9 +1,23 @@
-import type { Container } from '@needle-di/core'
+import { Container } from '@needle-di/core'
 import type { App } from 'obsidian'
 import type { PluginSettings } from '../settings'
 import { DIContainerWrapper } from './container'
 import type { ContainerConfig, ServiceFactory, TestContainer, ValidationError } from './interfaces'
 import { Tokens } from './tokens'
+import { ProviderRegistry } from './provider-registry'
+import { ProviderFactoryRegistry, createProviderFactoryRegistry } from './provider-factory-impl'
+import { getProviderMetadata, DEFAULT_PROVIDER_METADATA } from './provider-metadata'
+import { SettingsChangeNotifier } from './settings-change-notifier'
+import { ConfigBindingService } from './config-binding-service'
+import { PerformanceMonitor } from './performance-monitor'
+
+// Import DI providers
+import { OpenAIProvider } from '../providers/openai-di'
+import { ClaudeProvider } from '../providers/claude-di'
+import { DeepSeekProvider } from '../providers/deepseek-di'
+import { GeminiProvider } from '../providers/gemini-di'
+import { GrokProvider } from '../providers/grok-di'
+import { OpenRouterProvider } from '../providers/openrouter-di'
 
 // Error messages
 const Errors = {
@@ -157,39 +171,96 @@ export class ContainerSetup {
       throw ContainerSetupError.failed()
     }
 
+    const container = (this._wrapper as unknown as { container?: Container }).container
+    if (!container) {
+      throw new Error('Container not available for service registration')
+    }
+
     try {
       // Register core services
-      // This will be expanded as services are implemented in later tasks
+      container.bind(ProviderRegistry)
+      container.bind({
+      provide: ProviderFactoryRegistry,
+      useValue: createProviderFactoryRegistry()
+    })
+      container.bind(SettingsChangeNotifier)
+      container.bind(ConfigBindingService)
+      container.bind(PerformanceMonitor)
 
-      // Placeholder for future service registrations:
-      // container.bind(Tokens.SETTINGS_SERVICE).to(SettingsService);
-      // container.bind(Tokens.NOTIFICATIONS_SERVICE).to(NotificationsService);
-      // container.bind(Tokens.PROVIDER_REGISTRY).to(ProviderRegistry);
-      // etc.
-
-      console.log('Core services registered (placeholder - services will be added in later tasks)')
+      console.log('Core services registered')
     } catch (error) {
       throw ServiceRegistrationError.failed('core services', error)
     }
   }
 
-  private async registerProviders(_settings: PluginSettings): Promise<void> {
+  private async registerProviders(settings: PluginSettings): Promise<void> {
     if (!this._wrapper) {
       throw ContainerSetupError.failed()
     }
 
+    const container = (this._wrapper as unknown as { container?: Container }).container
+    if (!container) {
+      throw new Error('Container not available for provider registration')
+    }
+
     try {
-      // Register AI providers
-      // This will be expanded as providers are converted to DI in later tasks
+      // Get the provider factory registry
+      const factoryRegistry = container.get(ProviderFactoryRegistry)
 
-      // Placeholder for future provider registrations:
-      // container.bind({ provide: Tokens.AI_PROVIDERS, useClass: OpenAIProvider, multi: true });
-      // container.bind({ provide: Tokens.AI_PROVIDERS, useClass: ClaudeProvider, multi: true });
-      // etc.
+      // Register providers with multi-token pattern
+      this.registerProviderWithMulti(container, 'openai', OpenAIProvider, settings, factoryRegistry)
+      this.registerProviderWithMulti(container, 'claude', ClaudeProvider, settings, factoryRegistry)
+      this.registerProviderWithMulti(container, 'deepseek', DeepSeekProvider, settings, factoryRegistry)
+      this.registerProviderWithMulti(container, 'gemini', GeminiProvider, settings, factoryRegistry)
+      this.registerProviderWithMulti(container, 'grok', GrokProvider, settings, factoryRegistry)
+      this.registerProviderWithMulti(container, 'openrouter', OpenRouterProvider, settings, factoryRegistry)
 
-      console.log('AI providers registered (placeholder - providers will be added in later tasks)')
+      console.log(`Registered ${factoryRegistry.size()} AI providers with dynamic registration`)
+
+      // Bind configuration services together
+      const configBindingService = container.get(ConfigBindingService)
+      configBindingService.bind()
+
+      console.log('Configuration binding service initialized')
     } catch (error) {
       throw ServiceRegistrationError.failed('AI providers', error)
+    }
+  }
+
+  /**
+   * Register a provider with multi-token pattern and factory registry
+   */
+  private registerProviderWithMulti(
+    container: Container,
+    tag: string,
+    ProviderClass: new (settings: PluginSettings, tag?: string) => any,
+    settings: PluginSettings,
+    factoryRegistry: ProviderFactoryRegistry
+  ): void {
+    try {
+      // Check if provider is enabled in settings
+      const providerSettings = settings.providers.find(p => p.tag === tag)
+      if (!providerSettings) {
+        console.log(`Provider ${tag} not found in settings, skipping registration`)
+        return
+      }
+
+      // Register with factory registry for dynamic creation
+      factoryRegistry.registerFactory(tag, ProviderClass, {
+        override: false,
+        validate: true,
+      })
+
+      // Register with multi-token pattern for injection
+      container.bind({
+        provide: Tokens.AiProviders,
+        useClass: ProviderClass,
+        multi: true,
+      })
+
+      console.log(`Registered provider: ${tag}`)
+    } catch (error) {
+      console.warn(`Failed to register provider ${tag}:`, error)
     }
   }
 

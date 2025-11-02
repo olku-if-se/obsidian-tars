@@ -1,5 +1,4 @@
 import { type App, type FuzzyMatch, FuzzySuggestModal } from 'obsidian'
-import { t } from './lang/helper'
 import type { Vendor } from './providers'
 import { getCapabilityEmoji } from './providers/utils'
 
@@ -85,7 +84,7 @@ export class SelectVendorModal extends FuzzySuggestModal<Vendor> {
 
     template.item.capabilities.forEach(capability => {
       tagsContainer.createEl('span', {
-        text: `${getCapabilityEmoji(capability)} ${t(capability)}`,
+        text: `${getCapabilityEmoji(capability)} ${capability}`,
         cls: 'capability-tag',
       })
     })

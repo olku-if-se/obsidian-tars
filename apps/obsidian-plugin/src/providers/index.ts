@@ -29,6 +29,8 @@ export type Capability =
   | 'Image Editing'
   | 'Web Search'
   | 'Reasoning'
+  | 'Multimodal'
+  | 'Coding'
 
 export interface Vendor {
   readonly name: string
