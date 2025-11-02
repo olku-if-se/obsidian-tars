@@ -93,7 +93,7 @@ As a developer troubleshooting dependency injection issues, I need clear error m
 
 - What happens when a provider's dependencies fail to initialize but other providers are healthy?
 - How does the system handle configuration updates while an AI request is in progress?
-- What happens when a developer accidentally creates circular dependencies between services?
+- What happens when a developer accidentally creates circular dependencies between services? (Answer: Pre-migration static analysis with unit tests - Use tools to detect potential circular dependencies before implementing DI, validated through unit tests)
 - How does the system behave when running tests in parallel with different dependency configurations?
 - What happens when Obsidian's settings storage is unavailable during plugin load?
 - How does the system handle gradual migration where some components use DI and others use direct instantiation?
@@ -120,7 +120,7 @@ As a developer troubleshooting dependency injection issues, I need clear error m
 - **FR-016**: System MUST preserve all error context when wrapping exceptions from dependencies
 - **FR-017**: System MUST allow providers to access shared services through the dependency system
 - **FR-018**: System MUST support factory functions for complex component initialization
-- **FR-020**: System MUST provide facades that delegate to DI-managed instances for backward compatibility
+- **FR-019**: System MUST provide facades that delegate to DI-managed instances for backward compatibility
 
 ### Key Entities
 
@@ -138,7 +138,7 @@ As a developer troubleshooting dependency injection issues, I need clear error m
 - **SC-001**: Developers can create isolated unit tests for any component in under 5 lines of test setup code
 - **SC-002**: Adding a new AI provider requires modifying fewer than 10 lines of registration code
 - **SC-003**: 100% of existing plugin functionality works identically after migration with zero breaking changes
-- **SC-004**: Plugin initialization time increases by no more than 50 milliseconds compared to pre-migration baseline
+- **SC-004**: Plugin initialization time increases by no more than 50 milliseconds compared to pre-migration baseline, measured via runtime logging instrumentation
 - **SC-005**: Test coverage for provider logic reaches 85% or higher using isolated unit tests
 - **SC-006**: Configuration changes reflect in active components within 10 milliseconds using callback-based propagation without restart
 - **SC-007**: Dependency resolution errors provide actionable error messages identifying the specific missing or misconfigured component
@@ -160,6 +160,14 @@ As a developer troubleshooting dependency injection issues, I need clear error m
 - Q: Error Message Depth and Context → A: Minimal messages with structured objects - Simple console output combined with machine-readable error details for debugging tools
 - Q: Migration Strategy for Provider Registration → A: Big bang migration - All providers converted to DI simultaneously with a single breaking change
 
+### Session 2025-11-02
+
+- Q: Migration rollback strategy if critical bugs introduced → A: No rollback planned - Migration is one-way with full acceptance testing before release
+- Q: Missing FR-019 requirement in functional requirements → A: Gap in numbering - No FR-019 requirement exists, just a numbering error
+- Q: How to measure 50ms plugin initialization increase (SC-004) → A: Runtime logging instrumentation - Add timing logs to plugin initialization code to measure overhead
+- Q: Verify build system supports ES2022+ decorators → A: Automated build verification with unit tests - Create build test that fails if decorators not properly emitted, and validate configuration via unit tests
+- Q: Handle circular dependencies during migration → A: Pre-migration static analysis with unit tests - Use tools to detect potential circular dependencies before implementing DI, validated through unit tests
+
 ## Assumptions
 
 - The plugin already has a working test suite that will validate backward compatibility
@@ -176,7 +184,7 @@ As a developer troubleshooting dependency injection issues, I need clear error m
 
 - **Needle DI Library**: The core dependency injection framework (@needle-di/core v1.1.0+ with minor version updates, strict requirement with graceful degradation)
 - **TypeScript Compiler**: Must support stage-3 decorators (TypeScript 5.7+)
-- **Build System**: Must support ES2022 target for decorator emission (esbuild/tsup configured correctly)
+- **Build System**: Must support ES2022 target for decorator emission (esbuild/tsup configured correctly), verified via automated build tests and unit validation of configuration settings
 - **Test Framework**: Must support container creation and mocking (Vitest with DI support)
 - **Existing Plugin Architecture**: Assumes current plugin structure allows for gradual refactoring
 - **Obsidian API**: Must remain stable during migration to avoid conflicting changes

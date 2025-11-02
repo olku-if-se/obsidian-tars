@@ -1,12 +1,91 @@
-# Research: Needle DI Migration
+# Research: Needle DI Migration Architecture
 
-**Feature**: 003-needle-di-migration
-**Date**: 2025-10-30
-**Status**: Phase 0 Complete
+**Date**: 2025-11-02
+**Feature**: Needle DI Migration
+**Status**: Complete
 
-## Overview
+## Executive Summary
 
-This document consolidates all technical research and architectural decisions for migrating the Tars Obsidian plugin to Needle DI. All unknowns from the Technical Context have been resolved through analysis of the existing codebase, Needle DI documentation, and established patterns.
+This research document provides the architectural foundation for migrating the Tars Obsidian plugin from direct instantiation to Needle DI dependency injection. The migration will transform the plugin's main.ts file from a manually managed dependency graph to a centralized DI container with facades for zero breaking changes.
+
+## Key Findings
+
+### 1. Current Plugin Architecture Analysis
+
+**Current State (main.ts)**:
+- Manual instantiation of StatusBarManager (line 46)
+- Direct settings passing throughout command functions
+- Tight coupling between plugin class and service dependencies
+- No dependency injection or inversion of control
+
+**Migration Target**:
+- Centralized DI container initialized in plugin onload()
+- All services (StatusBarManager, settings, etc.) injected via constructor
+- Facade pattern to maintain existing API compatibility
+- Lazy loading for performance optimization
+
+### 2. Needle DI Integration Patterns
+
+**Container Integration**:
+```typescript
+// Initialize DI container first in plugin onload()
+private container!: Container
+private diContainer!: IDIContainer
+
+async onload() {
+  await this.loadSettings()
+  this.initializeDIContainer()  // NEW
+  this.setupServicesViaDI()     // NEW
+  // Continue with existing initialization
+}
+```
+
+**Configuration Token Binding**:
+- Type-safe tokens for OBSIDIAN_APP, APP_SETTINGS
+- Settings validation before provider resolution
+- Change notification system for live configuration updates
+
+**Provider Registration**:
+- Lazy singleton registration for AI providers
+- Factory patterns for complex initialization
+- Metadata-driven provider discovery
+
+### 3. Facade Pattern Implementation
+
+**Settings Facade**:
+- Maintains existing PluginSettings interface
+- Delegates to DI-managed settings instance
+- Preserves all existing property access patterns
+
+**Service Facades**:
+- StatusBarManagerFacade for backward compatibility
+- ProviderFactoryFacade for existing vendor access patterns
+- Command facades to maintain existing command signatures
+
+### 4. Performance Optimization
+
+**Initialization Timing**:
+- DI container setup measured via runtime logging (SC-004)
+- Lazy loading for non-essential providers
+- Timeout protection (5s default) with fallback to essential services
+- Parallel registration of providers where possible
+
+**Memory Management**:
+- Singleton lifecycle for core services
+- Child containers for test isolation
+- Performance monitoring with memory footprint tracking
+
+### 5. Testing Strategy
+
+**Unit Testing**:
+- Child containers per test for isolation
+- Mock settings injection without plugin instantiation
+- Provider testing with <5 lines of setup code (SC-001)
+
+**Integration Testing**:
+- Full plugin testing with real DI container
+- Configuration change propagation testing
+- Performance regression testing
 
 ---
 

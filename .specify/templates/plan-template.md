@@ -74,12 +74,42 @@ All features MUST pass these constitutional gates:
 - Uses TSX for TypeScript execution
 - Uses TSUP/ESBUILD for bundling
 - Follows monorepo architecture requirements
+- TypeScript targets ES2022+ for decorator and modern feature support
 
-**Gate 8: Security & Privacy**
+**Gate 8: TypeScript Code Excellence**
+- Follows domain-scoped file structure with composable component suites
+- Uses generic type names within domains (Result, Config, Options)
+- Preserves error causes with proper chaining using Object.assign
+- Implements async generators for streaming with cancellation support
+- Favors composition over inheritance with EventEmitter patterns
+- Isolates side effects to application edges
+- Uses static factories for clean declarative APIs
+
+**Gate 9: Needle DI Architecture Standards**
+- Uses Needle DI v1.1.0+ with stage-3 decorators (no experimentalDecorators)
+- Implements @injectable() decorators with constructor injection via inject()
+- Supports child containers for test isolation
+- Uses configuration tokens for type-safe settings binding
+- Implements factory patterns for complex initialization
+- Validates all container bindings can be resolved at startup
+- Maintains proper singleton and transient lifecycle scopes
+
+**Gate 10: React Component Architecture**
+- Follows atomic hierarchy (Atoms → Components → Views) with minimal state in Atoms
+- Uses TypeScript props typing with type over interface, 80%+ required props
+- Implements React 18+ patterns (automatic batching, Suspense boundaries)
+- Uses composition over prop drilling with proper performance patterns
+- Maintains hooks discipline with proper dependency arrays
+- Implements conditional rendering with early returns and extracted subcomponents
+- Wraps all user-facing text in t('...') function for i18n readiness
+
+**Gate 11: Security & Privacy**
 - API keys stored in Obsidian's encrypted settings
 - No sensitive data exposed in logs or error messages
 - Content only transmitted to configured AI provider or MCP server
 - MCP server connections have appropriate security controls and user consent
+- React components sanitize HTML and validate URL protocols
+- Never expose secrets in client bundles or use insecure storage
 
 ## Project Structure
 

@@ -169,8 +169,38 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX [P] Constitutional compliance review for Performance & Responsiveness
 - [ ] TXXX [P] Constitutional compliance review for MCP Integration Capability
 - [ ] TXXX [P] Constitutional compliance review for Development Standards & Tooling
+- [ ] TXXX [P] Constitutional compliance review for TypeScript Code Excellence
+- [ ] TXXX [P] Constitutional compliance review for Needle DI Architecture Standards
+- [ ] TXXX [P] Constitutional compliance review for React Component Architecture
 - [ ] TXXX [P] Constitutional compliance review for Security & Privacy
 - [ ] TXXX Update constitution version if amendments were needed
+
+### TypeScript Excellence Tasks (if applicable)
+
+- [ ] TXXX [P] Verify domain-scoped file structure without redundant prefixes
+- [ ] TXXX [P] Validate generic type names (Result, Config, Options) within domains
+- [ ] TXXX [P] Verify error cause preservation with proper chaining
+- [ ] TXXX [P] Validate async generator patterns for streaming operations
+- [ ] TXXX [P] Verify composition over inheritance with EventEmitter patterns
+- [ ] TXXX [P] Validate side effect isolation to application edges
+
+### Needle DI Implementation Tasks (if applicable)
+
+- [ ] TXXX [P] Verify Needle DI v1.1.0+ with stage-3 decorators
+- [ ] TXXX [P] Validate @injectable() decorators with constructor injection
+- [ ] TXXX [P] Verify child container support for test isolation
+- [ ] TXXX [P] Validate configuration token usage for type-safe binding
+- [ ] TXXX [P] Verify factory pattern implementation for complex initialization
+- [ ] TXXX [P] Validate container binding resolution at startup
+
+### React Component Tasks (if applicable)
+
+- [ ] TXXX [P] Verify atomic hierarchy (Atoms → Components → Views)
+- [ ] TXXX [P] Validate TypeScript props typing with 80%+ required props
+- [ ] TXXX [P] Verify React 18+ patterns (batching, Suspense, hooks discipline)
+- [ ] TXXX [P] Validate composition over prop drilling patterns
+- [ ] TXXX [P] Verify performance patterns (stable keys, memoization)
+- [ ] TXXX [P] Validate i18n readiness with t('...') function usage
 
 ---
 

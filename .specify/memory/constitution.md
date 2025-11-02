@@ -1,17 +1,23 @@
 <!--
 Sync Impact Report:
-Version change: 1.2.0 → 1.3.0 (minor version increase - enhanced TDD requirements with Given/When/Then standards)
+Version change: 1.3.0 → 1.4.0 (minor version increase - added comprehensive TypeScript, Needle DI, and React architecture principles)
 Modified principles:
-- Test-First Development (enhanced with 85%+ coverage and Given/When/Then comment requirements)
-- Testing Standards (expanded with business-value focused test comments and cucumber-like scenario extraction)
+- Development Standards & Tooling (enhanced with specific TypeScript and React patterns)
+- Testing Standards (aligned with TypeScript excellence guidelines)
 Added sections:
-- Enhanced testing comment format requirements (within existing Testing Standards section)
+- VIII. TypeScript Code Excellence (domain-scoped architecture, error handling, async patterns)
+- IX. Needle DI Architecture Standards (dependency injection patterns, container management)
+- X. React Component Architecture (atomic hierarchy, performance, i18n, security)
+- Enhanced Development Standards with specific patterns from rules documents
 Removed sections:
 - N/A
 Templates requiring updates:
-✅ .specify/templates/spec-template.md (updated with enhanced TDD standards)
-✅ .specify/templates/plan-template.md (updated with enhanced TDD gate and testing standards)
-✅ .specify/templates/tasks-template.md (updated with TDD coverage and comment requirements)
+✅ .specify/templates/spec-template.md (updated with TypeScript excellence references)
+✅ .specify/templates/plan-template.md (updated with Needle DI and React architecture gates)
+✅ .specify/templates/tasks-template.md (updated with TypeScript and React task patterns)
+⚠️ docs/rules-typescript-code.md (referenced in constitution - keep as detailed reference)
+⚠️ docs/rules-needle_di-monorepo.md (referenced in constitution - keep as detailed reference)
+⚠️ docs/rules-react-components.md (referenced in constitution - keep as detailed reference)
 Follow-up TODOs: N/A
 -->
 
@@ -49,10 +55,25 @@ Tars MUST support integration with multiple MCP servers that provide additional 
 
 **Rationale**: Enables extensibility through the broader MCP ecosystem while maintaining architectural consistency and preventing vendor lock-in.
 
-### VII. Development Standards & Tooling (NEW)
+### VII. Development Standards & Tooling
 All development MUST use the modern tooling stack: PNPM for package management, TURBO for build orchestration, BIOME for linting and formatting, KNIP for dependency analysis, TSX for TypeScript execution, and TSUP/ESBUILD for bundling. Monorepo structure with pnpm workspaces is MANDATORY for multi-package projects. Outdated tools (NPM, ESLint, PRETTIER) MUST NOT be used.
 
 **Rationale**: Modern tooling provides superior performance, better developer experience, and essential features for monorepo management that outdated tools cannot match.
+
+### VIII. TypeScript Code Excellence
+All TypeScript code MUST follow domain-scoped file structure where files export composable component suites without redundant domain prefixes. Code MUST use generic type names within domains (Result, Config, Options), preserve error causes with proper chaining, and favor composition over inheritance with EventEmitter patterns for reactive systems. Async operations MUST use `async function*` generators for streaming, implement cancellation via `AbortSignal`, and isolate side effects to application edges.
+
+**Rationale**: Domain-aware TypeScript creates elegant, composable systems that are maintainable, testable, and follow modern async patterns essential for streaming AI responses.
+
+### IX. Needle DI Architecture Standards
+All dependency injection MUST use Needle DI v1.1.0+ with stage-3 decorators (no experimentalDecorators). Components MUST use `@injectable()` decorators with constructor injection via `inject()`. Containers MUST support child containers for test isolation, configuration tokens for type-safe settings binding, and factory patterns for complex initialization. All DI setup MUST target ES2022+ for proper decorator emission.
+
+**Rationale**: Needle DI provides reflection-free dependency injection that works seamlessly with modern TypeScript build tools and enables clean test architecture through child container isolation.
+
+### X. React Component Architecture
+All React components MUST follow atomic hierarchy (Atoms → Components → Views) with minimal state in Atoms only. Components MUST use TypeScript props typing with `type` over `interface`, mark most props required (80%+), and avoid `React.FC` by default. Code MUST implement React 18+ patterns (automatic batching, Suspense boundaries, proper hooks discipline), use composition over prop drilling, and follow performance rules (stable keys, memoization only with stable props, proper dependency arrays).
+
+**Rationale**: Atomic React architecture creates maintainable UI systems that are performant, testable, and scale with team size while following modern React best practices.
 
 ## Development Standards & Tooling
 
@@ -66,6 +87,7 @@ All projects MUST use these tools without exception:
 - **TSX**: TypeScript execution for CLI tools and scripts
 - **TSUP**: TypeScript bundling with esbuild under the hood
 - **ESBUILD**: Ultra-fast bundling for production builds
+- **NEEDLE DI**: @needle-di/core v1.1.0+ for dependency injection
 
 ### Monorepo Architecture Requirements
 
@@ -74,16 +96,40 @@ All projects MUST use these tools without exception:
 - Internal packages MUST use workspace protocol (e.g., @tars/core@workspace:*)
 - Build orchestration MUST use turbo with intelligent caching
 - ESM modules for internal packages, IIFE bundles for distribution
+- TypeScript MUST target ES2022+ for decorator and modern feature support
 
-### TypeScript & Code Quality Standards
+### TypeScript Excellence Standards
 
-- TypeScript strict mode with comprehensive type coverage (no `any` types without explicit justification)
-- Modern ES2022+ features when appropriate (async/await, optional chaining, nullish coalescing)
-- Biome configuration for consistent code formatting and linting
-- Clear separation between UI logic, business logic, provider implementations, and MCP integrations
-- Comprehensive error handling with user-friendly messages
-- No blocking operations in the main thread
-- Proper memory management and cleanup for sensitive data
+- **Domain-Scoped Files**: File path defines domain, avoid redundant prefixes in type names
+- **Generic Type Names**: Use Result, Config, Options, Event within domain files
+- **Error Cause Chains**: Always preserve original error with `cause` property using `Object.assign`
+- **Async Generators**: Use `async function*` for streaming with `yield` for intermediate values
+- **Composition Over Inheritance**: Small focused classes with EventEmitter for reactive systems
+- **Cancellation Support**: Make `AbortSignal` first-class in all async operations
+- **Side Effect Isolation**: Keep core logic pure, handle I/O at application edges
+- **Static Factories**: Provide clean declarative APIs over constructor complexity
+
+### Needle DI Implementation Standards
+
+- **Stage-3 Decorators**: Use native decorators, never `experimentalDecorators` or `emitDecoratorMetadata`
+- **Constructor Injection**: Use `@injectable()` and `inject()` for all dependencies
+- **Configuration Tokens**: Use `InjectionToken<T>` for type-safe settings binding
+- **Child Containers**: Create child containers for test isolation with mocked dependencies
+- **Factory Patterns**: Use `useFactory` for complex component initialization
+- **Provider Types**: Support useClass, useValue, useFactory, useExisting providers
+- **Lifecycle Management**: Support singleton and transient scopes appropriately
+- **Container Validation**: Validate all bindings can be resolved at startup
+
+### React Component Standards
+
+- **Atomic Hierarchy**: Atoms (minimal state) → Components → Views (orchestration)
+- **Props Typing**: Use `type ComponentNameProps`, mark 80%+ required, avoid `React.FC`
+- **Event Handling**: Use `event.currentTarget`, specific React event types
+- **Performance**: Stable keys, memoization only with stable props, proper dependency arrays
+- **Hooks Discipline**: Call unconditionally at top, complete deps, cleanup effects
+- **Composition**: Move state down, pass children as props, avoid prop drilling
+- **Conditional Rendering**: Early returns, avoid nested ternaries, extract subcomponents
+- **i18n Ready**: Wrap all user-facing text in `t('...')` function immediately
 
 ### Obsidian Integration Standards
 
@@ -107,6 +153,8 @@ TDD is the MANDATORY development approach:
 - All unit tests MUST include Given/When/Then comments in format `// {GIVEN|WHEN|THEN}: {description}`
 - Test comments MUST focus on business value, not implementation details
 - Test comments extracted from code MUST form readable cucumber-like scenarios
+- DI container tests MUST validate child container isolation and mocking
+- React component tests MUST use Testing Library with semantic queries
 
 ## Security & Privacy
 
@@ -119,6 +167,12 @@ User content and AI conversations MUST NOT be transmitted to any services other 
 ### MCP Server Security
 MCP server connections MUST be configurable with appropriate security controls. All MCP server communications MUST respect user consent and privacy preferences.
 
+### React Security
+- Sanitize `dangerouslySetInnerHTML` with DOMPurify
+- Validate URL protocols to block `javascript:`
+- Never expose secrets in client bundles
+- Use httpOnly cookies for authentication tokens
+
 ## Governance
 
 This constitution supersedes all other development practices and guides all architectural decisions. Amendments require:
@@ -129,4 +183,4 @@ This constitution supersedes all other development practices and guides all arch
 
 All pull requests and code reviews MUST verify compliance with these constitutional principles. Complexity beyond these standards MUST be explicitly justified in PR descriptions.
 
-**Version**: 1.3.0 | **Ratified**: 2025-01-24 | **Last Amended**: 2025-01-24
+**Version**: 1.4.0 | **Ratified**: 2025-01-24 | **Last Amended**: 2025-11-02

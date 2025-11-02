@@ -1,12 +1,12 @@
-# Quickstart: Needle DI in Tars Plugin
+# Quickstart Guide: Needle DI Migration
 
 **Feature**: 003-needle-di-migration
-**Date**: 2025-10-30
-**Audience**: Developers working on Tars Obsidian plugin
+**Date**: 2025-11-02
+**Audience**: Developers implementing the Needle DI migration
 
 ## Overview
 
-This quickstart guide helps developers understand and use the Needle DI system in the Tars plugin. You'll learn how to create injectable services, resolve dependencies, write testable code, and add new AI providers.
+This guide provides step-by-step instructions for working with the Needle DI system in the Tars Obsidian plugin. It covers common patterns, testing approaches, and troubleshooting tips.
 
 ---
 
@@ -21,29 +21,67 @@ This quickstart guide helps developers understand and use the Needle DI system i
 
 ## 5-Minute Quick Start
 
-### 1. Inject Settings into a Service
+### 1. Create Minimal Plugin Class
 
 ```typescript
-import { injectable, inject } from '@needle-di/core';
-import { APP_SETTINGS } from '../di/tokens';
+// src/main.ts
+import { Container } from '@needle-di/core';
+import { TARS_PLUGIN } from './di/tokens';
 
-@injectable()
-export class MyService {
-  constructor(private settings = inject(APP_SETTINGS)) {}
+export default class TarsPlugin extends Plugin {
+  private container!: Container;
 
-  doSomething() {
-    const apiKey = this.settings.providers.openai.apiKey;
-    // Use the injected settings
+  async onload() {
+    // ONLY DI setup - no business logic
+    this.setupDIContainer();
+
+    // Initialize everything through DI
+    const initializer = this.container.get(PluginInitializer);
+    await initializer.initialize();
+  }
+
+  private setupDIContainer(): void {
+    this.container = new Container();
+
+    // Bind plugin itself as a service
+    this.container.bind({ provide: TARS_PLUGIN, useValue: this });
+
+    // Bind Obsidian App
+    this.container.bind({ provide: OBSIDIAN_APP, useValue: this.app });
+
+    // Register all other services
+    this.registerServices();
   }
 }
 ```
 
-### 2. Resolve Service from Container
+### 2. Create Plugin Initializer Service
 
 ```typescript
-// In plugin main.ts
-const service = this.diContainer.get(MyService);
-service.doSomething();
+// src/services/plugin-initializer.ts
+import { injectable, inject } from '@needle-di/core';
+import { TARS_PLUGIN, OBSIDIAN_APP } from '../di/tokens';
+
+@injectable()
+export class PluginInitializer {
+  constructor(
+    private plugin = inject(TARS_PLUGIN),
+    private app = inject(OBSIDIAN_APP),
+    private commandService = inject(ObsidianCommandService),
+    private statusBarService = inject(StatusBarService)
+  ) {}
+
+  async initialize(): Promise<void> {
+    // All Obsidian API calls happen here
+    await this.loadSettings();
+    this.setupServices();
+  }
+
+  private setupServices(): void {
+    this.commandService.registerCommands();
+    this.statusBarService.initialize();
+  }
+}
 ```
 
 ### 3. Test with Mocked Dependencies
