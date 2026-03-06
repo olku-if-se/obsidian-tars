@@ -1,4 +1,4 @@
-import { App, Notice, PluginSettingTab, requestUrl, Setting } from 'obsidian'
+import { App, Notice, PluginSettingTab, requestUrl, Setting, SettingGroup } from 'obsidian'
 import { exportCmd, replaceCmd, replaceCmdId } from './commands'
 import { exportCmdId } from './commands/export'
 import { t } from './lang/helper'
@@ -66,123 +66,126 @@ export class TarsSettingTab extends PluginSettingTab {
 			this.createProviderSetting(index, provider, isLast && expandLastProvider)
 		}
 
-		containerEl.createEl('br')
-		new Setting(containerEl)
-			.setName(t('Message tags'))
-			.setDesc(t('Keywords for tags in the text box are separated by spaces'))
-			.setHeading()
-
 		let newChatTagsInput: HTMLInputElement | null = null
-		new Setting(containerEl)
-			.setName(this.plugin.settings.roleEmojis.newChat + ' ' + t('New chat tags'))
-			.addExtraButton((btn) => {
-				btn
-					.setIcon('reset')
-					.setTooltip(t('Restore default'))
-					.onClick(async () => {
-						this.plugin.settings.newChatTags = DEFAULT_SETTINGS.newChatTags
-						await this.plugin.saveSettings()
-						if (newChatTagsInput) {
-							newChatTagsInput.value = this.plugin.settings.newChatTags.join(' ')
-						}
-					})
-			})
-			.addText((text) => {
-				newChatTagsInput = text.inputEl
-				text
-					.setPlaceholder(DEFAULT_SETTINGS.newChatTags.join(' '))
-					.setValue(this.plugin.settings.newChatTags.join(' '))
-					.onChange(async (value) => {
-						const tags = value.split(' ').filter((e) => e.length > 0)
-						if (!validateTagList(tags)) return
-						this.plugin.settings.newChatTags = tags
-						await this.plugin.saveSettings()
-					})
-			})
-
 		let userTagsInput: HTMLInputElement | null = null
-		new Setting(containerEl)
-			.setName(this.plugin.settings.roleEmojis.user + ' ' + t('User message tags'))
-			.addExtraButton((btn) => {
-				btn
-					.setIcon('reset')
-					.setTooltip(t('Restore default'))
-					.onClick(async () => {
-						this.plugin.settings.userTags = DEFAULT_SETTINGS.userTags
-						await this.plugin.saveSettings()
-						if (userTagsInput) {
-							userTagsInput.value = this.plugin.settings.userTags.join(' ')
-						}
-					})
-			})
-			.addText((text) => {
-				userTagsInput = text.inputEl
-				text
-					.setPlaceholder(DEFAULT_SETTINGS.userTags.join(' '))
-					.setValue(this.plugin.settings.userTags.join(' '))
-					.onChange(async (value) => {
-						const tags = value.split(' ').filter((e) => e.length > 0)
-						if (!validateTagList(tags)) return
-						this.plugin.settings.userTags = tags
-						await this.plugin.saveSettings()
-					})
-			})
-
 		let systemTagsInput: HTMLInputElement | null = null
-		new Setting(containerEl)
-			.setName(this.plugin.settings.roleEmojis.system + ' ' + t('System message tags'))
-			.addExtraButton((btn) => {
-				btn
-					.setIcon('reset')
-					.setTooltip(t('Restore default'))
-					.onClick(async () => {
-						this.plugin.settings.systemTags = DEFAULT_SETTINGS.systemTags
-						await this.plugin.saveSettings()
-						if (systemTagsInput) {
-							systemTagsInput.value = this.plugin.settings.systemTags.join(' ')
-						}
+		new SettingGroup(containerEl)
+			.setHeading(t('Message tags'))
+			.addSetting((setting) => setting.setDesc(t('Keywords for tags in the text box are separated by spaces')))
+			.addSetting((setting) =>
+				setting
+					.setName(this.plugin.settings.roleEmojis.newChat + ' ' + t('New chat tags'))
+					.addExtraButton((btn) => {
+						btn
+							.setIcon('reset')
+							.setTooltip(t('Restore default'))
+							.onClick(async () => {
+								this.plugin.settings.newChatTags = DEFAULT_SETTINGS.newChatTags
+								await this.plugin.saveSettings()
+								if (newChatTagsInput) {
+									newChatTagsInput.value = this.plugin.settings.newChatTags.join(' ')
+								}
+							})
 					})
-			})
-			.addText((text) => {
-				systemTagsInput = text.inputEl
-				text
-					.setPlaceholder(DEFAULT_SETTINGS.systemTags.join(' '))
-					.setValue(this.plugin.settings.systemTags.join(' '))
-					.onChange(async (value) => {
-						const tags = value.split(' ').filter((e) => e.length > 0)
-						if (!validateTagList(tags)) return
-						this.plugin.settings.systemTags = tags
-						await this.plugin.saveSettings()
+					.addText((text) => {
+						newChatTagsInput = text.inputEl
+						text
+							.setPlaceholder(DEFAULT_SETTINGS.newChatTags.join(' '))
+							.setValue(this.plugin.settings.newChatTags.join(' '))
+							.onChange(async (value) => {
+								const tags = value.split(' ').filter((e) => e.length > 0)
+								if (!validateTagList(tags)) return
+								this.plugin.settings.newChatTags = tags
+								await this.plugin.saveSettings()
+							})
 					})
-			})
-
-		containerEl.createEl('br')
-
-		new Setting(containerEl).setName(t('System message')).setHeading()
-		let defaultSystemMsgInput: HTMLTextAreaElement | null = null
-		new Setting(containerEl)
-			.setName(t('Enable default system message'))
-			.setDesc(t('Automatically add a system message when none exists in the conversation'))
-			.addToggle((toggle) =>
-				toggle.setValue(this.plugin.settings.enableDefaultSystemMsg).onChange(async (value) => {
-					this.plugin.settings.enableDefaultSystemMsg = value
-					await this.plugin.saveSettings()
-					if (defaultSystemMsgInput) {
-						defaultSystemMsgInput.disabled = !value
-					}
-				})
+			)
+			.addSetting((setting) =>
+				setting
+					.setName(this.plugin.settings.roleEmojis.user + ' ' + t('User message tags'))
+					.addExtraButton((btn) => {
+						btn
+							.setIcon('reset')
+							.setTooltip(t('Restore default'))
+							.onClick(async () => {
+								this.plugin.settings.userTags = DEFAULT_SETTINGS.userTags
+								await this.plugin.saveSettings()
+								if (userTagsInput) {
+									userTagsInput.value = this.plugin.settings.userTags.join(' ')
+								}
+							})
+					})
+					.addText((text) => {
+						userTagsInput = text.inputEl
+						text
+							.setPlaceholder(DEFAULT_SETTINGS.userTags.join(' '))
+							.setValue(this.plugin.settings.userTags.join(' '))
+							.onChange(async (value) => {
+								const tags = value.split(' ').filter((e) => e.length > 0)
+								if (!validateTagList(tags)) return
+								this.plugin.settings.userTags = tags
+								await this.plugin.saveSettings()
+							})
+					})
+			)
+			.addSetting((setting) =>
+				setting
+					.setName(this.plugin.settings.roleEmojis.system + ' ' + t('System message tags'))
+					.addExtraButton((btn) => {
+						btn
+							.setIcon('reset')
+							.setTooltip(t('Restore default'))
+							.onClick(async () => {
+								this.plugin.settings.systemTags = DEFAULT_SETTINGS.systemTags
+								await this.plugin.saveSettings()
+								if (systemTagsInput) {
+									systemTagsInput.value = this.plugin.settings.systemTags.join(' ')
+								}
+							})
+					})
+					.addText((text) => {
+						systemTagsInput = text.inputEl
+						text
+							.setPlaceholder(DEFAULT_SETTINGS.systemTags.join(' '))
+							.setValue(this.plugin.settings.systemTags.join(' '))
+							.onChange(async (value) => {
+								const tags = value.split(' ').filter((e) => e.length > 0)
+								if (!validateTagList(tags)) return
+								this.plugin.settings.systemTags = tags
+								await this.plugin.saveSettings()
+							})
+					})
 			)
 
-		new Setting(containerEl).setName(t('Default system message')).addTextArea((textArea) => {
-			defaultSystemMsgInput = textArea.inputEl
-			textArea
-				.setDisabled(!this.plugin.settings.enableDefaultSystemMsg)
-				.setValue(this.plugin.settings.defaultSystemMsg)
-				.onChange(async (value) => {
-					this.plugin.settings.defaultSystemMsg = value.trim()
-					await this.plugin.saveSettings()
+		let defaultSystemMsgInput: HTMLTextAreaElement | null = null
+		new SettingGroup(containerEl)
+			.setHeading(t('System message'))
+			.addSetting((setting) =>
+				setting
+					.setName(t('Enable default system message'))
+					.setDesc(t('Automatically add a system message when none exists in the conversation'))
+					.addToggle((toggle) =>
+						toggle.setValue(this.plugin.settings.enableDefaultSystemMsg).onChange(async (value) => {
+							this.plugin.settings.enableDefaultSystemMsg = value
+							await this.plugin.saveSettings()
+							if (defaultSystemMsgInput) {
+								defaultSystemMsgInput.disabled = !value
+							}
+						})
+					)
+			)
+			.addSetting((setting) =>
+				setting.setName(t('Default system message')).addTextArea((textArea) => {
+					defaultSystemMsgInput = textArea.inputEl
+					textArea
+						.setDisabled(!this.plugin.settings.enableDefaultSystemMsg)
+						.setValue(this.plugin.settings.defaultSystemMsg)
+						.onChange(async (value) => {
+							this.plugin.settings.defaultSystemMsg = value.trim()
+							await this.plugin.saveSettings()
+						})
 				})
-		})
+			)
 
 		containerEl.createEl('br')
 
@@ -215,95 +218,107 @@ export class TarsSettingTab extends PluginSettingTab {
 		const advancedSection = containerEl.createEl('details')
 		advancedSection.createEl('summary', { text: t('Advanced'), cls: 'tars-setting-h4' })
 
-		new Setting(advancedSection)
-			.setName(t('Internal links for assistant messages'))
-			.setDesc(
-				t(
-					'Replace internal links in assistant messages with their referenced content. Note: This feature is generally not recommended as assistant-generated content may contain non-existent links.'
+		const advancedGroup = new SettingGroup(advancedSection)
+
+		advancedGroup.addSetting((setting) =>
+			setting
+				.setName(t('Internal links for assistant messages'))
+				.setDesc(
+					t(
+						'Replace internal links in assistant messages with their referenced content. Note: This feature is generally not recommended as assistant-generated content may contain non-existent links.'
+					)
 				)
-			)
-			.addToggle((toggle) =>
-				toggle.setValue(this.plugin.settings.enableInternalLinkForAssistantMsg ?? false).onChange(async (value) => {
-					this.plugin.settings.enableInternalLinkForAssistantMsg = value
-					await this.plugin.saveSettings()
-				})
-			)
+				.addToggle((toggle) =>
+					toggle.setValue(this.plugin.settings.enableInternalLinkForAssistantMsg ?? false).onChange(async (value) => {
+						this.plugin.settings.enableInternalLinkForAssistantMsg = value
+						await this.plugin.saveSettings()
+					})
+				)
+		)
 
 		let answerDelayInput: HTMLInputElement | null = null
-		new Setting(advancedSection)
-			.setName(t('Delay before answer (Seconds)'))
-			.setDesc(
-				t(
-					'If you encounter errors with missing user messages when executing assistant commands on selected text, it may be due to the need for more time to parse the messages. Please slightly increase the delay time.'
+		advancedGroup.addSetting((setting) =>
+			setting
+				.setName(t('Delay before answer (Seconds)'))
+				.setDesc(
+					t(
+						'If you encounter errors with missing user messages when executing assistant commands on selected text, it may be due to the need for more time to parse the messages. Please slightly increase the delay time.'
+					)
 				)
-			)
-			.addExtraButton((btn) => {
-				btn
-					.setIcon('reset')
-					.setTooltip(t('Restore default'))
-					.onClick(async () => {
-						this.plugin.settings.answerDelayInMilliseconds = DEFAULT_SETTINGS.answerDelayInMilliseconds
+				.addExtraButton((btn) => {
+					btn
+						.setIcon('reset')
+						.setTooltip(t('Restore default'))
+						.onClick(async () => {
+							this.plugin.settings.answerDelayInMilliseconds = DEFAULT_SETTINGS.answerDelayInMilliseconds
+							await this.plugin.saveSettings()
+							if (answerDelayInput) {
+								answerDelayInput.value = (this.plugin.settings.answerDelayInMilliseconds / 1000).toString()
+							}
+						})
+				})
+				.addSlider((slider) => {
+					answerDelayInput = slider.sliderEl
+					slider
+						.setLimits(1.5, 4, 0.5)
+						.setValue(this.plugin.settings.answerDelayInMilliseconds / 1000)
+						.setDynamicTooltip()
+						.onChange(async (value) => {
+							this.plugin.settings.answerDelayInMilliseconds = Math.round(value * 1000)
+							await this.plugin.saveSettings()
+						})
+				})
+		)
+
+		advancedGroup.addSetting((setting) =>
+			setting
+				.setName(t('Replace tag Command'))
+				.setDesc(t('Replace the names of the two most frequently occurring speakers with tag format.'))
+				.addToggle((toggle) =>
+					toggle.setValue(this.plugin.settings.enableReplaceTag).onChange(async (value) => {
+						this.plugin.settings.enableReplaceTag = value
 						await this.plugin.saveSettings()
-						if (answerDelayInput) {
-							answerDelayInput.value = (this.plugin.settings.answerDelayInMilliseconds / 1000).toString()
+						if (value) {
+							this.plugin.addCommand(replaceCmd(this.app))
+						} else {
+							this.plugin.removeCommand(replaceCmdId)
 						}
 					})
-			})
-			.addSlider((slider) => {
-				answerDelayInput = slider.sliderEl
-				slider
-					.setLimits(1.5, 4, 0.5)
-					.setValue(this.plugin.settings.answerDelayInMilliseconds / 1000)
-					.setDynamicTooltip()
-					.onChange(async (value) => {
-						this.plugin.settings.answerDelayInMilliseconds = Math.round(value * 1000)
+				)
+		)
+
+		advancedGroup.addSetting((setting) =>
+			setting
+				.setName(t('Export to JSONL Command'))
+				.setDesc(t('Export conversations to JSONL'))
+				.addToggle((toggle) =>
+					toggle.setValue(this.plugin.settings.enableExportToJSONL).onChange(async (value) => {
+						this.plugin.settings.enableExportToJSONL = value
+						await this.plugin.saveSettings()
+						if (value) {
+							this.plugin.addCommand(exportCmd(this.app, this.plugin.settings))
+						} else {
+							this.plugin.removeCommand(exportCmdId)
+						}
+					})
+				)
+		)
+
+		advancedGroup.addSetting((setting) =>
+			setting
+				.setName(t('Tag suggest'))
+				.setDesc(
+					t(
+						'If you only use commands without needing tag suggestions, you can disable this feature. Changes will take effect after restarting the plugin.'
+					)
+				)
+				.addToggle((toggle) =>
+					toggle.setValue(this.plugin.settings.enableTagSuggest).onChange(async (value) => {
+						this.plugin.settings.enableTagSuggest = value
 						await this.plugin.saveSettings()
 					})
-			})
-
-		new Setting(advancedSection)
-			.setName(t('Replace tag Command'))
-			.setDesc(t('Replace the names of the two most frequently occurring speakers with tag format.'))
-			.addToggle((toggle) =>
-				toggle.setValue(this.plugin.settings.enableReplaceTag).onChange(async (value) => {
-					this.plugin.settings.enableReplaceTag = value
-					await this.plugin.saveSettings()
-					if (value) {
-						this.plugin.addCommand(replaceCmd(this.app))
-					} else {
-						this.plugin.removeCommand(replaceCmdId)
-					}
-				})
-			)
-
-		new Setting(advancedSection)
-			.setName(t('Export to JSONL Command'))
-			.setDesc(t('Export conversations to JSONL'))
-			.addToggle((toggle) =>
-				toggle.setValue(this.plugin.settings.enableExportToJSONL).onChange(async (value) => {
-					this.plugin.settings.enableExportToJSONL = value
-					await this.plugin.saveSettings()
-					if (value) {
-						this.plugin.addCommand(exportCmd(this.app, this.plugin.settings))
-					} else {
-						this.plugin.removeCommand(exportCmdId)
-					}
-				})
-			)
-
-		new Setting(advancedSection)
-			.setName(t('Tag suggest'))
-			.setDesc(
-				t(
-					'If you only use commands without needing tag suggestions, you can disable this feature. Changes will take effect after restarting the plugin.'
 				)
-			)
-			.addToggle((toggle) =>
-				toggle.setValue(this.plugin.settings.enableTagSuggest).onChange(async (value) => {
-					this.plugin.settings.enableTagSuggest = value
-					await this.plugin.saveSettings()
-				})
-			)
+		)
 	}
 
 	createProviderSetting = (index: number, settings: ProviderSettings, isOpen: boolean = false) => {
@@ -314,457 +329,504 @@ export class TarsSettingTab extends PluginSettingTab {
 		details.createEl('summary', { text: getSummary(settings.tag, vendor.name), cls: 'tars-setting-h4' })
 		details.open = isOpen
 
+		const group = new SettingGroup(details)
+
 		const capabilities =
 			t('Supported features') +
 			' : ' +
 			vendor.capabilities.map((cap) => `${getCapabilityEmoji(cap)} ${t(cap)}`).join('    ')
 
-		this.addTagSection(details, settings, index, vendor.name)
+		this.addTagSection(group, details, settings, index, vendor.name)
 
 		// model setting
 		const modelConfig = MODEL_FETCH_CONFIGS[vendor.name as keyof typeof MODEL_FETCH_CONFIGS]
 		if (modelConfig) {
-			new Setting(details)
-				.setName(t('Model'))
-				.setDesc(capabilities)
-				.addButton((btn) => {
-					btn
-						.setButtonText(settings.options.model ? settings.options.model : t('Select the model to use'))
-						.onClick(async () => {
-							// Check if API key is required but not provided
-							if (modelConfig.requiresApiKey && !settings.options.apiKey) {
-								new Notice(t('Please input API key first'))
-								return
-							}
-							try {
-								const models = await fetchModels(
-									modelConfig.url,
-									modelConfig.requiresApiKey ? settings.options.apiKey : undefined
-								)
-								const onChoose = async (selectedModel: string) => {
-									settings.options.model = selectedModel
-									await this.plugin.saveSettings()
-									btn.setButtonText(selectedModel)
+			group.addSetting((setting) =>
+				setting
+					.setName(t('Model'))
+					.setDesc(capabilities)
+					.addButton((btn) => {
+						btn
+							.setButtonText(settings.options.model ? settings.options.model : t('Select the model to use'))
+							.onClick(async () => {
+								// Check if API key is required but not provided
+								if (modelConfig.requiresApiKey && !settings.options.apiKey) {
+									new Notice(t('Please input API key first'))
+									return
 								}
-								new SelectModelModal(this.app, models, onChoose).open()
-							} catch (error) {
-								if (error instanceof Error) {
-									const errorMessage = error.message.toLowerCase()
-									if (errorMessage.includes('401') || errorMessage.includes('unauthorized')) {
-										new Notice('🔑 ' + t('API key may be incorrect. Please check your API key.'))
-									} else if (errorMessage.includes('403') || errorMessage.includes('forbidden')) {
-										new Notice('🚫 ' + t('Access denied. Please check your API permissions.'))
-									} else {
-										new Notice('🔴 ' + error.message)
+								try {
+									const models = await fetchModels(
+										modelConfig.url,
+										modelConfig.requiresApiKey ? settings.options.apiKey : undefined
+									)
+									const onChoose = async (selectedModel: string) => {
+										settings.options.model = selectedModel
+										await this.plugin.saveSettings()
+										btn.setButtonText(selectedModel)
 									}
-								} else {
-									new Notice('🔴 ' + String(error))
+									new SelectModelModal(this.app, models, onChoose).open()
+								} catch (error) {
+									if (error instanceof Error) {
+										const errorMessage = error.message.toLowerCase()
+										if (errorMessage.includes('401') || errorMessage.includes('unauthorized')) {
+											new Notice('🔑 ' + t('API key may be incorrect. Please check your API key.'))
+										} else if (errorMessage.includes('403') || errorMessage.includes('forbidden')) {
+											new Notice('🚫 ' + t('Access denied. Please check your API permissions.'))
+										} else {
+											new Notice('🔴 ' + error.message)
+										}
+									} else {
+										new Notice('🔴 ' + String(error))
+									}
 								}
-							}
-						})
-				})
+							})
+					})
+			)
 		} else if (vendor.models.length > 0) {
-			this.addModelDropDownSection(details, settings.options, vendor.models, capabilities)
+			this.addModelDropDownSection(group, settings.options, vendor.models, capabilities)
 		} else {
-			this.addModelTextSection(details, settings.options, capabilities)
+			this.addModelTextSection(group, settings.options, capabilities)
 		}
 
 		if (vendor.name !== ollamaVendor.name) {
 			this.addAPIkeySection(
-				details,
+				group,
 				settings.options,
 				vendor.websiteToObtainKey ? t('Obtain key from ') + vendor.websiteToObtainKey : ''
 			)
 		}
 
 		if ('apiSecret' in settings.options)
-			this.addAPISecretOptional(details, settings.options as BaseOptions & Pick<Optional, 'apiSecret'>)
+			this.addAPISecretOptional(group, settings.options as BaseOptions & Pick<Optional, 'apiSecret'>)
 
 		if (vendor.capabilities.includes('Web Search')) {
-			new Setting(details)
-				.setName(t('Web search'))
-				.setDesc(t('Enable web search for AI'))
-				.addToggle((toggle) =>
-					toggle.setValue(settings.options.enableWebSearch ?? false).onChange(async (value) => {
-						settings.options.enableWebSearch = value
-						await this.plugin.saveSettings()
-					})
-				)
+			group.addSetting((setting) =>
+				setting
+					.setName(t('Web search'))
+					.setDesc(t('Enable web search for AI'))
+					.addToggle((toggle) =>
+						toggle.setValue(settings.options.enableWebSearch ?? false).onChange(async (value) => {
+							settings.options.enableWebSearch = value
+							await this.plugin.saveSettings()
+						})
+					)
+			)
 		}
 
 		if (vendor.name === claudeVendor.name) {
-			this.addClaudeSections(details, settings.options as ClaudeOptions)
+			this.addClaudeSections(group, settings.options as ClaudeOptions)
 		}
 
 		if (vendor.name === gptImageVendor.name) {
-			this.addGptImageSections(details, settings.options as GptImageOptions)
+			this.addGptImageSections(group, settings.options as GptImageOptions)
 		}
 
-		this.addBaseURLSection(details, settings.options, vendor.defaultOptions.baseURL)
+		this.addBaseURLSection(group, settings.options, vendor.defaultOptions.baseURL)
 
 		if ('endpoint' in settings.options)
-			this.addEndpointOptional(details, settings.options as BaseOptions & Pick<Optional, 'endpoint'>)
+			this.addEndpointOptional(group, settings.options as BaseOptions & Pick<Optional, 'endpoint'>)
 
 		if ('apiVersion' in settings.options)
-			this.addApiVersionOptional(details, settings.options as BaseOptions & Pick<Optional, 'apiVersion'>)
+			this.addApiVersionOptional(group, settings.options as BaseOptions & Pick<Optional, 'apiVersion'>)
 
-		this.addParametersSection(details, settings.options)
+		this.addParametersSection(group, settings.options)
 
-		new Setting(details).setName(t('Remove') + ' ' + vendor.name).addButton((btn) => {
-			btn
-				.setWarning()
-				.setButtonText(t('Remove'))
-				.onClick(async () => {
-					this.plugin.settings.providers.splice(index, 1)
-					await this.plugin.saveSettings()
-					this.display()
-				})
-		})
-	}
-
-	addTagSection = (details: HTMLDetailsElement, settings: ProviderSettings, index: number, defaultTag: string) =>
-		new Setting(details)
-			.setName('✨ ' + t('Assistant message tag'))
-			.setDesc(t('Tag used to trigger AI text generation'))
-			.addText((text) =>
-				text
-					.setPlaceholder(defaultTag)
-					.setValue(settings.tag)
-					.onChange(async (value) => {
-						const trimmed = value.trim()
-						// console.debug('trimmed', trimmed)
-						if (trimmed.length === 0) return
-						if (!validateTag(trimmed)) return
-						const otherTags = this.plugin.settings.providers
-							.filter((e, i) => i !== index)
-							.map((e) => e.tag.toLowerCase())
-						if (otherTags.includes(trimmed.toLowerCase())) {
-							new Notice(t('Keyword for tag must be unique'))
-							return
-						}
-
-						settings.tag = trimmed
-						const summaryElement = details.querySelector('summary')
-						if (summaryElement != null) summaryElement.textContent = getSummary(settings.tag, defaultTag) // 更新summary
-						await this.plugin.saveSettings()
-					})
-			)
-
-	addBaseURLSection = (details: HTMLDetailsElement, options: BaseOptions, defaultValue: string) => {
-		let textInput: HTMLInputElement | null = null
-		new Setting(details)
-			.setName('baseURL')
-			.setDesc(t('Default:') + ' ' + defaultValue)
-			.addExtraButton((btn) => {
+		group.addSetting((setting) =>
+			setting.setName(t('Remove') + ' ' + vendor.name).addButton((btn) => {
 				btn
-					.setIcon('reset')
-					.setTooltip(t('Restore default'))
+					.setWarning()
+					.setButtonText(t('Remove'))
 					.onClick(async () => {
-						options.baseURL = defaultValue
+						this.plugin.settings.providers.splice(index, 1)
 						await this.plugin.saveSettings()
-						if (textInput) {
-							textInput.value = defaultValue
-						}
+						this.display()
 					})
 			})
-			.addText((text) => {
-				textInput = text.inputEl
-				text.setValue(options.baseURL).onChange(async (value) => {
-					options.baseURL = value.trim()
-					await this.plugin.saveSettings()
-				})
-			})
+		)
 	}
 
-	addAPIkeySection = (details: HTMLDetailsElement, options: BaseOptions, desc: string = '') =>
-		new Setting(details)
-			.setName('API key')
-			.setDesc(desc)
-			.addText((text) =>
-				text
-					.setPlaceholder(t('API key (required)'))
-					.setValue(options.apiKey)
-					.onChange(async (value) => {
-						options.apiKey = value.trim()
-						await this.plugin.saveSettings()
-					})
-			)
-
-	addAPISecretOptional = (
+	addTagSection = (
+		group: SettingGroup,
 		details: HTMLDetailsElement,
-		options: BaseOptions & Pick<Optional, 'apiSecret'>,
-		desc: string = ''
+		settings: ProviderSettings,
+		index: number,
+		defaultTag: string
 	) =>
-		new Setting(details)
-			.setName('API Secret')
-			.setDesc(desc)
-			.addText((text) =>
-				text
-					.setPlaceholder('')
-					.setValue(options.apiSecret)
-					.onChange(async (value) => {
-						options.apiSecret = value.trim()
-						await this.plugin.saveSettings()
-					})
-			)
-
-	addModelDropDownSection = (details: HTMLDetailsElement, options: BaseOptions, models: string[], desc: string) =>
-		new Setting(details)
-			.setName(t('Model'))
-			.setDesc(desc)
-			.addDropdown((dropdown) =>
-				dropdown
-					.addOptions(
-						models.reduce((acc: Record<string, string>, cur: string) => {
-							acc[cur] = cur
-							return acc
-						}, {})
-					)
-					.setValue(options.model)
-					.onChange(async (value) => {
-						options.model = value
-						await this.plugin.saveSettings()
-					})
-			)
-
-	addModelTextSection = (details: HTMLDetailsElement, options: BaseOptions, desc: string) =>
-		new Setting(details)
-			.setName(t('Model'))
-			.setDesc(desc)
-			.addText((text) =>
-				text
-					.setPlaceholder('')
-					.setValue(options.model)
-					.onChange(async (value) => {
-						options.model = value.trim()
-						await this.plugin.saveSettings()
-					})
-			)
-
-	addClaudeSections = (details: HTMLDetailsElement, options: ClaudeOptions) => {
-		new Setting(details)
-			.setName(t('Thinking'))
-			.setDesc(t('When enabled, Claude will show its reasoning process before giving the final answer.'))
-			.addToggle((toggle) =>
-				toggle.setValue(options.enableThinking ?? false).onChange(async (value) => {
-					options.enableThinking = value
-					await this.plugin.saveSettings()
-				})
-			)
-
-		new Setting(details)
-			.setName(t('Budget tokens for thinking'))
-			.setDesc(t('Must be ≥1024 and less than max_tokens'))
-			.addText((text) =>
-				text
-					.setPlaceholder('')
-					.setValue(options.budget_tokens ? options.budget_tokens.toString() : '1600')
-					.onChange(async (value) => {
-						const number = parseInt(value)
-						if (isNaN(number)) {
-							new Notice(t('Please enter a number'))
-							return
-						}
-						if (number < 1024) {
-							new Notice(t('Minimum value is 1024'))
-							return
-						}
-						options.budget_tokens = number
-						await this.plugin.saveSettings()
-					})
-			)
-
-		new Setting(details)
-			.setName('Max tokens')
-			.setDesc(t('Refer to the technical documentation'))
-			.addText((text) =>
-				text
-					.setPlaceholder('')
-					.setValue(options.max_tokens.toString())
-					.onChange(async (value) => {
-						const number = parseInt(value)
-						if (isNaN(number)) {
-							new Notice(t('Please enter a number'))
-							return
-						}
-						if (number < 256) {
-							new Notice(t('Minimum value is 256'))
-							return
-						}
-						options.max_tokens = number
-						await this.plugin.saveSettings()
-					})
-			)
-	}
-
-	addEndpointOptional = (details: HTMLDetailsElement, options: BaseOptions & Pick<Optional, 'endpoint'>) =>
-		new Setting(details)
-			.setName(t('Endpoint'))
-			.setDesc('e.g. https://docs-test-001.openai.azure.com/')
-			.addText((text) =>
-				text
-					.setPlaceholder('')
-					.setValue(options.endpoint)
-					.onChange(async (value) => {
-						const url = value.trim()
-						if (url.length === 0) {
-							// Empty string is valid, clearing endpoint
-							options.endpoint = ''
-							await this.plugin.saveSettings()
-						} else if (!isValidUrl(url)) {
-							new Notice(t('Invalid URL'))
-							return
-						} else {
-							options.endpoint = url
-							await this.plugin.saveSettings()
-						}
-					})
-			)
-
-	addApiVersionOptional = (details: HTMLDetailsElement, options: BaseOptions & Pick<Optional, 'apiVersion'>) =>
-		new Setting(details)
-			.setName(t('API version'))
-			.setDesc('e.g. 2024-xx-xx-preview')
-			.addText((text) =>
-				text
-					.setPlaceholder('')
-					.setValue(options.apiVersion)
-					.onChange(async (value) => {
-						options.apiVersion = value.trim()
-						await this.plugin.saveSettings()
-					})
-			)
-
-	addParametersSection = (details: HTMLDetailsElement, options: BaseOptions) =>
-		new Setting(details)
-			.setName(t('Override input parameters'))
-			.setDesc(
-				t(
-					'Developer feature, in JSON format. For example, if the model list doesn\'t have the model you want, enter {"model": "your desired model"}'
-				)
-			)
-			.addTextArea((text) =>
-				text
-					.setPlaceholder('{}')
-					.setValue(JSON.stringify(options.parameters))
-					.onChange(async (value) => {
-						try {
+		group.addSetting((setting) =>
+			setting
+				.setName('✨ ' + t('Assistant message tag'))
+				.setDesc(t('Tag used to trigger AI text generation'))
+				.addText((text) =>
+					text
+						.setPlaceholder(defaultTag)
+						.setValue(settings.tag)
+						.onChange(async (value) => {
 							const trimmed = value.trim()
-							if (trimmed === '') {
-								// Empty string is valid, clearing parameters
-								options.parameters = {}
-								await this.plugin.saveSettings()
+							if (trimmed.length === 0) return
+							if (!validateTag(trimmed)) return
+							const otherTags = this.plugin.settings.providers
+								.filter((e, i) => i !== index)
+								.map((e) => e.tag.toLowerCase())
+							if (otherTags.includes(trimmed.toLowerCase())) {
+								new Notice(t('Keyword for tag must be unique'))
 								return
 							}
-							options.parameters = JSON.parse(trimmed)
-							await this.plugin.saveSettings()
-						} catch {
-							// This is difficult to handle properly - onChange triggers quickly, and users might receive frequent error messages before they finish typing, which is annoying
-							return
-						}
-					})
-			)
 
-	addGptImageSections = (details: HTMLDetailsElement, options: GptImageOptions) => {
-		new Setting(details)
-			.setName(t('Image Display Width'))
-			.setDesc(t('Example: 400px width would output as ![[image.jpg|400]]'))
-			.addSlider((slider) =>
-				slider
-					.setLimits(200, 800, 100)
-					.setValue(options.displayWidth)
-					.setDynamicTooltip()
-					.onChange(async (value) => {
-						options.displayWidth = value
-						await this.plugin.saveSettings()
-					})
-			)
-		new Setting(details)
-			.setName(t('Number of images'))
-			.setDesc(t('Number of images to generate (1-5)'))
-			.addSlider((slider) =>
-				slider
-					.setLimits(1, 5, 1)
-					.setValue(options.n)
-					.setDynamicTooltip()
-					.onChange(async (value) => {
-						options.n = value
-						await this.plugin.saveSettings()
-					})
-			)
-		new Setting(details).setName(t('Image size')).addDropdown((dropdown) =>
-			dropdown
-				.addOptions({
-					auto: 'Auto',
-					'1024x1024': '1024x1024',
-					'1536x1024': '1536x1024 ' + t('landscape'),
-					'1024x1536': '1024x1536 ' + t('portrait')
+							settings.tag = trimmed
+							const summaryEl = details.querySelector('summary')
+							if (summaryEl) summaryEl.textContent = getSummary(settings.tag, defaultTag)
+							await this.plugin.saveSettings()
+						})
+				)
+		)
+
+	addBaseURLSection = (group: SettingGroup, options: BaseOptions, defaultValue: string) => {
+		let textInput: HTMLInputElement | null = null
+		group.addSetting((setting) =>
+			setting
+				.setName('baseURL')
+				.setDesc(t('Default:') + ' ' + defaultValue)
+				.addExtraButton((btn) => {
+					btn
+						.setIcon('reset')
+						.setTooltip(t('Restore default'))
+						.onClick(async () => {
+							options.baseURL = defaultValue
+							await this.plugin.saveSettings()
+							if (textInput) {
+								textInput.value = defaultValue
+							}
+						})
 				})
-				.setValue(options.size)
-				.onChange(async (value) => {
-					options.size = value as GptImageOptions['size']
-					await this.plugin.saveSettings()
+				.addText((text) => {
+					textInput = text.inputEl
+					text.setValue(options.baseURL).onChange(async (value) => {
+						options.baseURL = value.trim()
+						await this.plugin.saveSettings()
+					})
 				})
 		)
-		new Setting(details).setName(t('Output format')).addDropdown((dropdown) =>
-			dropdown
-				.addOptions({
-					png: 'PNG',
-					jpeg: 'JPEG',
-					webp: 'WEBP'
-				})
-				.setValue(options.output_format)
-				.onChange(async (value) => {
-					options.output_format = value as GptImageOptions['output_format']
-					await this.plugin.saveSettings()
-				})
+	}
+
+	addAPIkeySection = (group: SettingGroup, options: BaseOptions, desc: string = '') =>
+		group.addSetting((setting) =>
+			setting
+				.setName('API key')
+				.setDesc(desc)
+				.addText((text) =>
+					text
+						.setPlaceholder(t('API key (required)'))
+						.setValue(options.apiKey)
+						.onChange(async (value) => {
+							options.apiKey = value.trim()
+							await this.plugin.saveSettings()
+						})
+				)
 		)
-		new Setting(details)
-			.setName(t('Quality'))
-			.setDesc(t('Quality level for generated images. default: Auto'))
-			.addDropdown((dropdown) =>
+
+	addAPISecretOptional = (group: SettingGroup, options: BaseOptions & Pick<Optional, 'apiSecret'>, desc: string = '') =>
+		group.addSetting((setting) =>
+			setting
+				.setName('API Secret')
+				.setDesc(desc)
+				.addText((text) =>
+					text
+						.setPlaceholder('')
+						.setValue(options.apiSecret)
+						.onChange(async (value) => {
+							options.apiSecret = value.trim()
+							await this.plugin.saveSettings()
+						})
+				)
+		)
+
+	addModelDropDownSection = (group: SettingGroup, options: BaseOptions, models: string[], desc: string) =>
+		group.addSetting((setting) =>
+			setting
+				.setName(t('Model'))
+				.setDesc(desc)
+				.addDropdown((dropdown) =>
+					dropdown
+						.addOptions(
+							models.reduce((acc: Record<string, string>, cur: string) => {
+								acc[cur] = cur
+								return acc
+							}, {})
+						)
+						.setValue(options.model)
+						.onChange(async (value) => {
+							options.model = value
+							await this.plugin.saveSettings()
+						})
+				)
+		)
+
+	addModelTextSection = (group: SettingGroup, options: BaseOptions, desc: string) =>
+		group.addSetting((setting) =>
+			setting
+				.setName(t('Model'))
+				.setDesc(desc)
+				.addText((text) =>
+					text
+						.setPlaceholder('')
+						.setValue(options.model)
+						.onChange(async (value) => {
+							options.model = value.trim()
+							await this.plugin.saveSettings()
+						})
+				)
+		)
+
+	addClaudeSections = (group: SettingGroup, options: ClaudeOptions) => {
+		group.addSetting((setting) =>
+			setting
+				.setName(t('Thinking'))
+				.setDesc(t('When enabled, Claude will show its reasoning process before giving the final answer.'))
+				.addToggle((toggle) =>
+					toggle.setValue(options.enableThinking ?? false).onChange(async (value) => {
+						options.enableThinking = value
+						await this.plugin.saveSettings()
+					})
+				)
+		)
+
+		group.addSetting((setting) =>
+			setting
+				.setName(t('Budget tokens for thinking'))
+				.setDesc(t('Must be ≥1024 and less than max_tokens'))
+				.addText((text) =>
+					text
+						.setPlaceholder('')
+						.setValue(options.budget_tokens ? options.budget_tokens.toString() : '1600')
+						.onChange(async (value) => {
+							const number = parseInt(value)
+							if (isNaN(number)) {
+								new Notice(t('Please enter a number'))
+								return
+							}
+							if (number < 1024) {
+								new Notice(t('Minimum value is 1024'))
+								return
+							}
+							options.budget_tokens = number
+							await this.plugin.saveSettings()
+						})
+				)
+		)
+
+		group.addSetting((setting) =>
+			setting
+				.setName('Max tokens')
+				.setDesc(t('Refer to the technical documentation'))
+				.addText((text) =>
+					text
+						.setPlaceholder('')
+						.setValue(options.max_tokens.toString())
+						.onChange(async (value) => {
+							const number = parseInt(value)
+							if (isNaN(number)) {
+								new Notice(t('Please enter a number'))
+								return
+							}
+							if (number < 256) {
+								new Notice(t('Minimum value is 256'))
+								return
+							}
+							options.max_tokens = number
+							await this.plugin.saveSettings()
+						})
+				)
+		)
+	}
+
+	addEndpointOptional = (group: SettingGroup, options: BaseOptions & Pick<Optional, 'endpoint'>) =>
+		group.addSetting((setting) =>
+			setting
+				.setName(t('Endpoint'))
+				.setDesc('e.g. https://docs-test-001.openai.azure.com/')
+				.addText((text) =>
+					text
+						.setPlaceholder('')
+						.setValue(options.endpoint)
+						.onChange(async (value) => {
+							const url = value.trim()
+							if (url.length === 0) {
+								// Empty string is valid, clearing endpoint
+								options.endpoint = ''
+								await this.plugin.saveSettings()
+							} else if (!isValidUrl(url)) {
+								new Notice(t('Invalid URL'))
+								return
+							} else {
+								options.endpoint = url
+								await this.plugin.saveSettings()
+							}
+						})
+				)
+		)
+
+	addApiVersionOptional = (group: SettingGroup, options: BaseOptions & Pick<Optional, 'apiVersion'>) =>
+		group.addSetting((setting) =>
+			setting
+				.setName(t('API version'))
+				.setDesc('e.g. 2024-xx-xx-preview')
+				.addText((text) =>
+					text
+						.setPlaceholder('')
+						.setValue(options.apiVersion)
+						.onChange(async (value) => {
+							options.apiVersion = value.trim()
+							await this.plugin.saveSettings()
+						})
+				)
+		)
+
+	addParametersSection = (group: SettingGroup, options: BaseOptions) =>
+		group.addSetting((setting) =>
+			setting
+				.setName(t('Override input parameters'))
+				.setDesc(
+					t(
+						'Developer feature, in JSON format. For example, if the model list doesn\'t have the model you want, enter {"model": "your desired model"}'
+					)
+				)
+				.addTextArea((text) =>
+					text
+						.setPlaceholder('{}')
+						.setValue(JSON.stringify(options.parameters))
+						.onChange(async (value) => {
+							try {
+								const trimmed = value.trim()
+								if (trimmed === '') {
+									// Empty string is valid, clearing parameters
+									options.parameters = {}
+									await this.plugin.saveSettings()
+									return
+								}
+								options.parameters = JSON.parse(trimmed)
+								await this.plugin.saveSettings()
+							} catch {
+								// This is difficult to handle properly - onChange triggers quickly, and users might receive frequent error messages before they finish typing, which is annoying
+								return
+							}
+						})
+				)
+		)
+
+	addGptImageSections = (group: SettingGroup, options: GptImageOptions) => {
+		group.addSetting((setting) =>
+			setting
+				.setName(t('Image Display Width'))
+				.setDesc(t('Example: 400px width would output as ![[image.jpg|400]]'))
+				.addSlider((slider) =>
+					slider
+						.setLimits(200, 800, 100)
+						.setValue(options.displayWidth)
+						.setDynamicTooltip()
+						.onChange(async (value) => {
+							options.displayWidth = value
+							await this.plugin.saveSettings()
+						})
+				)
+		)
+		group.addSetting((setting) =>
+			setting
+				.setName(t('Number of images'))
+				.setDesc(t('Number of images to generate (1-5)'))
+				.addSlider((slider) =>
+					slider
+						.setLimits(1, 5, 1)
+						.setValue(options.n)
+						.setDynamicTooltip()
+						.onChange(async (value) => {
+							options.n = value
+							await this.plugin.saveSettings()
+						})
+				)
+		)
+		group.addSetting((setting) =>
+			setting.setName(t('Image size')).addDropdown((dropdown) =>
 				dropdown
 					.addOptions({
-						auto: t('Auto'),
-						high: t('High'),
-						medium: t('Medium'),
-						low: t('Low')
+						auto: 'Auto',
+						'1024x1024': '1024x1024',
+						'1536x1024': '1536x1024 ' + t('landscape'),
+						'1024x1536': '1024x1536 ' + t('portrait')
 					})
-					.setValue(options.quality)
+					.setValue(options.size)
 					.onChange(async (value) => {
-						options.quality = value as GptImageOptions['quality']
+						options.size = value as GptImageOptions['size']
 						await this.plugin.saveSettings()
 					})
 			)
-		new Setting(details)
-			.setName(t('Background'))
-			.setDesc(t('Background of the generated image. default: Auto'))
-			.addDropdown((dropdown) =>
+		)
+		group.addSetting((setting) =>
+			setting.setName(t('Output format')).addDropdown((dropdown) =>
 				dropdown
 					.addOptions({
-						auto: t('Auto'),
-						transparent: t('Transparent'),
-						opaque: t('Opaque')
+						png: 'PNG',
+						jpeg: 'JPEG',
+						webp: 'WEBP'
 					})
-					.setValue(options.background)
+					.setValue(options.output_format)
 					.onChange(async (value) => {
-						options.background = value as GptImageOptions['background']
+						options.output_format = value as GptImageOptions['output_format']
 						await this.plugin.saveSettings()
 					})
 			)
-		new Setting(details)
-			.setName(t('Output compression'))
-			.setDesc(t('Compression level of the output image, 10% - 100%. Only for webp or jpeg output format'))
-			.addSlider((slider) =>
-				slider
-					.setLimits(10, 100, 10)
-					.setValue(options.output_compression)
-					.setDynamicTooltip()
-					.onChange(async (value) => {
-						options.output_compression = value
-						await this.plugin.saveSettings()
-					})
-			)
+		)
+		group.addSetting((setting) =>
+			setting
+				.setName(t('Quality'))
+				.setDesc(t('Quality level for generated images. default: Auto'))
+				.addDropdown((dropdown) =>
+					dropdown
+						.addOptions({
+							auto: t('Auto'),
+							high: t('High'),
+							medium: t('Medium'),
+							low: t('Low')
+						})
+						.setValue(options.quality)
+						.onChange(async (value) => {
+							options.quality = value as GptImageOptions['quality']
+							await this.plugin.saveSettings()
+						})
+				)
+		)
+		group.addSetting((setting) =>
+			setting
+				.setName(t('Background'))
+				.setDesc(t('Background of the generated image. default: Auto'))
+				.addDropdown((dropdown) =>
+					dropdown
+						.addOptions({
+							auto: t('Auto'),
+							transparent: t('Transparent'),
+							opaque: t('Opaque')
+						})
+						.setValue(options.background)
+						.onChange(async (value) => {
+							options.background = value as GptImageOptions['background']
+							await this.plugin.saveSettings()
+						})
+				)
+		)
+		group.addSetting((setting) =>
+			setting
+				.setName(t('Output compression'))
+				.setDesc(t('Compression level of the output image, 10% - 100%. Only for webp or jpeg output format'))
+				.addSlider((slider) =>
+					slider
+						.setLimits(10, 100, 10)
+						.setValue(options.output_compression)
+						.setDynamicTooltip()
+						.onChange(async (value) => {
+							options.output_compression = value
+							await this.plugin.saveSettings()
+						})
+				)
+		)
 	}
 }
 
